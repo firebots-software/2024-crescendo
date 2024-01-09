@@ -16,4 +16,8 @@ public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }
+  public static class StagingConstants {
+    public static final double HolderMotorSpeed = 2;
+    public static final double ConveyorMotorSpeed = 2;
+  }
 }

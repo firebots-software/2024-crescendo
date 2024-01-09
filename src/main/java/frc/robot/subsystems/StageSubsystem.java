@@ -1,6 +1,8 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.StagingConstants;
+
 import com.ctre.phoenix6.hardware.TalonFX;
 
 public class StageSubsystem extends SubsystemBase{
@@ -24,10 +26,18 @@ public class StageSubsystem extends SubsystemBase{
         return false;
     }
     
-    public void turnOnHolder(){}
-    public void turnOffHolder(){}
-    public void turnOnConveyor(){}
-    public void turnOffConveyor(){}
+    public void turnOnHolder(){
+        holderMotor.set(StagingConstants.HolderMotorSpeed);
+    }
+    public void turnOffHolder(){
+        holderMotor.set(0);
+    }
+    public void turnOnConveyor(){
+        conveyorMotor.set(StagingConstants.ConveyorMotorSpeed);
+    }
+    public void turnOffConveyor(){
+        conveyorMotor.set(0);
+    }
     
     
 }
