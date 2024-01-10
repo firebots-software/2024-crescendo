@@ -52,7 +52,8 @@ public class RobotContainer {
 
     swerveSubsystem.setDefaultCommand(new SwerveCommand(
         () -> -m_driverController.getRawAxis(1),
-        () -> -m_driverController.getRawAxis(0)
+        () -> -m_driverController.getRawAxis(0),
+        swerveSubsystem
     ));
   }
 

@@ -13,10 +13,11 @@ public class SwerveCommand extends Command {
     private Supplier<Double> xPos;
     private Supplier<Double> yPos;
     
-    public SwerveCommand(Supplier<Double> xPos, Supplier<Double> yPos){
-        swerveSubsystem = SwerveSubsystem.getInstance();
+    public SwerveCommand(Supplier<Double> xPos, Supplier<Double> yPos, SwerveSubsystem swerveSubsystem){
+        this.swerveSubsystem = swerveSubsystem;
         this.xPos=xPos;
         this.yPos=yPos;
+        addRequirements(swerveSubsystem);
     }
 
     
