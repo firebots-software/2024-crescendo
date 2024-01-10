@@ -1,13 +1,15 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModule;
 
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.DriveConstants;;
+import frc.robot.Constants.DriveConstants;
+
 public class SwerveSubsystem extends SubsystemBase{
 
     private static SwerveSubsystem swerveInstance;
@@ -15,6 +17,8 @@ public class SwerveSubsystem extends SubsystemBase{
         DriveConstants.kFrontLeftDriveMotorPort,
         DriveConstants.kFrontLeftTurningMotorPort,
         DriveConstants.kFrontLeftDriveAbsoluteEncoderPort,
+        DriveConstants.kFrontLeftDriveEncoderReversed,
+        DriveConstants.kFrontLeftTurningEncoderReversed,
         DriveConstants.kFrontLeftDriveAbsoluteEncoderOffsetRad
     );
 
@@ -22,6 +26,8 @@ public class SwerveSubsystem extends SubsystemBase{
         DriveConstants.kFrontRightDriveMotorPort,
         DriveConstants.kFrontRightTurningMotorPort,
         DriveConstants.kFrontRightDriveAbsoluteEncoderPort,
+        DriveConstants.kFrontRightDriveEncoderReversed,
+        DriveConstants.kFrontRightTurningEncoderReversed,
         DriveConstants.kFrontRightDriveAbsoluteEncoderOffsetRad
     );
 
@@ -29,13 +35,17 @@ public class SwerveSubsystem extends SubsystemBase{
         DriveConstants.kBackLeftDriveMotorPort,
         DriveConstants.kBackLeftTurningMotorPort,
         DriveConstants.kBackLeftDriveAbsoluteEncoderPort,
+        DriveConstants.kBackLeftDriveEncoderReversed,
+        DriveConstants.kBackLeftTurningEncoderReversed,
         DriveConstants.kBackLeftDriveAbsoluteEncoderOffsetRad
     );
 
-    private final SwerveModuleSubsystem backRight = new SwerveModuleSubsystem(
+     private final SwerveModuleSubsystem backRight = new SwerveModuleSubsystem(
         DriveConstants.kBackRightDriveMotorPort,
         DriveConstants.kBackRightTurningMotorPort,
         DriveConstants.kBackRightDriveAbsoluteEncoderPort,
+        DriveConstants.kBackRightDriveEncoderReversed,
+        DriveConstants.kBackRightTurningEncoderReversed,
         DriveConstants.kBackRightDriveAbsoluteEncoderOffsetRad
     );
     Pigeon2 gyro = new Pigeon2(0);
@@ -90,13 +100,9 @@ public class SwerveSubsystem extends SubsystemBase{
         return new SwerveModulePosition[]{frontLeft.getModulePosition(), frontRight.getModulePosition(), backLeft.getModulePosition(), backRight.getModulePosition()};
     }
 
-    // public edu.wpi.first.math.geometry.Pose2d getPose() {
-    //     return odometer.getPoseMeters();
-    // }
-
     @Override
     public void periodic() {
-        // odometer.update(getRotation2d(), getModulePositions());
+        odometer.update(getRotation2d(), getModulePositions());
         SmartDashboard.putNumber("Robot Heading", getHeading());
         SmartDashboard.putNumber("Robot Pitch", getPitch());
         SmartDashboard.putNumber("Robot Roll", getRoll());
