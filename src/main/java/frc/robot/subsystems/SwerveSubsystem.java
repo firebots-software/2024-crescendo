@@ -15,6 +15,8 @@ public class SwerveSubsystem extends SubsystemBase{
         DriveConstants.kFrontLeftDriveMotorPort,
         DriveConstants.kFrontLeftTurningMotorPort,
         DriveConstants.kFrontLeftDriveAbsoluteEncoderPort,
+        DriveConstants.kFrontLeftDriveEncoderReversed,
+        DriveConstants.kFrontLeftTurningEncoderReversed,
         DriveConstants.kFrontLeftDriveAbsoluteEncoderOffsetRad
     );
 
@@ -22,6 +24,8 @@ public class SwerveSubsystem extends SubsystemBase{
         DriveConstants.kFrontRightDriveMotorPort,
         DriveConstants.kFrontRightTurningMotorPort,
         DriveConstants.kFrontRightDriveAbsoluteEncoderPort,
+        DriveConstants.kFrontRightDriveEncoderReversed,
+        DriveConstants.kFrontRightTurningEncoderReversed,
         DriveConstants.kFrontRightDriveAbsoluteEncoderOffsetRad
     );
 
@@ -29,30 +33,20 @@ public class SwerveSubsystem extends SubsystemBase{
         DriveConstants.kBackLeftDriveMotorPort,
         DriveConstants.kBackLeftTurningMotorPort,
         DriveConstants.kBackLeftDriveAbsoluteEncoderPort,
+        DriveConstants.kBackLeftDriveEncoderReversed,
+        DriveConstants.kBackLeftTurningEncoderReversed,
         DriveConstants.kBackLeftDriveAbsoluteEncoderOffsetRad
     );
 
-    private final SwerveModuleSubsystem backRight = new SwerveModuleSubsystem(
+     private final SwerveModuleSubsystem backRight = new SwerveModuleSubsystem(
         DriveConstants.kBackRightDriveMotorPort,
         DriveConstants.kBackRightTurningMotorPort,
         DriveConstants.kBackRightDriveAbsoluteEncoderPort,
+        DriveConstants.kBackRightDriveEncoderReversed,
+        DriveConstants.kBackRightTurningEncoderReversed,
         DriveConstants.kBackRightDriveAbsoluteEncoderOffsetRad
     );
     Pigeon2 gyro = new Pigeon2(0);
-
-    private final edu.wpi.first.math.kinematics.SwerveDriveOdometry odometer = new edu.wpi.first.math.kinematics.SwerveDriveOdometry(
-        DriveConstants.kDriveKinematics,
-        new edu.wpi.first.math.geometry.Rotation2d(0), 
-        getModulePositions()
-    );
-
-    public edu.wpi.first.math.geometry.Pose2d getPose() {
-        return odometer.getPoseMeters();
-    }
-
-    public void resetOdometry(edu.wpi.first.math.geometry.Pose2d pose) {
-        odometer.resetPosition(getRotation2d(), getModulePositions(), pose);
-    }
 
    private SwerveSubsystem() {
         new Thread(() -> {
@@ -93,6 +87,20 @@ public class SwerveSubsystem extends SubsystemBase{
     // public edu.wpi.first.math.geometry.Pose2d getPose() {
     //     return odometer.getPoseMeters();
     // }
+    private final edu.wpi.first.math.kinematics.SwerveDriveOdometry odometer = new edu.wpi.first.math.kinematics.SwerveDriveOdometry(
+        DriveConstants.kDriveKinematics,
+        new edu.wpi.first.math.geometry.Rotation2d(0), 
+        getModulePositions()
+    );
+
+    public edu.wpi.first.math.geometry.Pose2d getPose() {
+        return odometer.getPoseMeters();
+    }
+
+    public void resetOdometry(edu.wpi.first.math.geometry.Pose2d pose) {
+        odometer.resetPosition(getRotation2d(), getModulePositions(), pose);
+    }
+
 
     @Override
     public void periodic() {
