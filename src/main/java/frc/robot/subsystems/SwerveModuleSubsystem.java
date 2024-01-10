@@ -24,12 +24,15 @@ public class SwerveModuleSubsystem extends SubsystemBase {
     private final double absoluteEncoderOffsetRad;
     private final double absoluteDriveEncoderOffset;
 
-    public SwerveModuleSubsystem(int driveMotorId, int turningMotorId, int CANCoderId, double absoluteEncoderOffset) {
+    public SwerveModuleSubsystem(int driveMotorId, int turningMotorId, int CANCoderId, boolean driveMotorReversed, boolean turningMotorReversed, double absoluteEncoderOffset) {
 
         this.absoluteEncoderOffsetRad = absoluteEncoderOffset;
 
         driveMotor = new TalonFX(driveMotorId);
         turningMotor = new TalonFX(turningMotorId);
+
+        driveMotor.setInverted(driveMotorReversed);
+        turningMotor.setInverted(turningMotorReversed);
        
         turningEncoder = new CANcoder(CANCoderId);
 
