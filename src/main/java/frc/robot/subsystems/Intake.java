@@ -1,10 +1,9 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.hardware.TalonFX;
+
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import frc.robot.Constants;
 
@@ -12,10 +11,10 @@ public class Intake extends SubsystemBase {
 
     private static Intake instance;
     private AnalogInput input;
-    public WPI_TalonSRX rollerMotor;
+    public TalonFX rollerMotor;
 
     private Intake() {
-        rollerMotor = new WPI_TalonSRX(Constants.Intake.INTAKE_MOTOR_PORT);
+        rollerMotor = new TalonFX(Constants.Intake.INTAKE_MOTOR_PORT);
     }
 
     public static Intake getInstance() {
