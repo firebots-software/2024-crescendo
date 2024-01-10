@@ -5,8 +5,6 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.Autos;
-import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.SwerveCommand;
 import frc.robot.subsystems.SwerveSubsystem;
 import edu.wpi.first.wpilibj.Joystick;
@@ -64,6 +62,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   // public Command getAutonomousCommand() {
+  //   return;
   //   // An example command will be run in autonomous
   // }
 }
