@@ -1,7 +1,6 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveModule;
 
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -50,20 +49,6 @@ public class SwerveSubsystem extends SubsystemBase{
     );
     Pigeon2 gyro = new Pigeon2(0);
 
-    private final edu.wpi.first.math.kinematics.SwerveDriveOdometry odometer = new edu.wpi.first.math.kinematics.SwerveDriveOdometry(
-        DriveConstants.kDriveKinematics,
-        new edu.wpi.first.math.geometry.Rotation2d(0), 
-        getModulePositions()
-    );
-
-    public edu.wpi.first.math.geometry.Pose2d getPose() {
-        return odometer.getPoseMeters();
-    }
-
-    public void resetOdometry(edu.wpi.first.math.geometry.Pose2d pose) {
-        odometer.resetPosition(getRotation2d(), getModulePositions(), pose);
-    }
-
    private SwerveSubsystem() {
         new Thread(() -> {
             try {
@@ -99,6 +84,24 @@ public class SwerveSubsystem extends SubsystemBase{
     public SwerveModulePosition[] getModulePositions() {
         return new SwerveModulePosition[]{frontLeft.getModulePosition(), frontRight.getModulePosition(), backLeft.getModulePosition(), backRight.getModulePosition()};
     }
+
+    // public edu.wpi.first.math.geometry.Pose2d getPose() {
+    //     return odometer.getPoseMeters();
+    // }
+    private final edu.wpi.first.math.kinematics.SwerveDriveOdometry odometer = new edu.wpi.first.math.kinematics.SwerveDriveOdometry(
+        DriveConstants.kDriveKinematics,
+        new edu.wpi.first.math.geometry.Rotation2d(0), 
+        getModulePositions()
+    );
+
+    public edu.wpi.first.math.geometry.Pose2d getPose() {
+        return odometer.getPoseMeters();
+    }
+
+    public void resetOdometry(edu.wpi.first.math.geometry.Pose2d pose) {
+        odometer.resetPosition(getRotation2d(), getModulePositions(), pose);
+    }
+
 
     @Override
     public void periodic() {
