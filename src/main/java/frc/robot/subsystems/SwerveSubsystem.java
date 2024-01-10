@@ -47,7 +47,7 @@ public class SwerveSubsystem extends SubsystemBase{
         DriveConstants.kBackRightTurningEncoderReversed,
         DriveConstants.kBackRightDriveAbsoluteEncoderOffsetRad
     );
-    Pigeon2 gyro = new Pigeon2(0);
+    Pigeon2 gyro = new Pigeon2(13);
 
    private SwerveSubsystem() {
         new Thread(() -> {
