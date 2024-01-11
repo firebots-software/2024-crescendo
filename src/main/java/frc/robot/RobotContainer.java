@@ -51,7 +51,6 @@ public class RobotContainer {
         () -> -driverPS4.getRawAxis(0),
         () -> -driverPS4.getRawAxis(2),
         () -> driverPS4.getRawAxis(4) > -0.75 ? 1 : (driverPS4.getRawAxis(3) > -0.75 ? 0.15 : 0.50),
-
         () -> !driverPS4.getRawButton(Constants.OI.SQUARE_BUTTON_PORT)));
 
     final Trigger damageControl = new JoystickButton(driverPS4, Constants.OI.CIRCLE_BUTTON_PORT);

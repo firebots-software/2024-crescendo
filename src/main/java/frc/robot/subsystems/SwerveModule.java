@@ -9,9 +9,6 @@ import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ModuleConstants;
 
-import com.ctre.phoenix6.configs.CANcoderConfiguration;
-import com.ctre.phoenix6.configs.MagnetSensorConfigs;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 
@@ -24,12 +21,12 @@ public class SwerveModule extends SubsystemBase {
 
     private final PIDController turningPidController;
 
-    private final double absoluteEncoderOffsetRad;
+    private final double absoluteEncoderOffsetRotations;
     private final double absoluteDriveEncoderOffset;
 
-    public SwerveModule(int driveMotorId, int turningMotorId, int CANCoderId, boolean driveMotorReversed, boolean turningMotorReversed, double absoluteEncoderOffset) {
+    public SwerveModule(int driveMotorId, int turningMotorId, int CANCoderId, boolean driveMotorReversed, boolean turningMotorReversed, double absoluteEncoderOffsetRotations) {
 
-        this.absoluteEncoderOffsetRad = absoluteEncoderOffset;
+        this.absoluteEncoderOffsetRotations = absoluteEncoderOffsetRotations;
 
         driveMotor = new TalonFX(driveMotorId);
         turningMotor = new TalonFX(turningMotorId);
@@ -46,16 +43,16 @@ public class SwerveModule extends SubsystemBase {
     }
 
     public double getTurningPosition() {
-        return turningEncoder.getAbsolutePosition().getValueAsDouble() - absoluteEncoderOffsetRad;
+        return turningEncoder.getAbsolutePosition().getValue() - absoluteEncoderOffsetRotations;
     }
     
     public double getTurningVelocity() {
-        return turningEncoder.getVelocity().getValueAsDouble();
+        return turningEncoder.getVelocity().getValue();
     }
 
     public SwerveModuleState getState() {
         // * 10d because getSelectedSensorVelocity() returns ticks/100ms; 
-        return new SwerveModuleState(driveMotor.getVelocity().getValue() * 10d * Constants.ModuleConstants.kDriveEncoderTicks2Meter, new Rotation2d(getTurningPosition()));
+        return new SwerveModuleState(driveMotor.getVelocity().getValue() / (Constants.ModuleConstants.kWheelDiameterMeters * Math.PI), new Rotation2d(getTurningPosition()));
     }
 
     public void setDesiredState(SwerveModuleState state) {
@@ -65,11 +62,11 @@ public class SwerveModule extends SubsystemBase {
         }
         state = SwerveModuleState.optimize(state, getState().angle);
         driveMotor.set(state.speedMetersPerSecond / DriveConstants.kPhysicalMaxSpeedMetersPerSecond);
-        turningMotor.set(turningPidController.calculate(getTurningPosition(), state.angle.getRadians()));
+        turningMotor.set(turningPidController.calculate(getTurningPosition(), state.angle.getRadians()/(2.0*Math.PI)));
     }
 
     public void setTurnState(double toRad) {
-        turningMotor.set(turningPidController.calculate(getTurningPosition(), toRad));
+        turningMotor.set(turningPidController.calculate(getTurningPosition(), toRad/(2.0*Math.PI)));
     }
 
     public SwerveModulePosition getModulePosition() {
