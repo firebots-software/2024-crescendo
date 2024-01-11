@@ -7,12 +7,15 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.ModuleConstants;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.MagnetSensorConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 
-public class SwerveModuleSubsystem extends SubsystemBase {
+public class SwerveModule extends SubsystemBase {
 
     private final TalonFX driveMotor;
     private final TalonFX turningMotor;
@@ -24,7 +27,7 @@ public class SwerveModuleSubsystem extends SubsystemBase {
     private final double absoluteEncoderOffsetRad;
     private final double absoluteDriveEncoderOffset;
 
-    public SwerveModuleSubsystem(int driveMotorId, int turningMotorId, int CANCoderId, boolean driveMotorReversed, boolean turningMotorReversed, double absoluteEncoderOffset) {
+    public SwerveModule(int driveMotorId, int turningMotorId, int CANCoderId, boolean driveMotorReversed, boolean turningMotorReversed, double absoluteEncoderOffset) {
 
         this.absoluteEncoderOffsetRad = absoluteEncoderOffset;
 
@@ -36,18 +39,18 @@ public class SwerveModuleSubsystem extends SubsystemBase {
        
         turningEncoder = new CANcoder(CANCoderId);
 
-        turningPidController = new PIDController(Constants.ModuleConstants.kPTurning, 0, 0);
-        turningPidController.enableContinuousInput(-Math.PI, Math.PI);
+        turningPidController = new PIDController(ModuleConstants.kPTurning, 0, 0);
+        turningPidController.enableContinuousInput(-0.5, 0.5);
 
-        absoluteDriveEncoderOffset = driveMotor.getPosition().getValue();
+        absoluteDriveEncoderOffset = driveMotor.getPosition().getValue(); // getselected sensorposition
     }
 
     public double getTurningPosition() {
-        return turningEncoder.getAbsolutePosition().getValue() - absoluteEncoderOffsetRad;
+        return turningEncoder.getAbsolutePosition().getValueAsDouble() - absoluteEncoderOffsetRad;
     }
     
     public double getTurningVelocity() {
-        return turningEncoder.getVelocity().getValue();
+        return turningEncoder.getVelocity().getValueAsDouble();
     }
 
     public SwerveModuleState getState() {
@@ -56,13 +59,17 @@ public class SwerveModuleSubsystem extends SubsystemBase {
     }
 
     public void setDesiredState(SwerveModuleState state) {
-        if (Math.abs(state.speedMetersPerSecond) < 0.005) {
+        if (Math.abs(state.speedMetersPerSecond) < 0.001) {
             stop();
             return;
         }
         state = SwerveModuleState.optimize(state, getState().angle);
         driveMotor.set(state.speedMetersPerSecond / DriveConstants.kPhysicalMaxSpeedMetersPerSecond);
         turningMotor.set(turningPidController.calculate(getTurningPosition(), state.angle.getRadians()));
+    }
+
+    public void setTurnState(double toRad) {
+        turningMotor.set(turningPidController.calculate(getTurningPosition(), toRad));
     }
 
     public SwerveModulePosition getModulePosition() {
@@ -78,7 +85,15 @@ public class SwerveModuleSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-
+    /*
+        count++;
+        if (count % 150 == 0) {
+            System.out.println("actual m/s: " + getState().speedMetersPerSecond + "\n.\texpected m/s: " + DEBUG_lastms);
+            System.out.println("power: " + DEBUG_lastms / DriveConstants.kPhysicalMaxSpeedMetersPerSecond);
+            //System.out.println("distance m: " + getModulePosition().distanceMeters);
+            count = 0;
+        }
+    */
     }
 
     public double getPosition(){
@@ -97,3 +112,4 @@ public class SwerveModuleSubsystem extends SubsystemBase {
         driveMotor.setPosition(val);
     }
 }
+

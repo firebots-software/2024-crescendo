@@ -9,10 +9,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 
-public class SwerveSubsystem extends SubsystemBase{
+public class SwerveSubsystem extends SubsystemBase {
+    
+    private static SwerveSubsystem instance;
 
-    private static SwerveSubsystem swerveInstance;
-    private final SwerveModuleSubsystem frontLeft = new SwerveModuleSubsystem(
+    private final SwerveModule frontLeft = new SwerveModule(
         DriveConstants.kFrontLeftDriveMotorPort,
         DriveConstants.kFrontLeftTurningMotorPort,
         DriveConstants.kFrontLeftDriveAbsoluteEncoderPort,
@@ -21,7 +22,7 @@ public class SwerveSubsystem extends SubsystemBase{
         DriveConstants.kFrontLeftDriveAbsoluteEncoderOffsetRad
     );
 
-    private final SwerveModuleSubsystem frontRight = new SwerveModuleSubsystem(
+    private final SwerveModule frontRight = new SwerveModule(
         DriveConstants.kFrontRightDriveMotorPort,
         DriveConstants.kFrontRightTurningMotorPort,
         DriveConstants.kFrontRightDriveAbsoluteEncoderPort,
@@ -30,7 +31,7 @@ public class SwerveSubsystem extends SubsystemBase{
         DriveConstants.kFrontRightDriveAbsoluteEncoderOffsetRad
     );
 
-    private final SwerveModuleSubsystem backLeft = new SwerveModuleSubsystem(
+    private final SwerveModule backLeft = new SwerveModule(
         DriveConstants.kBackLeftDriveMotorPort,
         DriveConstants.kBackLeftTurningMotorPort,
         DriveConstants.kBackLeftDriveAbsoluteEncoderPort,
@@ -39,7 +40,7 @@ public class SwerveSubsystem extends SubsystemBase{
         DriveConstants.kBackLeftDriveAbsoluteEncoderOffsetRad
     );
 
-     private final SwerveModuleSubsystem backRight = new SwerveModuleSubsystem(
+     private final SwerveModule backRight = new SwerveModule(
         DriveConstants.kBackRightDriveMotorPort,
         DriveConstants.kBackRightTurningMotorPort,
         DriveConstants.kBackRightDriveAbsoluteEncoderPort,
@@ -47,9 +48,17 @@ public class SwerveSubsystem extends SubsystemBase{
         DriveConstants.kBackRightTurningEncoderReversed,
         DriveConstants.kBackRightDriveAbsoluteEncoderOffsetRad
     );
-    Pigeon2 gyro = new Pigeon2(13);
+   
+    private final Pigeon2 gyro = new Pigeon2(DriveConstants.PIGEON_PORT);
+    private double flatPitch = 0;
+    
+    private final edu.wpi.first.math.kinematics.SwerveDriveOdometry odometer = new edu.wpi.first.math.kinematics.SwerveDriveOdometry(
+        DriveConstants.kDriveKinematics,
+        new edu.wpi.first.math.geometry.Rotation2d(0), 
+        getModulePositions()
+    );
 
-   private SwerveSubsystem() {
+    public SwerveSubsystem() {
         new Thread(() -> {
             try {
                 Thread.sleep(1000);
@@ -65,16 +74,28 @@ public class SwerveSubsystem extends SubsystemBase{
         gyro.setYaw(0);
     }
 
+    public void setHeading(double deg) {
+        gyro.setYaw(deg);
+    }
+
+    public void setPitch(double deg) {
+        flatPitch = deg;
+    }
+
+    public void zeroPitch() {
+        flatPitch = getPitch();
+    }
+
     public double getHeading() {
-        return Math.IEEEremainder(gyro.getYaw().getValue(), 360); // TODO: maybe should be negative?
+        return Math.IEEEremainder(gyro.getYaw().getValueAsDouble(), 360); // TODO: maybe should be negative?
     }
 
     public double getPitch() {
-        return gyro.getPitch().getValue();
+        return gyro.getPitch().getValueAsDouble() - flatPitch;
     }
 
     public double getRoll() {
-        return gyro.getRoll().getValue();
+        return gyro.getRoll().getValueAsDouble();
     }
 
     public edu.wpi.first.math.geometry.Rotation2d getRotation2d() {
@@ -85,15 +106,6 @@ public class SwerveSubsystem extends SubsystemBase{
         return new SwerveModulePosition[]{frontLeft.getModulePosition(), frontRight.getModulePosition(), backLeft.getModulePosition(), backRight.getModulePosition()};
     }
 
-    // public edu.wpi.first.math.geometry.Pose2d getPose() {
-    //     return odometer.getPoseMeters();
-    // }
-    private final edu.wpi.first.math.kinematics.SwerveDriveOdometry odometer = new edu.wpi.first.math.kinematics.SwerveDriveOdometry(
-        DriveConstants.kDriveKinematics,
-        new edu.wpi.first.math.geometry.Rotation2d(0), 
-        getModulePositions()
-    );
-
     public edu.wpi.first.math.geometry.Pose2d getPose() {
         return odometer.getPoseMeters();
     }
@@ -102,13 +114,13 @@ public class SwerveSubsystem extends SubsystemBase{
         odometer.resetPosition(getRotation2d(), getModulePositions(), pose);
     }
 
-
     @Override
     public void periodic() {
         odometer.update(getRotation2d(), getModulePositions());
         SmartDashboard.putNumber("Robot Heading", getHeading());
         SmartDashboard.putNumber("Robot Pitch", getPitch());
         SmartDashboard.putNumber("Robot Roll", getRoll());
+        SmartDashboard.putNumber("Robot X", getPose().getX());
         SmartDashboard.putNumber("front left encoder", frontLeft.getDrivingTickValues());
         SmartDashboard.putNumber("front right encoder", frontRight.getDrivingTickValues());
         SmartDashboard.putNumber("back left encoder", backLeft.getDrivingTickValues());
@@ -131,11 +143,18 @@ public class SwerveSubsystem extends SubsystemBase{
         backRight.setDesiredState(desiredStates[3]);
     }
 
+    public void setTurning(double rad) {
+        frontLeft.setTurnState(rad);
+        frontRight.setTurnState(rad);
+        backLeft.setTurnState(rad);
+        backRight.setTurnState(rad);
+    }
+
     public static SwerveSubsystem getInstance() {
-        if (swerveInstance == null) {
-            swerveInstance = new SwerveSubsystem();
+        if (instance == null) {
+            instance = new SwerveSubsystem();
         }
-        return swerveInstance;
+        return instance;
     }
 
     public void resetEncoders(){
@@ -144,4 +163,7 @@ public class SwerveSubsystem extends SubsystemBase{
         backLeft.setDrivingTickValues(0);
         backRight.setDrivingTickValues(0);
     }
+
+    
+
 }
