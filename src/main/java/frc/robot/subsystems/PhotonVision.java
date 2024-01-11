@@ -35,6 +35,7 @@ public class PhotonVision extends SubsystemBase {
    private DoubleLogEntry pitchLog = new DoubleLogEntry(DataLogManager.getLog(),  "/log/input/pitch");
    private DoubleLogEntry yawlog = new DoubleLogEntry(DataLogManager.getLog(),  "/log/input/yaw");
    private DoubleLogEntry distancelog = new DoubleLogEntry(DataLogManager.getLog(),  "/log/input/distance");
+   private DoubleLogEntry poselog = new DoubleLogEntry(DataLogManager.getLog(),  "/log/input/pose");
    public static PhotonVision getIntance(){
     if (pvisioninstance == null) {
         pvisioninstance = new PhotonVision();
@@ -98,9 +99,17 @@ public class PhotonVision extends SubsystemBase {
     }
     
     public void periodic(){
-        pitchLog.append(getPitch(target));
-        yawlog.append(getYaw(target));
-        distancelog.append(getDistance());
+        try{
+            pitchLog.append(getPitch(target));
+            yawlog.append(getYaw(target));
+            distancelog.append(getDistance());
+            poselog.append(getRobotPose2d().getX());
+        }catch(Exception e) {
+            pitchLog.append(0);
+            yawlog.append(0);
+            distancelog.append(0);
+            poselog.append(0);
+        }
     }
   
 }
