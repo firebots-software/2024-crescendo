@@ -22,13 +22,7 @@ public final class Constants {
   public static final class Intake 
   {
     public static final int INTAKE_MOTOR_PORT = 14;
-
-    public static Object getInstance() {
-      // TODO Auto-generated method stub
-      throw new UnsupportedOperationException("Unimplemented method 'getInstance'");
-    }
-
-
-
+    public static final double SHOOTER_SPEED = 0.8; 
+   
   }
 }

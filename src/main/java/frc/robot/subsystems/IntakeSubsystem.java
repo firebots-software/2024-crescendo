@@ -7,17 +7,19 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.ControlModeValue;
 
 import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 
 public class IntakeSubsystem extends SubsystemBase {
 
-    private static final int MAX_DISTANCE = 4048;
+   // private static final int MAX_DISTANCE = 4048;//
     private static IntakeSubsystem instance;
     private final DutyCycleOut rollerMotorRequest = new DutyCycleOut(0.0);
-    private AnalogInput input;
+    private DigitalInput input;
     public TalonFX rollerMotor;
+
 
     private IntakeSubsystem() {
         rollerMotor = new TalonFX(Constants.Intake.INTAKE_MOTOR_PORT);
@@ -34,25 +36,19 @@ public class IntakeSubsystem extends SubsystemBase {
         rollerMotor.setControl(rollerMotorRequest.withOutput(speed));
     }
 
-    public boolean notePresent() {
-        return input.getValue() > MAX_DISTANCE;
+    public void rotateArmToRestPosition() {
+
     }
 
-    /*
-     * public void stopIntakeWhenNoteGone()
-     * {
-     * while(input.getVoltage() > 1017) {
-     * runIntake(0);
-     * }
-     * }
-     */
+
+    public boolean notePresent() {
+        return input.get(); //> MAX_DISTANCE;// 
+    }  
+
     @Override
     public void periodic() {
         // This method will be called once per scheduler run
     }
 
-    public int getValue() {
-        return input.getValue(); 
-    }
 
 }
