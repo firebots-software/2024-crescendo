@@ -12,22 +12,22 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 
-public class IntakeSubsystem extends SubsystemBase {
+public class Intake extends SubsystemBase {
 
    // private static final int MAX_DISTANCE = 4048;//
-    private static IntakeSubsystem instance;
+    private static Intake instance;
     private final DutyCycleOut rollerMotorRequest = new DutyCycleOut(0.0);
     private DigitalInput input;
     public TalonFX rollerMotor;
 
 
-    private IntakeSubsystem() {
+    private Intake() {
         rollerMotor = new TalonFX(Constants.Intake.INTAKE_MOTOR_PORT);
     }
 
-    public static IntakeSubsystem getInstance() {
+    public static Intake getInstance() {
         if (instance == null) {
-            instance = new IntakeSubsystem();
+            instance = new Intake();
         }
         return instance;
     }

@@ -1,5 +1,5 @@
 package frc.robot.commands.IntakeCommands;
-import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.Intake;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 
@@ -7,8 +7,8 @@ import frc.robot.Constants;
 /** An example command that uses an example subsystem. */
 public class RunShooter extends Command {
 private double shooterSpeed; 
-private IntakeSubsystem intake; 
-  public RunShooter(IntakeSubsystem intake) {
+private Intake intake; 
+  public RunShooter(Intake intake) {
     this.intake = intake; 
     this.shooterSpeed = Constants.Intake.SHOOTER_SPEED;
     addRequirements(intake);
