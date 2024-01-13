@@ -3,13 +3,13 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.commands.IntakeCommands;
-import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Peter;
 import edu.wpi.first.wpilibj2.command.Command;
 
 /** An example command that uses an example subsystem. */
 public class IntakeWithSensor extends Command {
-private Intake intake; 
-  public IntakeWithSensor(Intake intake) {
+private Peter intake; 
+  public IntakeWithSensor(Peter intake) {
     this.intake = intake; 
     addRequirements(intake);
   }
@@ -23,6 +23,10 @@ private Intake intake;
   @Override
   public void execute() {
     intake.runIntake(0.5);
+    if(intake.notePresent()) {
+            intake.runIntake(0);
+            intake.runPreShooter(0.5); // run 3 inches more
+        }
 
   }
 
