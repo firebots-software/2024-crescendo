@@ -51,6 +51,10 @@ public class Peter extends SubsystemBase {
     }
 
 
+    public runShooter(double speed){
+        shooterMotor.setControl(shootmerMotorRequest.withOutput(speed));
+    }
+
     public void rotateArmToRestPosition() {
 
     }
