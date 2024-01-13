@@ -89,7 +89,7 @@ public class Constants {
     private static final int kFrontLeftDriveMotorId = 0;
     private static final int kFrontLeftSteerMotorId = 7;
     private static final int kFrontLeftEncoderId = 11;
-    private static final double kFrontLeftEncoderOffset = -0.042236328125;
+    private static final double kFrontLeftEncoderOffset = 2.2242676466703415/(2.0*Math.PI) + 0.5; //-0.042236328125;
 
     private static final double kFrontLeftXPosInches = 12.25;
     private static final double kFrontLeftYPosInches = 12.25;
@@ -98,7 +98,7 @@ public class Constants {
     private static final int kFrontRightDriveMotorId = 3;
     private static final int kFrontRightSteerMotorId = 2;
     private static final int kFrontRightEncoderId = 10;
-    private static final double kFrontRightEncoderOffset = 0.25927734375;
+    private static final double kFrontRightEncoderOffset = 5.559135138988495/(2.0*Math.PI) + 0.5; //0.25927734375;
 
     private static final double kFrontRightXPosInches = 12.25;
     private static final double kFrontRightYPosInches = -12.25;
@@ -107,7 +107,7 @@ public class Constants {
     private static final int kBackLeftDriveMotorId = 6;
     private static final int kBackLeftSteerMotorId = 5;
     private static final int kBackLeftEncoderId = 12;
-    private static final double kBackLeftEncoderOffset = -0.09375;
+    private static final double kBackLeftEncoderOffset = 3.827274329960346/(2.0*Math.PI); //-0.09375;
 
     private static final double kBackLeftXPosInches = -12.25;
     private static final double kBackLeftYPosInches = 12.25;
@@ -116,7 +116,7 @@ public class Constants {
     private static final int kBackRightDriveMotorId = 4;
     private static final int kBackRightSteerMotorId = 8;
     private static final int kBackRightEncoderId = 9;
-    private static final double kBackRightEncoderOffset = -0.4990234375;
+    private static final double kBackRightEncoderOffset = 1.2793342163178583/(2.0*Math.PI) + 0.25; //-0.4990234375;
 
     private static final double kBackRightXPosInches = -12.25;
     private static final double kBackRightYPosInches = -12.25;
