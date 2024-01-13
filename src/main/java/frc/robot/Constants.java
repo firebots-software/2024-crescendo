@@ -24,6 +24,8 @@ public final class Constants {
     public static final int INTAKE_MOTOR_PORT = 14;
     public static final double SHOOTER_SPEED = 0.8; 
     public static final int NOTE_DETECTOR_PORT = 7;
+    public static final int PRE_SHOOTER_PORT = 3;
+    public static final int SHOOTER_PORT = 4;
    
   }
 }
