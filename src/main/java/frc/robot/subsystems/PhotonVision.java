@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.sql.Time;
 import java.util.List;
 
@@ -22,8 +24,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class PhotonVision extends SubsystemBase {
-   private static PhotonVision pvisioninstance; 
-   PhotonCamera camera = new PhotonCamera("Cam");
+    private static PhotonVision pvisioninstance;
+    PhotonCamera camera = new PhotonCamera("FrontCam");
 
    private static double cameraHeight = 0.3;
    private static double targetHeight = 1;
@@ -41,32 +43,34 @@ public class PhotonVision extends SubsystemBase {
         pvisioninstance = new PhotonVision();
     }
 
-    return pvisioninstance;
-   }
-
-   public PhotonPipelineResult getPipeline(){
-    return camera.getLatestResult();
-   }
-
-   public boolean hasTarget(PhotonPipelineResult pipeline){
-     return pipeline.hasTargets();
-   }
-
-   public double getYaw(PhotonTrackedTarget target){
-    return target.getYaw();
+        return pvisioninstance;
     }
 
-    public double getPitch(PhotonTrackedTarget target){
+    public PhotonPipelineResult getPipeline() {
+        return camera.getLatestResult();
+    }
+
+    public boolean hasTarget(PhotonPipelineResult pipeline) {
+        return pipeline.hasTargets();
+    }
+
+    public double getYaw(PhotonTrackedTarget target) {
+        return target.getYaw();
+    }
+
+    public double getPitch(PhotonTrackedTarget target) {
         return target.getPitch();
     }
 
-    public PhotonTrackedTarget bestTarget(PhotonPipelineResult result){
+    public PhotonTrackedTarget bestTarget(PhotonPipelineResult result) {
         return result.getBestTarget();
     }
 
-    public double getDistance(){
-        PhotonTrackedTarget target = bestTarget(pipeline);
-        double distance = PhotonUtils.calculateDistanceToTargetMeters(cameraHeight, targetHeight, cameraPitch, Units.degreesToRadians(target.getPitch()));
+    public double getDistance() {
+        
+        PhotonTrackedTarget target = bestTarget(getPipeline());
+        double distance = PhotonUtils.calculateDistanceToTargetMeters(cameraHeight, targetHeight, cameraPitch,
+                Units.degreesToRadians(target.getPitch()));
         return distance;
     }
 
@@ -111,5 +115,5 @@ public class PhotonVision extends SubsystemBase {
             poselog.append(0);
         }
     }
-  
+
 }
