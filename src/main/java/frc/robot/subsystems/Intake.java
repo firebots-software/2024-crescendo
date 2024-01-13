@@ -23,6 +23,7 @@ public class Intake extends SubsystemBase {
 
     private Intake() {
         rollerMotor = new TalonFX(Constants.Intake.INTAKE_MOTOR_PORT);
+        input = new DigitalInput(Constants.Intake.NOTE_DETECTOR_PORT);
     }
 
     public static Intake getInstance() {
@@ -42,12 +43,13 @@ public class Intake extends SubsystemBase {
 
 
     public boolean notePresent() {
-        return input.get(); //> MAX_DISTANCE;// 
+        return input.get(); //true = note present
     }  
 
     @Override
     public void periodic() {
         // This method will be called once per scheduler run
+        SmartDashboard.putNumber("Note present", notePresent());
     }
 
 
