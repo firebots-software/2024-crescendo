@@ -16,7 +16,7 @@ public class Constants {
     public static final double kPhysicalMaxAngularSpeedRadiansPerSecond = 2 * 2 * Math.PI;
 
     public static final double kTeleDriveMaxPercentSpeed = 0.7;
-    public static final double kTeleDriveMinPercentSpeed = 0.25;
+    public static final double kTeleDriveMinPercentSpeed = 0.5; // 0.5
     public static final double kTeleDriveMaxAccelerationUnitsPerSecond = 3;
     public static final double kTeleDriveMaxAngularAccelerationUnitsPerSecond = 3;
     // Both sets of gains need to be tuned to your individual robot.
@@ -62,11 +62,11 @@ public class Constants {
 
 
     // These are only used for simulation
-    private static final double kSteerInertia = 0.00001;
-    private static final double kDriveInertia = 0.001;
-    // Simulated voltage necessary to overcome friction
-    private static final double kSteerFrictionVoltage = 0.25;
-    private static final double kDriveFrictionVoltage = 0.25;
+//     private static final double kSteerInertia = 0.00001;
+//     private static final double kDriveInertia = 0.001;
+//     // Simulated voltage necessary to overcome friction
+//     private static final double kSteerFrictionVoltage = 0.25;
+//     private static final double kDriveFrictionVoltage = 0.25;
 
     private static final SwerveDrivetrainConstants DrivetrainConstants = new SwerveDrivetrainConstants()
             .withPigeon2Id(kPigeonId)
@@ -82,10 +82,10 @@ public class Constants {
             .withSteerMotorClosedLoopOutput(steerClosedLoopOutput)
             .withDriveMotorClosedLoopOutput(driveClosedLoopOutput)
             .withSpeedAt12VoltsMps(kSpeedAt12VoltsMps)
-            .withSteerInertia(kSteerInertia)
-            .withDriveInertia(kDriveInertia)
-            .withSteerFrictionVoltage(kSteerFrictionVoltage)
-            .withDriveFrictionVoltage(kDriveFrictionVoltage)
+        //     .withSteerInertia(kSteerInertia) // used in simulation
+        //     .withDriveInertia(kDriveInertia) // used in simulation
+        //     .withSteerFrictionVoltage(kSteerFrictionVoltage) // used in simulation
+        //     .withDriveFrictionVoltage(kDriveFrictionVoltage) // used in simulation
             .withFeedbackSource(SteerFeedbackType.FusedCANcoder)
             .withCouplingGearRatio(kCoupleRatio)
             .withSteerMotorInverted(kSteerMotorReversed);

@@ -27,10 +27,11 @@ public class RobotContainer {
   private final CommandPS4Controller joystick = new CommandPS4Controller(3);
   private final SwerveSubsystem drivetrain = Constants.DriveTrain;
   private final SwerveJoystickCommand swerveJoystickCommand = new SwerveJoystickCommand(
-        () -> -joystick.getRawAxis(1),
-        () -> -joystick.getRawAxis(0),
-        () -> -joystick.getRawAxis(2),
-        () -> (joystick.getRawAxis(4) + 1d) / 2d,
+        () -> joystick.getRawAxis(1),
+        () -> joystick.getRawAxis(0),
+        () -> joystick.getRawAxis(2),
+        () -> (joystick.getRawAxis(3) + 1d) / 2d, // joystick L2
+        () -> (joystick.getRawAxis(4) + 1d) / 2d, // joystick R2
         drivetrain
         );
 
@@ -40,10 +41,6 @@ public class RobotContainer {
 
     // zero-heading
     joystick.R1().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
-
-    if (Utils.isSimulation()) {
-      drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90)));
-    }
   }
 
   public RobotContainer() {
