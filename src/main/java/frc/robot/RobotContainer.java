@@ -5,6 +5,7 @@
 package frc.robot;
 
 import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
@@ -31,7 +32,13 @@ public class RobotContainer {
   /* Setting up bindings for necessary control of the swerve drive platform */
   private final CommandPS4Controller joystick = new CommandPS4Controller(3); // My joystick
   private final SwerveSubsystem drivetrain = Constants.DriveTrain; // My drivetrain
-
+  private final SwerveJoystickCommand swerveJoystickCommand = new SwerveJoystickCommand(
+        () -> -joystick.getRawAxis(1),
+        () -> -joystick.getRawAxis(0),
+        () -> -joystick.getRawAxis(2),
+        () -> (joystick.getRawAxis(4) + 1d) / 2d,
+        drivetrain
+        );
   // private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
   //     .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
   //     .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric
@@ -40,13 +47,7 @@ public class RobotContainer {
   // private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
     
     private void configureBindings() {
-    drivetrain.setDefaultCommand(new SwerveJoystickCommand(
-        () -> -joystick.getRawAxis(1),
-        () -> -joystick.getRawAxis(0),
-        () -> -joystick.getRawAxis(2),
-        () -> (joystick.getRawAxis(4) + 1d) / 2d,
-        drivetrain
-        ));
+    drivetrain.setDefaultCommand(swerveJoystickCommand);
     
     // drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
     //     drivetrain.applyRequest(() -> drive.withVelocityX(-joystick.getLeftY() * MaxSpeed * 0.25) // Drive forward with
@@ -60,7 +61,7 @@ public class RobotContainer {
     //     .applyRequest(() -> point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))));
 
     // // reset the field-centric heading on left bumper press
-    // joystick.R1().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
+    joystick.R1().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
 
     if (Utils.isSimulation()) {
       drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90)));

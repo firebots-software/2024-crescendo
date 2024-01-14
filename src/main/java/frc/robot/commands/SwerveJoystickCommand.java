@@ -8,6 +8,7 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.SwerveSubsystem;
@@ -30,11 +31,14 @@ public class SwerveJoystickCommand extends Command{
         this.yLimiter = new SlewRateLimiter(Constants.kTeleDriveMaxAccelerationUnitsPerSecond);
         this.turningLimiter = new SlewRateLimiter(Constants.kTeleDriveMaxAngularAccelerationUnitsPerSecond);
         this.swerveDrivetrain=csd;
+
+        addRequirements(swerveDrivetrain);
     }
+
 
     @Override
     public void initialize() {
-
+       
     }
 
     @Override
@@ -53,9 +57,9 @@ public class SwerveJoystickCommand extends Command{
         }
 
         // 3. Apply deadband
-        xSpeed = Math.abs(xSpeed) > 0.001 ? xSpeed : 0.0;
-        ySpeed = Math.abs(ySpeed) > 0.001 ? ySpeed : 0.0;
-        turningSpeed = Math.abs(turningSpeed) > 0.001 ? turningSpeed : 0.0;
+        xSpeed = Math.abs(xSpeed) > 0.01 ? xSpeed : 0.0;
+        ySpeed = Math.abs(ySpeed) > 0.01 ? ySpeed : 0.0;
+        turningSpeed = Math.abs(turningSpeed) > 0.01 ? turningSpeed : 0.0;
 
         // 4. Make the driving smoother
         double driveSpeed = (Constants.kTeleDriveMaxPercentSpeed - Constants.kTeleDriveMinPercentSpeed)
@@ -70,13 +74,16 @@ public class SwerveJoystickCommand extends Command{
 
 
         final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-        .withDeadband(Constants.kPhysicalMaxSpeedMetersPerSecond * 0.1).withRotationalDeadband(Constants.kPhysicalMaxAngularSpeedRadiansPerSecond * 0.1) // Add a 10% deadband
+        .withDeadband(Constants.kPhysicalMaxSpeedMetersPerSecond * 0.01).withRotationalDeadband(Constants.kPhysicalMaxAngularSpeedRadiansPerSecond * 0.01) // Add a 10% deadband
         .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric
 
-        this.swerveDrivetrain.applyRequest(() -> drive.withVelocityX(-x)
+        SmartDashboard.putNumber("x_vel",drive.VelocityX);
+        SmartDashboard.putNumber("y_vel",drive.VelocityY);
+        SmartDashboard.putNumber("rotational_rate",drive.RotationalRate);
+
+        this.swerveDrivetrain.setControl(drive.withVelocityX(-x)
             .withVelocityY(-y) // Drive left with negative X (left)
             .withRotationalRate(-turn)); // Drive counterclockwise with negative X (left))
-
     }
 
     @Override
