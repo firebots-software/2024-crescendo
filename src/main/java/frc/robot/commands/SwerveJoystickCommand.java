@@ -80,10 +80,11 @@ public class SwerveJoystickCommand extends Command{
         SmartDashboard.putNumber("Drive Y Velocity",drive.VelocityY);
         SmartDashboard.putNumber("Rotational Speed",drive.RotationalRate);
 
-        this.swerveDrivetrain.setControl(drive.withVelocityX(x)
+        this.swerveDrivetrain.setControl(drive
+            .withVelocityX(x)
             .withVelocityY(y) // Drive left with negative X (left)
-            .withRotationalRate(turn)); // Drive counterclockwise with negative X (left))
-    }
+            .withRotationalRate(turn)
+        );} // Drive counterclockwise with negative X (left))
 
     @Override
     public void end(boolean interrupted) {

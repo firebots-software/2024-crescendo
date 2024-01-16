@@ -12,7 +12,7 @@ import frc.robot.subsystems.SwerveSubsystem;
 
 public class Constants {
 
-    public static final double kPhysicalMaxSpeedMetersPerSecond = 4.5106;
+    public static final double kPhysicalMaxSpeedMetersPerSecond = 4.8768;
     public static final double kPhysicalMaxAngularSpeedRadiansPerSecond = 2 * 2 * Math.PI;
 
     public static final double kTeleDriveMaxPercentSpeed = 0.7;
