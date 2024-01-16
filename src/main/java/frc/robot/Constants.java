@@ -2,10 +2,10 @@ package frc.robot;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstantsFactory;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.ClosedLoopOutputType;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants.SteerFeedbackType;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstantsFactory;
 
 import edu.wpi.first.math.util.Units;
 import frc.robot.subsystems.SwerveSubsystem;
@@ -51,7 +51,7 @@ public class Constants {
 
                 private static final double kCoupleRatio = 3.5714285714285716;
 
-                private static final double kDriveGearRatio = 6.746031746031747;
+                private static final double kDriveGearRatio = 6.746031746031747; // 6.12 for new robot: CHANGE FOR NEW ROBOT
                 private static final double kSteerGearRatio = 21.428571428571427;
                 private static final double kWheelRadiusInches = 2;
 
@@ -90,7 +90,8 @@ public class Constants {
                                 .withFeedbackSource(SteerFeedbackType.FusedCANcoder)
                                 .withCouplingGearRatio(kCoupleRatio)
                                 .withSteerMotorInverted(kSteerMotorReversed);
-
+                
+                // CHANGE FOR NEW ROBOT:
                 // Front Right
                 private static final int kFrontLeftDriveMotorId = 0;
                 private static final int kFrontLeftSteerMotorId = 7;

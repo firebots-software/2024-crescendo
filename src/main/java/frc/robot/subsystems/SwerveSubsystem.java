@@ -67,7 +67,7 @@ public class SwerveSubsystem extends SwerveDrivetrain implements Subsystem {
                 this::getCurrentRobotChassisSpeeds,
                 (speeds) -> this.setControl(autoRequest.withSpeeds(speeds)), // Consumer of ChassisSpeeds to drive the
                                                                              // robot
-                new HolonomicPathFollowerConfig(new PIDConstants(10, 0, 0),
+                new HolonomicPathFollowerConfig(new PIDConstants(10, 0, 0), // CHANGE FOR NEW ROBOT
                         new PIDConstants(10, 0, 0),
                         Constants.Swerve.kSpeedAt12VoltsMps,
                         driveBaseRadius,
