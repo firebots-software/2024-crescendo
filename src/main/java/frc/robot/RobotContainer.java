@@ -11,9 +11,12 @@ import frc.robot.commands.SwerveJoystickCommand;
 import frc.robot.subsystems.SwerveSubsystem;
 
 /**
- * This class is where the bulk of the robot should be declared. Since Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
+ * This class is where the bulk of the robot should be declared. Since
+ * Command-based is a
+ * "declarative" paradigm, very little robot logic should actually be handled in
+ * the {@link Robot}
+ * periodic methods (other than the scheduler calls). Instead, the structure of
+ * the robot (including
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
@@ -22,18 +25,16 @@ public class RobotContainer {
   private final CommandPS4Controller joystick = new CommandPS4Controller(3);
   private final SwerveSubsystem drivetrain = Constants.Swerve.DriveTrain;
   private final SwerveJoystickCommand swerveJoystickCommand = new SwerveJoystickCommand(
-        () -> joystick.getRawAxis(1),
-        () -> joystick.getRawAxis(0),
-        () -> joystick.getRawAxis(2),
-        () -> (joystick.getRawAxis(3) + 1d) / 2d, // joystick L2
-        () -> (joystick.getRawAxis(4) + 1d) / 2d, // joystick R2
-        drivetrain
-        );
-    private Command runAuto = drivetrain.getAutoPath("Tests");
+      () -> joystick.getRawAxis(1),
+      () -> joystick.getRawAxis(0),
+      () -> joystick.getRawAxis(2),
+      () -> (joystick.getRawAxis(3) + 1d) / 2d, // joystick L2
+      () -> (joystick.getRawAxis(4) + 1d) / 2d, // joystick R2
+      drivetrain);
+  private Command runAuto = drivetrain.getAutoPath("Tests");
 
-    private void configureBindings() {
+  private void configureBindings() {
     drivetrain.setDefaultCommand(swerveJoystickCommand);
-    
 
     // zero-heading
     joystick.circle().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));

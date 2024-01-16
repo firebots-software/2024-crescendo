@@ -11,16 +11,18 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.SwerveSubsystem;
 
-public class SwerveJoystickCommand extends Command{
+public class SwerveJoystickCommand extends Command {
 
-    private final Supplier<Double> xSpdFunction, ySpdFunction, turningSpdFunction,speedIncreaseControlFunction, speedDecreaseControlFunction;
+    private final Supplier<Double> xSpdFunction, ySpdFunction, turningSpdFunction, speedIncreaseControlFunction,
+            speedDecreaseControlFunction;
     private final SlewRateLimiter xLimiter, yLimiter, turningLimiter;
     private final SwerveSubsystem swerveDrivetrain;
 
     public SwerveJoystickCommand(
-        Supplier<Double> frontBackFunction, Supplier<Double> leftRightFunction, Supplier<Double> turningSpdFunction,
-        Supplier<Double> speedIncreaseControlFunction, Supplier<Double> speedDecreaseControlFunction, SwerveSubsystem csd) {
-        
+            Supplier<Double> frontBackFunction, Supplier<Double> leftRightFunction, Supplier<Double> turningSpdFunction,
+            Supplier<Double> speedIncreaseControlFunction, Supplier<Double> speedDecreaseControlFunction,
+            SwerveSubsystem csd) {
+
         this.xSpdFunction = frontBackFunction;
         this.ySpdFunction = leftRightFunction;
         this.turningSpdFunction = turningSpdFunction;
@@ -29,15 +31,14 @@ public class SwerveJoystickCommand extends Command{
         this.xLimiter = new SlewRateLimiter(Constants.Swerve.kTeleDriveMaxAccelerationUnitsPerSecond);
         this.yLimiter = new SlewRateLimiter(Constants.Swerve.kTeleDriveMaxAccelerationUnitsPerSecond);
         this.turningLimiter = new SlewRateLimiter(Constants.Swerve.kTeleDriveMaxAngularAccelerationUnitsPerSecond);
-        this.swerveDrivetrain=csd;
+        this.swerveDrivetrain = csd;
 
         addRequirements(swerveDrivetrain);
     }
 
-
     @Override
     public void initialize() {
-       
+
     }
 
     @Override
@@ -49,7 +50,7 @@ public class SwerveJoystickCommand extends Command{
 
         // 2. Normalize inputs
         double length = xSpeed * xSpeed + ySpeed * ySpeed; // acutally length squared
-        if (length > 1d) { 
+        if (length > 1d) {
             length = Math.sqrt(length);
             xSpeed /= length;
             ySpeed /= length;
@@ -62,29 +63,32 @@ public class SwerveJoystickCommand extends Command{
 
         // 4. Make the driving smoother
         double driveSpeed = (Constants.Swerve.kTeleDriveMaxPercentSpeed - Constants.Swerve.kTeleDriveMinPercentSpeed)
-        * (speedIncreaseControlFunction.get() - speedDecreaseControlFunction.get()) + Constants.Swerve.kTeleDriveMinPercentSpeed;
+                * (speedIncreaseControlFunction.get() - speedDecreaseControlFunction.get())
+                + Constants.Swerve.kTeleDriveMinPercentSpeed;
 
         xSpeed = xLimiter.calculate(xSpeed) * driveSpeed * Constants.Swerve.kPhysicalMaxSpeedMetersPerSecond;
         ySpeed = yLimiter.calculate(ySpeed) * driveSpeed * Constants.Swerve.kPhysicalMaxSpeedMetersPerSecond;
-        turningSpeed = turningLimiter.calculate(turningSpeed) * driveSpeed * Constants.Swerve.kPhysicalMaxAngularSpeedRadiansPerSecond;
+        turningSpeed = turningLimiter.calculate(turningSpeed) * driveSpeed
+                * Constants.Swerve.kPhysicalMaxAngularSpeedRadiansPerSecond;
         final double x = xSpeed;
         final double y = ySpeed;
         final double turn = turningSpeed;
 
-
         final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-        // .withDeadband(Constants.kPhysicalMaxSpeedMetersPerSecond * 0.01).withRotationalDeadband(Constants.kPhysicalMaxAngularSpeedRadiansPerSecond * 0.01) // old deadband
-        .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric
+                // .withDeadband(Constants.kPhysicalMaxSpeedMetersPerSecond *
+                // 0.01).withRotationalDeadband(Constants.kPhysicalMaxAngularSpeedRadiansPerSecond
+                // * 0.01) // old deadband
+                .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric
 
-        SmartDashboard.putNumber("Drive X Velocity",drive.VelocityX);
-        SmartDashboard.putNumber("Drive Y Velocity",drive.VelocityY);
-        SmartDashboard.putNumber("Rotational Speed",drive.RotationalRate);
+        SmartDashboard.putNumber("Drive X Velocity", drive.VelocityX);
+        SmartDashboard.putNumber("Drive Y Velocity", drive.VelocityY);
+        SmartDashboard.putNumber("Rotational Speed", drive.RotationalRate);
 
         this.swerveDrivetrain.setControl(drive
-            .withVelocityX(x)
-            .withVelocityY(y) // Drive left with negative X (left)
-            .withRotationalRate(turn)
-        );} // Drive counterclockwise with negative X (left))
+                .withVelocityX(x)
+                .withVelocityY(y) // Drive left with negative X (left)
+                .withRotationalRate(turn));
+    } // Drive counterclockwise with negative X (left))
 
     @Override
     public void end(boolean interrupted) {
