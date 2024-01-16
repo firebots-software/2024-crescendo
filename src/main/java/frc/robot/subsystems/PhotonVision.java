@@ -1,20 +1,34 @@
 package frc.robot.subsystems;
 
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.sql.Time;
 import java.util.List;
+import java.util.Optional;
 
+import javax.management.RuntimeErrorException;
+
+import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonPoseEstimator;
+import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 import org.photonvision.targeting.TargetCorner;
 
+import edu.wpi.first.apriltag.AprilTag;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.util.datalog.DoubleLogEntry;
@@ -24,8 +38,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class PhotonVision extends SubsystemBase {
-    private static PhotonVision pvisioninstance;
-    PhotonCamera camera = new PhotonCamera("FrontCam");
+   private static PhotonVision pvisioninstance; 
+   PhotonCamera camera = new PhotonCamera("FrontCam");
+   Transform3d robotToCam = new Transform3d(new Translation3d(0.5, -0.25, 0.25), new Rotation3d(0, 0, 0));
+   AprilTagFieldLayout aprilTagFieldLayout;
+   PhotonPoseEstimator photonPoseEstimator;
 
    private static double cameraHeight = 0.3;
    private static double targetHeight = 1;
@@ -38,7 +55,13 @@ public class PhotonVision extends SubsystemBase {
    private DoubleLogEntry yawlog = new DoubleLogEntry(DataLogManager.getLog(),  "/log/input/yaw");
    private DoubleLogEntry distancelog = new DoubleLogEntry(DataLogManager.getLog(),  "/log/input/distance");
    private DoubleLogEntry poselog = new DoubleLogEntry(DataLogManager.getLog(),  "/log/input/pose");
-   public static PhotonVision getIntance(){
+
+   private PhotonVision(){
+    aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
+    photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.LOWEST_AMBIGUITY, camera, robotToCam);
+   }
+
+   public static PhotonVision getInstance(){
     if (pvisioninstance == null) {
         pvisioninstance = new PhotonVision();
     }
@@ -74,6 +97,17 @@ public class PhotonVision extends SubsystemBase {
         return distance;
     }
 
+    public Pose3d getRobotPose3d(){
+        Optional<EstimatedRobotPose> result = photonPoseEstimator.update();
+        if(result.isPresent()){
+            return result.get().estimatedPose;
+        }
+        else{
+            return new Pose3d(0,0,0, new Rotation3d(0.0, 0.0, 0.0));
+        }
+        
+    }
+
     public Pose2d getRobotPose2d(){
         // This tries to use PhotonUtils.estimateFieldToRobot() to get the robot's Pose2d.
         // I followed the PhotonVision documentation:
@@ -104,15 +138,23 @@ public class PhotonVision extends SubsystemBase {
     
     public void periodic(){
         try{
-            pitchLog.append(getPitch(target));
-            yawlog.append(getYaw(target));
-            distancelog.append(getDistance());
-            poselog.append(getRobotPose2d().getX());
+
+            SmartDashboard.putNumber("PoseX", getRobotPose3d().getX());
+            SmartDashboard.putNumber("PoseY", getRobotPose3d().getY());
+            SmartDashboard.putNumber("PoseZ", getRobotPose3d().getZ());
+            SmartDashboard.putNumber("Rot Z", getRobotPose3d().getRotation().getAngle());
+            
         }catch(Exception e) {
-            pitchLog.append(0);
-            yawlog.append(0);
-            distancelog.append(0);
-            poselog.append(0);
+
+            StringWriter sw = new StringWriter();
+            PrintWriter pw = new PrintWriter(sw);
+            e.printStackTrace(pw);
+            String sStackTrace = sw.toString(); // stack trace as a string
+            SmartDashboard.putString("Exception yar", sStackTrace);
+            SmartDashboard.putNumber("PoseX", 0);
+            SmartDashboard.putNumber("PoseY", 0);
+            SmartDashboard.putNumber("PoseZ", 0);
+            SmartDashboard.putNumber("Rot Z", 0);
         }
     }
 
