@@ -4,11 +4,6 @@
 
 package frc.robot;
 
-import com.ctre.phoenix6.Utils;
-
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
@@ -34,6 +29,7 @@ public class RobotContainer {
         () -> (joystick.getRawAxis(4) + 1d) / 2d, // joystick R2
         drivetrain
         );
+    private Command runAuto = drivetrain.getAutoPath("Tests");
 
     private void configureBindings() {
     drivetrain.setDefaultCommand(swerveJoystickCommand);
@@ -44,10 +40,15 @@ public class RobotContainer {
   }
 
   public RobotContainer() {
+    // Vibrate joysticks when someone interesting happens!
+    // joystick.getHID().setRumble(GenericHID.RumbleType.kRightRumble, 1);
+    // joystick.getHID().setRumble(GenericHID.RumbleType.kLeftRumble, 1);
+
     configureBindings();
   }
 
   public Command getAutonomousCommand() {
     return Commands.print("No autonomous command configured");
+    // return runAuto;
   }
 }
