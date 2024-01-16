@@ -11,6 +11,7 @@ import edu.wpi.first.math.util.Units;
 import frc.robot.subsystems.SwerveSubsystem;
 
 public class Constants {
+public static class Swerve{
 
     public static final double kPhysicalMaxSpeedMetersPerSecond = 4.8768;
     public static final double kPhysicalMaxAngularSpeedRadiansPerSecond = 2 * 2 * Math.PI;
@@ -141,3 +142,5 @@ public class Constants {
     public static final SwerveSubsystem DriveTrain = new SwerveSubsystem(DrivetrainConstants, FrontLeft,
             FrontRight, BackLeft, BackRight);
     }
+
+}

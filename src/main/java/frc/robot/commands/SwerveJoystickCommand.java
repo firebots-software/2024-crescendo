@@ -26,9 +26,9 @@ public class SwerveJoystickCommand extends Command{
         this.turningSpdFunction = turningSpdFunction;
         this.speedIncreaseControlFunction = speedIncreaseControlFunction;
         this.speedDecreaseControlFunction = speedDecreaseControlFunction;
-        this.xLimiter = new SlewRateLimiter(Constants.kTeleDriveMaxAccelerationUnitsPerSecond);
-        this.yLimiter = new SlewRateLimiter(Constants.kTeleDriveMaxAccelerationUnitsPerSecond);
-        this.turningLimiter = new SlewRateLimiter(Constants.kTeleDriveMaxAngularAccelerationUnitsPerSecond);
+        this.xLimiter = new SlewRateLimiter(Constants.Swerve.kTeleDriveMaxAccelerationUnitsPerSecond);
+        this.yLimiter = new SlewRateLimiter(Constants.Swerve.kTeleDriveMaxAccelerationUnitsPerSecond);
+        this.turningLimiter = new SlewRateLimiter(Constants.Swerve.kTeleDriveMaxAngularAccelerationUnitsPerSecond);
         this.swerveDrivetrain=csd;
 
         addRequirements(swerveDrivetrain);
@@ -61,12 +61,12 @@ public class SwerveJoystickCommand extends Command{
         turningSpeed = Math.abs(turningSpeed) > 0.01 ? turningSpeed : 0.0;
 
         // 4. Make the driving smoother
-        double driveSpeed = (Constants.kTeleDriveMaxPercentSpeed - Constants.kTeleDriveMinPercentSpeed)
-        * (speedIncreaseControlFunction.get() - speedDecreaseControlFunction.get()) + Constants.kTeleDriveMinPercentSpeed;
+        double driveSpeed = (Constants.Swerve.kTeleDriveMaxPercentSpeed - Constants.Swerve.kTeleDriveMinPercentSpeed)
+        * (speedIncreaseControlFunction.get() - speedDecreaseControlFunction.get()) + Constants.Swerve.kTeleDriveMinPercentSpeed;
 
-        xSpeed = xLimiter.calculate(xSpeed) * driveSpeed * Constants.kPhysicalMaxSpeedMetersPerSecond;
-        ySpeed = yLimiter.calculate(ySpeed) * driveSpeed * Constants.kPhysicalMaxSpeedMetersPerSecond;
-        turningSpeed = turningLimiter.calculate(turningSpeed) * driveSpeed * Constants.kPhysicalMaxAngularSpeedRadiansPerSecond;
+        xSpeed = xLimiter.calculate(xSpeed) * driveSpeed * Constants.Swerve.kPhysicalMaxSpeedMetersPerSecond;
+        ySpeed = yLimiter.calculate(ySpeed) * driveSpeed * Constants.Swerve.kPhysicalMaxSpeedMetersPerSecond;
+        turningSpeed = turningLimiter.calculate(turningSpeed) * driveSpeed * Constants.Swerve.kPhysicalMaxAngularSpeedRadiansPerSecond;
         final double x = xSpeed;
         final double y = ySpeed;
         final double turn = turningSpeed;

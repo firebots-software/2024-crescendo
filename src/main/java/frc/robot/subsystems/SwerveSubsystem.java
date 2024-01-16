@@ -28,11 +28,11 @@ public class SwerveSubsystem extends SwerveDrivetrain implements Subsystem {
     public SwerveSubsystem(SwerveDrivetrainConstants driveTrainConstants, double OdometryUpdateFrequency, SwerveModuleConstants... modules) {
         super(driveTrainConstants, OdometryUpdateFrequency, modules);
         CurrentLimitsConfigs driveCurrentLimits = new CurrentLimitsConfigs()
-                .withSupplyCurrentLimit(Constants.kDriveSupplyCurrentLimit)
+                .withSupplyCurrentLimit(Constants.Swerve.kDriveSupplyCurrentLimit)
                 .withSupplyCurrentLimitEnable(true);
 
         CurrentLimitsConfigs turningCurrentLimits = new CurrentLimitsConfigs()
-                .withSupplyCurrentLimit(Constants.kTurningSupplyCurrentLimit)
+                .withSupplyCurrentLimit(Constants.Swerve.kTurningSupplyCurrentLimit)
                 .withSupplyCurrentLimitEnable(true);
 
         for (SwerveModule module : Modules) {
@@ -65,7 +65,7 @@ public class SwerveSubsystem extends SwerveDrivetrain implements Subsystem {
             (speeds)->this.setControl(autoRequest.withSpeeds(speeds)), // Consumer of ChassisSpeeds to drive the robot
             new HolonomicPathFollowerConfig(new PIDConstants(10, 0, 0),
                                             new PIDConstants(10, 0, 0),
-                                            Constants.kSpeedAt12VoltsMps,
+                                            Constants.Swerve.kSpeedAt12VoltsMps,
                                             driveBaseRadius,
                                             new ReplanningConfig()),
             ()->false, // Change this if the path needs to be flipped on red vs blue
