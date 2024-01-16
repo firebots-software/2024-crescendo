@@ -130,18 +130,22 @@ public class PhotonVision extends SubsystemBase {
             yawlog.append(getYaw(target));
             distancelog.append(getDistance());
             poselog.append(getRobotPose2d().getX());
-            Pose3d p = getRobotPose3d();
-            Rotation3d r = p.getRotation();
-            SmartDashboard.putNumber("PoseX", p.getX());
-            SmartDashboard.putNumber("PoseY", p.getY());
-            SmartDashboard.putNumber("PoseZ", p.getZ());
-            SmartDashboard.putNumber("Rot Z", r.getZ());
+   //         Pose3d p = getRobotPose3d();
+            // Rotation3d r = p.getRotation();
+            SmartDashboard.putNumber("PoseX", getRobotPose3d().getX());
+            SmartDashboard.putNumber("PoseY", getRobotPose3d().getY());
+            SmartDashboard.putNumber("PoseZ", getRobotPose3d().getZ());
+            SmartDashboard.putNumber("Rot Z", getRobotPose3d().getZ());
             
         }catch(Exception e) {
             pitchLog.append(0);
             yawlog.append(0);
             distancelog.append(0);
             poselog.append(0);
+            SmartDashboard.putNumber("PoseX", getRobotPose3d().getX());
+            SmartDashboard.putNumber("PoseY", getRobotPose3d().getY());
+            SmartDashboard.putNumber("PoseZ", getRobotPose3d().getZ());
+            SmartDashboard.putNumber("Rot Z", getRobotPose3d().getZ());
         }
     }
   
