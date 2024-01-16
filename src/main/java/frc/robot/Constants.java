@@ -42,7 +42,8 @@ public class Constants {
     // The stator current at which the wheels start to slip;
     // This needs to be tuned to your individual robot
     private static final double kSlipCurrentA = 100.0;
-
+    public static final double kDriveSupplyCurrentLimit = 60.0;
+    public static final double kTurningSupplyCurrentLimit = 25.0;
     // Theoretical free speed (m/s) at 12v applied output;
     // This needs to be tuned to your individual robot
     public static final double kSpeedAt12VoltsMps = 4.73;

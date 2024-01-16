@@ -36,7 +36,7 @@ public class RobotContainer {
     
 
     // zero-heading
-    joystick.R1().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
+    joystick.circle().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
   }
 
   public RobotContainer() {

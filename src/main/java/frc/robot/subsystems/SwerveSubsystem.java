@@ -2,8 +2,10 @@ package frc.robot.subsystems;
 
 import java.util.function.Supplier;
 
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModule;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -25,11 +27,23 @@ public class SwerveSubsystem extends SwerveDrivetrain implements Subsystem {
 
     public SwerveSubsystem(SwerveDrivetrainConstants driveTrainConstants, double OdometryUpdateFrequency, SwerveModuleConstants... modules) {
         super(driveTrainConstants, OdometryUpdateFrequency, modules);
+        CurrentLimitsConfigs driveCurrentLimits = new CurrentLimitsConfigs()
+                .withSupplyCurrentLimit(Constants.kDriveSupplyCurrentLimit)
+                .withSupplyCurrentLimitEnable(true);
+
+        CurrentLimitsConfigs turningCurrentLimits = new CurrentLimitsConfigs()
+                .withSupplyCurrentLimit(Constants.kTurningSupplyCurrentLimit)
+                .withSupplyCurrentLimitEnable(true);
+
+        for (SwerveModule module : Modules) {
+            module.getDriveMotor().getConfigurator().apply(driveCurrentLimits);
+            module.getSteerMotor().getConfigurator().apply(turningCurrentLimits);
+        }
         configurePathPlanner();
+
     }
     public SwerveSubsystem(SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
-        super(driveTrainConstants, modules);
-        configurePathPlanner();
+        this(driveTrainConstants, 0, modules);
     }
 
     public Command applyRequest(Supplier<SwerveRequest> requestSupplier) {
