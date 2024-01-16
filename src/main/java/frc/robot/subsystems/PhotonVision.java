@@ -2,17 +2,27 @@ package frc.robot.subsystems;
 
 import java.sql.Time;
 import java.util.List;
+import java.util.Optional;
 
+import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonPoseEstimator;
+import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 import org.photonvision.targeting.TargetCorner;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.util.datalog.DoubleLogEntry;
@@ -24,6 +34,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class PhotonVision extends SubsystemBase {
    private static PhotonVision pvisioninstance; 
    PhotonCamera camera = new PhotonCamera("Cam");
+   Transform3d robotToCam = new Transform3d(new Translation3d(0.5, -0.25, 0.25), new Rotation3d(0, 0, 0));
+   AprilTagFieldLayout aprilTagFieldLayout;
+   PhotonPoseEstimator photonPoseEstimator;
 
    private static double cameraHeight = 0.3;
    private static double targetHeight = 1;
@@ -36,6 +49,14 @@ public class PhotonVision extends SubsystemBase {
    private DoubleLogEntry yawlog = new DoubleLogEntry(DataLogManager.getLog(),  "/log/input/yaw");
    private DoubleLogEntry distancelog = new DoubleLogEntry(DataLogManager.getLog(),  "/log/input/distance");
    private DoubleLogEntry poselog = new DoubleLogEntry(DataLogManager.getLog(),  "/log/input/pose");
+
+   private PhotonVision(){
+    try{
+        aprilTagFieldLayout = AprilTagFieldLayout.loadFromResource("src/main/resources/AprilTagMaps/k2023ChargedUp.json");
+    }catch (Exception e){}
+    photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.LOWEST_AMBIGUITY, camera, robotToCam);
+   }
+
    public static PhotonVision getIntance(){
     if (pvisioninstance == null) {
         pvisioninstance = new PhotonVision();
@@ -68,6 +89,11 @@ public class PhotonVision extends SubsystemBase {
         PhotonTrackedTarget target = bestTarget(pipeline);
         double distance = PhotonUtils.calculateDistanceToTargetMeters(cameraHeight, targetHeight, cameraPitch, Units.degreesToRadians(target.getPitch()));
         return distance;
+    }
+
+    public Pose3d getRobotPose3d(){
+        Optional<EstimatedRobotPose> result = photonPoseEstimator.update();
+        return result.get().estimatedPose;
     }
 
     public Pose2d getRobotPose2d(){
@@ -104,6 +130,13 @@ public class PhotonVision extends SubsystemBase {
             yawlog.append(getYaw(target));
             distancelog.append(getDistance());
             poselog.append(getRobotPose2d().getX());
+            Pose3d p = getRobotPose3d();
+            Rotation3d r = p.getRotation();
+            SmartDashboard.putNumber("PoseX", p.getX());
+            SmartDashboard.putNumber("PoseY", p.getY());
+            SmartDashboard.putNumber("PoseZ", p.getZ());
+            SmartDashboard.putNumber("Rot Z", r.getZ());
+            
         }catch(Exception e) {
             pitchLog.append(0);
             yawlog.append(0);
