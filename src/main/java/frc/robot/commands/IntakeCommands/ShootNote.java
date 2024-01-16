@@ -3,43 +3,46 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.commands.IntakeCommands;
+
 import frc.robot.subsystems.Peter;
 import edu.wpi.first.wpilibj2.command.Command;
 
+/** An example command that uses an example subsystem. */
+public class ShootNote extends Command {
+  private Peter shooter; 
 
-public class IntakeWithSensor extends Command {
-private Peter intake; 
-  public IntakeWithSensor(Peter intake) {
-    this.intake = intake; 
-    addRequirements(intake);
+  /**
+   * Creates a new ExampleCommand.
+   *
+   * @param subsystem The subsystem used by this command.
+   */
+  public ShootNote(Peter shooter) {
+    this.shooter = shooter;
+    // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(shooter);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    intake.runIntake(0.5);
-    if(intake.notePresent()) {
-            intake.runIntake(0);
-            intake.runPreShooter(0.5); // run 3 inches more
-        }
-
+    shooter.runPreShooter(1.0);
+    shooter.runShooter(1.0);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-      intake.runIntake(0);
-
-}
+    shooter.runPreShooter(0);
+    shooter.runShooter(0);
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return intake.notePresent();
-   }
+    return false; //wait for x seconds
+  }
 }
