@@ -31,13 +31,17 @@ public class RobotContainer {
       () -> (joystick.getRawAxis(3) + 1d) / 2d, // joystick L2
       () -> (joystick.getRawAxis(4) + 1d) / 2d, // joystick R2
       drivetrain);
-  private Command runAuto = drivetrain.getAutoPath("Tests");
+    private final Telemetry logger = new Telemetry();
+
+  // private Command runAuto = drivetrain.getAutoPath("Tests");
 
   private void configureBindings() {
     drivetrain.setDefaultCommand(swerveJoystickCommand);
 
     // zero-heading
     joystick.circle().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
+    drivetrain.registerTelemetry(logger::telemeterize);
+
   }
 
   public RobotContainer() {
