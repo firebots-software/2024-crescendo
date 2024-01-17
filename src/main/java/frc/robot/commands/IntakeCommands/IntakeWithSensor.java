@@ -17,6 +17,7 @@ private Peter intake;
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -25,8 +26,11 @@ private Peter intake;
     intake.runIntake(0.5);
     if(intake.notePresent()) {
             intake.runIntake(0);
-            intake.runPreShooter(0.5); // run 3 inches more
+            while (intake.getPreShooterPosition() < 1024) { //whatever is 3 inches pls be right
+              intake.runPreShooter(0.5);  
+            }  
         }
+        intake.runPreShooter(0);
 
   }
 
