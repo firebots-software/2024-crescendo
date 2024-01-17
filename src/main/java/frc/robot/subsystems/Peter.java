@@ -11,14 +11,21 @@ import com.ctre.phoenix6.controls.VelocityDutyCycle;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.ControlModeValue;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycle;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
+import com.ctre.phoenix6.sensors.CANCoder;
+import com.ctre.phoenix6.sensors.CANCoderConfiguration;
 
 public class Peter extends SubsystemBase {
+    private final double absoluteEncoderOffsetRad;
+    private final double absoluteDriveEncoderOffset;
+    private final PIDController turningPidController;
+
 
    // private static final int MAX_DISTANCE = 4048;//
     private static Peter instance;
@@ -34,8 +41,7 @@ public class Peter extends SubsystemBase {
     public TalonFX rollerMotor, preShooterMotor, shooterMotor;
     private StatusSignal <Double> position;
 
-
-    private Peter() {
+    public Peter() {
         rollerMotor = new TalonFX(Constants.Intake.INTAKE_MOTOR_PORT);
         input = new DigitalInput(Constants.Intake.NOTE_DETECTOR_PORT);
         preShooterMotor = new TalonFX(Constants.Intake.PRE_SHOOTER_PORT);
@@ -65,6 +71,10 @@ public class Peter extends SubsystemBase {
         
     } 
 
+
+    public void runShooter(double speed){
+        shooterMotor.setControl(ShooterMotorRequest.withOutput(speed));
+    }
 
     public void rotateArmToRestPosition() {
 
