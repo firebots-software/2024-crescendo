@@ -18,6 +18,21 @@ import com.ctre.phoenix6.hardware.TalonFX;
 public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
+    public static final int PS4_CONTROLLER_PORT_1 = 3;
+    public static final int SQUARE_BUTTON_PORT = 1;
+    public static final int X_BUTTON_PORT = 2;
+    public static final int CIRCLE_BUTTON_PORT = 3;
+    public static final int TRIANGLE_BUTTON_PORT = 4;
+    public static final int L1_BUTTON_PORT = 5;
+    public static final int R1_BUTTON_PORT = 6;
+    public static final int L2_BUTTON_PORT = 7;
+    public static final int R2_BUTTON_PORT = 8;
+    public static final int PS_SHARE_BUTTON_PORT = 9;
+    public static final int OPTIONS_BUTTON_PORT = 10;
+    public static final int L3_BUTTON_PORT = 11;
+    public static final int R3_BUTTON_PORT = 12;
+    public static final int PS_BUTTON_PORT = 13;
+    public static final int BIG_BUTTON_PORT = 14;
   }
   public static final class Intake 
   {
@@ -26,6 +41,5 @@ public final class Constants {
     public static final int NOTE_DETECTOR_PORT = 7;
     public static final int PRE_SHOOTER_PORT = 3;
     public static final int SHOOTER_PORT = 4;
-   
   }
 }
