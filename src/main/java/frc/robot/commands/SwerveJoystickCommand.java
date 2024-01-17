@@ -57,9 +57,9 @@ public class SwerveJoystickCommand extends Command {
         }
 
         // 3. Apply deadband
-        xSpeed = Math.abs(xSpeed) > 0.01 ? xSpeed : 0.0;
-        ySpeed = Math.abs(ySpeed) > 0.01 ? ySpeed : 0.0;
-        turningSpeed = Math.abs(turningSpeed) > 0.01 ? turningSpeed : 0.0;
+        xSpeed = Math.abs(xSpeed) > 0.05 ? xSpeed : 0.0;
+        ySpeed = Math.abs(ySpeed) > 0.05 ? ySpeed : 0.0;
+        turningSpeed = Math.abs(turningSpeed) > 0.03 ? turningSpeed : 0.0;
 
         // 4. Make the driving smoother
         double driveSpeed = (Constants.Swerve.kTeleDriveMaxPercentSpeed - Constants.Swerve.kTeleDriveMinPercentSpeed)

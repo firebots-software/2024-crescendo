@@ -6,6 +6,9 @@ package frc.robot;
 
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
@@ -33,15 +36,20 @@ public class RobotContainer {
       () -> (joystick.getRawAxis(3) + 1d) / 2d, // joystick L2
       () -> (joystick.getRawAxis(4) + 1d) / 2d, // joystick R2
       drivetrain);
-    private final Telemetry logger = new Telemetry();
+
+  public final Telemetry logger = new Telemetry();
 
   // private Command runAuto = drivetrain.getAutoPath("Tests");
+
+  public void doTelemetry () {
+    logger.telemeterize(drivetrain.getState());
+  }
 
   private void configureBindings() {
     drivetrain.setDefaultCommand(swerveJoystickCommand);
 
     // zero-heading
-    joystick.circle().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
+    joystick.circle().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative(new Pose2d(new Translation2d(0, 0), new Rotation2d(0)))));
     drivetrain.registerTelemetry(logger::telemeterize);
 
   }
