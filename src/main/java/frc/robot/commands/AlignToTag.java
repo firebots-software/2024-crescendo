@@ -5,9 +5,11 @@ import frc.robot.subsystems.PhotonVision;
 
 public class AlignToTag extends Command {
     private PhotonVision photonVision;
+    private int tagID;
 
-    public AlignToTag(PhotonVision photonVision) {
+    public AlignToTag(PhotonVision photonVision, int tagID) {
         this.photonVision = photonVision;
+        this.tagID = tagID;
         addRequirements(photonVision);
     }
 

@@ -44,7 +44,7 @@ public class PhotonVision extends SubsystemBase {
    
    private AprilTagFieldLayout aprilTagFieldLayout;
    private PhotonPoseEstimator photonPoseEstimator;
-   private PhotonPipelineResult result;
+   private PhotonPipelineResult pResult;
    private PhotonTrackedTarget target;
 
    private static double cameraHeight = 0.3;
@@ -60,13 +60,25 @@ public class PhotonVision extends SubsystemBase {
 //    private DoubleLogEntry distancelog = new DoubleLogEntry(DataLogManager.getLog(),  "/log/input/distance");
 //    private DoubleLogEntry poselog = new DoubleLogEntry(DataLogManager.getLog(),  "/log/input/pose");
 
+    /**
+     * PhotonVision constructor (private).
+     * @apiNote Initializes AprilTagFieldLayout
+     * @apiNote Initializes PhotonPoseEstimator
+     * @apiNote Runs camera.getLatestResult()
+     * @apiNote Updates target (pResult.getBestTarget())
+     */
    private PhotonVision(){
     aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
     photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.LOWEST_AMBIGUITY, camera, robotToCam);
-    result = camera.getLatestResult();
-    target = result.getBestTarget();
+    pResult = camera.getLatestResult();
+    target = pResult.getBestTarget();
    }
 
+   /**
+    * Checks if there's already an instance of this subsystem. If there is, returns the instance.
+    * If not, runs the constructor and stores in "instance".
+    * @return The singleton instance of this subsystem (PhotonVision)
+    */
    public static PhotonVision getInstance(){
         if (instance == null) {
             instance = new PhotonVision();
@@ -74,22 +86,77 @@ public class PhotonVision extends SubsystemBase {
         return instance;
     }
 
+    /**
+     * Updates the camera pipeline and the best target variable. Target not guaranteed to exist.
+     */
     public void update(){
-        result = camera.getLatestResult();
-        target = result.getBestTarget();
+        pResult = camera.getLatestResult();
+        target = pResult.getBestTarget();
     }
 
+    /**
+     * Checks to see if the target from the latest result exists.
+     * @return Whether or not a target exists
+     */
     public boolean foundTarget(){
-        boolean hasTargets = result.hasTargets();
+        boolean hasTargets = pResult.hasTargets();
         //if(!hasTargets) System.out.println("ERROR: No Targets Found");
         return hasTargets;
     }
 
+    /**
+     * Checks to see if the latest detected target matches IDs with the given tag ID.
+     * @param tagID - The tagID to compare with
+     * @return Whether or not the latest target ID matches the given tagID.
+     */
+    public boolean matchesTagID(int tagID){
+        int current = getTagID();
+        return current == tagID;
+    }
+
+    /**
+     * Updates target. Gets the TagID of the latest detected target. Returns 0 if no targets found.
+     * @return The tagID of the latest detected target (or 0 if no targets found).
+     */
     public int getTagID(){
         update();
         if(!foundTarget()) return 0;
 
         return target.getFiducialId();
+    }
+
+    /**
+     * Gets the Pose3D of the given AprilTag on the field using the 2024 AprilTagFieldLayout.
+     * If tagID is invalid, returns null.
+     * @param tagID
+     * @return The Pose3D of the AprilTag with id tagID (or null if tagID invalid).
+     */
+    public Pose3d getTagPose3d(int tagID){
+        Optional<Pose3d> result = aprilTagFieldLayout.getTagPose(tagID);
+        if(result.isEmpty()) return null;
+        return result.get();
+    }
+
+    /**
+     * Updates target. Gets the Transform3D of the Camera in relation to the Target (AprilTag). If no target found, returns null.
+     * @return The Transform3D of the Camera in relation to the latest Target (or null if target not found).
+     */
+    public Transform3d getBestCamToTarget(){
+        update();
+        if(!foundTarget()) return null;
+
+        return target.getBestCameraToTarget();
+    }
+
+    /**
+     * Updates target. Gets the Yaw of the latest target (AprilTag). If no target found, returns 0.
+     * @return
+     */
+    public double getYaw(){
+        update();
+        if(!foundTarget()) return 0;
+
+        return target.getYaw();
     }
 
     public double getDistance() {
