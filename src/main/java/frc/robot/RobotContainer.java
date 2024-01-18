@@ -5,6 +5,7 @@
 package frc.robot;
 
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -63,6 +64,7 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
+    // PathPlannerPath testPath = PathPlannerPath.fromPathFile("New Path");
     return new PathPlannerAuto("Test Auton");
     // return runAuto;
   }

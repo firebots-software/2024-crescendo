@@ -15,6 +15,9 @@ import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Constants;
@@ -50,6 +53,17 @@ public class SwerveSubsystem extends SwerveDrivetrain implements Subsystem {
     }
 
     public Command applyRequest(Supplier<SwerveRequest> requestSupplier) {
+//         public static SwerveModuleState optimize(
+//       SwerveModuleState desiredState, Rotation2d currentAngle) {
+//     var delta = desiredState.angle.minus(currentAngle);
+//     if (Math.abs(delta.getDegrees()) > 90.0) {
+//       return new SwerveModuleState(
+//           -desiredState.speedMetersPerSecond,
+//           desiredState.angle.rotateBy(Rotation2d.fromDegrees(180.0)));
+//     } else {
+//       return new SwerveModuleState(desiredState.speedMetersPerSecond, desiredState.angle);
+//     }
+//   }
         return run(() -> this.setControl(requestSupplier.get()));
     }
 
@@ -67,8 +81,8 @@ public class SwerveSubsystem extends SwerveDrivetrain implements Subsystem {
                 this::getCurrentRobotChassisSpeeds,
                 (speeds) -> this.setControl(autoRequest.withSpeeds(speeds)), // Consumer of ChassisSpeeds to drive the
                                                                              // robot
-                new HolonomicPathFollowerConfig(new PIDConstants(10, 0, 0), // CHANGE FOR NEW ROBOT
-                        new PIDConstants(10, 0, 0),
+                new HolonomicPathFollowerConfig(new PIDConstants(1, 0, 0), // CHANGE FOR NEW ROBOT
+                        new PIDConstants(0.4, 0, 0),
                         Constants.Swerve.kSpeedAt12VoltsMps,
                         driveBaseRadius,
                         new ReplanningConfig()),
@@ -82,5 +96,12 @@ public class SwerveSubsystem extends SwerveDrivetrain implements Subsystem {
 
     public ChassisSpeeds getCurrentRobotChassisSpeeds() {
         return m_kinematics.toChassisSpeeds(getState().ModuleStates);
+    }
+
+    @Override
+    public void periodic() {
+        SmartDashboard.putNumber("ChassisSpeedsX", getCurrentRobotChassisSpeeds().vxMetersPerSecond);
+        SmartDashboard.putNumber("ChassisSpeedsY", getCurrentRobotChassisSpeeds().vyMetersPerSecond);
+        SmartDashboard.putNumber("ChassisSpeedsRadians", getCurrentRobotChassisSpeeds().omegaRadiansPerSecond);
     }
 }
