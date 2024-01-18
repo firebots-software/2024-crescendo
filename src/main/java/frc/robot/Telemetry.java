@@ -87,7 +87,7 @@ public class Telemetry {
         fieldPub.set(new double[] {
             pose.getX(),
             pose.getY(),
-            pose.getRotation().getDegrees()
+            pose.getRotation().getRotations()
         });
 
         /* Telemeterize the robot's general speeds */
@@ -124,6 +124,6 @@ public class Telemetry {
         // SmartDashboard.putNumberArray("odometry", odometryArray);
         SmartDashboard.putNumber("posegetx", pose.getX());
         SmartDashboard.putNumber("posegety", pose.getY());
-        SmartDashboard.putNumber("posegetrotation", pose.getRotation().getDegrees());
+        SmartDashboard.putNumber("posegetrotation", pose.getRotation().getRotations());
     }
 }
