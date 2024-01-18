@@ -4,12 +4,12 @@
 
 package frc.robot;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.subsystems.Peter;
+import frc.robot.subsystems.PeterSubsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.IntakeCommands.ArmRotate;
-import frc.robot.commands.IntakeCommands.RunShooter;
+import frc.robot.commands.IntakeCommands.ArmRotateCommand;
+import frc.robot.commands.IntakeCommands.RunShooterCommand;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -19,7 +19,7 @@ import frc.robot.commands.IntakeCommands.RunShooter;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final Peter peter = new Peter();
+  private final PeterSubsystem peter = new PeterSubsystem();
   private final CommandPS4Controller driverController;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -39,7 +39,7 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    driverController.square().whileTrue(new RunShooter(peter));
-    driverController.circle().whileTrue(new ArmRotate(peter));
+    driverController.square().whileTrue(new RunShooterCommand(peter));
+    driverController.circle().whileTrue(new ArmRotateCommand(peter));
   }
 }

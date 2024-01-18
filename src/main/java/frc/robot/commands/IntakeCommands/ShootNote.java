@@ -4,19 +4,19 @@
 
 package frc.robot.commands.IntakeCommands;
 
-import frc.robot.subsystems.Peter;
+import frc.robot.subsystems.PeterSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 
 /** An example command that uses an example subsystem. */
 public class ShootNote extends Command {
-  private Peter shooter; 
+  private PeterSubsystem shooter; 
 
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public ShootNote(Peter shooter) {
+  public ShootNote(PeterSubsystem shooter) {
     this.shooter = shooter;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(shooter);

@@ -1,14 +1,14 @@
 package frc.robot.commands.IntakeCommands;
-import frc.robot.subsystems.Peter;
+import frc.robot.subsystems.PeterSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 
 
 /** An example command that uses an example subsystem. */
-public class RunShooter extends Command {
+public class RunShooterCommand extends Command {
 private double shooterSpeed; 
-private Peter shooter; 
-  public RunShooter(Peter shooter) {
+private PeterSubsystem shooter; 
+  public RunShooterCommand(PeterSubsystem shooter) {
     this.shooter = shooter; 
     this.shooterSpeed = Constants.Intake.SHOOTER_SPEED;
     addRequirements(shooter);
