@@ -19,8 +19,10 @@ import frc.robot.commands.IntakeCommands.RunShooterCommand;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final PeterSubsystem peter = new PeterSubsystem();
   private final CommandPS4Controller driverController;
+
+  private final PeterSubsystem peter = PeterSubsystem.getInstance();
+
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
