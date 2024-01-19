@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathPlannerPath;
 
@@ -67,7 +68,10 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     // PathPlannerPath testPath = PathPlannerPath.fromPathFile("New Path");
-    return new PathPlannerAuto("Test Auton");
+    PathPlannerPath path = PathPlannerPath.fromPathFile("Example Path");
+    return AutoBuilder.followPath(path);
+
+    // return new PathPlannerAuto("Test Auton");
     // return runAuto;
   }
 }
