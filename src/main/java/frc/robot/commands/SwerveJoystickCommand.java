@@ -3,6 +3,7 @@ package frc.robot.commands;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.SteerRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -10,6 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.util.SwerveRequestFieldCentric;
 
 public class SwerveJoystickCommand extends Command {
 
@@ -74,7 +76,7 @@ public class SwerveJoystickCommand extends Command {
         final double y = ySpeed;
         final double turn = turningSpeed;
 
-        final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
+        final SwerveRequest.FieldCentric drive = new SwerveRequestFieldCentric()
                 // .withDeadband(Constants.kPhysicalMaxSpeedMetersPerSecond *
                 // 0.01).withRotationalDeadband(Constants.kPhysicalMaxAngularSpeedRadiansPerSecond
                 // * 0.01) // old deadband
@@ -87,7 +89,10 @@ public class SwerveJoystickCommand extends Command {
         this.swerveDrivetrain.setControl(drive
                 .withVelocityX(x)
                 .withVelocityY(y) // Drive left with negative X (left)
-                .withRotationalRate(turn));
+                .withRotationalRate(turn)
+                // .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
+                // .withSteerRequestType(SteerRequestType.MotionMagicExpo)
+                );
     } // Drive counterclockwise with negative X (left))
 
     @Override
