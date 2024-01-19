@@ -10,6 +10,7 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
@@ -28,6 +29,7 @@ import frc.robot.subsystems.SwerveSubsystem;
 public class RobotContainer {
 
   /* Setting up bindings for necessary control of the swerve drive platform */
+
   private final CommandPS4Controller joystick = new CommandPS4Controller(3);
   private final SwerveSubsystem drivetrain = Constants.Swerve.DriveTrain;
   private final SwerveJoystickCommand swerveJoystickCommand = new SwerveJoystickCommand(
