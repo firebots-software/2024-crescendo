@@ -93,7 +93,7 @@ public class SwerveJoystickCommand extends Command {
     @Override
     public void end(boolean interrupted) {
         final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
-        this.swerveDrivetrain.applyRequest(() -> brake);
+        this.swerveDrivetrain.setControl(brake);
     }
 
     @Override

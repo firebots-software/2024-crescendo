@@ -40,6 +40,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class PhotonVision extends SubsystemBase {
    private static PhotonVision instance; 
 
+   // Note: To connect to PhotonVision dashboard, type in http://photonvision.local:5800/ in browser
    private PhotonCamera camera = new PhotonCamera("FrontCam");
    
    private AprilTagFieldLayout aprilTagFieldLayout;
@@ -95,10 +96,28 @@ public class PhotonVision extends SubsystemBase {
     }
 
     /**
-     * Checks to see if the target from the latest result exists.
-     * @return Whether or not a target exists
+     * (NEED TESTING) Updates the camera pipeline and the target variable, trying to set the target variable to the target that matches
+     * the given tagID. If no matching detected targets found, simply sets to getBestTarget().
+     * If no targets found, returns null.
+     * @param tagID The ID of the AprilTag to look for while detecting.
      */
-    public boolean foundTarget(){
+    public void update(int tagID){
+        pResult = camera.getLatestResult();
+        List<PhotonTrackedTarget> targetsFound = pResult.getTargets();
+        PhotonTrackedTarget match = null;
+        for (int i = 0; i < targetsFound.size(); i++) {
+            PhotonTrackedTarget t = targetsFound.get(i);
+            if(t.getFiducialId() == tagID) match = t;
+        }
+        if(targetsFound.size() > 0 && match == null) match = pResult.getBestTarget();
+        target = match;
+    }
+
+    /**
+     * Checks to see if targets from the latest result exist.
+     * @return Whether or not targets exist
+     */
+    public boolean foundTargets(){
         boolean hasTargets = pResult.hasTargets();
         //if(!hasTargets) System.out.println("ERROR: No Targets Found");
         return hasTargets;
@@ -110,7 +129,7 @@ public class PhotonVision extends SubsystemBase {
      * @return Whether or not the latest target ID matches the given tagID.
      */
     public boolean matchesTagID(int tagID){
-        int current = getTagID();
+        int current = getTagID(tagID);
         return current == tagID;
     }
 
@@ -120,7 +139,21 @@ public class PhotonVision extends SubsystemBase {
      */
     public int getTagID(){
         update();
-        if(!foundTarget()) return 0;
+        if(!foundTargets()) return 0;
+
+        return target.getFiducialId();
+    }
+
+    /**
+     * Updates target, looking for tag with the given tagID. Gets the TagID of the detected target.
+     * If no targets with matching ID found, sets target variable to getBestTarget().
+     * If no targets found, returns 0.
+     * @param tagID The TagID to look for when updating the latest detected target.
+     * @return The ID of the detected tag (or 0 if no targets detected).
+     */
+    public int getTagID(int tagID){
+        update(tagID);
+        if(target == null) return 0;
 
         return target.getFiducialId();
     }
@@ -138,39 +171,39 @@ public class PhotonVision extends SubsystemBase {
     }
 
     /**
-     * (NEEDS TESTING) Updates target. Gets the Transform3D of the Camera in relation to the Target (AprilTag)
+     * (NEEDS TESTING) Updates target if desired. Gets the Transform3D of the Camera in relation to the Target (AprilTag)
      * using target.getBestCameraToTarget().
      * If no target found, returns null.
      * @return The Transform3D of the Camera in relation to the latest Target (or null if target not found).
      */
-    public Transform3d getBestCamToTarget(){
-        update();
-        if(!foundTarget()) return null;
+    public Transform3d getBestCamToTarget(boolean updateTarget){
+        if(updateTarget) update();
+        if(!foundTargets()) return null;
 
         return target.getBestCameraToTarget();
     }
 
     /**
-     * (NEEDS TESTING) Updates target. Gets the Yaw on the field of the latest target (AprilTag) using target.getYaw().
+     * (NEEDS TESTING) Updates target if desired. Gets the Yaw on the field of the latest target (AprilTag) using target.getYaw().
      * If no target found, returns 0.
      * @return The yaw of the AprilTag(or 0 if no target found).
      */
-    public double getYaw(){
-        update();
-        if(!foundTarget()) return 0;
+    public double getYaw(boolean updateTarget){
+        if(updateTarget) update();
+        if(!foundTargets()) return 0;
 
         return target.getYaw();
     }
 
     /**
-     * Updates target. Gets the distance in meters from the robot to the latest target (AprilTag)
+     * Updates target if desired. Gets the distance in meters from the robot to the latest target (AprilTag)
      * using PhotonUtils.calculateDistanceToTargetMeters().
      * If no target found, returns 0.
      * @return The distance (meters) from robot to latest target (or 0 if no target found).
      */
-    public double getDistance() {
-        update();
-        if(!foundTarget()) return 0;
+    public double getDistance(boolean updateTarget) {
+        if(updateTarget) update();
+        if(!foundTargets()) return 0;
 
         double distance = PhotonUtils.calculateDistanceToTargetMeters(cameraHeight, targetHeight, cameraPitch,
                 Units.degreesToRadians(target.getPitch()));
@@ -178,13 +211,13 @@ public class PhotonVision extends SubsystemBase {
     }
 
     /**
-     * (NEEDS TESTING) Updates target. Gets the Robot's Pose3D on the field using PhotonPoseEstimator. If no target found, returns null.
+     * (NEEDS TESTING) Updates target if desired. Gets the Robot's Pose3D on the field using PhotonPoseEstimator. If no target found, returns null.
      * If PhotonPoseEstimator fails to get the pose, returns a new Pose3D with empty coordinates (0, 0, 0) and rotation3d (0, 0, 0).
      * @return Estimated Pose3D of the robot on the field (or null if no target) (or empty Pose3D if calculation failed).
      */
-    public Pose3d getRobotPose3d(){
-        update();
-        if(!foundTarget()) return null;
+    public Pose3d getPose3dFromPPE(boolean updateTarget){
+        if(updateTarget) update();
+        if(!foundTargets()) return null;
         
         Optional<EstimatedRobotPose> pose = photonPoseEstimator.update();
         if(pose.isPresent()){
@@ -197,13 +230,26 @@ public class PhotonVision extends SubsystemBase {
     }
 
     /**
-     * (NEEDS TESTING) Updates target. Gets the Robot's Pose2D on the field using PhotonUtils.estimateFieldToRobot().
+     * (NEEDS TESTING) Updates target if desired. Gets the Robot's Pose3D on the field using the Pose3D of the latest target (AprilTag).
+     * The tag's Pose3D is offset by the camera's relative position to the tag (gotten from getBestCamToTarget()) and then offset by
+     * the robot's relative position to the camera (robotToCam constant).
+     * @return The Robot's Pose3D on the field.
+     */
+    public Pose3d getPose3dFromTarget(int tagID, boolean updateTarget){
+        Pose3d tagPose3d = getTagPose3d(tagID);
+        Transform3d camToTag = getBestCamToTarget(updateTarget);
+        Pose3d robot = tagPose3d.plus(camToTag.inverse().plus(robotToCam.inverse()));
+        return robot;
+    }
+
+    /**
+     * (NEEDS TESTING) Updates target if desired. Gets the Robot's Pose2D on the field using PhotonUtils.estimateFieldToRobot().
      * If no targets found, returns null.
      * @return The Robot's Pose2D on the field (or null if no targets).
      */
-    public Pose2d getRobotPose2d(){
-        update();
-        if(!foundTarget()) return null;
+    public Pose2d getPose2d(boolean updateTarget){
+        if(updateTarget) update();
+        if(!foundTargets()) return null;
 
         // This tries to use PhotonUtils.estimateFieldToRobot() to get the robot's Pose2d.
         // I followed the PhotonVision documentation:
