@@ -233,7 +233,7 @@ public class oldPhotonVision extends SubsystemBase {
         SmartDashboard.putNumber("Dist", get3dDist());
         SmartDashboard.putNumber("Dist2", get3dDistFromPose());
         SmartDashboard.putNumber("Dist3", getDistance());
-        SmartDashboard.putNumber("Gyro", gyro.getAngle());
+        //SmartDashboard.putNumber("Gyro", gyro.getAngle());
 
         
 

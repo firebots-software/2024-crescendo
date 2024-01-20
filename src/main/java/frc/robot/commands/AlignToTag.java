@@ -34,7 +34,7 @@ public class AlignToTag extends Command {
 
         // If detected target doesn't match desired tag, stop and return.
         // Target variable automatically updated when matchesTagID() is called.
-        if(!photonVision.matchesTagID(this.tagID)) {
+        if(!photonVision.matchesTagID(this.tagID, true)) {
             final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
             swerveSubsystem.setControl(brake);
             return;

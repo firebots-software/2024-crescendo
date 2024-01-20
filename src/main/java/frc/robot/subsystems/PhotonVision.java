@@ -41,6 +41,8 @@ public class PhotonVision extends SubsystemBase {
    private static PhotonVision instance; 
 
    // Note: To connect to PhotonVision dashboard, type in http://photonvision.local:5800/ in browser
+   // Note: Vision progress doc: https://docs.google.com/document/d/1dcJlagq1mkPYdsJ_vEmH3t5qBNc2CaBrx94pEgkzsrA/edit?usp=sharing
+   
    private PhotonCamera camera = new PhotonCamera("FrontCam");
    
    private AprilTagFieldLayout aprilTagFieldLayout;
@@ -55,11 +57,6 @@ public class PhotonVision extends SubsystemBase {
  
    // Need to set up gyro correctly; this is most likely wrong
    AnalogGyro gyro = new AnalogGyro(0);
-
-//    private DoubleLogEntry pitchLog = new DoubleLogEntry(DataLogManager.getLog(),  "/log/input/pitch");
-//    private DoubleLogEntry yawlog = new DoubleLogEntry(DataLogManager.getLog(),  "/log/input/yaw");
-//    private DoubleLogEntry distancelog = new DoubleLogEntry(DataLogManager.getLog(),  "/log/input/distance");
-//    private DoubleLogEntry poselog = new DoubleLogEntry(DataLogManager.getLog(),  "/log/input/pose");
 
     /**
      * PhotonVision constructor (private).
@@ -88,7 +85,7 @@ public class PhotonVision extends SubsystemBase {
     }
 
     /**
-     * Updates the camera pipeline and the best target variable. Target not guaranteed to exist.
+     * Updates the camera pipeline and the best target variable. Target not guaranteed to exist; might be null.
      */
     public void update(){
         pResult = camera.getLatestResult();
@@ -107,52 +104,55 @@ public class PhotonVision extends SubsystemBase {
         PhotonTrackedTarget match = null;
         for (int i = 0; i < targetsFound.size(); i++) {
             PhotonTrackedTarget t = targetsFound.get(i);
-            if(t.getFiducialId() == tagID) match = t;
+            if(t.getFiducialId() == tagID){
+                match = t;
+                break;
+            }
         }
         if(targetsFound.size() > 0 && match == null) match = pResult.getBestTarget();
         target = match;
     }
 
     /**
-     * Checks to see if targets from the latest result exist.
+     * Updates target if desired. Checks to see if targets from the latest result exist.
+     * @param runUpdate Whether or not to update target before checking if targets exist
      * @return Whether or not targets exist
      */
-    public boolean foundTargets(){
+    public boolean hasTargets(boolean runUpdate){
+        if(runUpdate) update();
         boolean hasTargets = pResult.hasTargets();
-        //if(!hasTargets) System.out.println("ERROR: No Targets Found");
         return hasTargets;
     }
 
     /**
-     * (NEEDS TESTING) Checks to see if the latest detected target matches IDs with the given tag ID.
+     * (NEEDS TESTING) Updates target if desired. Checks to see if the latest detected target matches IDs with the given tag ID.
      * @param tagID - The tagID to compare with
      * @return Whether or not the latest target ID matches the given tagID.
      */
-    public boolean matchesTagID(int tagID){
-        int current = getTagID(tagID);
+    public boolean matchesTagID(int tagID, boolean updateTarget){
+        int current = getTagID(tagID, updateTarget);
         return current == tagID;
     }
 
     /**
-     * (NEEDS TESTING) Updates target. Gets the TagID of the latest detected target. Returns 0 if no targets found.
+     * (NEEDS TESTING) Updates target if desired. Gets the TagID of the latest detected target. Returns 0 if no targets found.
      * @return The tagID of the latest detected target (or 0 if no targets found).
      */
-    public int getTagID(){
-        update();
-        if(!foundTargets()) return 0;
+    public int getTagID(boolean updateTarget){
+        if(!hasTargets(updateTarget)) return 0;
 
         return target.getFiducialId();
     }
 
     /**
-     * Updates target, looking for tag with the given tagID. Gets the TagID of the detected target.
+     * Updates target if desired, looking for tag with the given tagID. Gets the TagID of the detected target.
      * If no targets with matching ID found, sets target variable to getBestTarget().
      * If no targets found, returns 0.
      * @param tagID The TagID to look for when updating the latest detected target.
      * @return The ID of the detected tag (or 0 if no targets detected).
      */
-    public int getTagID(int tagID){
-        update(tagID);
+    public int getTagID(int tagID, boolean updateTarget){
+        if(updateTarget) update(tagID);
         if(target == null) return 0;
 
         return target.getFiducialId();
@@ -177,8 +177,7 @@ public class PhotonVision extends SubsystemBase {
      * @return The Transform3D of the Camera in relation to the latest Target (or null if target not found).
      */
     public Transform3d getBestCamToTarget(boolean updateTarget){
-        if(updateTarget) update();
-        if(!foundTargets()) return null;
+        if(!hasTargets(updateTarget)) return null;
 
         return target.getBestCameraToTarget();
     }
@@ -189,8 +188,7 @@ public class PhotonVision extends SubsystemBase {
      * @return The yaw of the AprilTag(or 0 if no target found).
      */
     public double getYaw(boolean updateTarget){
-        if(updateTarget) update();
-        if(!foundTargets()) return 0;
+        if(!hasTargets(updateTarget)) return 0;
 
         return target.getYaw();
     }
@@ -202,8 +200,7 @@ public class PhotonVision extends SubsystemBase {
      * @return The distance (meters) from robot to latest target (or 0 if no target found).
      */
     public double getDistance(boolean updateTarget) {
-        if(updateTarget) update();
-        if(!foundTargets()) return 0;
+        if(!hasTargets(updateTarget)) return 0;
 
         double distance = PhotonUtils.calculateDistanceToTargetMeters(cameraHeight, targetHeight, cameraPitch,
                 Units.degreesToRadians(target.getPitch()));
@@ -216,8 +213,7 @@ public class PhotonVision extends SubsystemBase {
      * @return Estimated Pose3D of the robot on the field (or null if no target) (or empty Pose3D if calculation failed).
      */
     public Pose3d getPose3dFromPPE(boolean updateTarget){
-        if(updateTarget) update();
-        if(!foundTargets()) return null;
+        if(!hasTargets(updateTarget)) return null;
         
         Optional<EstimatedRobotPose> pose = photonPoseEstimator.update();
         if(pose.isPresent()){
@@ -248,8 +244,7 @@ public class PhotonVision extends SubsystemBase {
      * @return The Robot's Pose2D on the field (or null if no targets).
      */
     public Pose2d getPose2d(boolean updateTarget){
-        if(updateTarget) update();
-        if(!foundTargets()) return null;
+        if(!hasTargets(updateTarget)) return null;
 
         // This tries to use PhotonUtils.estimateFieldToRobot() to get the robot's Pose2d.
         // I followed the PhotonVision documentation:
@@ -286,7 +281,7 @@ public class PhotonVision extends SubsystemBase {
     public void periodic(){
         //System.out.println("Testing the output in terminal");
         try{
-            SmartDashboard.putNumber("Tag ID", getTagID());
+            SmartDashboard.putNumber("Tag ID", getTagID(true));
             // SmartDashboard.putNumber("PoseX", getRobotPose3d().getX());
             // SmartDashboard.putNumber("PoseY", getRobotPose3d().getY());
             // SmartDashboard.putNumber("PoseZ", getRobotPose3d().getZ());
