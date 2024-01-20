@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathPlannerPath;
@@ -66,11 +67,8 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    // PathPlannerPath testPath = PathPlannerPath.fromPathFile("New Path");
-    PathPlannerPath path = PathPlannerPath.fromPathFile("Example Path");
-    return AutoBuilder.followPath(path);
-
-    // return new PathPlannerAuto("Test Auton");
-    // return runAuto;
+    // autonomous command applies brake
+    final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
+    return drivetrain.applyRequest(() -> brake);
   }
 }

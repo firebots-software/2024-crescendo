@@ -9,7 +9,6 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
-import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
@@ -17,9 +16,7 @@ import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.SPI;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
@@ -31,9 +28,6 @@ import frc.robot.Constants;
  * so it can be used in command-based projects easily.
  */
 public class SwerveSubsystem extends SwerveDrivetrain implements Subsystem {
-    // navX Gyro (unused)
-    private final AHRS m_otherGyro = new AHRS(SPI.Port.kMXP);
-
     // Constructor allows for custom odometry update frequency
     public SwerveSubsystem(SwerveDrivetrainConstants driveTrainConstants, double OdometryUpdateFrequency,
             SwerveModuleConstants... modules) {
@@ -117,10 +111,5 @@ public class SwerveSubsystem extends SwerveDrivetrain implements Subsystem {
         SmartDashboard.putNumber("ChassisSpeedsX", getCurrentRobotChassisSpeeds().vxMetersPerSecond);
         SmartDashboard.putNumber("ChassisSpeedsY", getCurrentRobotChassisSpeeds().vyMetersPerSecond);
         SmartDashboard.putNumber("ChassisSpeedsRadians", getCurrentRobotChassisSpeeds().omegaRadiansPerSecond);
-
-        // Testing navX gyro
-        SmartDashboard.putNumber("gyropitch", m_otherGyro.getPitch());
-        SmartDashboard.putNumber("gyroroll", m_otherGyro.getRoll());
-        SmartDashboard.putNumber("gyroyaw", m_otherGyro.getYaw());
     }
 }
