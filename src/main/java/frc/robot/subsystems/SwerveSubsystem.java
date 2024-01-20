@@ -28,14 +28,19 @@ import frc.robot.Constants;
  * so it can be used in command-based projects easily.
  */
 public class SwerveSubsystem extends SwerveDrivetrain implements Subsystem {
+    // instance of SwerveSubsystem
+    private static SwerveSubsystem instance;
+
     // Constructor allows for custom odometry update frequency
     public SwerveSubsystem(SwerveDrivetrainConstants driveTrainConstants, double OdometryUpdateFrequency,
             SwerveModuleConstants... modules) {
 
-        // Sets the drivetrain constants, odometry update frequency and constants for the swerve modules
+        // Sets the drivetrain constants, odometry update frequency and constants for
+        // the swerve modules
         super(driveTrainConstants, OdometryUpdateFrequency, modules);
 
-        // Sets the supply current limits for the swerve modules (for driving and turning)
+        // Sets the supply current limits for the swerve modules (for driving and
+        // turning)
         CurrentLimitsConfigs driveCurrentLimits = new CurrentLimitsConfigs()
                 .withSupplyCurrentLimit(Constants.Swerve.kDriveSupplyCurrentLimit)
                 .withSupplyCurrentLimitEnable(true);
@@ -49,13 +54,21 @@ public class SwerveSubsystem extends SwerveDrivetrain implements Subsystem {
             module.getSteerMotor().getConfigurator().apply(turningCurrentLimits);
         }
 
-        // Configures the holonomic auto builder 
+        // Configures the holonomic auto builder
         configurePathPlanner();
     }
 
     // Constructor for default odometry update frequency
     public SwerveSubsystem(SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
         this(driveTrainConstants, 0, modules);
+    }
+
+    public static SwerveSubsystem getInstance() {
+        if (instance == null) {
+            instance = new SwerveSubsystem(Constants.Swerve.DrivetrainConstants, Constants.Swerve.FrontLeft,
+                    Constants.Swerve.FrontRight, Constants.Swerve.BackLeft, Constants.Swerve.BackRight);
+        }
+        return instance;
     }
 
     // Applies swerve request to drivetrain
