@@ -51,12 +51,13 @@ public class AlignToTag extends Command {
         double minT = Math.PI/8;
         double turn = clamp(withLowBound(camToTag.getRotation().getZ(), minT), -maxT, maxT);
 
-        final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
+        // Drive robot using SwerveSubsystem
+        final SwerveRequest.RobotCentric drive = new SwerveRequest.RobotCentric()
                 .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
         swerveSubsystem.setControl(drive
         .withVelocityX(x)
-        .withVelocityY(y) // Drive left with negative X (left)
+        .withVelocityY(y)
         .withRotationalRate(turn));
     }
 
