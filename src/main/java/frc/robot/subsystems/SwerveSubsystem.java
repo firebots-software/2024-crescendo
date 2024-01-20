@@ -17,6 +17,8 @@ import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -29,6 +31,9 @@ import frc.robot.Constants;
  * so it can be used in command-based projects easily.
  */
 public class SwerveSubsystem extends SwerveDrivetrain implements Subsystem {
+    // instance of SwerveSubsystem
+    private static SwerveSubsystem instance;
+
     // navX Gyro (unused)
     private final AHRS m_otherGyro = new AHRS(SPI.Port.kMXP);
 
@@ -36,10 +41,12 @@ public class SwerveSubsystem extends SwerveDrivetrain implements Subsystem {
     public SwerveSubsystem(SwerveDrivetrainConstants driveTrainConstants, double OdometryUpdateFrequency,
             SwerveModuleConstants... modules) {
 
-        // Sets the drivetrain constants, odometry update frequency and constants for the swerve modules
+        // Sets the drivetrain constants, odometry update frequency and constants for
+        // the swerve modules
         super(driveTrainConstants, OdometryUpdateFrequency, modules);
 
-        // Sets the supply current limits for the swerve modules (for driving and turning)
+        // Sets the supply current limits for the swerve modules (for driving and
+        // turning)
         CurrentLimitsConfigs driveCurrentLimits = new CurrentLimitsConfigs()
                 .withSupplyCurrentLimit(Constants.Swerve.kDriveSupplyCurrentLimit)
                 .withSupplyCurrentLimitEnable(true);
@@ -53,13 +60,21 @@ public class SwerveSubsystem extends SwerveDrivetrain implements Subsystem {
             module.getSteerMotor().getConfigurator().apply(turningCurrentLimits);
         }
 
-        // Configures the holonomic auto builder 
+        // Configures the holonomic auto builder
         configurePathPlanner();
     }
 
     // Constructor for default odometry update frequency
     public SwerveSubsystem(SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
         this(driveTrainConstants, 0, modules);
+    }
+
+    public static SwerveSubsystem getInstance() {
+        if (instance == null) {
+            instance = new SwerveSubsystem(Constants.Swerve.DrivetrainConstants, Constants.Swerve.FrontLeft,
+                    Constants.Swerve.FrontRight, Constants.Swerve.BackLeft, Constants.Swerve.BackRight);
+        }
+        return instance;
     }
 
     // Applies swerve request to drivetrain
