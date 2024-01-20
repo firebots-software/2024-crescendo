@@ -42,21 +42,15 @@ public class PhotonVision extends SubsystemBase {
     Pose3d savedResult = new Pose3d(0.0,0.0,0.0,new Rotation3d(0.0,0.0,0.0));
     private static PhotonVision pvisioninstance;
     PhotonCamera camera = new PhotonCamera("FrontCam");
-    Transform3d robotToCam = new Transform3d(new Translation3d(0.5, -0.25, 0.25), new Rotation3d(0, 0, 0));
+    Transform3d robotToCam = new Transform3d(new Translation3d(0, 0, 0), new Rotation3d(0, cameraPitch, 0));
     AprilTagFieldLayout aprilTagFieldLayout;
     PhotonPoseEstimator photonPoseEstimator;
 
     private static double cameraHeight = 0.3;
     private static double targetHeight = 1;
-    private static double cameraPitch = Math.PI / 8;
+    private static double cameraPitch = 0.54;
 
-    PhotonPipelineResult pipeline = getPipeline();
-    PhotonTrackedTarget target = bestTarget(pipeline);
     AnalogGyro gyro = new AnalogGyro(0);
-    private DoubleLogEntry pitchLog = new DoubleLogEntry(DataLogManager.getLog(), "/log/input/pitch");
-    private DoubleLogEntry yawlog = new DoubleLogEntry(DataLogManager.getLog(), "/log/input/yaw");
-    private DoubleLogEntry distancelog = new DoubleLogEntry(DataLogManager.getLog(), "/log/input/distance");
-    private DoubleLogEntry poselog = new DoubleLogEntry(DataLogManager.getLog(), "/log/input/pose");
 
     private PhotonVision() {
         aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
@@ -88,27 +82,44 @@ public class PhotonVision extends SubsystemBase {
         return target.getPitch();
     }
 
-    public PhotonTrackedTarget bestTarget(PhotonPipelineResult result) {
+    public PhotonTrackedTarget getBestTarget(PhotonPipelineResult result) {
         return result.getBestTarget();
     }
 
     public double getDistance() {
 
-        PhotonTrackedTarget target = bestTarget(getPipeline());
+        PhotonTrackedTarget target = getBestTarget(getPipeline());
         double distance = PhotonUtils.calculateDistanceToTargetMeters(cameraHeight, targetHeight, cameraPitch,
                 Units.degreesToRadians(target.getPitch()));
         return distance;
     }
 
     public Pose3d getRobotPose3d() {
-        //TODO: If has no target, the numbers freeze, so make it so that savedResult gets cleared
-        Optional<EstimatedRobotPose> result = photonPoseEstimator.update();
-        if (result.isPresent()) {
-            savedResult = result.get().estimatedPose;
-            return savedResult;
-        } else {
+        // //TODO: If has no target, the numbers freeze, so make it so that savedResult gets cleared
+        // Optional<EstimatedRobotPose> result = photonPoseEstimator.update();
+        // if (result.isPresent()) {
+        //     savedResult = result.get().estimatedPose;
+        //     return savedResult;
+        // } else {
+        //     return savedResult;
+        // }
+        PhotonPipelineResult result = getPipeline();
+        if(!result.hasTargets()){
             return savedResult;
         }
+        
+        PhotonTrackedTarget target = getBestTarget(getPipeline());
+        Optional<Pose3d> tagPose = aprilTagFieldLayout.getTagPose(target.getFiducialId());
+        SmartDashboard.putNumber("Tag pose x", tagPose.get().getX());
+        SmartDashboard.putNumber("Tag pose y", tagPose.get().getY());
+        SmartDashboard.putNumber("Tag pose z", tagPose.get().getZ());
+        if(tagPose.isEmpty()){
+            return savedResult;
+        }
+        else{
+            savedResult =  PhotonUtils.estimateFieldToRobotAprilTag(getTransformToTarget(),tagPose.get(),robotToCam);
+        }
+        return savedResult;
 
     }
 
@@ -117,7 +128,7 @@ public class PhotonVision extends SubsystemBase {
         if(!pipeline.hasTargets()){
             return new Transform3d(0.0, 0.0, 0.0, new Rotation3d());
         }
-        PhotonTrackedTarget target = bestTarget(getPipeline());
+        PhotonTrackedTarget target = getBestTarget(getPipeline());
         SmartDashboard.putNumber("pose ambiguity", target.getPoseAmbiguity());
         return target.getBestCameraToTarget();
     }
@@ -136,8 +147,8 @@ public class PhotonVision extends SubsystemBase {
         // work.
 
         // these shouldn't need tuning.
-        double targetPitch = Units.degreesToRadians(target.getPitch());
-        Rotation2d targetYaw = Rotation2d.fromDegrees(-target.getYaw());
+        double targetPitch = Units.degreesToRadians(getBestTarget(getPipeline()).getPitch());
+        Rotation2d targetYaw = Rotation2d.fromDegrees(-getBestTarget(getPipeline()).getYaw());
 
         // need the pose of the AprilTag. somehow use TargetID to get the pose.
         // int targetID = target.getFiducialId();
@@ -163,10 +174,10 @@ public class PhotonVision extends SubsystemBase {
         SmartDashboard.putNumber("PoseY", getRobotPose3d().getY());
         SmartDashboard.putNumber("PoseZ", getRobotPose3d().getZ());
         SmartDashboard.putNumber("Rot Z", getRobotPose3d().getRotation().getAngle());
-        // SmartDashboard.putNumber("Transform X", getTransformToTarget().getTranslation().getX());
-        // SmartDashboard.putNumber("Transform Y", getTransformToTarget().getTranslation().getY());
-        // SmartDashboard.putNumber("Transform Z", getTransformToTarget().getTranslation().getZ());
-        // SmartDashboard.putNumber("Transform Rot Angle", getTransformToTarget().getRotation().getAngle());
+        SmartDashboard.putNumber("Transform X", getTransformToTarget().getTranslation().getX());
+        SmartDashboard.putNumber("Transform Y", getTransformToTarget().getTranslation().getY());
+        SmartDashboard.putNumber("Transform Z", getTransformToTarget().getTranslation().getZ());
+        SmartDashboard.putNumber("Transform Rot Angle", getTransformToTarget().getRotation().getAngle());
         SmartDashboard.putNumber("Dist", get3dDist());
 
         
