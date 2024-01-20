@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.util.Units;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -39,4 +41,16 @@ public final class Constants {
     public static final int PRE_SHOOTER_PORT = 3;
     public static final int SHOOTER_PORT = 4;
   }
+
+  public static final class FieldDimensions {
+    public static final double speakerHeightInInches = 78.0;
+    public static final double ampHeightInInches = 35.0;
+    public static final double intakeModeHeightInInches = 4.0;
+    public static final double speakerHeightMeters = Units.inchesToMeters(speakerHeightInInches);
+    public static final double ampHeightMeters = Units.inchesToMeters(ampHeightInInches);
+    public static final double intakeModeHeightMeters = Units.inchesToMeters(intakeModeHeightInInches);
+
+  }
+  
+
 }
