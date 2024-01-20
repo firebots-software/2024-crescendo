@@ -30,9 +30,9 @@ public class RobotContainer {
   private final CommandPS4Controller joystick = new CommandPS4Controller(0);
   private final SwerveSubsystem driveTrain = SwerveSubsystem.getInstance();
   private final SwerveJoystickCommand swerveJoystickCommand = new SwerveJoystickCommand(
-      () -> joystick.getRawAxis(1),
-      () -> joystick.getRawAxis(0),
-      () -> joystick.getRawAxis(2),
+      () -> -joystick.getRawAxis(1),
+      () -> -joystick.getRawAxis(0),
+      () -> -joystick.getRawAxis(2),
       () -> (joystick.getRawAxis(3) + 1d) / 2d, // joystick L2
       () -> (joystick.getRawAxis(4) + 1d) / 2d, // joystick R2
       driveTrain);
