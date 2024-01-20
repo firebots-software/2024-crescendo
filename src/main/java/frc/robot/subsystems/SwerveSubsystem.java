@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
@@ -30,11 +31,17 @@ import frc.robot.Constants;
  * so it can be used in command-based projects easily.
  */
 public class SwerveSubsystem extends SwerveDrivetrain implements Subsystem {
-
+    // navX Gyro (unused)
     private final AHRS m_otherGyro = new AHRS(SPI.Port.kMXP);
+
+    // Constructor allows for custom odometry update frequency
     public SwerveSubsystem(SwerveDrivetrainConstants driveTrainConstants, double OdometryUpdateFrequency,
             SwerveModuleConstants... modules) {
+
+        // Sets the drivetrain constants, odometry update frequency and constants for the swerve modules
         super(driveTrainConstants, OdometryUpdateFrequency, modules);
+
+        // Sets the supply current limits for the swerve modules (for driving and turning)
         CurrentLimitsConfigs driveCurrentLimits = new CurrentLimitsConfigs()
                 .withSupplyCurrentLimit(Constants.Swerve.kDriveSupplyCurrentLimit)
                 .withSupplyCurrentLimitEnable(true);
@@ -47,37 +54,31 @@ public class SwerveSubsystem extends SwerveDrivetrain implements Subsystem {
             module.getDriveMotor().getConfigurator().apply(driveCurrentLimits);
             module.getSteerMotor().getConfigurator().apply(turningCurrentLimits);
         }
-        configurePathPlanner();
 
+        // Configures the holonomic auto builder 
+        configurePathPlanner();
     }
 
+    // Constructor for default odometry update frequency
     public SwerveSubsystem(SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
         this(driveTrainConstants, 0, modules);
     }
 
+    // Applies swerve request to drivetrain
     public Command applyRequest(Supplier<SwerveRequest> requestSupplier) {
-//         public static SwerveModuleState optimize(
-//       SwerveModuleState desiredState, Rotation2d currentAngle) {
-//     var delta = desiredState.angle.minus(currentAngle);
-//     if (Math.abs(delta.getDegrees()) > 90.0) {
-//       return new SwerveModuleState(
-//           -desiredState.speedMetersPerSecond,
-//           desiredState.angle.rotateBy(Rotation2d.fromDegrees(180.0)));
-//     } else {
-//       return new SwerveModuleState(desiredState.speedMetersPerSecond, desiredState.angle);
-//     }
-//   }
         return run(() -> this.setControl(requestSupplier.get()));
     }
 
     private final SwerveRequest.ApplyChassisSpeeds autoRequest = new SwerveRequest.ApplyChassisSpeeds();
 
     private void configurePathPlanner() {
+        // Sets radius of drive base (using module locations)
         double driveBaseRadius = 0;
         for (var moduleLocation : m_moduleLocations) {
             driveBaseRadius = Math.max(driveBaseRadius, moduleLocation.getNorm());
         }
 
+        // Holonomic auto builder
         AutoBuilder.configureHolonomic(
                 () -> this.getState().Pose, // Supplier of current robot pose
                 this::seedFieldRelative, // Consumer for seeding pose against auto
@@ -93,19 +94,31 @@ public class SwerveSubsystem extends SwerveDrivetrain implements Subsystem {
                 this); // Subsystem for requirements
     }
 
+    /**
+     * 
+     * @param pathName Name of Path (in PathPlanner)
+     * @return The name of the path
+     */
     public Command getAutoPath(String pathName) {
         return new PathPlannerAuto(pathName);
     }
 
+    /**
+     * 
+     * @return Robot's current Chassis Speeds
+     */
     public ChassisSpeeds getCurrentRobotChassisSpeeds() {
         return m_kinematics.toChassisSpeeds(getState().ModuleStates);
     }
 
     @Override
     public void periodic() {
+        // Chassis Speeds information
         SmartDashboard.putNumber("ChassisSpeedsX", getCurrentRobotChassisSpeeds().vxMetersPerSecond);
         SmartDashboard.putNumber("ChassisSpeedsY", getCurrentRobotChassisSpeeds().vyMetersPerSecond);
         SmartDashboard.putNumber("ChassisSpeedsRadians", getCurrentRobotChassisSpeeds().omegaRadiansPerSecond);
+
+        // Testing navX gyro
         SmartDashboard.putNumber("gyropitch", m_otherGyro.getPitch());
         SmartDashboard.putNumber("gyroroll", m_otherGyro.getRoll());
         SmartDashboard.putNumber("gyroyaw", m_otherGyro.getYaw());

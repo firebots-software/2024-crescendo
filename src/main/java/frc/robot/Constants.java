@@ -11,6 +11,11 @@ import edu.wpi.first.math.util.Units;
 import frc.robot.subsystems.SwerveSubsystem;
 
 public class Constants {
+        public static class OI {
+                public static final double kLeftJoystickDeadband = 0.05;
+                public static final double kRightJoystickDeadband = 0.05;
+        }
+
         public static class Swerve {
 
                 public static final double kPhysicalMaxSpeedMetersPerSecond = 4.8768;
@@ -91,6 +96,7 @@ public class Constants {
                                 .withCouplingGearRatio(kCoupleRatio)
                                 .withSteerMotorInverted(kSteerMotorReversed);
                 
+
                 // CHANGE FOR NEW ROBOT:
                 // Front Right
                 private static final int kFrontLeftDriveMotorId = 0;

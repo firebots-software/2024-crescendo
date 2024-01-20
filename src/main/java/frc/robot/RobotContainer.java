@@ -43,8 +43,7 @@ public class RobotContainer {
 
   public final Telemetry logger = new Telemetry();
 
-  // private Command runAuto = drivetrain.getAutoPath("Tests");
-
+  // Starts telemetry operations (essentially logging -> look on SmartDashboard, AdvantageScope)
   public void doTelemetry () {
     logger.telemeterize(drivetrain.getState());
   }
