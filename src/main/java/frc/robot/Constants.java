@@ -8,7 +8,6 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants.SteerFeedbackTy
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstantsFactory;
 
 import edu.wpi.first.math.util.Units;
-import frc.robot.subsystems.SwerveSubsystem;
 
 public class Constants {
         public static class OI {
