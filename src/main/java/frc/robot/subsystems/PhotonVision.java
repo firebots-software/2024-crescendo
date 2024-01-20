@@ -43,6 +43,7 @@ public class PhotonVision extends SubsystemBase {
     private static PhotonVision pvisioninstance;
     PhotonCamera camera = new PhotonCamera("FrontCam");
     Transform3d robotToCam = new Transform3d(new Translation3d(0, 0, 0), new Rotation3d(0, cameraPitch, 0));
+    PhotonTrackedTarget savedTarget = getBestTarget(getPipeline());
     AprilTagFieldLayout aprilTagFieldLayout;
     PhotonPoseEstimator photonPoseEstimator;
 
@@ -109,6 +110,7 @@ public class PhotonVision extends SubsystemBase {
         }
         
         PhotonTrackedTarget target = getBestTarget(getPipeline());
+        savedTarget = target;
         Optional<Pose3d> tagPose = aprilTagFieldLayout.getTagPose(target.getFiducialId());
         SmartDashboard.putNumber("Tag pose x", tagPose.get().getX());
         SmartDashboard.putNumber("Tag pose y", tagPose.get().getY());
@@ -135,6 +137,16 @@ public class PhotonVision extends SubsystemBase {
 
     public double get3dDist(){
         return getTransformToTarget().getTranslation().getNorm();
+    }
+
+    public double get3dDistFromPose(){
+        Pose3d robotPose = getRobotPose3d();
+        Pose3d tagPose = aprilTagFieldLayout.getTagPose(savedTarget.getFiducialId()).get();
+        double dx = robotPose.getX()-tagPose.getX();
+        double dy = robotPose.getY()-tagPose.getY();
+        double dz = robotPose.getZ()-tagPose.getZ();
+        double dist = Math.sqrt(dx*dx+dy*dy+dz*dz);
+        return dist;
     }
 
     public Pose2d getRobotPose2d() {
@@ -169,16 +181,19 @@ public class PhotonVision extends SubsystemBase {
     }
 
     public void periodic() {
+        Pose3d robotPose3d = getRobotPose3d();
+        Transform3d transformToTarget = getTransformToTarget();
 
-        SmartDashboard.putNumber("PoseX", getRobotPose3d().getX());
-        SmartDashboard.putNumber("PoseY", getRobotPose3d().getY());
-        SmartDashboard.putNumber("PoseZ", getRobotPose3d().getZ());
-        SmartDashboard.putNumber("Rot Z", getRobotPose3d().getRotation().getAngle());
-        SmartDashboard.putNumber("Transform X", getTransformToTarget().getTranslation().getX());
-        SmartDashboard.putNumber("Transform Y", getTransformToTarget().getTranslation().getY());
-        SmartDashboard.putNumber("Transform Z", getTransformToTarget().getTranslation().getZ());
-        SmartDashboard.putNumber("Transform Rot Angle", getTransformToTarget().getRotation().getAngle());
+        SmartDashboard.putNumber("PoseX", robotPose3d.getX());
+        SmartDashboard.putNumber("PoseY", robotPose3d.getY());
+        SmartDashboard.putNumber("PoseZ", robotPose3d.getZ());
+        SmartDashboard.putNumber("Rot Z", robotPose3d.getRotation().getAngle());
+        SmartDashboard.putNumber("Transform X", transformToTarget.getTranslation().getX());
+        SmartDashboard.putNumber("Transform Y", transformToTarget.getTranslation().getY());
+        SmartDashboard.putNumber("Transform Z", transformToTarget.getTranslation().getZ());
+        SmartDashboard.putNumber("Transform Rot Angle", transformToTarget.getRotation().getAngle());
         SmartDashboard.putNumber("Dist", get3dDist());
+        SmartDashboard.putNumber("Dist2", get3dDistFromPose());
 
         
 
