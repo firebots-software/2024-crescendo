@@ -31,7 +31,7 @@ public class RobotContainer {
 
   /* Setting up bindings for necessary control of the swerve drive platform */
 
-  private final CommandPS4Controller joystick = new CommandPS4Controller(3);
+  private final CommandPS4Controller joystick = new CommandPS4Controller(0);
   private final SwerveSubsystem drivetrain = Constants.Swerve.DriveTrain;
   private final SwerveJoystickCommand swerveJoystickCommand = new SwerveJoystickCommand(
       () -> joystick.getRawAxis(1),
