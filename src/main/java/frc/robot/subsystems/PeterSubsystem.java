@@ -2,7 +2,6 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.DutyCycleOut;
-import com.ctre.phoenix6.controls.PositionDutyCycle;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -11,7 +10,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 
 public class PeterSubsystem extends SubsystemBase {
-
    // private static final int MAX_DISTANCE = 4048;//
    private static PeterSubsystem instance;
 
@@ -19,6 +17,8 @@ public class PeterSubsystem extends SubsystemBase {
    private final DutyCycleOut rollerMotorRequest = new DutyCycleOut(0.0);
    private final PositionVoltage preShooterMotorPIDRequest = new PositionVoltage(0.0);
    private final DutyCycleOut ShooterMotorRequest = new DutyCycleOut(0.0);
+   private final double INTAKE_ANGLE = 0; //subject to change
+   private final double AMP_ANGLE = 100; //subject to change
    private DigitalInput input;
    public TalonFX rollerMotor, preShooterMotor, shooterMotor;
    private StatusSignal <Double> position;
@@ -40,21 +40,12 @@ public class PeterSubsystem extends SubsystemBase {
        return instance;
    }
 
-   public void moveToRotations(double pos) {
-       double currPos = position.getValue();
-       preShooterMotor.setControl((preShooterMotorPIDRequest.withPosition(pos+currPos)));
-   }
-
    public void runIntake(double speed) {
        rollerMotor.setControl(rollerMotorRequest.withOutput(speed));
-      
    }
 
    public void runShooter(double speed){
        shooterMotor.setControl(ShooterMotorRequest.withOutput(speed));
-   }
-
-   public void rotateArmToRestPosition() {
    }
 
    public boolean notePresent() {
@@ -75,3 +66,4 @@ public class PeterSubsystem extends SubsystemBase {
        SmartDashboard.putBoolean("Note Detected", input.get()); // false = note detected!!
    }
 }
+

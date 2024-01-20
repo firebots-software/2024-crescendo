@@ -41,7 +41,9 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    driverController.square().whileTrue(new RunShooterCommand(peter));
-    driverController.circle().whileTrue(new ArmRotateCommand(peter));
+    driverController.square().whileTrue(new RunShooterCommand(peter)); 
+    driverController.circle().whileTrue(new ArmRotateCommand(peter, )); //to do: figure out encoder vals
+    
+    
   }
 }

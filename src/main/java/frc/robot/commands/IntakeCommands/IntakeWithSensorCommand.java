@@ -7,11 +7,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 
 /** An example command that uses an example subsystem. */
 public class IntakeWithSensorCommand extends Command {
-private PeterSubsystem intake;
+private PeterSubsystem peterSubsystem;
  
-public IntakeWithSensorCommand(PeterSubsystem intake) {
-   this.intake = intake;
-   addRequirements(intake);
+public IntakeWithSensorCommand(PeterSubsystem peterSubsystem) {
+   this.peterSubsystem = peterSubsystem;
+   addRequirements(peterSubsystem);
  }
 
  // Called when the command is initially scheduled.
@@ -22,25 +22,25 @@ public IntakeWithSensorCommand(PeterSubsystem intake) {
  // Called every time the scheduler runs while the command is scheduled.
  @Override
  public void execute() {
-   intake.runIntake(0.5);
-   if(intake.notePresent()) {
-           intake.runIntake(0);
-           while (intake.getPreShooterPosition() < 1024) { //whatever is 3 inches pls be right
-             intake.runPreShooter(0.5); 
-           } 
+   peterSubsystem.runIntake(0.5);
+   if(peterSubsystem.notePresent()) {
+           peterSubsystem.runIntake(0);
+           while (peterSubsystem.getPreShooterPosition() < 1024) { //whatever is 3 inches pls be right
+             peterSubsystem.runPreShooter(0.5); 
+           }
        }
-       intake.runPreShooter(0);
+       peterSubsystem.runPreShooter(0);
  }
 
  // Called once the command ends or is interrupted.
  @Override
  public void end(boolean interrupted) {
-     intake.runIntake(0);
+     peterSubsystem.runIntake(0);
 }
 
  // Returns true when the command should end.
  @Override
  public boolean isFinished() {
-   return intake.notePresent();
+   return peterSubsystem.notePresent();
   }
 }

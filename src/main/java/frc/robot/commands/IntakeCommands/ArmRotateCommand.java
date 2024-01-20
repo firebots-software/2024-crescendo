@@ -1,14 +1,38 @@
 
 package frc.robot.commands.IntakeCommands;
-import frc.robot.subsystems.PeterSubsystem;
+import frc.robot.subsystems.ArmSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class ArmRotateCommand extends Command {
-private PeterSubsystem intake; 
-  public ArmRotateCommand(PeterSubsystem intake) {
-    this.intake = intake; 
-    addRequirements(intake);
+private ArmSubsystem armSubsystem; 
+  public ArmRotateCommand(ArmSubsystem armSubsystem, double angle) {
+    this.armSubsystem = armSubsystem; 
+    addRequirements(armSubsystem);
 }
+// Called when the command is initially scheduled.
+@Override
+public void initialize() {
+}
+
+// Called every time the scheduler runs while the command is scheduled.
+@Override
+public void execute() {
+  armSubsystem.rotateArmToSpeakerPosition();
+  
+}
+
+// Called once the command ends or is interrupted.
+@Override
+public void end(boolean interrupted) {
+  armSubsystem.rotateArmToRestPosition();
+}
+
+// Returns true when the command should end.
+@Override
+public boolean isFinished() {
+  return false; 
+ }
+
 
 
 
