@@ -91,8 +91,10 @@ public class oldPhotonVision extends SubsystemBase {
     public double getDistance() {
 
         PhotonTrackedTarget target = getBestTarget(getPipeline());
-        Pose3d targetPose3d = aprilTagFieldLayout.getTagPose(target.getFiducialId()).get();
-        if(target == null || targetPose3d == null) return -1;
+        if(target == null) return -1;
+        Optional<Pose3d> targetPose3dOptional = aprilTagFieldLayout.getTagPose(target.getFiducialId());
+        if(targetPose3dOptional.isEmpty()) return -1;
+        Pose3d targetPose3d = targetPose3dOptional.get();
         double distance = PhotonUtils.calculateDistanceToTargetMeters(cameraHeight, targetPose3d.getZ(), cameraPitch,
                 Units.degreesToRadians(target.getPitch()));
         return distance;
@@ -155,7 +157,7 @@ public class oldPhotonVision extends SubsystemBase {
         if(!pipeline.hasTargets()){
             return new Transform3d(0.0, 0.0, 0.0, new Rotation3d());
         }
-        PhotonTrackedTarget target = getBestTarget(getPipeline());
+        PhotonTrackedTarget target = getBestTarget(pipeline);
         SmartDashboard.putNumber("pose ambiguity", target.getPoseAmbiguity());
         return target.getBestCameraToTarget();
     }
