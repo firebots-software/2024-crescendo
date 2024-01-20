@@ -18,6 +18,7 @@ public class AlignToTag extends Command {
         this.swerveSubsystem = swerveSubsystem;
         this.tagID = tagID;
         addRequirements(photonVision);
+        addRequirements(swerveSubsystem);
     }
 
     @Override
@@ -28,6 +29,9 @@ public class AlignToTag extends Command {
     
     @Override
     public void execute() {
+        // This command will continue running and trying to align to the AprilTag until button is released
+        // or command told to stop. (This won't stop on its own when it aligns close enough.)
+
         // If detected target doesn't match desired tag, stop and return.
         // Target variable automatically updated when matchesTagID() is called.
         if(!photonVision.matchesTagID(this.tagID)) {
