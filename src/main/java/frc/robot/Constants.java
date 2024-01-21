@@ -53,14 +53,13 @@ public class Constants {
     private static final double kCoupleRatio = 3.5714285714285716;
 
     private static final double kDriveGearRatio =
-        6.746031746031747; // 6.12 for new robot: CHANGE FOR NEW
-    // ROBOT
+        6.746031746031747; // 6.12 for new robot: CHANGE FOR NEW ROBOT
     private static final double kSteerGearRatio = 21.428571428571427;
     private static final double kWheelRadiusInches = 2;
 
     private static final boolean kSteerMotorReversed = true;
-    private static final boolean kInvertLeftSide = true;
-    private static final boolean kInvertRightSide = false;
+    private static final boolean kInvertLeftSide = false;
+    private static final boolean kInvertRightSide = true;
 
     private static final String kCANbusName = "";
     private static final int kPigeonId = 13;

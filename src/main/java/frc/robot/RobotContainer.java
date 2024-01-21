@@ -4,7 +4,7 @@
 
 package frc.robot;
 
-import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -27,9 +27,9 @@ public class RobotContainer {
   private final SwerveSubsystem driveTrain = SwerveSubsystem.getInstance();
   private final SwerveJoystickCommand swerveJoystickCommand =
       new SwerveJoystickCommand(
-          () -> joystick.getRawAxis(1),
-          () -> joystick.getRawAxis(0),
-          () -> joystick.getRawAxis(2),
+          () -> -joystick.getRawAxis(1),
+          () -> -joystick.getRawAxis(0),
+          () -> -joystick.getRawAxis(2),
           () -> (joystick.getRawAxis(3) + 1d) / 2d, // joystick L2
           () -> (joystick.getRawAxis(4) + 1d) / 2d, // joystick R2
           driveTrain);
@@ -65,7 +65,8 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     // autonomous command applies brake
-    final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
-    return driveTrain.applyRequest(() -> brake);
+    // final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
+    // return driveTrain.applyRequest(() -> brake);
+    return new PathPlannerAuto("New Auto");
   }
 }
