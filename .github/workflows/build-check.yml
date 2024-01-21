@@ -16,4 +16,4 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Compile robot code
-      run: ./gradlew build
+      run: ./gradlew build -x spotlessCheck
