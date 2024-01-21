@@ -5,7 +5,6 @@
 package frc.robot;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -15,12 +14,9 @@ import frc.robot.commands.SwerveJoystickCommand;
 import frc.robot.subsystems.SwerveSubsystem;
 
 /**
- * This class is where the bulk of the robot should be declared. Since
- * Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in
- * the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of
- * the robot (including
+ * This class is where the bulk of the robot should be declared. Since Command-based is a
+ * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
+ * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
@@ -29,18 +25,19 @@ public class RobotContainer {
 
   private final CommandPS4Controller joystick = new CommandPS4Controller(0);
   private final SwerveSubsystem driveTrain = SwerveSubsystem.getInstance();
-  private final SwerveJoystickCommand swerveJoystickCommand = new SwerveJoystickCommand(
-      () -> joystick.getRawAxis(1),
-      () -> joystick.getRawAxis(0),
-      () -> joystick.getRawAxis(2),
-      () -> (joystick.getRawAxis(3) + 1d) / 2d, // joystick L2
-      () -> (joystick.getRawAxis(4) + 1d) / 2d, // joystick R2
-      driveTrain);
+  private final SwerveJoystickCommand swerveJoystickCommand =
+      new SwerveJoystickCommand(
+          () -> joystick.getRawAxis(1),
+          () -> joystick.getRawAxis(0),
+          () -> joystick.getRawAxis(2),
+          () -> (joystick.getRawAxis(3) + 1d) / 2d, // joystick L2
+          () -> (joystick.getRawAxis(4) + 1d) / 2d, // joystick R2
+          driveTrain);
 
   public final Telemetry logger = new Telemetry();
 
   // Starts telemetry operations (essentially logging -> look on SmartDashboard, AdvantageScope)
-  public void doTelemetry () {
+  public void doTelemetry() {
     logger.telemeterize(driveTrain.getState());
   }
 
@@ -48,9 +45,14 @@ public class RobotContainer {
     driveTrain.setDefaultCommand(swerveJoystickCommand);
 
     // zero-heading
-    joystick.circle().onTrue(driveTrain.runOnce(() -> driveTrain.seedFieldRelative(new Pose2d(new Translation2d(0, 0), new Rotation2d(0)))));
+    joystick
+        .circle()
+        .onTrue(
+            driveTrain.runOnce(
+                () ->
+                    driveTrain.seedFieldRelative(
+                        new Pose2d(new Translation2d(0, 0), new Rotation2d(0)))));
     driveTrain.registerTelemetry(logger::telemeterize);
-
   }
 
   public RobotContainer() {
