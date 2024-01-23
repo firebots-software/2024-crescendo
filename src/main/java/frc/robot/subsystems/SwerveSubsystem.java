@@ -43,14 +43,14 @@ public class SwerveSubsystem extends SwerveDrivetrain implements Subsystem {
             .withSupplyCurrentLimit(Constants.Swerve.kDriveSupplyCurrentLimit)
             .withSupplyCurrentLimitEnable(true);
 
-    CurrentLimitsConfigs turningCurrentLimits =
+    CurrentLimitsConfigs steerCurrentLimits =
         new CurrentLimitsConfigs()
             .withSupplyCurrentLimit(Constants.Swerve.kTurningSupplyCurrentLimit)
             .withSupplyCurrentLimitEnable(true);
 
     for (SwerveModule module : Modules) {
       module.getDriveMotor().getConfigurator().apply(driveCurrentLimits);
-      module.getSteerMotor().getConfigurator().apply(turningCurrentLimits);
+      module.getSteerMotor().getConfigurator().apply(steerCurrentLimits);
     }
 
     // Configures the holonomic auto builder
@@ -77,7 +77,7 @@ public class SwerveSubsystem extends SwerveDrivetrain implements Subsystem {
   }
 
   // Applies swerve request to drivetrain
-  public Command applyRequest(Supplier<SwerveRequest> requestSupplier) {
+  public Command getSwerveRequest(Supplier<SwerveRequest> requestSupplier) {
     return run(() -> this.setControl(requestSupplier.get()));
   }
 

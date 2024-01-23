@@ -6,7 +6,7 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.SwerveSubsystem;
-import frc.robot.util.SwerveRequestFieldCentric;
+import frc.robot.util.SwerveRequestFieldCentricSwerveOptimized;
 import java.util.function.Supplier;
 
 public class SwerveJoystickCommand extends Command {
@@ -28,7 +28,7 @@ public class SwerveJoystickCommand extends Command {
       Supplier<Double> turningSpdFunction,
       Supplier<Double> speedIncreaseControlFunction,
       Supplier<Double> speedDecreaseControlFunction,
-      SwerveSubsystem csd) {
+      SwerveSubsystem swerveSubsystem) {
 
     this.xSpdFunction = frontBackFunction;
     this.ySpdFunction = leftRightFunction;
@@ -39,7 +39,7 @@ public class SwerveJoystickCommand extends Command {
     this.yLimiter = new SlewRateLimiter(Constants.Swerve.kTeleDriveMaxAccelerationUnitsPerSecond);
     this.turningLimiter =
         new SlewRateLimiter(Constants.Swerve.kTeleDriveMaxAngularAccelerationUnitsPerSecond);
-    this.swerveDrivetrain = csd;
+    this.swerveDrivetrain = swerveSubsystem;
 
     // Adds the subsystem as a requirement (prevents two commands from acting on subsystem at once)
     addRequirements(swerveDrivetrain);
@@ -71,7 +71,8 @@ public class SwerveJoystickCommand extends Command {
         Math.abs(turningSpeed) > Constants.OI.kRightJoystickDeadband ? turningSpeed : 0.0;
 
     // 4. Make the driving smoother
-    // Speed control
+    // There are two triggers to change the speed of the swerve driverbase. 
+    //We use both inputs to find how fast the swerve drivebase should be going.
     double driveSpeed =
         (Constants.Swerve.kTeleDriveMaxPercentSpeed - Constants.Swerve.kTeleDriveMinPercentSpeed)
                 * (speedIncreaseControlFunction.get() - speedDecreaseControlFunction.get())
@@ -95,17 +96,12 @@ public class SwerveJoystickCommand extends Command {
     // 5. Applying the drive request on the swerve drivetrain
     // Uses SwerveRequestFieldCentric (from java.frc.robot.util to apply module optimization)
     final SwerveRequest.FieldCentric drive =
-        new SwerveRequestFieldCentric()
-            // .withDeadband(Constants.kPhysicalMaxSpeedMetersPerSecond *
-            // 0.01).withRotationalDeadband(Constants.kPhysicalMaxAngularSpeedRadiansPerSecond
-            // * 0.01) // old deadband
+        new SwerveRequestFieldCentricSwerveOptimized()
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // OPEN LOOP CONTROL
 
     // Applies request
     this.swerveDrivetrain.setControl(
         drive.withVelocityX(x).withVelocityY(y).withRotationalRate(turn)
-        // .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
-        // .withSteerRequestType(SteerRequestType.MotionMagicExpo)
         );
   } // Drive counterclockwise with negative X (left))
 
@@ -113,7 +109,7 @@ public class SwerveJoystickCommand extends Command {
   public void end(boolean interrupted) {
     // Applies SwerveDriveBrake (brakes the robot by turning wheels)
     final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
-    this.swerveDrivetrain.applyRequest(() -> brake);
+    this.swerveDrivetrain.getSwerveRequest(() -> brake);
   }
 
   @Override

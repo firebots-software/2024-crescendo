@@ -12,6 +12,7 @@ public class Constants {
   public static class OI {
     public static final double kLeftJoystickDeadband = 0.07;
     public static final double kRightJoystickDeadband = 0.07;
+    public static final int JoystickPort = 0;
   }
 
   public static class Swerve {
@@ -27,19 +28,19 @@ public class Constants {
 
     // The steer motor uses any SwerveModule.SteerRequestType control request with
     // the output type specified by SwerveModuleConstants.SteerMotorClosedLoopOutput
-    private static final Slot0Configs steerGains =
+    private static final Slot0Configs ksteerGains =
         new Slot0Configs().withKP(50).withKI(0).withKD(0.2).withKS(0).withKV(1.5).withKA(0);
     // When using closed-loop control, the drive motor uses the control
     // output type specified by SwerveModuleConstants.DriveMotorClosedLoopOutput
-    private static final Slot0Configs driveGains =
+    private static final Slot0Configs kdriveGains =
         new Slot0Configs().withKP(3).withKI(0).withKD(0).withKS(0).withKV(0).withKA(0);
 
     // The closed-loop output type to use for the steer motors;
     // This affects the PID/FF gains for the steer motors
-    private static final ClosedLoopOutputType steerClosedLoopOutput = ClosedLoopOutputType.Voltage;
+    private static final ClosedLoopOutputType ksteerClosedLoopOutput = ClosedLoopOutputType.Voltage;
     // The closed-loop output type to use for the drive motors;
     // This affects the PID/FF gains for the drive motors
-    private static final ClosedLoopOutputType driveClosedLoopOutput = ClosedLoopOutputType.Voltage;
+    private static final ClosedLoopOutputType kdriveClosedLoopOutput = ClosedLoopOutputType.Voltage;
 
     // The stator current at which the wheels start to slip;
     // This needs to be tuned to your individual robot
@@ -80,10 +81,10 @@ public class Constants {
             .withSteerMotorGearRatio(kSteerGearRatio)
             .withWheelRadius(kWheelRadiusInches)
             .withSlipCurrent(kSlipCurrentA)
-            .withSteerMotorGains(steerGains)
-            .withDriveMotorGains(driveGains)
-            .withSteerMotorClosedLoopOutput(steerClosedLoopOutput)
-            .withDriveMotorClosedLoopOutput(driveClosedLoopOutput)
+            .withSteerMotorGains(ksteerGains)
+            .withDriveMotorGains(kdriveGains)
+            .withSteerMotorClosedLoopOutput(ksteerClosedLoopOutput)
+            .withDriveMotorClosedLoopOutput(kdriveClosedLoopOutput)
             .withSpeedAt12VoltsMps(kSpeedAt12VoltsMps)
             // .withSteerInertia(kSteerInertia) // used in simulation
             // .withDriveInertia(kDriveInertia) // used in simulation
