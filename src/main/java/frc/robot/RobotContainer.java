@@ -4,15 +4,17 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.PhotonVision;
 
 import java.io.IOException;
 
 import edu.wpi.first.wpilibj.DataLogManager;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.Autos;
+import frc.robot.commands.ExampleCommand;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
