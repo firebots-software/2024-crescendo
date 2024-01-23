@@ -4,17 +4,11 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.PhotonVision;
-
 import java.io.IOException;
-
-import edu.wpi.first.wpilibj.DataLogManager;
-import frc.robot.commands.Autos;
-import frc.robot.commands.ExampleCommand;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -30,9 +24,12 @@ public class RobotContainer {
   private final CommandXboxController m_driverController =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
 
-  /** The container for the robot. Contains subsystems, OI devices, and commands. 
-   * @throws IOException */
-  public RobotContainer(){
+  /**
+   * The container for the robot. Contains subsystems, OI devices, and commands.
+   *
+   * @throws IOException
+   */
+  public RobotContainer() {
     // Configure the trigger bindings
     m_exampleSubsystem = PhotonVision.getInstance();
     configureBindings();
@@ -50,11 +47,12 @@ public class RobotContainer {
   private void configureBindings() {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     // new Trigger(m_exampleSubsystem::exampleCondition)
-    //     .onTrue(new PhotonVision(m_exampleSubsystem));
+    // .onTrue(new PhotonVision(m_exampleSubsystem));
 
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
+    // Schedule `exampleMethodCommand` when the Xbox controller's B button is
+    // pressed,
     // cancelling on release.
-   // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+    // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
   }
 
   /**
@@ -63,7 +61,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   // public Command getAutonomousCommand() {
-  //   // An example command will be run in autonomous
-  //   return Autos.exampleAuto(m_exampleSubsystem);
+  // // An example command will be run in autonomous
+  // return Autos.exampleAuto(m_exampleSubsystem);
   // }
 }
