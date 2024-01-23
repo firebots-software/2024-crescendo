@@ -62,7 +62,7 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public double determineAngle(Pose2d a, double fkla) {
-    return 0;
+    return -1;
   }
 
   public void rotateArmToSpeakerPosition() {}
