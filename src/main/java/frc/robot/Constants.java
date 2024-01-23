@@ -39,7 +39,10 @@ public final class Constants {
     public static final double SHOOTER_SPEED = 0.8;
     public static final int NOTE_DETECTOR_PORT = 7;
     public static final int PRE_SHOOTER_PORT = 3;
-    public static final int SHOOTER_PORT = 4;
+    public static final int SHOOTER_PORT_RIGHT = 4;
+    public static final int SHOOTER_PORT_LEFT = 5;
+
+    public static final double INTAKE_WHEEL_SPEED_RPM = 100;
   }
 
   public static final class FieldDimensions {
@@ -54,5 +57,7 @@ public final class Constants {
 
   public static final class Arm {
     public static final double DEFAULT_ARM_ANGLE = 45.0;
+    public final double INTAKE_ANGLE = 0; // subject to change
+    public final double AMP_ANGLE = 100; // subject to change
   }
 }

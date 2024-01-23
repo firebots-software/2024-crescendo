@@ -3,7 +3,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.DutyCycleOut;
-import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -15,22 +15,30 @@ public class PeterSubsystem extends SubsystemBase {
   private static PeterSubsystem instance;
 
   // private final PositionDutyCycle v;
-  private final DutyCycleOut rollerMotorRequest = new DutyCycleOut(0.0);
-  private final PositionVoltage preShooterMotorPIDRequest = new PositionVoltage(0.0);
-  private final DutyCycleOut ShooterMotorRequest = new DutyCycleOut(0.0);
-  private final double INTAKE_ANGLE = 0; // subject to change
-  private final double AMP_ANGLE = 100; // subject to change
-  private DigitalInput input;
-  public TalonFX rollerMotor, preShooterMotor, shooterMotor;
+  private final DutyCycleOut rollerMotorRequest;
+
+  private DigitalInput noteSensor;
+  public TalonFX shooterMotorRight, shooterMotorLeft, shooterMotorMaster;
+  public TalonFX preShooterMotor, intakeMotor;
   private StatusSignal<Double> position;
 
   public PeterSubsystem() {
-    rollerMotor = new TalonFX(Constants.Intake.INTAKE_MOTOR_PORT);
-    input = new DigitalInput(Constants.Intake.NOTE_DETECTOR_PORT);
+    Follower f = new Follower(Constants.Intake.SHOOTER_PORT_LEFT, false);
+    shooterMotorLeft = new TalonFX(Constants.Intake.SHOOTER_PORT_LEFT);
+    shooterMotorRight = new TalonFX(Constants.Intake.SHOOTER_PORT_RIGHT);
+    shooterMotorRight.setInverted(true);
+    shooterMotorRight.setControl(f);
+
+    shooterMotorMaster = shooterMotorLeft;
+    intakeMotor = new TalonFX(Constants.Intake.INTAKE_MOTOR_PORT);
     preShooterMotor = new TalonFX(Constants.Intake.PRE_SHOOTER_PORT);
-    shooterMotor = new TalonFX(Constants.Intake.SHOOTER_PORT);
-    Slot0Configs preShooterMotorSlot = new Slot0Configs().withKP(2).withKI(0).withKD(0);
-    preShooterMotor.getConfigurator().apply(preShooterMotorSlot);
+    noteSensor = new DigitalInput(Constants.Intake.NOTE_DETECTOR_PORT);
+
+    rollerMotorRequest = new DutyCycleOut(0.0);
+    Slot0Configs s0c =
+        new Slot0Configs().withKP(0.1).withKI(0).withKD(0).withKG(0).withKV(0).withKA(0);
+
+    preShooterMotor.getConfigurator().apply(s0c);
     position = preShooterMotor.getPosition();
   }
 
@@ -42,19 +50,19 @@ public class PeterSubsystem extends SubsystemBase {
   }
 
   public void runIntake(double speed) {
-    rollerMotor.setControl(rollerMotorRequest.withOutput(speed));
+    intakeMotor.setControl(rollerMotorRequest.withOutput(speed));
   }
 
   public void runShooter(double speed) {
-    shooterMotor.setControl(ShooterMotorRequest.withOutput(speed));
+    shooterMotorMaster.set(speed);
   }
 
   public boolean notePresent() {
-    return input.get(); // true = note present
+    return noteSensor.get(); // true = note present
   }
 
   public void runPreShooter(double speed) {
-    preShooterMotor.setControl(ShooterMotorRequest.withOutput(speed));
+    preShooterMotor.set(speed);
   }
 
   public double getPreShooterPosition() {
@@ -64,6 +72,6 @@ public class PeterSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putBoolean("Note Detected", input.get()); // false = note detected!!
+    SmartDashboard.putBoolean("Note Detected", noteSensor.get()); // false = note detected!!
   }
 }

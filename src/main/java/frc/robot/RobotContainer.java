@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 // import frc.robot.commands.ArmRotateCommand;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.IntakeCommands.ArmRotateCommand;
+import frc.robot.commands.ArmRotateCommand;
 import frc.robot.commands.PeterCommands.RunShooterCommand;
 import frc.robot.subsystems.PeterSubsystem;
 
