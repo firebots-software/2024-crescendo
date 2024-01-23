@@ -24,7 +24,7 @@ public class Telemetry {
    * @param maxSpeed Maximum speed in meters per second
    */
   public Telemetry() {
-    MaxSpeed = Constants.Swerve.kPhysicalMaxSpeedMetersPerSecond;
+    MaxSpeed = Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND;
     // SignalLogger.start();
   }
 

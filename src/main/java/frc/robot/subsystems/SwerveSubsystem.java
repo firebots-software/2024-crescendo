@@ -40,12 +40,12 @@ public class SwerveSubsystem extends SwerveDrivetrain implements Subsystem {
     // turning)
     CurrentLimitsConfigs driveCurrentLimits =
         new CurrentLimitsConfigs()
-            .withSupplyCurrentLimit(Constants.Swerve.kDriveSupplyCurrentLimit)
+            .withSupplyCurrentLimit(Constants.Swerve.DRIVE_SUPPLY_CURRENT_LIMIT_AMPS)
             .withSupplyCurrentLimitEnable(true);
 
     CurrentLimitsConfigs steerCurrentLimits =
         new CurrentLimitsConfigs()
-            .withSupplyCurrentLimit(Constants.Swerve.kTurningSupplyCurrentLimit)
+            .withSupplyCurrentLimit(Constants.Swerve.TURNING_SUPPLY_CURRENT_LIMIT_AMPS)
             .withSupplyCurrentLimitEnable(true);
 
     for (SwerveModule module : Modules) {
@@ -67,11 +67,11 @@ public class SwerveSubsystem extends SwerveDrivetrain implements Subsystem {
     if (instance == null) {
       instance =
           new SwerveSubsystem(
-              Constants.Swerve.DrivetrainConstants,
-              Constants.Swerve.FrontLeft,
-              Constants.Swerve.FrontRight,
-              Constants.Swerve.BackLeft,
-              Constants.Swerve.BackRight);
+              Constants.Swerve.DRIVETRAIN_CONSTANTS,
+              Constants.Swerve.FRONT_LEFT,
+              Constants.Swerve.FRONT_RIGHT,
+              Constants.Swerve.BACK_LEFT,
+              Constants.Swerve.BACK_RIGHT);
     }
     return instance;
   }
@@ -103,7 +103,7 @@ public class SwerveSubsystem extends SwerveDrivetrain implements Subsystem {
         new HolonomicPathFollowerConfig(
             new PIDConstants(3, 0, 0), // CHANGE FOR NEW ROBOT
             new PIDConstants(3, 0, 0),
-            Constants.Swerve.kSpeedAt12VoltsMps,
+            Constants.Swerve.SPEED_AT_12V_METERS_PER_SECOND,
             driveBaseRadius,
             new ReplanningConfig()),
         () -> false, // Change this if the path needs to be flipped on red vs blue

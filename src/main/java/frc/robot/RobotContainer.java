@@ -23,7 +23,8 @@ public class RobotContainer {
 
   /* Setting up bindings for necessary control of the swerve drive platform */
 
-  private final CommandPS4Controller joystick = new CommandPS4Controller(Constants.OI.JoystickPort);
+  private final CommandPS4Controller joystick =
+      new CommandPS4Controller(Constants.OI.JOYSTICK_PORT);
   private final SwerveSubsystem driveTrain = SwerveSubsystem.getInstance();
 
   public final Telemetry logger = new Telemetry();
@@ -34,14 +35,14 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-      SwerveJoystickCommand swerveJoystickCommand =
-      new SwerveJoystickCommand(
-          () -> -joystick.getRawAxis(1),
-          () -> -joystick.getRawAxis(0),
-          () -> -joystick.getRawAxis(2),
-          () -> (joystick.getRawAxis(3) + 1d) / 2d, // joystick L2
-          () -> (joystick.getRawAxis(4) + 1d) / 2d, // joystick R2
-          driveTrain);
+    SwerveJoystickCommand swerveJoystickCommand =
+        new SwerveJoystickCommand(
+            () -> -joystick.getRawAxis(1),
+            () -> -joystick.getRawAxis(0),
+            () -> -joystick.getRawAxis(2),
+            () -> (joystick.getRawAxis(3) + 1d) / 2d, // joystick L2
+            () -> (joystick.getRawAxis(4) + 1d) / 2d, // joystick R2
+            driveTrain);
     driveTrain.setDefaultCommand(swerveJoystickCommand);
 
     // zero-heading

@@ -35,10 +35,12 @@ public class SwerveJoystickCommand extends Command {
     this.turningSpdFunction = turningSpdFunction;
     this.speedIncreaseControlFunction = speedIncreaseControlFunction;
     this.speedDecreaseControlFunction = speedDecreaseControlFunction;
-    this.xLimiter = new SlewRateLimiter(Constants.Swerve.kTeleDriveMaxAccelerationUnitsPerSecond);
-    this.yLimiter = new SlewRateLimiter(Constants.Swerve.kTeleDriveMaxAccelerationUnitsPerSecond);
+    this.xLimiter =
+        new SlewRateLimiter(Constants.Swerve.TELE_DRIVE_MAX_ACCELERATION_UNITS_PER_SECOND);
+    this.yLimiter =
+        new SlewRateLimiter(Constants.Swerve.TELE_DRIVE_MAX_ACCELERATION_UNITS_PER_SECOND);
     this.turningLimiter =
-        new SlewRateLimiter(Constants.Swerve.kTeleDriveMaxAngularAccelerationUnitsPerSecond);
+        new SlewRateLimiter(Constants.Swerve.TELE_DRIVE_MAX_ANGULAR_ACCELERATION_UNITS_PER_SECOND);
     this.swerveDrivetrain = swerveSubsystem;
 
     // Adds the subsystem as a requirement (prevents two commands from acting on subsystem at once)
@@ -65,28 +67,33 @@ public class SwerveJoystickCommand extends Command {
     }
 
     // 3. Apply deadband
-    xSpeed = Math.abs(xSpeed) > Constants.OI.kLeftJoystickDeadband ? xSpeed : 0.0;
-    ySpeed = Math.abs(ySpeed) > Constants.OI.kLeftJoystickDeadband ? ySpeed : 0.0;
+    xSpeed = Math.abs(xSpeed) > Constants.OI.LEFT_JOYSTICK_DEADBAND ? xSpeed : 0.0;
+    ySpeed = Math.abs(ySpeed) > Constants.OI.LEFT_JOYSTICK_DEADBAND ? ySpeed : 0.0;
     turningSpeed =
-        Math.abs(turningSpeed) > Constants.OI.kRightJoystickDeadband ? turningSpeed : 0.0;
+        Math.abs(turningSpeed) > Constants.OI.RIGHT_JOYSTICK_DEADBAND ? turningSpeed : 0.0;
 
     // 4. Make the driving smoother
-    // There are two triggers to change the speed of the swerve driverbase. 
-    //We use both inputs to find how fast the swerve drivebase should be going.
+    // There are two triggers to change the speed of the swerve driverbase.
+    // We use both inputs to find how fast the swerve drivebase should be going.
     double driveSpeed =
-        (Constants.Swerve.kTeleDriveMaxPercentSpeed - Constants.Swerve.kTeleDriveMinPercentSpeed)
+        (Constants.Swerve.TELE_DRIVE_MAX_PERCENT_SPEED
+                    - Constants.Swerve.TELE_DRIVE_MIN_PERCENT_SPEED)
                 * (speedIncreaseControlFunction.get() - speedDecreaseControlFunction.get())
-            + Constants.Swerve.kTeleDriveMinPercentSpeed;
+            + Constants.Swerve.TELE_DRIVE_MIN_PERCENT_SPEED;
 
     // Applies slew rate limieter
     xSpeed =
-        xLimiter.calculate(xSpeed) * driveSpeed * Constants.Swerve.kPhysicalMaxSpeedMetersPerSecond;
+        xLimiter.calculate(xSpeed)
+            * driveSpeed
+            * Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND;
     ySpeed =
-        yLimiter.calculate(ySpeed) * driveSpeed * Constants.Swerve.kPhysicalMaxSpeedMetersPerSecond;
+        yLimiter.calculate(ySpeed)
+            * driveSpeed
+            * Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND;
     turningSpeed =
         turningLimiter.calculate(turningSpeed)
             * driveSpeed
-            * Constants.Swerve.kPhysicalMaxAngularSpeedRadiansPerSecond;
+            * Constants.Swerve.PHYSICAL_MAX_ANGLUAR_SPEED_RADIANS_PER_SECOND;
 
     // Final values to apply to drivetrain
     final double x = xSpeed;
@@ -101,8 +108,7 @@ public class SwerveJoystickCommand extends Command {
 
     // Applies request
     this.swerveDrivetrain.setControl(
-        drive.withVelocityX(x).withVelocityY(y).withRotationalRate(turn)
-        );
+        drive.withVelocityX(x).withVelocityY(y).withRotationalRate(turn));
   } // Drive counterclockwise with negative X (left))
 
   @Override
