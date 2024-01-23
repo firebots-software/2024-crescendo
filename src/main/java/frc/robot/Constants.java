@@ -33,10 +33,10 @@ public final class Constants {
     public static final int PS_BUTTON_PORT = 13;
     public static final int BIG_BUTTON_PORT = 14;
   }
-  public static final class Intake 
-  {
+
+  public static final class Intake {
     public static final int INTAKE_MOTOR_PORT = 14;
-    public static final double SHOOTER_SPEED = 0.8; 
+    public static final double SHOOTER_SPEED = 0.8;
     public static final int NOTE_DETECTOR_PORT = 7;
     public static final int PRE_SHOOTER_PORT = 3;
     public static final int SHOOTER_PORT = 4;
@@ -48,9 +48,7 @@ public final class Constants {
     public static final double intakeModeHeightInInches = 4.0;
     public static final double speakerHeightMeters = Units.inchesToMeters(speakerHeightInInches);
     public static final double ampHeightMeters = Units.inchesToMeters(ampHeightInInches);
-    public static final double intakeModeHeightMeters = Units.inchesToMeters(intakeModeHeightInInches);
-
+    public static final double intakeModeHeightMeters =
+        Units.inchesToMeters(intakeModeHeightInInches);
   }
-  
-
 }

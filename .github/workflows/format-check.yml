@@ -1,0 +1,19 @@
+name: Format check
+on:
+  push:
+    branches: main
+  pull_request:
+    branches: main
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: wpilib/roborio-cross-ubuntu:2024-22.04
+    steps:
+    - uses: actions/checkout@v4
+    - name: Add repository to git safe directories
+      run: git config --global --add safe.directory $GITHUB_WORKSPACE
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+    - name: Check formatting
+      run: ./gradlew spotlessCheck

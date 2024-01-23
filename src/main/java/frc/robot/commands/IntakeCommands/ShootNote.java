@@ -4,12 +4,12 @@
 
 package frc.robot.commands.IntakeCommands;
 
-import frc.robot.subsystems.PeterSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.PeterSubsystem;
 
 /** An example command that uses an example subsystem. */
 public class ShootNote extends Command {
-  private PeterSubsystem shooter; 
+  private PeterSubsystem shooter;
 
   /**
    * Creates a new ExampleCommand.
@@ -43,6 +43,6 @@ public class ShootNote extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false; //wait for x seconds
+    return false; // wait for x seconds
   }
 }

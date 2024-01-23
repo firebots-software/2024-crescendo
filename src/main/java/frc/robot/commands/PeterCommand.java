@@ -3,16 +3,16 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.commands;
-import frc.robot.subsystems.PeterSubsystem;
-import edu.wpi.first.wpilibj2.command.Command;
 
+import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.PeterSubsystem;
 
 public class PeterCommand extends Command {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final PeterSubsystem peter;
 
   public PeterCommand(PeterSubsystem subsystem) {
-  peter = subsystem;
+    peter = subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
   }
