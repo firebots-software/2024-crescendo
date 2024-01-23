@@ -3,15 +3,14 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
-import frc.robot.Constants.OperatorConstants;
-import frc.robot.subsystems.PeterSubsystem;
+
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.ArmRotateCommand;
-import frc.robot.commands.IntakeCommands.RunShooterCommand;
-import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.commands.Autos;
+// import frc.robot.commands.ArmRotateCommand;
+import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.PeterCommands.RunShooterCommand;
+import frc.robot.subsystems.PeterSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -24,7 +23,6 @@ public class RobotContainer {
   private final CommandPS4Controller driverController;
 
   private final PeterSubsystem peter = PeterSubsystem.getInstance();
-
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -43,9 +41,9 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    driverController.square().whileTrue(new RunShooterCommand(peter)); 
-    driverController.circle().whileTrue(new ArmRotateCommand(peter, )); //to do: figure out encoder vals
-    
-    
+    driverController.square().whileTrue(new RunShooterCommand(peter));
+    // driverController.circle().whileTrue(new ArmRotateCommand(peter, )); //to do: figure out
+    // encoder vals
+
   }
 }

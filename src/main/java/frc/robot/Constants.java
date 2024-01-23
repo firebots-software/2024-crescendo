@@ -33,24 +33,26 @@ public final class Constants {
     public static final int PS_BUTTON_PORT = 13;
     public static final int BIG_BUTTON_PORT = 14;
   }
-  public static final class Intake 
-  {
+
+  public static final class Intake {
     public static final int INTAKE_MOTOR_PORT = 14;
-    public static final double SHOOTER_SPEED = 0.8; 
+    public static final double SHOOTER_SPEED = 0.8;
     public static final int NOTE_DETECTOR_PORT = 7;
     public static final int PRE_SHOOTER_PORT = 3;
     public static final int SHOOTER_PORT = 4;
   }
 
   public static final class FieldDimensions {
-    public static final double speakerHeightInInches = 78.0;
-    public static final double ampHeightInInches = 35.0;
-    public static final double intakeModeHeightInInches = 4.0;
-    public static final double speakerHeightMeters = Units.inchesToMeters(speakerHeightInInches);
-    public static final double ampHeightMeters = Units.inchesToMeters(ampHeightInInches);
-    public static final double intakeModeHeightMeters = Units.inchesToMeters(intakeModeHeightInInches);
-
+    public static final double SPEAKER_HEIGHT_INCHES = 78.0;
+    public static final double AMP_HEIGHT_INCHES = 35.0;
+    public static final double INTAKE_MODE_HEIGHT_INCHES = 4.0;
+    public static final double SPEAKER_HEIGHT_METERS = Units.inchesToMeters(SPEAKER_HEIGHT_INCHES);
+    public static final double AMP_HEIGHT_METERS = Units.inchesToMeters(AMP_HEIGHT_INCHES);
+    public static final double INTAKE_MODE_HEIGHT_METERS =
+        Units.inchesToMeters(INTAKE_MODE_HEIGHT_INCHES);
   }
-  
 
+  public static final class Arm {
+    public static final double DEFAULT_ARM_ANGLE = 45.0;
+  }
 }
