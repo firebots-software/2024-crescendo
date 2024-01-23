@@ -1,4 +1,8 @@
+<<<<<<< HEAD:src/main/java/frc/robot/commands/PeterCommands/RunShooterCommand.java
 package frc.robot.commands.PeterCommands;
+=======
+package frc.robot.commands.IntakeCommands;
+>>>>>>> 72fb8899ac45ab31b52f977fe44e3d7ec39dba6a:src/main/java/frc/robot/commands/IntakeCommands/RunShooterCommand.java
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;

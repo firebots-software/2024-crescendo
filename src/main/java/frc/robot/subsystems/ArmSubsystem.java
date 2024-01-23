@@ -1,26 +1,28 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.Follower;
-import com.ctre.phoenix6.controls.PositionDutyCycle;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ArmSubsystem extends SubsystemBase {
 
   private TalonFX r1, r2, l1, l2;
   private TalonFX master;
-  private TrapezoidProfile profile;
-  private TrapezoidProfile.Constraints tp;
+  // private TrapezoidProfile profile;
+  // private TrapezoidProfile.Constraints tp;
 
   private double setPos;
 
+  private MotionMagicConfigs mmc;
+
   public ArmSubsystem(int portR1, int portR2, int portL1, int portL2) {
-    tp = new TrapezoidProfile.Constraints(10, 20);
-    profile = new TrapezoidProfile(tp);
+    // tp = new TrapezoidProfile.Constraints(10, 20);
+    // profile = new TrapezoidProfile(tp);
     CurrentLimitsConfigs clc = new CurrentLimitsConfigs().withSupplyCurrentLimit(5.0);
 
     Slot0Configs s0c =
@@ -46,42 +48,42 @@ public class ArmSubsystem extends SubsystemBase {
     master = r1;
     master.getConfigurator().apply(s0c);
     setPos = master.getPosition().getValue();
+
+    mmc = new MotionMagicConfigs();
+    mmc.MotionMagicCruiseVelocity = 80;
+    mmc.MotionMagicAcceleration = 160;
+    mmc.MotionMagicJerk = 1600;
+    master.getConfigurator().apply(mmc);
   }
 
-  public void setPosition(double setPos) {
-    this.setPos = setPos;
-    toPosition();
+  public void setPosition(double angleDegrees) {
+    MotionMagicVoltage m_request = new MotionMagicVoltage(master.getPosition().getValue());
+    master.setControl(m_request.withPosition(angleDegrees / 360));
   }
 
-  public void toPosition() {
-    TrapezoidProfile.State setPoint = new TrapezoidProfile.State(setPos, 0);
-    TrapezoidProfile.State currentPoint =
-        new TrapezoidProfile.State(
-            master.getPosition().getValue(), master.getVelocity().getValue());
-
-    setPoint = profile.calculate(profile.totalTime(), currentPoint, setPoint);
-    PositionDutyCycle m_positionControl = new PositionDutyCycle(setPoint.position);
-    m_positionControl.Position = setPoint.position;
-    m_positionControl.Velocity = setPoint.velocity;
-    master.setControl(m_positionControl);
+  public double determineAngle(Pose2d a, double fkla) {
+    return 0;
   }
 
-  // public double rotateArmToSpeakerPosition(double pos, double SpeakerHeight){
-  //     return determineAngle(pos, SpeakerHeight);
+  public void rotateArmToSpeakerPosition() {}
+
+  public void rotateArmToRestPosition() {}
+
+  // public void toPosition() {
+  //   // Magic Motion:
+  //   MotionMagicVoltage m_request = new MotionMagicVoltage(master.getPosition().getValue());
+  //   master.setControl(m_request.withPosition(setPos));
+
+  //   // Trapizoidal Motion:
+  //   // TrapezoidProfile.State setPoint = new TrapezoidProfile.State(setPos, 0);
+  //   // TrapezoidProfile.State currentPoint = new
+  //   // TrapezoidProfile.State(master.getPosition().getValue(),master.getVelocity().getValue());
+
+  //   // setPoint = profile.calculate(profile.totalTime(), currentPoint, setPoint);
+  //   // PositionDutyCycle m_positionControl = new
+  //   // PositionDutyCycle(setPoint.position);
+  //   // m_positionControl.Position = setPoint.position;
+  //   // m_positionControl.Velocity = setPoint.velocity;
+  //   // master.setControl(m_positionControl);
   // }
-
-  public double determineAngle(Pose2d pos, double height) {
-    double x = pos.getX();
-    double y = pos.getY();
-    return java.lang.Math.atan(java.lang.Math.sqrt(x * x + y * y) / height);
-  }
-
-  // public Pose2d determineRobotPosition() {
-  // vision stuff
-  // return pos;
-  // }
-
-  public void goToArmHeight(double angle) {
-    // motor stuff
-  }
 }
