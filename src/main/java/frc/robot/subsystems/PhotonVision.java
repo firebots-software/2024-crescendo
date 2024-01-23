@@ -47,8 +47,8 @@ public class PhotonVision extends SubsystemBase {
    
    private AprilTagFieldLayout aprilTagFieldLayout;
    private PhotonPoseEstimator photonPoseEstimator;
-   private PhotonPipelineResult pResult;
-   private PhotonTrackedTarget target;
+   private PhotonPipelineResult savedResult;
+   private PhotonTrackedTarget savedTarget;
 
    private static double cameraHeight = 0.3;
    private static double targetHeight = 1;
@@ -63,13 +63,13 @@ public class PhotonVision extends SubsystemBase {
      * @apiNote Initializes AprilTagFieldLayout
      * @apiNote Initializes PhotonPoseEstimator
      * @apiNote Runs camera.getLatestResult()
-     * @apiNote Updates target (pResult.getBestTarget())
+     * @apiNote Updates target (savedResult.getBestTarget())
      */
    private PhotonVision(){
     aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
     photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.LOWEST_AMBIGUITY, camera, robotToCam);
-    pResult = camera.getLatestResult();
-    target = pResult.getBestTarget();
+    savedResult = camera.getLatestResult();
+    savedTarget = savedResult.getBestTarget();
    }
 
    /**
@@ -88,8 +88,8 @@ public class PhotonVision extends SubsystemBase {
      * Updates the camera pipeline and the best target variable. Target not guaranteed to exist; might be null.
      */
     public void update(){
-        pResult = camera.getLatestResult();
-        target = pResult.getBestTarget();
+        savedResult = camera.getLatestResult();
+        savedTarget = savedResult.getBestTarget();
     }
 
     /**
@@ -99,8 +99,8 @@ public class PhotonVision extends SubsystemBase {
      * @param tagID The ID of the AprilTag to look for while detecting.
      */
     public void update(int tagID){
-        pResult = camera.getLatestResult();
-        List<PhotonTrackedTarget> targetsFound = pResult.getTargets();
+        savedResult = camera.getLatestResult();
+        List<PhotonTrackedTarget> targetsFound = savedResult.getTargets();
         PhotonTrackedTarget match = null;
         for (int i = 0; i < targetsFound.size(); i++) {
             PhotonTrackedTarget t = targetsFound.get(i);
@@ -109,8 +109,8 @@ public class PhotonVision extends SubsystemBase {
                 break;
             }
         }
-        if(targetsFound.size() > 0 && match == null) match = pResult.getBestTarget();
-        target = match;
+        if(targetsFound.size() > 0 && match == null) match = savedResult.getBestTarget();
+        savedTarget = match;
     }
 
     /**
@@ -120,7 +120,7 @@ public class PhotonVision extends SubsystemBase {
      */
     public boolean hasTargets(boolean runUpdate){
         if(runUpdate) update();
-        boolean hasTargets = pResult.hasTargets();
+        boolean hasTargets = savedResult.hasTargets();
         return hasTargets;
     }
 
@@ -141,7 +141,7 @@ public class PhotonVision extends SubsystemBase {
     public int getTagID(boolean updateTarget){
         if(!hasTargets(updateTarget)) return 0;
 
-        return target.getFiducialId();
+        return savedTarget.getFiducialId();
     }
 
     /**
@@ -153,9 +153,9 @@ public class PhotonVision extends SubsystemBase {
      */
     public int getTagID(int tagID, boolean updateTarget){
         if(updateTarget) update(tagID);
-        if(target == null) return 0;
+        if(savedTarget == null) return 0;
 
-        return target.getFiducialId();
+        return savedTarget.getFiducialId();
     }
 
     /**
@@ -179,7 +179,7 @@ public class PhotonVision extends SubsystemBase {
     public Transform3d getBestCamToTarget(boolean updateTarget){
         if(!hasTargets(updateTarget)) return null;
 
-        return target.getBestCameraToTarget();
+        return savedTarget.getBestCameraToTarget();
     }
 
     /**
@@ -190,7 +190,7 @@ public class PhotonVision extends SubsystemBase {
     public double getYaw(boolean updateTarget){
         if(!hasTargets(updateTarget)) return 0;
 
-        return target.getYaw();
+        return savedTarget.getYaw();
     }
 
     /**
@@ -203,12 +203,13 @@ public class PhotonVision extends SubsystemBase {
         if(!hasTargets(updateTarget)) return 0;
 
         double distance = PhotonUtils.calculateDistanceToTargetMeters(cameraHeight, targetHeight, cameraPitch,
-                Units.degreesToRadians(target.getPitch()));
+                Units.degreesToRadians(savedTarget.getPitch()));
         return distance;
     }
 
     /**
-     * (NEEDS TESTING) Updates target if desired. Gets the Robot's Pose3D on the field using PhotonPoseEstimator. If no target found, returns null.
+     * (NEEDS TESTING) Updates target if desired. Gets the Robot's Pose3D on the field using PhotonPoseEstimator.
+     * If no target found, returns null.
      * If PhotonPoseEstimator fails to get the pose, returns a new Pose3D with empty coordinates (0, 0, 0) and rotation3d (0, 0, 0).
      * @return Estimated Pose3D of the robot on the field (or null if no target) (or empty Pose3D if calculation failed).
      */
