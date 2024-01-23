@@ -10,6 +10,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.ArmRotateCommand;
 import frc.robot.commands.IntakeCommands.RunShooterCommand;
+import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.commands.Autos;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
