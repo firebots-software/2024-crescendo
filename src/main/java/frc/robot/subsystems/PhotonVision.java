@@ -172,7 +172,7 @@ public class PhotonVision extends SubsystemBase {
     // height.
     Pose3d robotPose3d = getRobotPose3dFromTag();
     Transform3d transformToTarget = getTransformToTarget();
-    Pose3d robotpose3d2 = getRobotPose3d();
+    Pose3d robotpose3d2 = getRobotPose3dFromTag();
     SmartDashboard.putNumber("PoseX", robotPose3d.getX());
     SmartDashboard.putNumber("PoseY", robotPose3d.getY());
     SmartDashboard.putNumber("PoseZ", robotPose3d.getZ());
