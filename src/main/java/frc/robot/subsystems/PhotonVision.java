@@ -38,25 +38,24 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class PhotonVision extends SubsystemBase {
-   private static PhotonVision instance; 
-
-   // Note: To connect to PhotonVision dashboard, type in http://photonvision.local:5800/ in browser
+    // Note: To connect to PhotonVision dashboard, type in http://photonvision.local:5800/ in browser
    // Note: Vision progress doc: https://docs.google.com/document/d/1dcJlagq1mkPYdsJ_vEmH3t5qBNc2CaBrx94pEgkzsrA/edit?usp=sharing
    
+   private static PhotonVision instance; 
    private PhotonCamera camera = new PhotonCamera("FrontCam");
-   
    private AprilTagFieldLayout aprilTagFieldLayout;
    private PhotonPoseEstimator photonPoseEstimator;
+
+   private Pose3d savedPoseFromPPE;
+   private Pose3d savedPoseFromTag;
    private PhotonPipelineResult savedResult;
    private PhotonTrackedTarget savedTarget;
 
-   private static double cameraHeight = 0.3;
-   private static double targetHeight = 1;
-   private static double cameraPitch = Math.PI/8;
+   private static double cameraHeight = 0.3; // NEEDS TUNING
+   private static double targetHeight = 1; // NEEDS TUNING
+   private static double cameraPitch = Math.PI/8; // NEEDS TUNING
+   // NEEDS TUNING
    private Transform3d robotToCam = new Transform3d(new Translation3d(0.5, -0.25, cameraHeight), new Rotation3d(0, cameraPitch, 0));
- 
-   // Need to set up gyro correctly; this is most likely wrong
-   AnalogGyro gyro = new AnalogGyro(0);
 
     /**
      * PhotonVision constructor (private).

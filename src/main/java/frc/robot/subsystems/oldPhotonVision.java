@@ -89,36 +89,6 @@ public class oldPhotonVision extends SubsystemBase {
     return distance;
   }
 
-  public Pose3d getRobotPose3d() {
-    // //TODO: If has no target, the numbers freeze, so make it so that savedResult gets cleared
-    // Optional<EstimatedRobotPose> result = photonPoseEstimator.update();
-    // if (result.isPresent()) {
-    //     savedResult = result.get().estimatedPose;
-    //     return savedResult;
-    // } else {
-    //     return savedResult;
-    // }
-    PhotonPipelineResult result = getPipeline();
-    if (!result.hasTargets()) {
-      return savedResult;
-    }
-
-    PhotonTrackedTarget target = getBestTarget(getPipeline());
-    savedTarget = target;
-    Optional<Pose3d> tagPose = aprilTagFieldLayout.getTagPose(target.getFiducialId());
-    SmartDashboard.putNumber("Tag pose x", tagPose.get().getX());
-    SmartDashboard.putNumber("Tag pose y", tagPose.get().getY());
-    SmartDashboard.putNumber("Tag pose z", tagPose.get().getZ());
-    if (tagPose.isEmpty()) {
-      return savedResult;
-    } else {
-      savedResult =
-          PhotonUtils.estimateFieldToRobotAprilTag(
-              getTransformToTarget(), tagPose.get(), robotToCam);
-    }
-    return savedResult;
-  }
-
   public Pose3d getRobotPose3dFromTag() {
     PhotonPipelineResult result = getPipeline();
     if (!result.hasTargets()) {
@@ -154,15 +124,15 @@ public class oldPhotonVision extends SubsystemBase {
     return getTransformToTarget().getTranslation().getNorm();
   }
 
-  public double get3dDistFromPose() {
-    Pose3d robotPose = getRobotPose3dFromTag();
-    Pose3d tagPose = aprilTagFieldLayout.getTagPose(savedTarget.getFiducialId()).get();
-    double dx = robotPose.getX() - tagPose.getX();
-    double dy = robotPose.getY() - tagPose.getY();
-    double dz = robotPose.getZ() - tagPose.getZ();
-    double dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
-    return dist;
-  }
+//   public double get3dDistFromPose() {
+//     Pose3d robotPose = getRobotPose3dFromTag();
+//     Pose3d tagPose = aprilTagFieldLayout.getTagPose(savedTarget.getFiducialId()).get();
+//     double dx = robotPose.getX() - tagPose.getX();
+//     double dy = robotPose.getY() - tagPose.getY();
+//     double dz = robotPose.getZ() - tagPose.getZ();
+//     double dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
+//     return dist;
+//   }
 
   public void periodic() {
     // current problem:
@@ -172,23 +142,18 @@ public class oldPhotonVision extends SubsystemBase {
     // height.
     Pose3d robotPose3d = getRobotPose3dFromTag();
     Transform3d transformToTarget = getTransformToTarget();
-    Pose3d robotpose3d2 = getRobotPose3d();
     SmartDashboard.putNumber("PoseX", robotPose3d.getX());
     SmartDashboard.putNumber("PoseY", robotPose3d.getY());
     SmartDashboard.putNumber("PoseZ", robotPose3d.getZ());
     SmartDashboard.putNumber("Rot Z", robotPose3d.getRotation().getAngle());
-    SmartDashboard.putNumber("PoseX2", robotpose3d2.getX());
-    SmartDashboard.putNumber("PoseY2", robotpose3d2.getY());
-    SmartDashboard.putNumber("PoseZ2", robotpose3d2.getZ());
-    SmartDashboard.putNumber("Rot Z2", robotpose3d2.getRotation().getAngle());
 
     SmartDashboard.putNumber("Transform X", transformToTarget.getTranslation().getX());
     SmartDashboard.putNumber("Transform Y", transformToTarget.getTranslation().getY());
     SmartDashboard.putNumber("Transform Z", transformToTarget.getTranslation().getZ());
     SmartDashboard.putNumber("Transform Rot Angle", transformToTarget.getRotation().getAngle());
-    SmartDashboard.putNumber("Dist", get3dDist());
-    SmartDashboard.putNumber("Dist2", get3dDistFromPose());
-    SmartDashboard.putNumber("Dist3", getDistance());
+    SmartDashboard.putNumber("3D Dist", get3dDist());
+    // SmartDashboard.putNumber("Dist2", get3dDistFromPose());
+    SmartDashboard.putNumber("Estimated Dist", getDistance());
     // SmartDashboard.putNumber("Gyro", gyro.getAngle());
 
   }
