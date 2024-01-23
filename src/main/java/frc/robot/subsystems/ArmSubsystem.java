@@ -54,26 +54,26 @@ public class ArmSubsystem {
     master.getConfigurator().apply(mmc);
   }
 
-  public void setPosition(double setPos) {
-    this.setPos = setPos;
-    toPosition();
-  }
-
-  public void toPosition() {
-    // Magic Motion:
+  public void setPosition(double angleRotations) {
     MotionMagicVoltage m_request = new MotionMagicVoltage(master.getPosition().getValue());
     master.setControl(m_request.withPosition(setPos));
-
-    // Trapizoidal Motion:
-    // TrapezoidProfile.State setPoint = new TrapezoidProfile.State(setPos, 0);
-    // TrapezoidProfile.State currentPoint = new
-    // TrapezoidProfile.State(master.getPosition().getValue(),master.getVelocity().getValue());
-
-    // setPoint = profile.calculate(profile.totalTime(), currentPoint, setPoint);
-    // PositionDutyCycle m_positionControl = new
-    // PositionDutyCycle(setPoint.position);
-    // m_positionControl.Position = setPoint.position;
-    // m_positionControl.Velocity = setPoint.velocity;
-    // master.setControl(m_positionControl);
   }
+
+  // public void toPosition() {
+  //   // Magic Motion:
+  //   MotionMagicVoltage m_request = new MotionMagicVoltage(master.getPosition().getValue());
+  //   master.setControl(m_request.withPosition(setPos));
+
+  //   // Trapizoidal Motion:
+  //   // TrapezoidProfile.State setPoint = new TrapezoidProfile.State(setPos, 0);
+  //   // TrapezoidProfile.State currentPoint = new
+  //   // TrapezoidProfile.State(master.getPosition().getValue(),master.getVelocity().getValue());
+
+  //   // setPoint = profile.calculate(profile.totalTime(), currentPoint, setPoint);
+  //   // PositionDutyCycle m_positionControl = new
+  //   // PositionDutyCycle(setPoint.position);
+  //   // m_positionControl.Position = setPoint.position;
+  //   // m_positionControl.Velocity = setPoint.velocity;
+  //   // master.setControl(m_positionControl);
+  // }
 }
