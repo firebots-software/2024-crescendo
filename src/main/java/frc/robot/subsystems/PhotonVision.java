@@ -89,35 +89,35 @@ public class PhotonVision extends SubsystemBase {
     return distance;
   }
 
-  public Pose3d getRobotPose3d() {
-    // //TODO: If has no target, the numbers freeze, so make it so that savedResult gets cleared
-    // Optional<EstimatedRobotPose> result = photonPoseEstimator.update();
-    // if (result.isPresent()) {
-    //     savedResult = result.get().estimatedPose;
-    //     return savedResult;
-    // } else {
-    //     return savedResult;
-    // }
-    PhotonPipelineResult result = getPipeline();
-    if (!result.hasTargets()) {
-      return savedResult;
-    }
+  //   public Pose3d getRobotPose3d() {
+  //     // //TODO: If has no target, the numbers freeze, so make it so that savedResult gets cleared
+  //     // Optional<EstimatedRobotPose> result = photonPoseEstimator.update();
+  //     // if (result.isPresent()) {
+  //     //     savedResult = result.get().estimatedPose;
+  //     //     return savedResult;
+  //     // } else {
+  //     //     return savedResult;
+  //     // }
+  //     PhotonPipelineResult result = getPipeline();
+  //     if (!result.hasTargets()) {
+  //       return savedResult;
+  //     }
 
-    PhotonTrackedTarget target = getBestTarget(getPipeline());
-    savedTarget = target;
-    Optional<Pose3d> tagPose = aprilTagFieldLayout.getTagPose(target.getFiducialId());
-    SmartDashboard.putNumber("Tag pose x", tagPose.get().getX());
-    SmartDashboard.putNumber("Tag pose y", tagPose.get().getY());
-    SmartDashboard.putNumber("Tag pose z", tagPose.get().getZ());
-    if (tagPose.isEmpty()) {
-      return savedResult;
-    } else {
-      savedResult =
-          PhotonUtils.estimateFieldToRobotAprilTag(
-              getTransformToTarget(), tagPose.get(), robotToCam);
-    }
-    return savedResult;
-  }
+  //     PhotonTrackedTarget target = getBestTarget(getPipeline());
+  //     savedTarget = target;
+  //     Optional<Pose3d> tagPose = aprilTagFieldLayout.getTagPose(target.getFiducialId());
+  //     SmartDashboard.putNumber("Tag pose x", tagPose.get().getX());
+  //     SmartDashboard.putNumber("Tag pose y", tagPose.get().getY());
+  //     SmartDashboard.putNumber("Tag pose z", tagPose.get().getZ());
+  //     if (tagPose.isEmpty()) {
+  //       return savedResult;
+  //     } else {
+  //       savedResult =
+  //           PhotonUtils.estimateFieldToRobotAprilTag(
+  //               getTransformToTarget(), tagPose.get(), robotToCam);
+  //     }
+  //     return savedResult;
+  //   }
 
   public Pose3d getRobotPose3dFromTag() {
     PhotonPipelineResult result = getPipeline();
