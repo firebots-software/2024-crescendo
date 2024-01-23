@@ -4,21 +4,14 @@
 
 package frc.robot;
 
-<<<<<<< HEAD
-=======
 import edu.wpi.first.wpilibj2.command.Command;
->>>>>>> 72fb8899ac45ab31b52f977fe44e3d7ec39dba6a
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 // import frc.robot.commands.ArmRotateCommand;
 import frc.robot.Constants.OperatorConstants;
-<<<<<<< HEAD
-import frc.robot.commands.PeterCommands.RunShooterCommand;
-=======
 import frc.robot.commands.IntakeCommands.ArmRotateCommand;
-import frc.robot.commands.IntakeCommands.RunShooterCommand;
->>>>>>> 72fb8899ac45ab31b52f977fe44e3d7ec39dba6a
+import frc.robot.commands.PeterCommands.RunShooterCommand;
 import frc.robot.subsystems.PeterSubsystem;
 
 /**
@@ -51,11 +44,6 @@ public class RobotContainer {
    */
   private void configureBindings() {
     driverController.square().whileTrue(new RunShooterCommand(peter));
-<<<<<<< HEAD
-    // driverController.circle().whileTrue(new ArmRotateCommand(peter, )); //to do: figure out
-    // encoder vals
-
-=======
     driverController
         .circle()
         .whileTrue(new ArmRotateCommand(peter)); // to do: figure out encoder vals
@@ -69,6 +57,5 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
     return null;
->>>>>>> 72fb8899ac45ab31b52f977fe44e3d7ec39dba6a
   }
 }
