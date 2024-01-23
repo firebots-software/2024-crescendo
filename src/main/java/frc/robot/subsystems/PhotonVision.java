@@ -238,45 +238,45 @@ public class PhotonVision extends SubsystemBase {
         return robot;
     }
 
-    /**
-     * (NEEDS TESTING) Updates target if desired. Gets the Robot's Pose2D on the field using PhotonUtils.estimateFieldToRobot().
-     * If no targets found, returns null.
-     * @return The Robot's Pose2D on the field (or null if no targets).
-     */
-    public Pose2d getPose2d(boolean updateTarget){
-        if(!hasTargets(updateTarget)) return null;
+    // /**
+    //  * (NEEDS TESTING) Updates target if desired. Gets the Robot's Pose2D on the field using PhotonUtils.estimateFieldToRobot().
+    //  * If no targets found, returns null.
+    //  * @return The Robot's Pose2D on the field (or null if no targets).
+    //  */
+    // public Pose2d getPose2d(boolean updateTarget){
+    //     if(!hasTargets(updateTarget)) return null;
 
-        // This tries to use PhotonUtils.estimateFieldToRobot() to get the robot's Pose2d.
-        // I followed the PhotonVision documentation:
-        // https://docs.photonvision.org/en/latest/docs/programming/photonlib/getting-target-data.html
+    //     // This tries to use PhotonUtils.estimateFieldToRobot() to get the robot's Pose2d.
+    //     // I followed the PhotonVision documentation:
+    //     // https://docs.photonvision.org/en/latest/docs/programming/photonlib/getting-target-data.html
 
-        // TO-DO: Test this on robot and fix anything that needs fixing for this to work.
+    //     // TO-DO: Test this on robot and fix anything that needs fixing for this to work.
 
-        // these shouldn't need tuning.
-        PhotonPipelineResult result = camera.getLatestResult();
-        PhotonTrackedTarget target = null;
-        if(result.hasTargets()) target = result.getBestTarget();
-        if(target == null) return null;
+    //     // these shouldn't need tuning.
+    //     PhotonPipelineResult result = camera.getLatestResult();
+    //     PhotonTrackedTarget target = null;
+    //     if(result.hasTargets()) target = result.getBestTarget();
+    //     if(target == null) return null;
 
-        double targetPitch = Units.degreesToRadians(target.getPitch());
-        Rotation2d targetYaw = Rotation2d.fromDegrees(-target.getYaw());
+    //     double targetPitch = Units.degreesToRadians(target.getPitch());
+    //     Rotation2d targetYaw = Rotation2d.fromDegrees(-target.getYaw());
 
-        // need the pose of the AprilTag. somehow use TargetID to get the pose.
-        //int targetID = target.getFiducialId();
-        Pose2d targetPose = new Pose2d(-2, 3, new Rotation2d());
+    //     // need the pose of the AprilTag. somehow use TargetID to get the pose.
+    //     //int targetID = target.getFiducialId();
+    //     Pose2d targetPose = new Pose2d(-2, 3, new Rotation2d());
 
-        // need to tune this constant later
-        Transform2d cameraToRobot = new Transform2d(0.5, 0.5, new Rotation2d());
+    //     // need to tune this constant later
+    //     Transform2d cameraToRobot = new Transform2d(0.5, 0.5, new Rotation2d());
 
-        // PhotonVision's built in Pose2D estimator. Need to have actual parameters.
-        // the gyro.getRotation2d() has to be rechecked; not sure if this is the right way to implement.
-        Pose2d robotPose = PhotonUtils.estimateFieldToRobot(
-            cameraHeight, targetHeight, cameraPitch, targetPitch, targetYaw, gyro.getRotation2d(), targetPose, cameraToRobot
-        );
+    //     // PhotonVision's built in Pose2D estimator. Need to have actual parameters.
+    //     // the gyro.getRotation2d() has to be rechecked; not sure if this is the right way to implement.
+    //     Pose2d robotPose = PhotonUtils.estimateFieldToRobot(
+    //         cameraHeight, targetHeight, cameraPitch, targetPitch, targetYaw, gyro.getRotation2d(), targetPose, cameraToRobot
+    //     );
 
-        // for testing: try displaying the robotPose
-        return robotPose;
-    }
+    //     // for testing: try displaying the robotPose
+    //     return robotPose;
+    // }
     
     public void periodic(){
         //System.out.println("Testing the output in terminal");
