@@ -26,10 +26,10 @@ public class IntakeWithSensorCommand extends Command {
     if (peterSubsystem.notePresent()) {
       peterSubsystem.runIntake(0);
       while (peterSubsystem.getPreShooterPosition() < 1024) { // whatever is 3 inches pls be right
-        peterSubsystem.runPreShooter(0.5);
+        // peterSubsystem.runPreShooter(0.5);
       }
     }
-    peterSubsystem.runPreShooter(0);
+    // peterSubsystem.runPreShooter(0);
   }
 
   // Called once the command ends or is interrupted.

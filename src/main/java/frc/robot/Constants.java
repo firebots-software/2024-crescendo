@@ -43,6 +43,7 @@ public final class Constants {
     public static final int SHOOTER_PORT_LEFT = 5;
 
     public static final double INTAKE_WHEEL_SPEED_RPM = 100;
+    public static final double ROTATIONS_TO_SHOOTER = 5d;
   }
 
   public static final class FieldDimensions {
