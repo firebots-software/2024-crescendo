@@ -16,8 +16,6 @@ public class ArmSubsystem extends SubsystemBase {
   // private TrapezoidProfile profile;
   // private TrapezoidProfile.Constraints tp;
 
-  private double setPos;
-
   private MotionMagicConfigs mmc;
 
   public ArmSubsystem(int portR1, int portR2, int portL1, int portL2) {
@@ -47,7 +45,6 @@ public class ArmSubsystem extends SubsystemBase {
 
     master = r1;
     master.getConfigurator().apply(s0c);
-    setPos = master.getPosition().getValue();
 
     mmc = new MotionMagicConfigs();
     mmc.MotionMagicCruiseVelocity = 80;

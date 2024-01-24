@@ -19,7 +19,6 @@ public class PeterSubsystem extends SubsystemBase {
   private static PeterSubsystem instance;
 
   // private final PositionDutyCycle v;
-  private final DutyCycleOut rollerMotorRequest;
 
   private DigitalInput noteSensor;
   public TalonFX shooterMotorRight, shooterMotorLeft, shooterMotorMaster;
@@ -27,12 +26,9 @@ public class PeterSubsystem extends SubsystemBase {
   private StatusSignal<Double> preShooterPosition;
 
   private MotionMagicConfigs mmcPreShooter;
-  private TrapezoidProfile profile;
-  private TrapezoidProfile.Constraints tp;
 
+  
   public PeterSubsystem() {
-    tp = new TrapezoidProfile.Constraints(10, 20);
-    profile = new TrapezoidProfile(tp);
 
     // Initalize shooter
     Follower f = new Follower(Constants.Intake.SHOOTER_PORT_LEFT, false);
@@ -59,7 +55,6 @@ public class PeterSubsystem extends SubsystemBase {
 
     noteSensor = new DigitalInput(Constants.Intake.NOTE_DETECTOR_PORT);
 
-    rollerMotorRequest = new DutyCycleOut(0.0);
     preShooterPosition = preShooterMotor.getPosition();
   }
 
