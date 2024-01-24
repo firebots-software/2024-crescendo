@@ -69,9 +69,8 @@ public class PeterSubsystem extends SubsystemBase {
     shooterMotorMaster.setControl(m_velocityControl);
   }
 
-  public void runShooter(
-      double speed) { // TODO: We have convert a distance to a speed. We take in velocity in rps
-    VelocityVoltage m_velocityControl = new VelocityVoltage(speed);
+  public void runShooter(double speed) {
+    VelocityVoltage m_velocityControl = new VelocityVoltage(Constants.Intake.SHOOT_WHEEL_SPEED_RPS);
     m_velocityControl.withFeedForward(0.1);
     shooterMotorMaster.setControl(m_velocityControl);
   }
@@ -80,7 +79,7 @@ public class PeterSubsystem extends SubsystemBase {
     return noteSensor.get(); // true = note present
   }
 
-  public void moveNoteToShooter(double speed) {
+  public void moveNoteToShooter() {
     MotionMagicVoltage m_request = new MotionMagicVoltage(preShooterMotor.getPosition().getValue());
     preShooterMotor.setControl(
         m_request.withPosition(

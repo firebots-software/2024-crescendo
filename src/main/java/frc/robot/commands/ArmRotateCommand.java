@@ -2,7 +2,6 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ArmSubsystem;
-import frc.robot.subsystems.PeterSubsystem;
 
 public class ArmRotateCommand extends Command {
   private ArmSubsystem armSubsystem;
@@ -10,10 +9,6 @@ public class ArmRotateCommand extends Command {
   public ArmRotateCommand(ArmSubsystem armSubsystem, double angle) {
     this.armSubsystem = armSubsystem;
     addRequirements(armSubsystem);
-  }
-
-  public ArmRotateCommand(PeterSubsystem peter) {
-    // TODO Auto-generated constructor stub
   }
 
   // Called when the command is initially scheduled.

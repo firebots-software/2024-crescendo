@@ -23,6 +23,7 @@ public class RunShooterCommand extends Command {
   @Override
   public void execute() {
     shooter.runShooter(shooterSpeed);
+    shooter.moveNoteToShooter();
   }
 
   // Called once the command ends or is interrupted.

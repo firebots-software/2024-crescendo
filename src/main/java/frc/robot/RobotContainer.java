@@ -10,14 +10,12 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 // import frc.robot.commands.ArmRotateCommand;
-import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.ArmRotateCommand;
 import frc.robot.commands.PeterCommands.RunShooterCommand;
-import frc.robot.subsystems.PeterSubsystem;
 import frc.robot.commands.SwerveJoystickCommand;
+import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.PeterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 
 /**
@@ -34,7 +32,7 @@ public class RobotContainer {
       new CommandPS4Controller(Constants.OI.JOYSTICK_PORT);
   private final SwerveSubsystem driveTrain = SwerveSubsystem.getInstance();
   private final PeterSubsystem peterSubsystem = PeterSubsystem.getInstance();
-
+  private final ArmSubsystem armSubsystem = ArmSubsystem.getInstance();
   public final Telemetry logger = new Telemetry();
 
   // Starts telemetry operations (essentially logging -> look on SmartDashboard, AdvantageScope)
@@ -61,11 +59,11 @@ public class RobotContainer {
                     driveTrain.seedFieldRelative(
                         new Pose2d(new Translation2d(0, 0), new Rotation2d(0)))));
     driveTrain.registerTelemetry(logger::telemeterize);
-    
+
     joystick.square().whileTrue(new RunShooterCommand(peterSubsystem));
     joystick
         .circle()
-        .whileTrue(new ArmRotateCommand(peterSubsystem)); // to do: figure out encoder vals
+        .whileTrue(new ArmRotateCommand(armSubsystem, 0)); // to do: figure out encoder vals
   }
 
   public RobotContainer() {

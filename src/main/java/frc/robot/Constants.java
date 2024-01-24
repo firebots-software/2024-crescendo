@@ -46,6 +46,8 @@ public final class Constants {
 
     public static final double INTAKE_WHEEL_SPEED_RPM = 100;
     public static final double ROTATIONS_TO_SHOOTER = 5d;
+
+    public static final double SHOOT_WHEEL_SPEED_RPS=100/60;
   }
 
   public static final class FieldDimensions {
@@ -62,7 +64,13 @@ public final class Constants {
     public static final double DEFAULT_ARM_ANGLE = 45.0;
     public final double INTAKE_ANGLE = 0; // subject to change
     public final double AMP_ANGLE = 100; // subject to change
-    public final static double ARM_ENCODER_OFFSET = 0; // TODO: Change the offset so that the 0 position is when the arm is at its resting position.
+    public static final double ARM_ENCODER_OFFSET =
+        0; // TODO: Change the offset so that the 0 position is when the arm is at its resting
+    // position.
+    public static final int R1_PORT = 4;
+    public static final int R2_PORT = 5;
+    public static final int L1_PORT = 6;
+    public static final int L2_PORT = 7;
   }
 
   public static class OI {

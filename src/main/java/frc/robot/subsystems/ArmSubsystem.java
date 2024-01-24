@@ -18,8 +18,9 @@ public class ArmSubsystem extends SubsystemBase {
   // private TrapezoidProfile.Constraints tp;
 
   private MotionMagicConfigs mmc;
+  private static ArmSubsystem instance;
 
-  public ArmSubsystem(int portR1, int portR2, int portL1, int portL2) {
+  public ArmSubsystem() {
     // tp = new TrapezoidProfile.Constraints(10, 20);
     // profile = new TrapezoidProfile(tp);
     CurrentLimitsConfigs clc = new CurrentLimitsConfigs().withSupplyCurrentLimit(5.0);
@@ -27,12 +28,12 @@ public class ArmSubsystem extends SubsystemBase {
     Slot0Configs s0c =
         new Slot0Configs().withKP(0.1).withKI(0).withKD(0).withKG(0).withKV(0).withKA(0);
 
-    r1 = new TalonFX(portR1);
-    r2 = new TalonFX(portR2);
-    l1 = new TalonFX(portL1);
-    l2 = new TalonFX(portL2);
+    r1 = new TalonFX(Constants.Arm.R1_PORT);
+    r2 = new TalonFX(Constants.Arm.R2_PORT);
+    l1 = new TalonFX(Constants.Arm.L1_PORT);
+    l2 = new TalonFX(Constants.Arm.L2_PORT);
 
-    Follower f = new Follower(portR1, false);
+    Follower f = new Follower(Constants.Arm.R1_PORT, false);
     r2.setControl(f);
     l1.setInverted(true);
     l1.setControl(f);
@@ -54,9 +55,20 @@ public class ArmSubsystem extends SubsystemBase {
     master.getConfigurator().apply(mmc);
   }
 
+  public static ArmSubsystem getInstance() {
+    if (instance == null) {
+      instance = new ArmSubsystem();
+    }
+    return instance;
+  }
+
   public void setPosition(double angleDegrees) {
     MotionMagicVoltage m_request = new MotionMagicVoltage(master.getPosition().getValue());
     master.setControl(m_request.withPosition(angleDegrees / 360));
+  }
+
+  public double getPosition() {
+    return master.getPosition().getValue();
   }
 
   public double determineAngle(Pose2d a, double fkla) {
