@@ -1,103 +1,121 @@
 package frc.robot.commands;
 
-import java.util.function.Supplier;
-
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
-
 import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.util.FieldCentricOptimizedSwerve;
+import java.util.function.Supplier;
 
 public class SwerveJoystickCommand extends Command {
+  private final Supplier<Double> xSpdFunction,
+      ySpdFunction,
+      turningSpdFunction,
+      speedControlFunction;
 
-    private final Supplier<Double> xSpdFunction, ySpdFunction, turningSpdFunction, speedIncreaseControlFunction,
-            speedDecreaseControlFunction;
-    private final SlewRateLimiter xLimiter, yLimiter, turningLimiter;
-    private final SwerveSubsystem swerveDrivetrain;
+  // Limits rate of change (in this case x, y, and turning movement)
+  private final SlewRateLimiter xLimiter, yLimiter, turningLimiter;
 
-    public SwerveJoystickCommand(
-            Supplier<Double> frontBackFunction, Supplier<Double> leftRightFunction, Supplier<Double> turningSpdFunction,
-            Supplier<Double> speedIncreaseControlFunction, Supplier<Double> speedDecreaseControlFunction,
-            SwerveSubsystem csd) {
+  private final SwerveSubsystem swerveDrivetrain;
 
-        this.xSpdFunction = frontBackFunction;
-        this.ySpdFunction = leftRightFunction;
-        this.turningSpdFunction = turningSpdFunction;
-        this.speedIncreaseControlFunction = speedIncreaseControlFunction;
-        this.speedDecreaseControlFunction = speedDecreaseControlFunction;
-        this.xLimiter = new SlewRateLimiter(Constants.Swerve.kTeleDriveMaxAccelerationUnitsPerSecond);
-        this.yLimiter = new SlewRateLimiter(Constants.Swerve.kTeleDriveMaxAccelerationUnitsPerSecond);
-        this.turningLimiter = new SlewRateLimiter(Constants.Swerve.kTeleDriveMaxAngularAccelerationUnitsPerSecond);
-        this.swerveDrivetrain = csd;
+  // Sets everything
+  public SwerveJoystickCommand(
+      Supplier<Double> frontBackFunction,
+      Supplier<Double> leftRightFunction,
+      Supplier<Double> turningSpdFunction,
+      Supplier<Double> speedControlFunction,
+      SwerveSubsystem swerveSubsystem) {
 
-        addRequirements(swerveDrivetrain);
+    this.xSpdFunction = frontBackFunction;
+    this.ySpdFunction = leftRightFunction;
+    this.turningSpdFunction = turningSpdFunction;
+    this.speedControlFunction = speedControlFunction;
+    this.xLimiter =
+        new SlewRateLimiter(Constants.Swerve.TELE_DRIVE_MAX_ACCELERATION_UNITS_PER_SECOND);
+    this.yLimiter =
+        new SlewRateLimiter(Constants.Swerve.TELE_DRIVE_MAX_ACCELERATION_UNITS_PER_SECOND);
+    this.turningLimiter =
+        new SlewRateLimiter(Constants.Swerve.TELE_DRIVE_MAX_ANGULAR_ACCELERATION_UNITS_PER_SECOND);
+    this.swerveDrivetrain = swerveSubsystem;
+
+    // Adds the subsystem as a requirement (prevents two commands from acting on subsystem at once)
+    addRequirements(swerveDrivetrain);
+  }
+
+  @Override
+  public void initialize() {}
+
+  @Override
+  public void execute() {
+    // 1. Get real-time joystick inputs
+    double xSpeed = xSpdFunction.get(); // xSpeed is actually front back (front +, back -)
+    double ySpeed = ySpdFunction.get(); // ySpeed is actually left right (left +, right -)
+    double turningSpeed =
+        turningSpdFunction.get(); // turning speed is (anti-clockwise +, clockwise -)
+
+    // 2. Normalize inputs
+    double length = xSpeed * xSpeed + ySpeed * ySpeed; // acutally length squared
+    if (length > 1d) {
+      length = Math.sqrt(length);
+      xSpeed /= length;
+      ySpeed /= length;
     }
 
-    @Override
-    public void initialize() {
+    // 3. Apply deadband
+    xSpeed = Math.abs(xSpeed) > Constants.OI.LEFT_JOYSTICK_DEADBAND ? xSpeed : 0.0;
+    ySpeed = Math.abs(ySpeed) > Constants.OI.LEFT_JOYSTICK_DEADBAND ? ySpeed : 0.0;
+    turningSpeed =
+        Math.abs(turningSpeed) > Constants.OI.RIGHT_JOYSTICK_DEADBAND ? turningSpeed : 0.0;
 
-    }
+    // 4. Make the driving smoother
+    // This is a double between TELE_DRIVE_SLOW_MODE_SPEED_PERCENT and
+    // TELE_DRIVE_FAST_MODE_SPEED_PERCENT
+    double driveSpeed =
+        (Constants.Swerve.TELE_DRIVE_PERCENT_SPEED_RANGE * (speedControlFunction.get()))
+            + Constants.Swerve.TELE_DRIVE_SLOW_MODE_SPEED_PERCENT;
 
-    @Override
-    public void execute() {
-        // 1. Get real-time joystick inputs
-        double xSpeed = xSpdFunction.get(); // xSpeed is actually front back (front +, back -)
-        double ySpeed = ySpdFunction.get(); // ySpeed is actually left right (left +, right -)
-        double turningSpeed = turningSpdFunction.get(); // turning speed is anti-clockwise +, clockwise -
+    // Applies slew rate limieter
+    xSpeed =
+        xLimiter.calculate(xSpeed)
+            * driveSpeed
+            * Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND;
+    ySpeed =
+        yLimiter.calculate(ySpeed)
+            * driveSpeed
+            * Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND;
+    turningSpeed =
+        turningLimiter.calculate(turningSpeed)
+            * driveSpeed
+            * Constants.Swerve.PHYSICAL_MAX_ANGLUAR_SPEED_RADIANS_PER_SECOND;
 
-        // 2. Normalize inputs
-        double length = xSpeed * xSpeed + ySpeed * ySpeed; // acutally length squared
-        if (length > 1d) {
-            length = Math.sqrt(length);
-            xSpeed /= length;
-            ySpeed /= length;
-        }
+    // Final values to apply to drivetrain
+    final double x = xSpeed;
+    final double y = ySpeed;
+    final double turn = turningSpeed;
 
-        // 3. Apply deadband
-        xSpeed = Math.abs(xSpeed) > 0.05 ? xSpeed : 0.0;
-        ySpeed = Math.abs(ySpeed) > 0.05 ? ySpeed : 0.0;
-        turningSpeed = Math.abs(turningSpeed) > 0.03 ? turningSpeed : 0.0;
+    // 5. Applying the drive request on the swerve drivetrain
+    // Uses SwerveRequestFieldCentric (from java.frc.robot.util to apply module optimization)
+    final SwerveRequest.FieldCentric drive =
+        new FieldCentricOptimizedSwerve()
+            .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
+            .withVelocityX(x)
+            .withVelocityY(y)
+            .withRotationalRate(turn); // OPEN LOOP CONTROL
 
-        // 4. Make the driving smoother
-        double driveSpeed = (Constants.Swerve.kTeleDriveMaxPercentSpeed - Constants.Swerve.kTeleDriveMinPercentSpeed)
-                * (speedIncreaseControlFunction.get() - speedDecreaseControlFunction.get())
-                + Constants.Swerve.kTeleDriveMinPercentSpeed;
+    // Applies request
+    this.swerveDrivetrain.setControl(drive);
+  } // Drive counterclockwise with negative X (left))
 
-        xSpeed = xLimiter.calculate(xSpeed) * driveSpeed * Constants.Swerve.kPhysicalMaxSpeedMetersPerSecond;
-        ySpeed = yLimiter.calculate(ySpeed) * driveSpeed * Constants.Swerve.kPhysicalMaxSpeedMetersPerSecond;
-        turningSpeed = turningLimiter.calculate(turningSpeed) * driveSpeed
-                * Constants.Swerve.kPhysicalMaxAngularSpeedRadiansPerSecond;
-        final double x = xSpeed;
-        final double y = ySpeed;
-        final double turn = turningSpeed;
+  @Override
+  public void end(boolean interrupted) {
+    // Applies SwerveDriveBrake (brakes the robot by turning wheels)
+    this.swerveDrivetrain.setControl(new SwerveRequest.SwerveDriveBrake());
+  }
 
-        final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-                // .withDeadband(Constants.kPhysicalMaxSpeedMetersPerSecond *
-                // 0.01).withRotationalDeadband(Constants.kPhysicalMaxAngularSpeedRadiansPerSecond
-                // * 0.01) // old deadband
-                .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric
-
-        SmartDashboard.putNumber("Drive X Velocity", drive.VelocityX);
-        SmartDashboard.putNumber("Drive Y Velocity", drive.VelocityY);
-        SmartDashboard.putNumber("Rotational Speed", drive.RotationalRate);
-
-        this.swerveDrivetrain.setControl(drive
-                .withVelocityX(x)
-                .withVelocityY(y) // Drive left with negative X (left)
-                .withRotationalRate(turn));
-    } // Drive counterclockwise with negative X (left))
-
-    @Override
-    public void end(boolean interrupted) {
-        final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
-        this.swerveDrivetrain.setControl(brake);
-    }
-
-    @Override
-    public boolean isFinished() {
-        return false;
-    }
+  @Override
+  public boolean isFinished() {
+    return false;
+  }
 }

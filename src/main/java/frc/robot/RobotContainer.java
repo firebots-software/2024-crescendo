@@ -5,7 +5,6 @@
 package frc.robot;
 
 import com.pathplanner.lib.commands.PathPlannerAuto;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -17,6 +16,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AlignToTag;
 import frc.robot.commands.SwerveJoystickCommand;
 import frc.robot.subsystems.PhotonVision;
+import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
+import frc.robot.commands.SwerveJoystickCommand;
 import frc.robot.subsystems.SwerveSubsystem;
 
 /**
@@ -31,8 +32,9 @@ import frc.robot.subsystems.SwerveSubsystem;
 public class RobotContainer {
 
   /* Setting up bindings for necessary control of the swerve drive platform */
-  private final CommandPS4Controller joystick = new CommandPS4Controller(3);
-  private final SwerveSubsystem drivetrain = Constants.Swerve.DriveTrain;
+  private final CommandPS4Controller joystick =
+      new CommandPS4Controller(Constants.OI.JOYSTICK_PORT);
+  private final SwerveSubsystem driveTrain = SwerveSubsystem.getInstance();
   private final PhotonVision photonVision = PhotonVision.getInstance();
   private final SwerveJoystickCommand swerveJoystickCommand = new SwerveJoystickCommand(
       () -> joystick.getRawAxis(1),
@@ -40,26 +42,27 @@ public class RobotContainer {
       () -> joystick.getRawAxis(2),
       () -> (joystick.getRawAxis(3) + 1d) / 2d, // joystick L2
       () -> (joystick.getRawAxis(4) + 1d) / 2d, // joystick R2
-      drivetrain);
+      driveTrain);
 
   public final Telemetry logger = new Telemetry();
 
-  // private Command runAuto = drivetrain.getAutoPath("Tests");
+  // private Command runAuto = driveTrain.getAutoPath("Tests");
 
-  public void doTelemetry () {
-    logger.telemeterize(drivetrain.getState());
+   // Starts telemetry operations (essentially logging -> look on SmartDashboard, AdvantageScope)
+  public void doTelemetry() {
+    logger.telemeterize(driveTrain.getState());
   }
 
   private void configureBindings() {
-    drivetrain.setDefaultCommand(swerveJoystickCommand);
+    driveTrain.setDefaultCommand(swerveJoystickCommand);
 
     // zero-heading
-    joystick.circle().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative(new Pose2d(new Translation2d(0, 0), new Rotation2d(0)))));
-    drivetrain.registerTelemetry(logger::telemeterize);
+    joystick.circle().onTrue(driveTrain.runOnce(() -> driveTrain.seedFieldRelative(new Pose2d(new Translation2d(0, 0), new Rotation2d(0)))));
+    driveTrain.registerTelemetry(logger::telemeterize);
 
     // Align to Tag
     int tagID = 4;
-    joystick.triangle().whileTrue(new AlignToTag(photonVision, drivetrain, tagID));
+    joystick.triangle().whileTrue(new AlignToTag(photonVision, driveTrain, tagID));
   }
 
   public RobotContainer() {
