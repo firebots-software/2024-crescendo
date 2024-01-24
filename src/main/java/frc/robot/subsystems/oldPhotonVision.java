@@ -18,6 +18,7 @@ import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.PhotonUtils;
+import org.photonvision.targeting.PNPResult;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
@@ -91,6 +92,7 @@ public class oldPhotonVision extends SubsystemBase {
 
   public Pose3d getRobotPose3dFromTag() {
     PhotonPipelineResult result = getPipeline();
+    // PNPResult multi = result.getMultiTagResult().estimatedPose;
     if (!result.hasTargets()) {
       return savedResult2;
     }
