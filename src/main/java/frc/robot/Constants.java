@@ -47,7 +47,7 @@ public final class Constants {
     public static final double INTAKE_WHEEL_SPEED_RPM = 100;
     public static final double ROTATIONS_TO_SHOOTER = 5d;
 
-    public static final double SHOOT_WHEEL_SPEED_RPS=100/60;
+    public static final double SHOOT_WHEEL_SPEED_RPS = 100 / 60;
   }
 
   public static final class FieldDimensions {

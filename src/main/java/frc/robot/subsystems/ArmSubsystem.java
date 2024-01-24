@@ -6,6 +6,7 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -14,6 +15,7 @@ public class ArmSubsystem extends SubsystemBase {
 
   private TalonFX r1, r2, l1, l2;
   private TalonFX master;
+  private ArmFeedforward armff;
   // private TrapezoidProfile profile;
   // private TrapezoidProfile.Constraints tp;
 
@@ -25,9 +27,8 @@ public class ArmSubsystem extends SubsystemBase {
     // profile = new TrapezoidProfile(tp);
     CurrentLimitsConfigs clc = new CurrentLimitsConfigs().withSupplyCurrentLimit(5.0);
 
-    Slot0Configs s0c =
-        new Slot0Configs().withKP(0.1).withKI(0).withKD(0).withKG(0).withKV(0).withKA(0);
-
+    Slot0Configs s0c = new Slot0Configs().withKP(0.1).withKI(0).withKD(0);
+    armff = new ArmFeedforward(0, 0, 0);
     r1 = new TalonFX(Constants.Arm.R1_PORT);
     r2 = new TalonFX(Constants.Arm.R2_PORT);
     l1 = new TalonFX(Constants.Arm.L1_PORT);
@@ -64,6 +65,7 @@ public class ArmSubsystem extends SubsystemBase {
 
   public void setPosition(double angleDegrees) {
     MotionMagicVoltage m_request = new MotionMagicVoltage(master.getPosition().getValue());
+    m_request.withFeedForward(armff.calculate(angleDegrees * Math.PI * 2, 0, 0));
     master.setControl(m_request.withPosition(angleDegrees / 360));
   }
 
