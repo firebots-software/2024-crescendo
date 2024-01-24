@@ -18,13 +18,13 @@ import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.PhotonUtils;
-import org.photonvision.targeting.PNPResult;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 public class oldPhotonVision extends SubsystemBase {
   Pose3d savedResult = new Pose3d(0.0, 0.0, 0.0, new Rotation3d(0.0, 0.0, 0.0));
   Pose3d savedResult2 = new Pose3d(0.0, 0.0, 0.0, new Rotation3d(0.0, 0.0, 0.0));
+  Transform3d savedResult3 = new Transform3d(0, 0, 0, new Rotation3d(0, 0, 0));
   private static oldPhotonVision pvisioninstance;
   PhotonCamera camera = new PhotonCamera("FrontCam");
   Transform3d robotToCam =
@@ -90,16 +90,25 @@ public class oldPhotonVision extends SubsystemBase {
     return distance;
   }
 
-  public Pose3d getRobotPose3dFromTag() {
-    PhotonPipelineResult result = getPipeline();
-    // PNPResult multi = result.getMultiTagResult().estimatedPose;
-    if (!result.hasTargets()) {
-      return savedResult2;
-    }
+  // todo when implementing with odemoetry make sure not to return savedrselut2 in if-statement
+  // compensenate for angle of the camera --> whip out trig
 
+  public Transform3d getRobotPose3dFromTag() {
+    PhotonPipelineResult result = getPipeline();
+    if (!result.hasTargets()) {
+      return savedResult3;
+    }
+    if (result.getMultiTagResult().estimatedPose.isPresent) {
+      Transform3d fieldToCamera = result.getMultiTagResult().estimatedPose.best;
+      savedResult3 = fieldToCamera;
+      return fieldToCamera;
+    } else {
+
+      return savedResult3;
+    }
+    /*
     PhotonTrackedTarget target = getBestTarget(result);
     savedTarget = target;
-
     Optional<Pose3d> tagPoseOptional = aprilTagFieldLayout.getTagPose(target.getFiducialId());
 
     if (tagPoseOptional.isEmpty()) {
@@ -109,7 +118,7 @@ public class oldPhotonVision extends SubsystemBase {
       Transform3d camToTarget = target.getBestCameraToTarget();
       savedResult2 = tagPose.plus(camToTarget.inverse());
       return savedResult2;
-    }
+      */
   }
 
   public Transform3d getTransformToTarget() {
@@ -126,15 +135,17 @@ public class oldPhotonVision extends SubsystemBase {
     return getTransformToTarget().getTranslation().getNorm();
   }
 
-//   public double get3dDistFromPose() {
-//     Pose3d robotPose = getRobotPose3dFromTag();
-//     Pose3d tagPose = aprilTagFieldLayout.getTagPose(savedTarget.getFiducialId()).get();
-//     double dx = robotPose.getX() - tagPose.getX();
-//     double dy = robotPose.getY() - tagPose.getY();
-//     double dz = robotPose.getZ() - tagPose.getZ();
-//     double dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
-//     return dist;
-//   }
+  /*
+  public double get3dDistFromPose() {
+    Pose3d robotPose = getRobotPose3dFromTag();
+    Pose3d tagPose = aprilTagFieldLayout.getTagPose(savedTarget.getFiducialId()).get();
+    double dx = robotPose.getX() - tagPose.getX();
+    double dy = robotPose.getY() - tagPose.getY();
+    double dz = robotPose.getZ() - tagPose.getZ();
+    double dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
+    return dist;
+  }
+  */
 
   public void periodic() {
     // current problem:
@@ -142,8 +153,9 @@ public class oldPhotonVision extends SubsystemBase {
     // proposal: instead of using getBestCameraToTarget, try getting the 2D transform instead of 3D.
     // (doing this should be more accurate.) then, convert to 3D using the cam height and target
     // height.
-    Pose3d robotPose3d = getRobotPose3dFromTag();
+    Transform3d robotPose3d = getRobotPose3dFromTag();
     Transform3d transformToTarget = getTransformToTarget();
+
     SmartDashboard.putNumber("PoseX", robotPose3d.getX());
     SmartDashboard.putNumber("PoseY", robotPose3d.getY());
     SmartDashboard.putNumber("PoseZ", robotPose3d.getZ());
@@ -153,19 +165,12 @@ public class oldPhotonVision extends SubsystemBase {
     SmartDashboard.putNumber("Transform Y", transformToTarget.getTranslation().getY());
     SmartDashboard.putNumber("Transform Z", transformToTarget.getTranslation().getZ());
     SmartDashboard.putNumber("Transform Rot Angle", transformToTarget.getRotation().getAngle());
-    SmartDashboard.putNumber("3D Dist", get3dDist());
+    SmartDashboard.putNumber("Dist", get3dDist());
     // SmartDashboard.putNumber("Dist2", get3dDistFromPose());
-    SmartDashboard.putNumber("Estimated Dist", getDistance());
+    SmartDashboard.putNumber("Dist3", getDistance());
     // SmartDashboard.putNumber("Gyro", gyro.getAngle());
 
   }
-
-  // public Transform3d getTransformToTarget(PhotonTrackedTarget target){
-  //     //SmartDashboard.putNumber("pose ambiguity", target.getPoseAmbiguity());
-  //     //PhotonUtils.estimateCameraToTargetTranslation(cameraHeight, null);
-  //     //PhotonUtils.estimateCameraToTarget(null, getRobotPose2d(), null)
-  //     return target.getBestCameraToTarget();
-  // }
 
   public Pose2d getRobotPose2d() {
     // This tries to use PhotonUtils.estimateFieldToRobot() to get the robot's
