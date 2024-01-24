@@ -29,14 +29,12 @@ public class ShootNote extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    shooter.runPreShooter(1.0);
     shooter.runShooter(1.0);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    shooter.runPreShooter(0);
     shooter.runShooter(0);
   }
 

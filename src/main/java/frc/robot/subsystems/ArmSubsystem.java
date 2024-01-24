@@ -8,6 +8,7 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class ArmSubsystem extends SubsystemBase {
 
@@ -15,8 +16,6 @@ public class ArmSubsystem extends SubsystemBase {
   private TalonFX master;
   // private TrapezoidProfile profile;
   // private TrapezoidProfile.Constraints tp;
-
-  private double setPos;
 
   private MotionMagicConfigs mmc;
 
@@ -47,7 +46,6 @@ public class ArmSubsystem extends SubsystemBase {
 
     master = r1;
     master.getConfigurator().apply(s0c);
-    setPos = master.getPosition().getValue();
 
     mmc = new MotionMagicConfigs();
     mmc.MotionMagicCruiseVelocity = 80;
@@ -67,23 +65,25 @@ public class ArmSubsystem extends SubsystemBase {
 
   public void rotateArmToSpeakerPosition() {}
 
-  public void rotateArmToRestPosition() {}
+  public void rotateArmToRestPosition() {
+    setPosition(Constants.Arm.ARM_ENCODER_OFFSET);
+  }
 
   // public void toPosition() {
   //   // Magic Motion:
   //   MotionMagicVoltage m_request = new MotionMagicVoltage(master.getPosition().getValue());
   //   master.setControl(m_request.withPosition(setPos));
 
-  //   // Trapizoidal Motion:
-  //   // TrapezoidProfile.State setPoint = new TrapezoidProfile.State(setPos, 0);
-  //   // TrapezoidProfile.State currentPoint = new
-  //   // TrapezoidProfile.State(master.getPosition().getValue(),master.getVelocity().getValue());
+  // Trapizoidal Motion:
+  // TrapezoidProfile.State setPoint = new TrapezoidProfile.State(setPos, 0);
+  // TrapezoidProfile.State currentPoint = new
+  // TrapezoidProfile.State(master.getPosition().getValue(),master.getVelocity().getValue());
 
-  //   // setPoint = profile.calculate(profile.totalTime(), currentPoint, setPoint);
-  //   // PositionDutyCycle m_positionControl = new
-  //   // PositionDutyCycle(setPoint.position);
-  //   // m_positionControl.Position = setPoint.position;
-  //   // m_positionControl.Velocity = setPoint.velocity;
-  //   // master.setControl(m_positionControl);
+  // setPoint = profile.calculate(profile.totalTime(), currentPoint, setPoint);
+  // PositionDutyCycle m_positionControl = new
+  // PositionDutyCycle(setPoint.position);
+  // m_positionControl.Position = setPoint.position;
+  // m_positionControl.Velocity = setPoint.velocity;
+  // master.setControl(m_positionControl);
   // }
 }

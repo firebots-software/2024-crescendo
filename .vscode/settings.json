@@ -32,11 +32,7 @@
     "spotlessGradle.format.enable": true,
     "spotlessGradle.diagnostics.enable": true,
     "editor.codeActionsOnSave": {
-<<<<<<< HEAD
       "source.fixAll.spotlessGradle": true
-=======
-      "source.fixAll.spotlessGradle": "explicit"
->>>>>>> 72fb8899ac45ab31b52f977fe44e3d7ec39dba6a
     }
   }
 }

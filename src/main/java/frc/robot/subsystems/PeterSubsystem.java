@@ -1,9 +1,11 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.controls.DutyCycleOut;
-import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -13,23 +15,44 @@ import frc.robot.Constants;
 public class PeterSubsystem extends SubsystemBase {
   // private static final int MAX_DISTANCE = 4048;//
   private static PeterSubsystem instance;
-  private final DutyCycleOut rollerMotorRequest = new DutyCycleOut(0.0);
-  private final PositionVoltage preShooterMotorPIDRequest = new PositionVoltage(0.0);
-  private final DutyCycleOut ShooterMotorRequest = new DutyCycleOut(0.0);
-  private final double INTAKE_ANGLE = 0; // subject to change
-  private final double AMP_ANGLE = 100; // subject to change
-  private DigitalInput input;
-  public TalonFX rollerMotor, preShooterMotor, shooterMotor;
-  private StatusSignal<Double> position;
+
+  // private final PositionDutyCycle v;
+
+  private DigitalInput noteSensor;
+  public TalonFX shooterMotorRight, shooterMotorLeft, shooterMotorMaster;
+  public TalonFX preShooterMotor, intakeMotor;
+  private StatusSignal<Double> preShooterPosition;
+
+  private MotionMagicConfigs mmcPreShooter;
 
   public PeterSubsystem() {
-    rollerMotor = new TalonFX(Constants.Intake.INTAKE_MOTOR_PORT);
-    input = new DigitalInput(Constants.Intake.NOTE_DETECTOR_PORT);
+
+    // Initalize shooter
+    Follower f = new Follower(Constants.Intake.SHOOTER_PORT_LEFT, false);
+    shooterMotorLeft = new TalonFX(Constants.Intake.SHOOTER_PORT_LEFT);
+    shooterMotorRight = new TalonFX(Constants.Intake.SHOOTER_PORT_RIGHT);
+    shooterMotorRight.setInverted(true);
+    shooterMotorRight.setControl(f);
+    shooterMotorMaster = shooterMotorLeft;
+    Slot0Configs s0c =
+        new Slot0Configs().withKP(0.1).withKI(0).withKD(0).withKG(0).withKV(0).withKA(0);
+
+    shooterMotorMaster.getConfigurator().apply(s0c);
+
+    // Preshooter
     preShooterMotor = new TalonFX(Constants.Intake.PRE_SHOOTER_PORT);
-    shooterMotor = new TalonFX(Constants.Intake.SHOOTER_PORT);
-    Slot0Configs preShooterMotorSlot = new Slot0Configs().withKP(2).withKI(0).withKD(0);
-    preShooterMotor.getConfigurator().apply(preShooterMotorSlot);
-    position = preShooterMotor.getPosition();
+    mmcPreShooter = new MotionMagicConfigs();
+    mmcPreShooter.MotionMagicCruiseVelocity = 80;
+    mmcPreShooter.MotionMagicAcceleration = 160;
+    mmcPreShooter.MotionMagicJerk = 1600;
+    preShooterMotor.getConfigurator().apply(mmcPreShooter);
+
+    // Intake
+    intakeMotor = new TalonFX(Constants.Intake.INTAKE_MOTOR_PORT);
+
+    noteSensor = new DigitalInput(Constants.Intake.NOTE_DETECTOR_PORT);
+
+    preShooterPosition = preShooterMotor.getPosition();
   }
 
   public static PeterSubsystem getInstance() {
@@ -39,29 +62,39 @@ public class PeterSubsystem extends SubsystemBase {
     return instance;
   }
 
-  public void runIntake(double speed) {
-    rollerMotor.setControl(rollerMotorRequest.withOutput(speed));
+  public void runIntake(
+      double speed) { // TODO: We have convert a distance to a speed. We take in velocity in rps
+    VelocityVoltage m_velocityControl = new VelocityVoltage(speed);
+    m_velocityControl.withFeedForward(0.1);
+    shooterMotorMaster.setControl(m_velocityControl);
   }
 
-  public void runShooter(double speed) {
-    shooterMotor.setControl(ShooterMotorRequest.withOutput(speed));
+  public void runShooter(
+      double speed) { // TODO: We have convert a distance to a speed. We take in velocity in rps
+    VelocityVoltage m_velocityControl = new VelocityVoltage(speed);
+    m_velocityControl.withFeedForward(0.1);
+    shooterMotorMaster.setControl(m_velocityControl);
   }
 
   public boolean notePresent() {
-    return input.get(); // true = note present
+    return noteSensor.get(); // true = note present
   }
 
-  public void runPreShooter(double speed) {
-    preShooterMotor.setControl(ShooterMotorRequest.withOutput(speed));
+  public void moveNoteToShooter(double speed) {
+    MotionMagicVoltage m_request = new MotionMagicVoltage(preShooterMotor.getPosition().getValue());
+    preShooterMotor.setControl(
+        m_request.withPosition(
+            preShooterMotor.getPosition().getValue()
+                + Constants.Intake.ROTATIONS_TO_SHOOTER)); // rotate 5 more rotationes
   }
 
   public double getPreShooterPosition() {
-    return position.getValue();
+    return preShooterPosition.getValue();
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putBoolean("Note Detected", input.get()); // false = note detected!!
+    SmartDashboard.putBoolean("Note Detected", notePresent()); // false = note detected!!
   }
 }
