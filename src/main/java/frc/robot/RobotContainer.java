@@ -40,8 +40,7 @@ public class RobotContainer {
             () -> -joystick.getRawAxis(1),
             () -> -joystick.getRawAxis(0),
             () -> -joystick.getRawAxis(2),
-            () -> (joystick.getRawAxis(3) + joystick.getRawAxis(4) + 2d) / 2d + 0.5, // joystick L2
-            // () -> (joystick.getRawAxis(4) + 1d) / 2d, // joystick R2
+            () -> (joystick.getRawAxis(3) - joystick.getRawAxis(4) + 2d) / 2d + 0.5,
             driveTrain);
     driveTrain.setDefaultCommand(swerveJoystickCommand);
 
@@ -57,6 +56,7 @@ public class RobotContainer {
   }
 
   public RobotContainer() {
+
     // Vibrate joysticks when someone interesting happens!
     // joystick.getHID().setRumble(GenericHID.RumbleType.kRightRumble, 1);
     // joystick.getHID().setRumble(GenericHID.RumbleType.kLeftRumble, 1);

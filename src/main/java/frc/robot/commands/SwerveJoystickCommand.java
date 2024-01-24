@@ -70,7 +70,8 @@ public class SwerveJoystickCommand extends Command {
         Math.abs(turningSpeed) > Constants.OI.RIGHT_JOYSTICK_DEADBAND ? turningSpeed : 0.0;
 
     // 4. Make the driving smoother
-    // This is a double between TELE_DRIVE_SLOW_MODE_SPEED_PERCENT and TELE_DRIVE_FAST_MODE_SPEED_PERCENT
+    // This is a double between TELE_DRIVE_SLOW_MODE_SPEED_PERCENT and
+    // TELE_DRIVE_FAST_MODE_SPEED_PERCENT
     double driveSpeed =
         (Constants.Swerve.TELE_DRIVE_PERCENT_SPEED_RANGE * (speedControlFunction.get()))
             + Constants.Swerve.TELE_DRIVE_SLOW_MODE_SPEED_PERCENT;
