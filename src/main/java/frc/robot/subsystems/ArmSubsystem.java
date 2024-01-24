@@ -8,6 +8,7 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class ArmSubsystem extends SubsystemBase {
 
@@ -64,7 +65,9 @@ public class ArmSubsystem extends SubsystemBase {
 
   public void rotateArmToSpeakerPosition() {}
 
-  public void rotateArmToRestPosition() {}
+  public void rotateArmToRestPosition() {
+    setPosition(Constants.Arm.ARM_ENCODER_OFFSET);
+  }
 
   // public void toPosition() {
   //   // Magic Motion:
