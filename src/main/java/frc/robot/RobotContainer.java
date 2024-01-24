@@ -4,6 +4,10 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -13,6 +17,8 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.ArmRotateCommand;
 import frc.robot.commands.PeterCommands.RunShooterCommand;
 import frc.robot.subsystems.PeterSubsystem;
+import frc.robot.commands.SwerveJoystickCommand;
+import frc.robot.subsystems.SwerveSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -21,41 +27,60 @@ import frc.robot.subsystems.PeterSubsystem;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  // The robot's subsystems and commands are defined here...
-  private final CommandPS4Controller driverController;
 
-  private final PeterSubsystem peter = PeterSubsystem.getInstance();
+  /* Setting up bindings for necessary control of the swerve drive platform */
 
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
+  private final CommandPS4Controller joystick =
+      new CommandPS4Controller(Constants.OI.JOYSTICK_PORT);
+  private final SwerveSubsystem driveTrain = SwerveSubsystem.getInstance();
+  private final PeterSubsystem peterSubsystem = PeterSubsystem.getInstance();
+
+  public final Telemetry logger = new Telemetry();
+
+  // Starts telemetry operations (essentially logging -> look on SmartDashboard, AdvantageScope)
+  public void doTelemetry() {
+    logger.telemeterize(driveTrain.getState());
+  }
+
+  private void configureBindings() {
+    SwerveJoystickCommand swerveJoystickCommand =
+        new SwerveJoystickCommand(
+            () -> -joystick.getRawAxis(1),
+            () -> -joystick.getRawAxis(0),
+            () -> -joystick.getRawAxis(2),
+            () -> (joystick.getRawAxis(3) - joystick.getRawAxis(4) + 2d) / 2d + 0.5,
+            driveTrain);
+    driveTrain.setDefaultCommand(swerveJoystickCommand);
+
+    // zero-heading
+    joystick
+        .circle()
+        .onTrue(
+            driveTrain.runOnce(
+                () ->
+                    driveTrain.seedFieldRelative(
+                        new Pose2d(new Translation2d(0, 0), new Rotation2d(0)))));
+    driveTrain.registerTelemetry(logger::telemeterize);
+    
+    joystick.square().whileTrue(new RunShooterCommand(peterSubsystem));
+    joystick
+        .circle()
+        .whileTrue(new ArmRotateCommand(peterSubsystem)); // to do: figure out encoder vals
+  }
+
   public RobotContainer() {
-    driverController = new CommandPS4Controller(OperatorConstants.kDriverControllerPort);
-    // Configure the trigger bindings
+
+    // Vibrate joysticks when someone interesting happens!
+    // joystick.getHID().setRumble(GenericHID.RumbleType.kRightRumble, 1);
+    // joystick.getHID().setRumble(GenericHID.RumbleType.kLeftRumble, 1);
+
     configureBindings();
   }
 
-  /**
-   * Use this method to define your trigger->command mappings. Triggers can be created via the
-   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
-   * predicate, or via the named factories in {@link
-   * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link
-   * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
-   * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
-   * joysticks}.
-   */
-  private void configureBindings() {
-    driverController.square().whileTrue(new RunShooterCommand(peter));
-    driverController
-        .circle()
-        .whileTrue(new ArmRotateCommand(peter)); // to do: figure out encoder vals
-  }
-
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
   public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
-    return null;
+    // autonomous command applies brake
+    // final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
+    // return driveTrain.applyRequest(() -> brake);
+    return new PathPlannerAuto("New Auto");
   }
 }
