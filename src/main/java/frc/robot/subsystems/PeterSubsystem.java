@@ -13,8 +13,6 @@ import frc.robot.Constants;
 public class PeterSubsystem extends SubsystemBase {
   // private static final int MAX_DISTANCE = 4048;//
   private static PeterSubsystem instance;
-
-  // private final PositionDutyCycle v;
   private final DutyCycleOut rollerMotorRequest = new DutyCycleOut(0.0);
   private final PositionVoltage preShooterMotorPIDRequest = new PositionVoltage(0.0);
   private final DutyCycleOut ShooterMotorRequest = new DutyCycleOut(0.0);
