@@ -20,8 +20,9 @@ public class Constants {
     public static final double PHYSICAL_MAX_SPEED_METERS_PER_SECOND = 4.8768;
     public static final double PHYSICAL_MAX_ANGLUAR_SPEED_RADIANS_PER_SECOND = 2 * 2 * Math.PI;
 
-    public static final double TELE_DRIVE_MAX_PERCENT_SPEED = 0.7;
-    public static final double TELE_DRIVE_MIN_PERCENT_SPEED = 0.5; // 0.5
+    public static final double TELE_DRIVE_FAST_MODE_SPEED_PERCENT = 0.7;
+    public static final double TELE_DRIVE_SLOW_MODE_SPEED_PERCENT = 0.5;
+    public static final double TELE_DRIVE_PERCENT_SPEED_RANGE = (TELE_DRIVE_FAST_MODE_SPEED_PERCENT - TELE_DRIVE_SLOW_MODE_SPEED_PERCENT);
     public static final double TELE_DRIVE_MAX_ACCELERATION_UNITS_PER_SECOND = 3;
     public static final double TELE_DRIVE_MAX_ANGULAR_ACCELERATION_UNITS_PER_SECOND = 3;
     // Both sets of gains need to be tuned to your individual robot.

@@ -7,8 +7,9 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 
-public class SwerveRequestFieldCentricSwerveOptimized extends FieldCentric {
+public class FieldCentricOptimizedSwerve extends FieldCentric {
   // Apply function that does module optimization
+  @Override
   public StatusCode apply(
       SwerveControlRequestParameters parameters, SwerveModule... modulesToApply) {
     // Elements of the request to be applied
