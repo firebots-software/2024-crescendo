@@ -7,6 +7,8 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants.SteerFeedbackType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstantsFactory;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 
 public class Constants {
@@ -14,7 +16,22 @@ public class Constants {
                 public static final double kLeftJoystickDeadband = 0.07;
                 public static final double kRightJoystickDeadband = 0.07;
         }
+        
+        public static class Notes {
+                public static class Blue {
+                        // from robot perspective
+                        public static final Pose2d right = new Pose2d(2.5, 4.1, new Rotation2d());
+                        public static final Pose2d middle = new Pose2d(2.5, 5.5, new Rotation2d());
+                        public static final Pose2d left = new Pose2d(2.5, 7, new Rotation2d());
+                }
 
+                public static class Red {
+                        // from robot perspective 
+                        public static final Pose2d right = new Pose2d(14.1, 7, new Rotation2d());
+                        public static final Pose2d middle = new Pose2d(14.1, 5.5, new Rotation2d());
+                        public static final Pose2d left = new Pose2d(14.1, 4.1, new Rotation2d());
+                }
+        }
         public static class Swerve {
 
                 public static final double kPhysicalMaxSpeedMetersPerSecond = 4.8768;
