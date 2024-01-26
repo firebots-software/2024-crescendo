@@ -6,6 +6,7 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.ClosedLoopOutputType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants.SteerFeedbackType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstantsFactory;
+import com.pathplanner.lib.path.PathConstraints;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -17,23 +18,22 @@ public class Constants {
                 public static final double kRightJoystickDeadband = 0.07;
         }
         
-        public static class Notes {
-                public static class Blue {
-                        // from robot perspective
-                        public static final Pose2d right = new Pose2d(2.5, 4.1, new Rotation2d());
-                        public static final Pose2d middle = new Pose2d(2.5, 5.5, new Rotation2d());
-                        public static final Pose2d left = new Pose2d(2.5, 7, new Rotation2d());
-                }
+        public static class Landmarks {
+                // Blue Landmarks
+                public static final Pose2d rightNote = new Pose2d(2.5, 4.1, new Rotation2d());
+                public static final Pose2d middleNote = new Pose2d(2.5, 5.5, new Rotation2d());
+                public static final Pose2d leftNote = new Pose2d(2.5, 7, new Rotation2d());
+                public static final Pose2d subwoofer = new Pose2d(0.6, 5.7, new Rotation2d());
+                public static final double centerLine = 8.27;
 
-                public static class Red {
-                        // from robot perspective 
-                        public static final Pose2d right = new Pose2d(14.1, 7, new Rotation2d());
-                        public static final Pose2d middle = new Pose2d(14.1, 5.5, new Rotation2d());
-                        public static final Pose2d left = new Pose2d(14.1, 4.1, new Rotation2d());
-                }
         }
-        public static class Swerve {
 
+        public static class PPConstants {
+                public static final PathConstraints constraints = new PathConstraints(3.0, 3.0, 2 * Math.PI, 4 * Math.PI);
+        }
+
+        public static class Swerve {
+                
                 public static final double kPhysicalMaxSpeedMetersPerSecond = 4.8768;
                 public static final double kPhysicalMaxAngularSpeedRadiansPerSecond = 2 * 2 * Math.PI;
 

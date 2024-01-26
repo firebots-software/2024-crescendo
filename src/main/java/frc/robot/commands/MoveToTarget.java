@@ -4,28 +4,29 @@ import java.util.List;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.GoalEndState;
-import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.Constants;
 import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.util.MiscUtils;
 
 public class MoveToTarget extends Command {
     private Pose2d absolutePose;
     private SwerveSubsystem swerve;
-    PathConstraints constraints = new PathConstraints(3.0, 3.0, 2 * Math.PI, 4 * Math.PI);
-    PathPlannerPath path;
-    Command followThePath;
 
-    public MoveToTarget(SwerveSubsystem swerve, Pose2d absolutePose) {
+    PathPlannerPath constructedPath;
+    Command pathCommand;
+
+    private MoveToTarget(SwerveSubsystem swerve, Pose2d absolutePose, boolean reflected) {
         this.swerve = SwerveSubsystem.getInstance();
-        this.absolutePose = absolutePose;
+        if (reflected) {
+          this.absolutePose = MiscUtils.reflectAcrossMidline(absolutePose);
+        }
+        else {
+          this.absolutePose = absolutePose;
+        }
         addRequirements(swerve);
     }
 
@@ -37,35 +38,44 @@ public class MoveToTarget extends Command {
       List<Translation2d> bezierPoints = PathPlannerPath.bezierFromPoses(
         currentPose,
         absolutePose);
+      
       // Create the path using the bezier points created above
-      path = new PathPlannerPath(
+      constructedPath = new PathPlannerPath(
             bezierPoints,
-            constraints, // The constraints for this path. If using a differential drivetrain, the angular constraints have no effect.
+            Constants.PPConstants.constraints, // The constraints for this path. If using a differential drivetrain, the angular constraints have no effect.
             new GoalEndState(0.0, absolutePose.getRotation()) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
       );
 
-      path.preventFlipping = true;
+      constructedPath.preventFlipping = true;
 
-      followThePath = AutoBuilder.followPath(path);
-      followThePath.initialize();
+      pathCommand = AutoBuilder.followPath(constructedPath);
+      pathCommand.initialize();
     }
 
     public void execute() {
-      if (followThePath != null) {
-        followThePath.execute();
+      if (pathCommand != null) {
+        pathCommand.execute();
       }
     }
 
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
-        if (followThePath != null)
-            followThePath.end(interrupted);
+        if (pathCommand != null)
+            pathCommand.end(interrupted);
     }
 
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-      return followThePath != null ? followThePath.isFinished() : false;
+      return pathCommand != null ? pathCommand.isFinished() : false;
+    }
+
+    public static Command withAbsolute(SwerveSubsystem swerve, Pose2d absolutePose) {
+      return new MoveToTarget(swerve, absolutePose, false);
+    }
+
+    public static Command withMirror(SwerveSubsystem swerve, Pose2d absolutePose, boolean mirror) {
+      return new MoveToTarget(swerve, absolutePose, mirror);
     }
 }

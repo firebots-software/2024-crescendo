@@ -6,18 +6,13 @@ package frc.robot;
 
 import java.util.List;
 
-import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
-import com.pathplanner.lib.path.GoalEndState;
-import com.pathplanner.lib.path.PathPlannerPath;
-import com.pathplanner.lib.path.PathConstraints;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -36,13 +31,12 @@ import frc.robot.subsystems.SwerveSubsystem;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-
   /* Setting up bindings for necessary control of the swerve drive platform */
-
   private final CommandPS4Controller joystick = new CommandPS4Controller(0);
   private final SwerveSubsystem driveTrain = SwerveSubsystem.getInstance();
 
-  private final Pose2d[] noteLocations = {Constants.Notes.Blue.left, Constants.Notes.Blue.middle, Constants.Notes.Blue.right};
+  private final Pose2d[] noteLocations = {Constants.Landmarks.leftNote, Constants.Landmarks.middleNote, Constants.Landmarks.rightNote};
+
   private static SendableChooser<Integer> pickup1choice, pickup2choice;
   private final SwerveJoystickCommand swerveJoystickCommand = new SwerveJoystickCommand(
       () -> -joystick.getRawAxis(1),
@@ -96,10 +90,14 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
+    boolean redAlliance = true;
+    if (DriverStation.getAlliance().get() == Alliance.Red) {
+      redAlliance = true;
+    }
     return new PathPlannerAuto("THREE NOTE AUTON").andThen(
-      new MoveToTarget(driveTrain, noteLocations[pickup1choice.getSelected()])
+      MoveToTarget.withMirror(driveTrain, noteLocations[pickup1choice.getSelected()], redAlliance)
     ).andThen(
-      new MoveToTarget(driveTrain, noteLocations[pickup2choice.getSelected()])
+      MoveToTarget.withMirror(driveTrain, noteLocations[pickup2choice.getSelected()], redAlliance)
     );
   }
 }
