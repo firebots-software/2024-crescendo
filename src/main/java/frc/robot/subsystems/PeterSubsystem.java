@@ -126,7 +126,7 @@ public class PeterSubsystem extends SubsystemBase {
     MotionMagicVoltage m_request = new MotionMagicVoltage(preShooterMotor.getPosition().getValue());
     preShooterMotor.setControl(
         m_request.withPosition(
-            preShooterMotor.getPosition().getValue() + position)); // rotate 5 more rotationes
+            preShooterMotor.getPosition().getValue() + position)); // rotate 5 more rotations
   }
 
   public double getPreShooterPosition() {
