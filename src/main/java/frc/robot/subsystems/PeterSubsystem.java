@@ -3,10 +3,12 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -17,6 +19,7 @@ public class PeterSubsystem extends SubsystemBase {
   private static PeterSubsystem instance;
 
   // private final PositionDutyCycle v;
+  private final DutyCycleOut rollerMotorRequest;
 
   private DigitalInput noteSensor;
   public TalonFX shooterMotorRight, shooterMotorLeft, shooterMotorMaster;
@@ -24,8 +27,16 @@ public class PeterSubsystem extends SubsystemBase {
   private StatusSignal<Double> preShooterPosition;
 
   private MotionMagicConfigs mmcPreShooter;
+  private TrapezoidProfile profile;
+  private TrapezoidProfile.Constraints tp;
+  private double[] distancesFromSpeaker;
+  private double[] anglesOfShooter;
+  HashMap<double, double> distanceAndAngles;
+
 
   public PeterSubsystem() {
+    tp = new TrapezoidProfile.Constraints(10, 20);
+    profile = new TrapezoidProfile(tp);
 
     // Initalize shooter
     Follower f = new Follower(Constants.Intake.SHOOTER_PORT_LEFT, false);
@@ -52,6 +63,7 @@ public class PeterSubsystem extends SubsystemBase {
 
     noteSensor = new DigitalInput(Constants.Intake.NOTE_DETECTOR_PORT);
 
+    rollerMotorRequest = new DutyCycleOut(0.0);
     preShooterPosition = preShooterMotor.getPosition();
   }
 
@@ -69,8 +81,9 @@ public class PeterSubsystem extends SubsystemBase {
     shooterMotorMaster.setControl(m_velocityControl);
   }
 
-  public void runShooter(double speed) {
-    VelocityVoltage m_velocityControl = new VelocityVoltage(Constants.Intake.SHOOT_WHEEL_SPEED_RPS);
+  public void runShooter(
+      double speed) { // TODO: We have convert a distance to a speed. We take in velocity in rps
+    VelocityVoltage m_velocityControl = new VelocityVoltage(speed);
     m_velocityControl.withFeedForward(0.1);
     shooterMotorMaster.setControl(m_velocityControl);
   }
@@ -79,7 +92,7 @@ public class PeterSubsystem extends SubsystemBase {
     return noteSensor.get(); // true = note present
   }
 
-  public void moveNoteToShooter() {
+  public void moveNoteToShooter(double speed) {
     MotionMagicVoltage m_request = new MotionMagicVoltage(preShooterMotor.getPosition().getValue());
     preShooterMotor.setControl(
         m_request.withPosition(
@@ -89,6 +102,14 @@ public class PeterSubsystem extends SubsystemBase {
 
   public double getPreShooterPosition() {
     return preShooterPosition.getValue();
+  }
+
+  public double getShooterAngle(double distance) {
+
+    CubicSpline eq = new CubicSpline(Constants.Intake.DISTANCE_CONSTANTS, Constants.Intake.ANGLE_CONSTANTS);
+
+
+
   }
 
   @Override
