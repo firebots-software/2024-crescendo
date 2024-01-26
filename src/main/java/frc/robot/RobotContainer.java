@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 // import frc.robot.commands.ArmRotateCommand;
 import frc.robot.commands.ArmRotateCommand;
-import frc.robot.commands.PeterCommands.RunShooterCommand;
+import frc.robot.commands.PeterCommands.RunPreShooter;
 import frc.robot.commands.SwerveJoystickCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.PeterSubsystem;
@@ -60,7 +60,7 @@ public class RobotContainer {
                         new Pose2d(new Translation2d(0, 0), new Rotation2d(0)))));
     driveTrain.registerTelemetry(logger::telemeterize);
 
-    joystick.square().whileTrue(new RunShooterCommand(peterSubsystem));
+    joystick.square().whileTrue(new RunPreShooter(peterSubsystem));
     joystick
         .circle()
         .whileTrue(new ArmRotateCommand(armSubsystem, 0)); // to do: figure out encoder vals

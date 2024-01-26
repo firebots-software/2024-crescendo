@@ -5,11 +5,11 @@ import frc.robot.Constants;
 import frc.robot.subsystems.PeterSubsystem;
 
 /** An example command that uses an example subsystem. */
-public class RunShooterCommand extends Command {
+public class RunPreShooter extends Command {
   private double shooterSpeed;
   private PeterSubsystem shooter;
 
-  public RunShooterCommand(PeterSubsystem shooter) {
+  public RunPreShooter(PeterSubsystem shooter) {
     this.shooter = shooter;
     this.shooterSpeed = Constants.Intake.SHOOTER_SPEED;
     addRequirements(shooter);
@@ -22,7 +22,6 @@ public class RunShooterCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    shooter.runShooter(shooterSpeed);
     shooter.moveNoteToShooter();
   }
 
