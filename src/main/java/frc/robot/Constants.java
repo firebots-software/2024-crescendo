@@ -78,7 +78,8 @@ public final class Constants {
   public static class OI {
     public static final double LEFT_JOYSTICK_DEADBAND = 0.07;
     public static final double RIGHT_JOYSTICK_DEADBAND = 0.07;
-    public static final int JOYSTICK_PORT = 0;
+    public static final int MOVEMENT_JOYSTICK_PORT = 0;
+    public static final int ARM_JOYSTICK_PORT = 1;
   }
 
   public static class Swerve {
