@@ -63,7 +63,7 @@ public class ArmSubsystem extends SubsystemBase {
     return instance;
   }
 
-  public void setPosition(double angleDegrees) {
+  private void setPosition(double angleDegrees) {
     MotionMagicVoltage m_request = new MotionMagicVoltage(master.getPosition().getValue());
     m_request.withFeedForward(armff.calculate(angleDegrees * Math.PI * 2, 0, 0));
     master.setControl(m_request.withPosition(angleDegrees / 360));
