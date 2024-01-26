@@ -7,10 +7,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.PeterSubsystem;
 
 /** An example command that uses an example subsystem. */
-public class IntakeWithSensorCommand extends Command {
+public class RunIntakeUntilDetection extends Command {
   private PeterSubsystem peterSubsystem;
 
-  public IntakeWithSensorCommand(PeterSubsystem peterSubsystem) {
+  public RunIntakeUntilDetection(PeterSubsystem peterSubsystem) {
     this.peterSubsystem = peterSubsystem;
     addRequirements(peterSubsystem);
   }
@@ -25,12 +25,11 @@ public class IntakeWithSensorCommand extends Command {
     peterSubsystem.runIntake(0.5);
     if (peterSubsystem.notePresent()) {
       peterSubsystem.runIntake(0);
-      while (peterSubsystem.getPreShooterPosition() < 1024) { // whatever is 3 inches pls be right
-        // peterSubsystem.runPreShooter(0.5);
-      }
+      // peterSubsystem.runPreShooter(0.5);
     }
-    // peterSubsystem.runPreShooter(0);
   }
+
+  // peterSubsystem.runPreShooter(0);
 
   // Called once the command ends or is interrupted.
   @Override
