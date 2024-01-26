@@ -63,7 +63,7 @@ public class RobotContainer {
     joystick.square().whileTrue(new RunPreShooter(peterSubsystem));
     joystick
         .circle()
-        .whileTrue(new ArmRotateCommand(armSubsystem, 0)); // to do: figure out encoder vals
+        .whileTrue(new ArmRotateCommand(armSubsystem)); // to do: figure out encoder vals
   }
 
   public RobotContainer() {

@@ -44,7 +44,7 @@ public final class Constants {
     public static final int SHOOTER_PORT_RIGHT = 4;
     public static final int SHOOTER_PORT_LEFT = 5;
 
-    public static final double INTAKE_WHEEL_SPEED_RPM = 100;
+    public static final double INTAKE_WHEEL_SPEED_RPM = 100 / 60;
     public static final double ROTATIONS_TO_SHOOTER = 5d;
 
     public static final double SHOOT_WHEEL_SPEED_RPS = 100 / 60;
@@ -67,6 +67,8 @@ public final class Constants {
     public static final double ARM_ENCODER_OFFSET =
         0; // TODO: Change the offset so that the 0 position is when the arm is at its resting
     // position.
+    public static final double SPEAKER_ANGLE =
+        0; // TODO: Replace with the function based on distance
     public static final int R1_PORT = 4;
     public static final int R2_PORT = 5;
     public static final int L1_PORT = 6;

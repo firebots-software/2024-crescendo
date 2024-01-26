@@ -77,7 +77,9 @@ public class ArmSubsystem extends SubsystemBase {
     return -1;
   }
 
-  public void rotateArmToSpeakerPosition() {}
+  public void rotateArmToSpeakerPosition() {
+    setPosition(Constants.Arm.ARM_ENCODER_OFFSET + Constants.Arm.SPEAKER_ANGLE);
+  }
 
   public void rotateArmToRestPosition() {
     setPosition(Constants.Arm.ARM_ENCODER_OFFSET);

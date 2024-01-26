@@ -13,20 +13,16 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class PeterSubsystem extends SubsystemBase {
-  // private static final int MAX_DISTANCE = 4048;//
   private static PeterSubsystem instance;
 
-  // private final PositionDutyCycle v;
-
   private DigitalInput noteSensor;
-  public TalonFX shooterMotorRight, shooterMotorLeft, shooterMotorMaster;
-  public TalonFX preShooterMotor, intakeMotor;
+  private TalonFX shooterMotorRight, shooterMotorLeft, shooterMotorMaster;
+  private TalonFX preShooterMotor, intakeMotor;
   private StatusSignal<Double> preShooterPosition;
 
   private MotionMagicConfigs mmcPreShooter;
 
   public PeterSubsystem() {
-
     // Initalize shooter
     Follower f = new Follower(Constants.Intake.SHOOTER_PORT_LEFT, false);
     shooterMotorLeft = new TalonFX(Constants.Intake.SHOOTER_PORT_LEFT);
@@ -62,29 +58,75 @@ public class PeterSubsystem extends SubsystemBase {
     return instance;
   }
 
-  public void runIntake(
-      double speed) { // TODO: We have convert a distance to a speed. We take in velocity in rps
+  // INTAKE FUNCTIONS:
+  public void spinUpIntake() {
+    runIntakeAtRPS(Constants.Intake.INTAKE_WHEEL_SPEED_RPM);
+  }
+
+  public void stopIntake() {
+    runIntakeAtRPS(0);
+  }
+
+  private void runIntakeAtRPS(double speed) {
+    VelocityVoltage m_velocityControl =
+        new VelocityVoltage(Constants.Intake.INTAKE_WHEEL_SPEED_RPM);
+    m_velocityControl.withFeedForward(0.1);
+    intakeMotor.setControl(m_velocityControl);
+  }
+
+  // SHOOTER FUNCTIONS:
+  public void spinUpShooter() {
+    runShooterAtRPS(Constants.Intake.SHOOT_WHEEL_SPEED_RPS);
+  }
+
+  public void stopShooter() {
+    runShooterAtRPS(0);
+  }
+
+  private void runShooterAtRPS(double speed) {
     VelocityVoltage m_velocityControl = new VelocityVoltage(speed);
     m_velocityControl.withFeedForward(0.1);
     shooterMotorMaster.setControl(m_velocityControl);
   }
 
-  public void runShooter(double speed) {
-    VelocityVoltage m_velocityControl = new VelocityVoltage(Constants.Intake.SHOOT_WHEEL_SPEED_RPS);
-    m_velocityControl.withFeedForward(0.1);
-    shooterMotorMaster.setControl(m_velocityControl);
+  public boolean isShooterReady() {
+    if (Math.abs(
+            shooterMotorMaster.getVelocity().getValue() - Constants.Intake.SHOOT_WHEEL_SPEED_RPS)
+        < 0.001) {
+      return true;
+    }
+    return false;
+  }
+
+  // SENSOR FUNCTIONS:
+  public static boolean noteStaticPresent() {
+    if (instance != null) {
+      return instance.notePresent(); // true = note present
+    } else {
+      throw new NullPointerException(
+          "In order to use the Arm subsystem, we need to access the sensor from shooter. Please initalize the PeterSubsystem before using an Arm Command");
+    }
   }
 
   public boolean notePresent() {
-    return noteSensor.get(); // true = note present
+    return noteSensor.get();
   }
 
+  // PRE-SHOOTER FUNCTIONS:
   public void moveNoteToShooter() {
+    movePreShooterMotorPosition(Constants.Intake.ROTATIONS_TO_SHOOTER); // 5 rotations
+  }
+
+  public void stopPreShooterMotor() {
+    movePreShooterMotorPosition(0);
+  }
+
+  private void movePreShooterMotorPosition(
+      double position) { // rotates by `position` more rotations
     MotionMagicVoltage m_request = new MotionMagicVoltage(preShooterMotor.getPosition().getValue());
     preShooterMotor.setControl(
         m_request.withPosition(
-            preShooterMotor.getPosition().getValue()
-                + Constants.Intake.ROTATIONS_TO_SHOOTER)); // rotate 5 more rotationes
+            preShooterMotor.getPosition().getValue() + position)); // rotate 5 more rotationes
   }
 
   public double getPreShooterPosition() {
