@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import frc.robot.commands.MoveToTarget;
 import frc.robot.commands.SwerveJoystickCommand;
 import frc.robot.subsystems.SwerveSubsystem;
+import java.util.Optional;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -30,31 +31,42 @@ public class RobotContainer {
 
   // Constructs a Pose2d array of the note locations by a specific indexing so they can be accessed
   // by the eventual autonomous chooser
-  private final Pose2d[] noteLocations = {
-    Constants.Landmarks.LEFT_NOTE_LOCATION,
-    Constants.Landmarks.MIDDLE_NOTE_LOCATION,
-    Constants.Landmarks.RIGHT_NOTE_LOCATION,
-    null
-  };
+  private enum NoteLocation {
+    LEFT(Constants.Landmarks.LEFT_NOTE_LOCATION),
+    MIDDLE(Constants.Landmarks.MIDDLE_NOTE_LOCATION),
+    RIGHT(Constants.Landmarks.RIGHT_NOTE_LOCATION);
+
+    private final Pose2d pose;
+
+    private NoteLocation(Pose2d pose) {
+      this.pose = pose;
+    }
+
+    private Pose2d getNoteLocation() {
+      return this.pose;
+    }
+  }
 
   // Options on SmartDashboard that return an integer index that refers to a note location
-  private static SendableChooser<Integer> pickup1choice = new SendableChooser<Integer>(),
-      pickup2choice = new SendableChooser<Integer>();
+  private static SendableChooser<Optional<NoteLocation>>
+      pickup1choice = new SendableChooser<Optional<NoteLocation>>(),
+      pickup2choice = new SendableChooser<Optional<NoteLocation>>();
 
   private void setupChooser() {
     // // Instantiations
     // pickup1choice = new SendableChooser<Integer>();
     // pickup2choice = new SendableChooser<Integer>();
 
-    pickup1choice.setDefaultOption("do nothing after 1st shoot", 3);
-    pickup1choice.addOption("Ring 1 (leftmost robot perspective)", 0);
-    pickup1choice.addOption("Ring 2 (middle)", 1);
-    pickup1choice.addOption("Ring 3 (rightmost robot perspective)", 2);
+    pickup1choice.setDefaultOption("do nothing after 1st shoot", Optional.empty());
+    pickup1choice.addOption("Ring 1 (leftmost robot perspective)", Optional.of(NoteLocation.LEFT));
+    pickup1choice.addOption("Ring 2 (middle)", Optional.of(NoteLocation.MIDDLE));
+    pickup1choice.addOption(
+        "Ring 3 (rightmost robot perspective)", Optional.of(NoteLocation.RIGHT));
 
-    pickup2choice.setDefaultOption("do nothing after 1st pickup", 3);
-    pickup2choice.addOption("Ring 1 (leftmost robot perspective)", 0);
-    pickup2choice.addOption("Ring 2 (middle)", 1);
-    pickup2choice.addOption("Ring 3 (right robot perspective)", 2);
+    pickup2choice.setDefaultOption("do nothing after 1st pickup", Optional.empty());
+    pickup2choice.addOption("Ring 1 (leftmost robot perspective)", Optional.of(NoteLocation.LEFT));
+    pickup2choice.addOption("Ring 2 (middle)", Optional.of(NoteLocation.MIDDLE));
+    pickup2choice.addOption("Ring 3 (right robot perspective)", Optional.of(NoteLocation.RIGHT));
 
     SmartDashboard.putData(pickup1choice);
     SmartDashboard.putData(pickup2choice);
@@ -76,15 +88,15 @@ public class RobotContainer {
     }
     return new PathPlannerAuto("ThreeNoteAuton")
         .andThen(
-            (noteLocations[pickup1choice.getSelected()] == null)
+            (pickup1choice.getSelected().isEmpty())
                 ? new WaitCommand(2.0)
                 : MoveToTarget.withMirror(
-                    driveTrain, noteLocations[pickup1choice.getSelected()], redAlliance))
+                    driveTrain, pickup1choice.getSelected().get().getNoteLocation(), redAlliance))
         .andThen(
-            (noteLocations[pickup2choice.getSelected()] == null)
+            (pickup2choice.getSelected().isEmpty())
                 ? new WaitCommand(2.0)
                 : MoveToTarget.withMirror(
-                    driveTrain, noteLocations[pickup2choice.getSelected()], redAlliance));
+                    driveTrain, pickup2choice.getSelected().get().getNoteLocation(), redAlliance));
   }
 
   /* Setting up bindings for necessary control of the swerve drive platform */
