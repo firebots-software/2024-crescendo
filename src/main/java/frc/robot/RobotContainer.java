@@ -74,7 +74,7 @@ public class RobotContainer {
     if (DriverStation.getAlliance().get() == Alliance.Red) {
       redAlliance = true;
     }
-    return new PathPlannerAuto("threeNoteAuton")
+    return new PathPlannerAuto("ThreeNoteAuton")
         .andThen(
             (noteLocations[pickup1choice.getSelected()] == null)
                 ? new WaitCommand(2.0)
