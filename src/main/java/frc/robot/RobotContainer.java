@@ -66,7 +66,7 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    boolean redAlliance = true;
+    boolean redAlliance = false;
     if (DriverStation.getAlliance().get() == Alliance.Red) {
       redAlliance = true;
     }
