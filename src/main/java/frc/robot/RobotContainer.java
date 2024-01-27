@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import frc.robot.commands.MoveToTarget;
 
@@ -34,13 +35,18 @@ import frc.robot.subsystems.SwerveSubsystem;
 public class RobotContainer {
   /* Setting up bindings for necessary control of the swerve drive platform */
 
-  private final Pose2d[] noteLocations = {Constants.Landmarks.leftNote, Constants.Landmarks.middleNote, Constants.Landmarks.rightNote};
+  // Constructs a Pose2d array of the note locations by a specific indexing so they can be accessed by the eventual autonomous chooser
+  private final Pose2d[] noteLocations = {Constants.Landmarks.LEFT_NOTE_LOCATION, Constants.Landmarks.MIDDLE_NOTE_LOCATION, Constants.Landmarks.RIGHT_NOTE_LOCATION, null};
 
-  private static SendableChooser<Integer> pickup1choice, pickup2choice;
+  // Options on SmartDashboard that return an integer index that refers to a note location
+  private static SendableChooser<Integer> 
+  pickup1choice = new SendableChooser<Integer>(), 
+  pickup2choice = new SendableChooser<Integer>();
 
   private void setupChooser() {
-    pickup1choice = new SendableChooser<Integer>();
-    pickup2choice = new SendableChooser<Integer>();
+    // // Instantiations 
+    // pickup1choice = new SendableChooser<Integer>();
+    // pickup2choice = new SendableChooser<Integer>();
 
     pickup1choice.setDefaultOption("do nothing after 1st shoot", 3);
     pickup1choice.addOption("Ring 1 (leftmost robot perspective)", 0); 
@@ -71,9 +77,9 @@ public class RobotContainer {
       redAlliance = true;
     }
     return new PathPlannerAuto("THREE NOTE AUTON").andThen(
-      MoveToTarget.withMirror(driveTrain, noteLocations[pickup1choice.getSelected()], redAlliance)
+      (noteLocations[pickup1choice.getSelected()] == null) ? new WaitCommand(2.0) :  MoveToTarget.withMirror(driveTrain, noteLocations[pickup1choice.getSelected()], redAlliance)
     ).andThen(
-      MoveToTarget.withMirror(driveTrain, noteLocations[pickup2choice.getSelected()], redAlliance)
+      (noteLocations[pickup2choice.getSelected()] == null) ? new WaitCommand(2.0) :  MoveToTarget.withMirror(driveTrain, noteLocations[pickup2choice.getSelected()], redAlliance)
     );
   }
 

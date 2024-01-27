@@ -32,22 +32,23 @@ public class MoveToTarget extends Command {
 
     @Override
     public void initialize() {
-      // Create a list of bezier points from poses. Each pose represents one waypoint.
-      // The rotation component of the pose should be the direction of travel. Do not use holonomic rotation.
+      // constructing the list of path points using absolute coordinates on the field
       Pose2d currentPose = swerve.getState().Pose;
       List<Translation2d> bezierPoints = PathPlannerPath.bezierFromPoses(
         currentPose,
         absolutePose);
-      
-      // Create the path using the bezier points created above
+     
+      // create the path using the path points and constraints (also providing the final robot heading)
       constructedPath = new PathPlannerPath(
             bezierPoints,
-            Constants.PPConstants.constraints, // The constraints for this path. If using a differential drivetrain, the angular constraints have no effect.
-            new GoalEndState(0.0, absolutePose.getRotation()) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
+            Constants.PPConstants.PATH_PLANNER_CONSTRAINTS,
+            new GoalEndState(0.0, absolutePose.getRotation()) // goal end velocity and heading
       );
 
+      // prevent automatic path flipping by AutoBuilder (we want to execute absolute path)
       constructedPath.preventFlipping = true;
 
+      // Command of the built auto path
       pathCommand = AutoBuilder.followPath(constructedPath);
       pathCommand.initialize();
     }
@@ -71,6 +72,7 @@ public class MoveToTarget extends Command {
       return pathCommand != null ? pathCommand.isFinished() : false;
     }
 
+    // Factory pattern (two separate constructors that invoke the mirror / non mirror)
     public static Command withAbsolute(SwerveSubsystem swerve, Pose2d absolutePose) {
       return new MoveToTarget(swerve, absolutePose, false);
     }
