@@ -15,6 +15,7 @@ public class ArmSubsystem extends SubsystemBase {
 
   private TalonFX r1, r2, l1, l2;
   private TalonFX master;
+  private Encoder mEncoder;
   private ArmFeedforward armff;
   // private TrapezoidProfile profile;
   // private TrapezoidProfile.Constraints tp;
@@ -54,6 +55,9 @@ public class ArmSubsystem extends SubsystemBase {
     mmc.MotionMagicAcceleration = 160;
     mmc.MotionMagicJerk = 1600;
     master.getConfigurator().apply(mmc);
+
+    // What ports is the encoder on? They should be two different DIO ports:
+    // mEncoder = new Encoder(0, 1);
   }
 
   public static ArmSubsystem getInstance() {

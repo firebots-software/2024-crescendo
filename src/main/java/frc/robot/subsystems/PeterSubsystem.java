@@ -3,7 +3,6 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -82,26 +81,30 @@ public class PeterSubsystem extends SubsystemBase {
   public void stopShooter() {
     runShooterAtRPS(0);
   }
-  public void spinRightShooter(){
+
+  public void spinRightShooter() {
     runRightShooterAtRPS(Constants.Intake.SHOOT_WHEEL_SPEED_RPS);
   }
-  public void spinLeftShooter(){
+
+  public void spinLeftShooter() {
     runLeftShooterAtRPS(Constants.Intake.SHOOT_WHEEL_SPEED_RPS);
   }
-  public void stopRightShooter(){
+
+  public void stopRightShooter() {
     runRightShooterAtRPS(0);
   }
-  public void stopLeftShooter(){
+
+  public void stopLeftShooter() {
     runLeftShooterAtRPS(0);
   }
 
-  private void runRightShooterAtRPS(double speed){
+  private void runRightShooterAtRPS(double speed) {
     VelocityVoltage m_velocityControl = new VelocityVoltage(speed);
     m_velocityControl.withFeedForward(0.1);
     shooterMotorRight.setControl(m_velocityControl);
   }
 
-  private void runLeftShooterAtRPS(double speed){
+  private void runLeftShooterAtRPS(double speed) {
     VelocityVoltage m_velocityControl = new VelocityVoltage(speed);
     m_velocityControl.withFeedForward(0.1);
     shooterMotorLeft.setControl(m_velocityControl);
@@ -117,8 +120,7 @@ public class PeterSubsystem extends SubsystemBase {
   }
 
   public boolean isShooterReady() {
-    if (Math.abs(
-            shooterMotorLeft.getVelocity().getValue() - Constants.Intake.SHOOT_WHEEL_SPEED_RPS)
+    if (Math.abs(shooterMotorLeft.getVelocity().getValue() - Constants.Intake.SHOOT_WHEEL_SPEED_RPS)
         < 0.001) {
       return true;
     }
@@ -148,8 +150,7 @@ public class PeterSubsystem extends SubsystemBase {
     movePreShooterMotorPosition(0);
   }
 
-  public void movePreShooterMotorPosition(
-      double position) { // rotates by `position` more rotations
+  public void movePreShooterMotorPosition(double position) { // rotates by `position` more rotations
     MotionMagicVoltage m_request = new MotionMagicVoltage(preShooterMotor.getPosition().getValue());
     preShooterMotor.setControl(
         m_request.withPosition(
