@@ -1,15 +1,13 @@
 package frc.robot.commands;
 
-import java.util.function.Supplier;
-
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
-
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.util.FieldCentricOptimizedSwerve;
+import java.util.function.Supplier;
 
 public class SwerveJoystickCommand extends Command {
   private final Supplier<Double> xSpdFunction,

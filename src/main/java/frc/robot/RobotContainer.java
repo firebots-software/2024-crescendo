@@ -4,10 +4,7 @@
 
 package frc.robot;
 
-import java.util.List;
-
 import com.pathplanner.lib.commands.PathPlannerAuto;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -19,44 +16,45 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import frc.robot.commands.MoveToTarget;
-
 import frc.robot.commands.SwerveJoystickCommand;
 import frc.robot.subsystems.SwerveSubsystem;
 
 /**
- * This class is where the bulk of the robot should be declared. Since
- * Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in
- * the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of
- * the robot (including
+ * This class is where the bulk of the robot should be declared. Since Command-based is a
+ * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
+ * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
   /* Setting up bindings for necessary control of the swerve drive platform */
 
-  // Constructs a Pose2d array of the note locations by a specific indexing so they can be accessed by the eventual autonomous chooser
-  private final Pose2d[] noteLocations = {Constants.Landmarks.LEFT_NOTE_LOCATION, Constants.Landmarks.MIDDLE_NOTE_LOCATION, Constants.Landmarks.RIGHT_NOTE_LOCATION, null};
+  // Constructs a Pose2d array of the note locations by a specific indexing so they can be accessed
+  // by the eventual autonomous chooser
+  private final Pose2d[] noteLocations = {
+    Constants.Landmarks.LEFT_NOTE_LOCATION,
+    Constants.Landmarks.MIDDLE_NOTE_LOCATION,
+    Constants.Landmarks.RIGHT_NOTE_LOCATION,
+    null
+  };
 
   // Options on SmartDashboard that return an integer index that refers to a note location
-  private static SendableChooser<Integer> 
-  pickup1choice = new SendableChooser<Integer>(), 
-  pickup2choice = new SendableChooser<Integer>();
+  private static SendableChooser<Integer> pickup1choice = new SendableChooser<Integer>(),
+      pickup2choice = new SendableChooser<Integer>();
 
   private void setupChooser() {
-    // // Instantiations 
+    // // Instantiations
     // pickup1choice = new SendableChooser<Integer>();
     // pickup2choice = new SendableChooser<Integer>();
 
     pickup1choice.setDefaultOption("do nothing after 1st shoot", 3);
-    pickup1choice.addOption("Ring 1 (leftmost robot perspective)", 0); 
-    pickup1choice.addOption("Ring 2 (middle)", 1); 
-    pickup1choice.addOption("Ring 3 (rightmost robot perspective)", 2); 
+    pickup1choice.addOption("Ring 1 (leftmost robot perspective)", 0);
+    pickup1choice.addOption("Ring 2 (middle)", 1);
+    pickup1choice.addOption("Ring 3 (rightmost robot perspective)", 2);
 
     pickup2choice.setDefaultOption("do nothing after 1st pickup", 3);
-    pickup2choice.addOption("Ring 1 (leftmost robot perspective)", 0); 
-    pickup2choice.addOption("Ring 2 (middle)", 1); 
-    pickup2choice.addOption("Ring 3 (right robot perspective)", 2); 
+    pickup2choice.addOption("Ring 1 (leftmost robot perspective)", 0);
+    pickup2choice.addOption("Ring 2 (middle)", 1);
+    pickup2choice.addOption("Ring 3 (right robot perspective)", 2);
 
     SmartDashboard.putData(pickup1choice);
     SmartDashboard.putData(pickup2choice);
@@ -76,11 +74,17 @@ public class RobotContainer {
     if (DriverStation.getAlliance().get() == Alliance.Red) {
       redAlliance = true;
     }
-    return new PathPlannerAuto("THREE NOTE AUTON").andThen(
-      (noteLocations[pickup1choice.getSelected()] == null) ? new WaitCommand(2.0) :  MoveToTarget.withMirror(driveTrain, noteLocations[pickup1choice.getSelected()], redAlliance)
-    ).andThen(
-      (noteLocations[pickup2choice.getSelected()] == null) ? new WaitCommand(2.0) :  MoveToTarget.withMirror(driveTrain, noteLocations[pickup2choice.getSelected()], redAlliance)
-    );
+    return new PathPlannerAuto("THREE NOTE AUTON")
+        .andThen(
+            (noteLocations[pickup1choice.getSelected()] == null)
+                ? new WaitCommand(2.0)
+                : MoveToTarget.withMirror(
+                    driveTrain, noteLocations[pickup1choice.getSelected()], redAlliance))
+        .andThen(
+            (noteLocations[pickup2choice.getSelected()] == null)
+                ? new WaitCommand(2.0)
+                : MoveToTarget.withMirror(
+                    driveTrain, noteLocations[pickup2choice.getSelected()], redAlliance));
   }
 
   /* Setting up bindings for necessary control of the swerve drive platform */
