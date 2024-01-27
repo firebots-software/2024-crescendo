@@ -27,12 +27,12 @@ public class Constants {
     public static final double CENTER_LINE_LOCATION = 8.27;
   }
 
-  public static class PPConstants {
-    public static final PathConstraints PATH_PLANNER_CONSTRAINTS =
-        new PathConstraints(3.0, 3.0, 2 * Math.PI, 4 * Math.PI);
-  }
-
   public static class Swerve {
+    public static class PPConstants {
+      public static final PathConstraints PATH_PLANNER_CONSTRAINTS =
+          new PathConstraints(3.0, 3.0, 2 * Math.PI, 4 * Math.PI);
+    }
+
     public static final double PHYSICAL_MAX_SPEED_METERS_PER_SECOND = 4.8768;
     public static final double PHYSICAL_MAX_ANGLUAR_SPEED_RADIANS_PER_SECOND = 2 * 2 * Math.PI;
 
