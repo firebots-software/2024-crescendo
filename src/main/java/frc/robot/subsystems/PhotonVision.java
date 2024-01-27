@@ -20,6 +20,7 @@ import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
+import org.photonvision.targeting.TargetCorner;
 
 public class PhotonVision extends SubsystemBase {
   Pose3d savedResult = new Pose3d(0.0, 0.0, 0.0, new Rotation3d(0.0, 0.0, 0.0));
@@ -131,8 +132,34 @@ public class PhotonVision extends SubsystemBase {
     return target.getBestCameraToTarget();
   }
 
+  public Pose3d getTagPose(int id){
+    Optional<Pose3d> tagPoseOptional = aprilTagFieldLayout.getTagPose(id);
+    if(tagPoseOptional.isEmpty()) return null;
+    return tagPoseOptional.get();
+  }
+
   public double get3dDist() {
     return getTransformToTarget().getTranslation().getNorm();
+  }
+
+  public double get3dDist(Transform3d robotPose) {
+    double dx = robotPose.getX();
+    double dy = robotPose.getY();
+    double dz = robotPose.getZ();
+    return Math.sqrt(dx*dx+dy*dy+dz*dz);
+  }
+
+  public void testPose3d(){
+    PhotonPipelineResult pipeline = getPipeline();
+    PhotonTrackedTarget target = getBestTarget(pipeline);
+
+    TargetCorner c = new TargetCorner(100, 200);
+
+    Pose3d tagPose = getTagPose(target.getFiducialId());
+    double d3 = get3dDist();
+    double h = tagPose.getZ();
+    double zt = target.getYaw();
+    
   }
 
   /*
@@ -165,9 +192,9 @@ public class PhotonVision extends SubsystemBase {
     SmartDashboard.putNumber("Transform Y", transformToTarget.getTranslation().getY());
     SmartDashboard.putNumber("Transform Z", transformToTarget.getTranslation().getZ());
     SmartDashboard.putNumber("Transform Rot Angle", transformToTarget.getRotation().getAngle());
-    SmartDashboard.putNumber("Dist", get3dDist());
+    SmartDashboard.putNumber("Transform 3d Dist", get3dDist());
     // SmartDashboard.putNumber("Dist2", get3dDistFromPose());
-    SmartDashboard.putNumber("Dist3", getDistance());
+    SmartDashboard.putNumber("Multitag 3d Dist", get3dDist(robotPose3d));
     // SmartDashboard.putNumber("Gyro", gyro.getAngle());
 
   }
