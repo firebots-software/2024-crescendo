@@ -16,7 +16,7 @@ public class PeterSubsystem extends SubsystemBase {
   private static PeterSubsystem instance;
 
   private DigitalInput noteSensor;
-  private TalonFX shooterMotorRight, shooterMotorLeft, shooterMotorMaster;
+  private TalonFX shooterMotorRight, shooterMotorLeft;
   private TalonFX preShooterMotor, intakeMotor;
   private StatusSignal<Double> preShooterPosition;
 
@@ -24,16 +24,16 @@ public class PeterSubsystem extends SubsystemBase {
 
   public PeterSubsystem() {
     // Initalize shooter
-    Follower f = new Follower(Constants.Intake.SHOOTER_PORT_LEFT, false );
+    // Follower f = new Follower(Constants.Intake.SHOOTER_PORT_LEFT, false );
     shooterMotorLeft = new TalonFX(Constants.Intake.SHOOTER_PORT_LEFT);
     shooterMotorRight = new TalonFX(Constants.Intake.SHOOTER_PORT_RIGHT);
     shooterMotorRight.setInverted(true);
-    shooterMotorRight.setControl(f);
-    shooterMotorMaster = shooterMotorLeft;
+    // shooterMotorRight.setControl(f);
     Slot0Configs s0c =
         new Slot0Configs().withKP(0.1).withKI(0).withKD(0).withKG(0).withKV(0).withKA(0);
 
-    shooterMotorMaster.getConfigurator().apply(s0c);
+    shooterMotorRight.getConfigurator().apply(s0c);
+    shooterMotorLeft.getConfigurator().apply(s0c);
 
     // Preshooter
     preShooterMotor = new TalonFX(Constants.Intake.PRE_SHOOTER_PORT);
@@ -82,24 +82,43 @@ public class PeterSubsystem extends SubsystemBase {
   public void stopShooter() {
     runShooterAtRPS(0);
   }
-
-  public void runLeftMotor(){
-
+  public void spinRightShooter(){
+    runRightShooterAtRPS(Constants.Intake.SHOOT_WHEEL_SPEED_RPS);
+  }
+  public void spinLeftShooter(){
+    runLeftShooterAtRPS(Constants.Intake.SHOOT_WHEEL_SPEED_RPS);
+  }
+  public void stopRightShooter(){
+    runRightShooterAtRPS(0);
+  }
+  public void stopLeftShooter(){
+    runLeftShooterAtRPS(0);
   }
 
-  public void runRightMotor(){
-    
+  private void runRightShooterAtRPS(double speed){
+    VelocityVoltage m_velocityControl = new VelocityVoltage(speed);
+    m_velocityControl.withFeedForward(0.1);
+    shooterMotorRight.setControl(m_velocityControl);
+  }
+
+  private void runLeftShooterAtRPS(double speed){
+    VelocityVoltage m_velocityControl = new VelocityVoltage(speed);
+    m_velocityControl.withFeedForward(0.1);
+    shooterMotorLeft.setControl(m_velocityControl);
   }
 
   private void runShooterAtRPS(double speed) {
-    VelocityVoltage m_velocityControl = new VelocityVoltage(speed);
-    m_velocityControl.withFeedForward(0.1);
-    shooterMotorMaster.setControl(m_velocityControl);
+    // VelocityVoltage m_velocityControl = new VelocityVoltage(speed);
+    // m_velocityControl.withFeedForward(0.1);
+    // shooterMotorRight.setControl(m_velocityControl);
+    // shooterMotorLeft.setControl(m_velocityControl);
+    runRightShooterAtRPS(speed);
+    runLeftShooterAtRPS(speed);
   }
 
   public boolean isShooterReady() {
     if (Math.abs(
-            shooterMotorMaster.getVelocity().getValue() - Constants.Intake.SHOOT_WHEEL_SPEED_RPS)
+            shooterMotorLeft.getVelocity().getValue() - Constants.Intake.SHOOT_WHEEL_SPEED_RPS)
         < 0.001) {
       return true;
     }

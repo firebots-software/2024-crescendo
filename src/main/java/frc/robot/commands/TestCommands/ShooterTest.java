@@ -38,13 +38,7 @@ public class ShooterTest extends Command {
     peterSubsystem.stopShooter();
   }
   
-  public void testLeftWheel(){
-    peterSubsystem.runLeftMotor();
-  }
-
-  public void testRightWheel(){
-    peterSubsystem.runRightMotor();
-  }
+  
 
   // Returns true when the command should end.
   @Override
