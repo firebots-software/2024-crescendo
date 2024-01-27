@@ -2,20 +2,21 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.TestCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.PeterSubsystem;
 
-public class PeterCommand extends Command {
-  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final PeterSubsystem peterSubsystem;
+/** An example command that uses an example subsystem. */
+public class ShooterTest extends Command {
+  private PeterSubsystem peterSubsystem;
 
   /**
-   * 
-   * @param peterSubsystem intake/shooter or peter subsystem
+   * Test shooter motors
+   *
+   * @param peterSubsystem The subsystem used by this command.
    */
-  public PeterCommand(PeterSubsystem peterSubsystem) {
+  public ShooterTest(PeterSubsystem peterSubsystem) {
     this.peterSubsystem = peterSubsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(peterSubsystem);
@@ -28,16 +29,26 @@ public class PeterCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    peterSubsystem.notePresent();
+    peterSubsystem.spinUpShooter();
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    peterSubsystem.stopShooter();
+  }
+  
+  public void testLeftWheel(){
+    peterSubsystem.runLeftMotor();
+  }
+
+  public void testRightWheel(){
+    peterSubsystem.runRightMotor();
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return false; // wait for x seconds
   }
 }

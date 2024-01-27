@@ -24,7 +24,7 @@ public class PeterSubsystem extends SubsystemBase {
 
   public PeterSubsystem() {
     // Initalize shooter
-    Follower f = new Follower(Constants.Intake.SHOOTER_PORT_LEFT, false);
+    Follower f = new Follower(Constants.Intake.SHOOTER_PORT_LEFT, false );
     shooterMotorLeft = new TalonFX(Constants.Intake.SHOOTER_PORT_LEFT);
     shooterMotorRight = new TalonFX(Constants.Intake.SHOOTER_PORT_RIGHT);
     shooterMotorRight.setInverted(true);
@@ -83,6 +83,14 @@ public class PeterSubsystem extends SubsystemBase {
     runShooterAtRPS(0);
   }
 
+  public void runLeftMotor(){
+
+  }
+
+  public void runRightMotor(){
+    
+  }
+
   private void runShooterAtRPS(double speed) {
     VelocityVoltage m_velocityControl = new VelocityVoltage(speed);
     m_velocityControl.withFeedForward(0.1);
@@ -121,7 +129,7 @@ public class PeterSubsystem extends SubsystemBase {
     movePreShooterMotorPosition(0);
   }
 
-  private void movePreShooterMotorPosition(
+  public void movePreShooterMotorPosition(
       double position) { // rotates by `position` more rotations
     MotionMagicVoltage m_request = new MotionMagicVoltage(preShooterMotor.getPosition().getValue());
     preShooterMotor.setControl(

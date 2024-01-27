@@ -1,15 +1,15 @@
-package frc.robot.commands.ArmCommands;
-
+package frc.robot.commands.TestCommands;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.PeterSubsystem;
 
-public class ArmRotateCommand extends Command {
-  private ArmSubsystem armSubsystem;
 
-  public ArmRotateCommand(ArmSubsystem armSubsystem) {
-    this.armSubsystem = armSubsystem;
-    addRequirements(armSubsystem);
+// delete in future!!!!!!!
+public class PreShooterTest extends Command {
+     private PeterSubsystem preShooter;
+
+  public PreShooterTest(PeterSubsystem preShooter) {
+    this.preShooter = preShooter;
+    addRequirements(preShooter);
   }
 
   // Called when the command is initially scheduled.
@@ -19,17 +19,13 @@ public class ArmRotateCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (PeterSubsystem.noteStaticPresent()) {
-      armSubsystem.rotateArmToRestPosition();
-    } else {
-      armSubsystem.rotateArmToSpeakerPosition();
-    }
+    preShooter.movePreShooterMotorPosition(3); 
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    armSubsystem.rotateArmToRestPosition();
+    preShooter.stopPreShooterMotor();
   }
 
   // Returns true when the command should end.
@@ -38,3 +34,4 @@ public class ArmRotateCommand extends Command {
     return false;
   }
 }
+

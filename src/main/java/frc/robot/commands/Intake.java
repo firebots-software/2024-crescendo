@@ -14,12 +14,13 @@ public class Intake extends Command {
   /**
    * Creates a new ExampleCommand.
    *
-   * @param subsystem The subsystem used by this command.
+   * @param peterSubsystem The subsystem used by this command.
    */
   public Intake(PeterSubsystem peterSubsystem) {
     this.peterSubsystem = peterSubsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(peterSubsystem);
+    
   }
 
   // Called when the command is initially scheduled.

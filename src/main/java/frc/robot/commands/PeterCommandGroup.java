@@ -1,6 +1,8 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import frc.robot.commands.ArmCommands.ArmRotateCommand;
+import frc.robot.commands.PeterCommands.Shooter;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.PeterSubsystem;
 import java.util.function.Supplier;
