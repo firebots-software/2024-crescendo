@@ -82,21 +82,27 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    boolean redAlliance = false;
-    if (DriverStation.getAlliance().get() == Alliance.Red) {
-      redAlliance = true;
-    }
-    return new PathPlannerAuto("ThreeNoteAuton")
-        .andThen(
-            (pickup1choice.getSelected().isEmpty())
-                ? new WaitCommand(2.0)
-                : MoveToTarget.withMirror(
-                    driveTrain, pickup1choice.getSelected().get().getNoteLocation(), redAlliance))
-        .andThen(
-            (pickup2choice.getSelected().isEmpty())
-                ? new WaitCommand(2.0)
-                : MoveToTarget.withMirror(
-                    driveTrain, pickup2choice.getSelected().get().getNoteLocation(), redAlliance));
+    boolean redAlliance =
+        (DriverStation.getAlliance().isEmpty())
+            ? false
+            : (DriverStation.getAlliance().get() == Alliance.Red);
+    return (redAlliance)
+        ? new PathPlannerAuto("ThreeNoteAutonRed")
+        : new PathPlannerAuto("ThreeNoteAutoBlue")
+            .andThen(
+                (pickup1choice.getSelected().isEmpty())
+                    ? new WaitCommand(2.0)
+                    : MoveToTarget.withMirror(
+                        driveTrain,
+                        pickup1choice.getSelected().get().getNoteLocation(),
+                        redAlliance))
+            .andThen(
+                (pickup2choice.getSelected().isEmpty())
+                    ? new WaitCommand(2.0)
+                    : MoveToTarget.withMirror(
+                        driveTrain,
+                        pickup2choice.getSelected().get().getNoteLocation(),
+                        redAlliance));
   }
 
   /* Setting up bindings for necessary control of the swerve drive platform */
