@@ -162,17 +162,39 @@ public class PhotonVision extends SubsystemBase {
     double zt = target.getYaw();
   }
 
-  public Pose3d getMathRobotPose3d(){
+  /**
+   * Gives the Pose3d of the AprilTag with the given ID using the built-in AprilTagFieldLayout.
+   * @param tagID ID of the AprilTag to find the Pose3d for
+   * @return The Pose3d of the given tag, or null if none is found
+   */
+  public Pose3d getTagPose3d(int tagID){
+    Optional<Pose3d> optional = aprilTagFieldLayout.getTagPose(tagID);
+    if(optional.isPresent()) {
+      return optional.get();
+    } else {
+      return null;
+    }
+  }
+
+  /**
+   * Get Robot Pose3d using math (robot yaw and 3d dist).
+   * Assuming that passed target parameter is not null.
+   */
+  public Pose3d getMathRobotPose3d(PhotonTrackedTarget target){
+    int tagID = target.getFiducialId();
+    Pose3d tagPose3d = getTagPose3d(tagID);
+    double visibleAngle = angleFromScreen(target);
+
     return null;
   }
 
-  /*
+  /**
    * Gets the angle from camera normal to detected target, in degrees
    */
-  public double angleFromScreen() {
-    PhotonPipelineResult pipeline = getPipeline();
-    PhotonTrackedTarget target = getBestTarget(pipeline);
-    if (!pipeline.hasTargets() || target == null) return Double.NaN;
+  public double angleFromScreen(PhotonTrackedTarget target) {
+    // PhotonPipelineResult pipeline = getPipeline();
+    // PhotonTrackedTarget target = getBestTarget(pipeline);
+    // if (!pipeline.hasTargets() || target == null) return Double.NaN;
 
     // Get tag center pixel
     List<TargetCorner> corners = target.getDetectedCorners();
@@ -225,9 +247,18 @@ public class PhotonVision extends SubsystemBase {
     // height.
     Transform3d robotPose3d = getRobotPose3dFromTag();
     Transform3d transformToTarget = getTransformToTarget();
-    double angleToTarget = angleFromScreen();
 
-    SmartDashboard.putNumber("Angle to Tag", angleToTarget);
+    PhotonPipelineResult pipeline = getPipeline();
+    PhotonTrackedTarget target = getBestTarget(pipeline);
+
+    if (pipeline.hasTargets() && target != null){
+      // SmartDashboard.putNumber("Angle to Tag", angleFromScreen(target));
+      Pose3d mathPose3d = getMathRobotPose3d(target);
+      SmartDashboard.putNumber("Math PoseX", mathPose3d.getX());
+      SmartDashboard.putNumber("Math PoseY", mathPose3d.getY());
+      SmartDashboard.putNumber("Math PoseZ", mathPose3d.getZ());
+      SmartDashboard.putNumber("Math Rot Z", mathPose3d.getRotation().getAngle());
+    }
 
     SmartDashboard.putNumber("PoseX", robotPose3d.getX());
     SmartDashboard.putNumber("PoseY", robotPose3d.getY());
