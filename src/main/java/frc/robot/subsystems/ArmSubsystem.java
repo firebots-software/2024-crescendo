@@ -8,6 +8,7 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -26,6 +27,7 @@ public class ArmSubsystem extends SubsystemBase {
   public ArmSubsystem() {
     // tp = new TrapezoidProfile.Constraints(10, 20);
     // profile = new TrapezoidProfile(tp);
+    mEncoder = new Encoder(0, 1, false, Encoder.EncodingType.k2X);
     CurrentLimitsConfigs clc = new CurrentLimitsConfigs().withSupplyCurrentLimit(5.0);
 
     Slot0Configs s0c = new Slot0Configs().withKP(0.1).withKI(0).withKD(0);
