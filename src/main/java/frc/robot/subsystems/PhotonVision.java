@@ -162,6 +162,10 @@ public class PhotonVision extends SubsystemBase {
     double zt = target.getYaw();
   }
 
+  public Pose3d getMathRobotPose3d(){
+    return null;
+  }
+
   /*
    * Gets the angle from camera normal to detected target, in degrees
    */
@@ -182,6 +186,7 @@ public class PhotonVision extends SubsystemBase {
     // center x and y of tag in pixels, from top-left origin
     double centerX = sumX / corners.size();
     double centerY = sumY / corners.size();
+    SmartDashboard.putNumber("Tag ID", target.getFiducialId());
     SmartDashboard.putNumber("Num of Corners", corners.size());
 
     // new x coordinate, where origin is center of screen
