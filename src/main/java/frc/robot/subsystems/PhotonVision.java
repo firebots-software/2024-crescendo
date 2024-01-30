@@ -13,6 +13,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import java.util.List;
 import java.util.Optional;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
@@ -132,9 +133,9 @@ public class PhotonVision extends SubsystemBase {
     return target.getBestCameraToTarget();
   }
 
-  public Pose3d getTagPose(int id){
+  public Pose3d getTagPose(int id) {
     Optional<Pose3d> tagPoseOptional = aprilTagFieldLayout.getTagPose(id);
-    if(tagPoseOptional.isEmpty()) return null;
+    if (tagPoseOptional.isEmpty()) return null;
     return tagPoseOptional.get();
   }
 
@@ -146,10 +147,10 @@ public class PhotonVision extends SubsystemBase {
     double dx = robotPose.getX();
     double dy = robotPose.getY();
     double dz = robotPose.getZ();
-    return Math.sqrt(dx*dx+dy*dy+dz*dz);
+    return Math.sqrt(dx * dx + dy * dy + dz * dz);
   }
 
-  public void testPose3d(){
+  public void testPose3d() {
     PhotonPipelineResult pipeline = getPipeline();
     PhotonTrackedTarget target = getBestTarget(pipeline);
 
@@ -159,7 +160,44 @@ public class PhotonVision extends SubsystemBase {
     double d3 = get3dDist();
     double h = tagPose.getZ();
     double zt = target.getYaw();
-    
+  }
+
+  /*
+   * Gets the angle from camera normal to detected target, in degrees
+   */
+  public double angleFromScreen() {
+    PhotonPipelineResult pipeline = getPipeline();
+    PhotonTrackedTarget target = getBestTarget(pipeline);
+    if (!pipeline.hasTargets() || target == null) return Double.NaN;
+
+    // Get tag center pixel
+    List<TargetCorner> corners = target.getDetectedCorners();
+    double sumX = 0;
+    double sumY = 0;
+    for (TargetCorner corner : corners) {
+      sumX += corner.x;
+      sumY += corner.y;
+    }
+
+    // center x and y of tag in pixels, from top-left origin
+    double centerX = sumX / corners.size();
+    double centerY = sumY / corners.size();
+    SmartDashboard.putNumber("Num of Corners", corners.size());
+
+    // new x coordinate, where origin is center of screen
+    double tagX = centerX - 640;
+
+    // percent of half-screen x-coordinate
+    double percentX = tagX / 640;
+
+    // get scaled 35-degree-triangle leg length
+    // sin(35) = 0.5735764
+    double triangleLeg = percentX * 0.5735764;
+
+    // get angle using arcsin()
+    double finalAngle = Math.toDegrees(Math.asin(triangleLeg));
+
+    return finalAngle;
   }
 
   /*
@@ -182,6 +220,9 @@ public class PhotonVision extends SubsystemBase {
     // height.
     Transform3d robotPose3d = getRobotPose3dFromTag();
     Transform3d transformToTarget = getTransformToTarget();
+    double angleToTarget = angleFromScreen();
+
+    SmartDashboard.putNumber("Angle to Tag", angleToTarget);
 
     SmartDashboard.putNumber("PoseX", robotPose3d.getX());
     SmartDashboard.putNumber("PoseY", robotPose3d.getY());
