@@ -32,9 +32,9 @@ public class RobotContainer {
   // Constructs a Pose2d array of the note locations by a specific indexing so they can be accessed
   // by the eventual autonomous chooser
   private enum NoteLocation {
-    LEFT(Constants.Landmarks.LEFT_NOTE_LOCATION),
+    AMPSIDE(Constants.Landmarks.LEFT_NOTE_LOCATION),
     MIDDLE(Constants.Landmarks.MIDDLE_NOTE_LOCATION),
-    RIGHT(Constants.Landmarks.RIGHT_NOTE_LOCATION);
+    STAGESIDE(Constants.Landmarks.RIGHT_NOTE_LOCATION);
 
     private final Pose2d pose;
 
@@ -47,6 +47,8 @@ public class RobotContainer {
     }
   }
 
+  private boolean redAlliance;
+
   // Options on SmartDashboard that return an integer index that refers to a note location
   private static SendableChooser<Optional<NoteLocation>>
       pickup1choice = new SendableChooser<Optional<NoteLocation>>(),
@@ -57,16 +59,15 @@ public class RobotContainer {
     // pickup1choice = new SendableChooser<Integer>();
     // pickup2choice = new SendableChooser<Integer>();
 
-    pickup1choice.setDefaultOption("do nothing after 1st shoot", Optional.empty());
-    pickup1choice.addOption("Ring 1 (leftmost robot perspective)", Optional.of(NoteLocation.LEFT));
-    pickup1choice.addOption("Ring 2 (middle)", Optional.of(NoteLocation.MIDDLE));
-    pickup1choice.addOption(
-        "Ring 3 (rightmost robot perspective)", Optional.of(NoteLocation.RIGHT));
+    pickup1choice.setDefaultOption("SECOND SHOT: DO NOTHING", Optional.empty());
+    pickup1choice.addOption("AMPSIDE", Optional.of(NoteLocation.AMPSIDE));
+    pickup1choice.addOption("MIDDLE", Optional.of(NoteLocation.MIDDLE));
+    pickup1choice.addOption("STAGESIDE NOTE", Optional.of(NoteLocation.STAGESIDE));
 
-    pickup2choice.setDefaultOption("do nothing after 1st pickup", Optional.empty());
-    pickup2choice.addOption("Ring 1 (leftmost robot perspective)", Optional.of(NoteLocation.LEFT));
-    pickup2choice.addOption("Ring 2 (middle)", Optional.of(NoteLocation.MIDDLE));
-    pickup2choice.addOption("Ring 3 (right robot perspective)", Optional.of(NoteLocation.RIGHT));
+    pickup2choice.setDefaultOption("THIRD SHOT: DO NOTHING", Optional.empty());
+    pickup2choice.addOption("AMPSIDE NOTE", Optional.of(NoteLocation.AMPSIDE));
+    pickup2choice.addOption("MIDDLE NOTE", Optional.of(NoteLocation.MIDDLE));
+    pickup2choice.addOption("STAGESIDE NOTE", Optional.of(NoteLocation.STAGESIDE));
 
     SmartDashboard.putData(pickup1choice);
     SmartDashboard.putData(pickup2choice);
@@ -77,32 +78,28 @@ public class RobotContainer {
     // joystick.getHID().setRumble(GenericHID.RumbleType.kRightRumble, 1);
     // joystick.getHID().setRumble(GenericHID.RumbleType.kLeftRumble, 1);
 
+    redAlliance =
+        (DriverStation.getAlliance().isEmpty())
+            ? false
+            : (DriverStation.getAlliance().get() == Alliance.Red);
     configureBindings();
     setupChooser();
   }
 
   public Command getAutonomousCommand() {
-    boolean redAlliance =
-        (DriverStation.getAlliance().isEmpty())
-            ? false
-            : (DriverStation.getAlliance().get() == Alliance.Red);
-    return (redAlliance)
-        ? new PathPlannerAuto("ThreeNoteAutonRed")
-        : new PathPlannerAuto("ThreeNoteAutoBlue")
-            .andThen(
-                (pickup1choice.getSelected().isEmpty())
-                    ? new WaitCommand(2.0)
-                    : MoveToTarget.withMirror(
-                        driveTrain,
-                        pickup1choice.getSelected().get().getNoteLocation(),
-                        redAlliance))
-            .andThen(
-                (pickup2choice.getSelected().isEmpty())
-                    ? new WaitCommand(2.0)
-                    : MoveToTarget.withMirror(
-                        driveTrain,
-                        pickup2choice.getSelected().get().getNoteLocation(),
-                        redAlliance));
+
+    String autonName = (redAlliance) ? "ThreeNoteAutonRed" : "ThreeNoteAutonBlue";
+    return new PathPlannerAuto(autonName)
+        .andThen(
+            (pickup1choice.getSelected().isEmpty())
+                ? new WaitCommand(2.0)
+                : MoveToTarget.withMirror(
+                    driveTrain, pickup1choice.getSelected().get().getNoteLocation(), redAlliance))
+        .andThen(
+            (pickup2choice.getSelected().isEmpty())
+                ? new WaitCommand(2.0)
+                : MoveToTarget.withMirror(
+                    driveTrain, pickup2choice.getSelected().get().getNoteLocation(), redAlliance));
   }
 
   /* Setting up bindings for necessary control of the swerve drive platform */
@@ -121,8 +118,8 @@ public class RobotContainer {
   private void configureBindings() {
     SwerveJoystickCommand swerveJoystickCommand =
         new SwerveJoystickCommand(
-            () -> -joystick.getRawAxis(1),
-            () -> -joystick.getRawAxis(0),
+            () -> ((redAlliance) ? joystick.getRawAxis(1) : -joystick.getRawAxis(1)),
+            () -> ((redAlliance) ? joystick.getRawAxis(0) : -joystick.getRawAxis(0)),
             () -> -joystick.getRawAxis(2),
             () -> (joystick.getRawAxis(3) - joystick.getRawAxis(4) + 2d) / 2d + 0.5,
             driveTrain);

@@ -5,6 +5,7 @@ import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.SwerveSubsystem;
@@ -28,7 +29,9 @@ public class MoveToTarget extends Command {
   public void initialize() {
     // constructing the list of path points using absolute coordinates on the field
     Pose2d currentPose = swerve.getState().Pose;
-    List<Translation2d> bezierPoints = PathPlannerPath.bezierFromPoses(currentPose, absolutePose);
+    List<Translation2d> bezierPoints =
+        PathPlannerPath.bezierFromPoses(
+            currentPose, new Pose2d(absolutePose.getTranslation(), currentPose.getRotation()));
 
     // create the path using the path points and constraints (also providing the final robot
     // heading)
@@ -45,6 +48,10 @@ public class MoveToTarget extends Command {
     // Command of the built auto path
     pathCommand = AutoBuilder.followPath(constructedPath);
     pathCommand.initialize();
+
+    SmartDashboard.putNumber("TranslationX", absolutePose.getX());
+    SmartDashboard.putNumber("TranslationY", absolutePose.getY());
+    SmartDashboard.putNumber("Rotation", absolutePose.getRotation().getDegrees());
   }
 
   public void execute() {
