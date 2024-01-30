@@ -7,6 +7,9 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants.SteerFeedbackType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstantsFactory;
 import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.ReplanningConfig;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
@@ -24,12 +27,16 @@ public class Constants {
     public static final Pose2d MIDDLE_NOTE_LOCATION = new Pose2d(2.5, 5.5, new Rotation2d());
     public static final Pose2d LEFT_NOTE_LOCATION = new Pose2d(2.5, 7, new Rotation2d());
     public static final Pose2d SUBWOOFER_LOCATION = new Pose2d(0.6, 5.7, new Rotation2d());
+    public static final Pose2d TEST_LOCATION_POSE2D = new Pose2d(0,0.4, new Rotation2d());
+
     public static final double CENTER_LINE_LOCATION = 8.27;
   }
 
   public static class PPConstants {
     public static final PathConstraints PATH_PLANNER_CONSTRAINTS =
         new PathConstraints(3.0, 3.0, 2 * Math.PI, 4 * Math.PI);
+    public static final ReplanningConfig rc = new ReplanningConfig();
+    public static final HolonomicPathFollowerConfig hpfc = new HolonomicPathFollowerConfig(0, 0, null);
   }
 
   public static class Swerve {

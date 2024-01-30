@@ -132,5 +132,6 @@ public class SwerveSubsystem extends SwerveDrivetrain implements Subsystem {
     SmartDashboard.putNumber("ChassisSpeedsY", getCurrentRobotChassisSpeeds().vyMetersPerSecond);
     SmartDashboard.putNumber(
         "ChassisSpeedsRadians", getCurrentRobotChassisSpeeds().omegaRadiansPerSecond);
+    if(this.getCurrentCommand() != null){    SmartDashboard.putString("current command", this.getCurrentCommand().getName());}
   }
 }
