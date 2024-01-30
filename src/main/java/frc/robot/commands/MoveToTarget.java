@@ -29,9 +29,7 @@ public class MoveToTarget extends Command {
   public void initialize() {
     // constructing the list of path points using absolute coordinates on the field
     Pose2d currentPose = swerve.getState().Pose;
-    List<Translation2d> bezierPoints =
-        PathPlannerPath.bezierFromPoses(
-            currentPose, new Pose2d(absolutePose.getTranslation(), currentPose.getRotation()));
+    List<Translation2d> bezierPoints = PathPlannerPath.bezierFromPoses(currentPose, absolutePose);
 
     // create the path using the path points and constraints (also providing the final robot
     // heading)

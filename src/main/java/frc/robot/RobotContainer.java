@@ -47,7 +47,14 @@ public class RobotContainer {
     }
   }
 
-  private boolean redAlliance;
+  private static boolean redAlliance;
+
+  public static void setAlliance() {
+    redAlliance =
+        (DriverStation.getAlliance().isEmpty())
+            ? false
+            : (DriverStation.getAlliance().get() == Alliance.Red);
+  }
 
   // Options on SmartDashboard that return an integer index that refers to a note location
   private static SendableChooser<Optional<NoteLocation>>
@@ -78,10 +85,6 @@ public class RobotContainer {
     // joystick.getHID().setRumble(GenericHID.RumbleType.kRightRumble, 1);
     // joystick.getHID().setRumble(GenericHID.RumbleType.kLeftRumble, 1);
 
-    redAlliance =
-        (DriverStation.getAlliance().isEmpty())
-            ? false
-            : (DriverStation.getAlliance().get() == Alliance.Red);
     configureBindings();
     setupChooser();
   }
@@ -89,6 +92,8 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
 
     String autonName = (redAlliance) ? "ThreeNoteAutonRed" : "ThreeNoteAutonBlue";
+    SmartDashboard.putString("Auton to be run", autonName);
+    SmartDashboard.putBoolean("Red Alliance?", redAlliance);
     return new PathPlannerAuto(autonName)
         .andThen(
             (pickup1choice.getSelected().isEmpty())
