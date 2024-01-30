@@ -20,11 +20,7 @@ public class MoveToTarget extends Command {
 
   private MoveToTarget(SwerveSubsystem swerve, Pose2d absolutePose, boolean reflected) {
     this.swerve = SwerveSubsystem.getInstance();
-    if (reflected) {
-      this.absolutePose = MiscUtils.reflectAcrossMidline(absolutePose);
-    } else {
-      this.absolutePose = absolutePose;
-    }
+    this.absolutePose = (reflected) ? MiscUtils.reflectAcrossMidline(absolutePose) : absolutePose;
     addRequirements(swerve);
   }
 
@@ -39,7 +35,7 @@ public class MoveToTarget extends Command {
     constructedPath =
         new PathPlannerPath(
             bezierPoints,
-            Constants.PPConstants.PATH_PLANNER_CONSTRAINTS,
+            Constants.Swerve.PPConstants.PATH_PLANNER_CONSTRAINTS,
             new GoalEndState(0.0, absolutePose.getRotation()) // goal end velocity and heading
             );
 
@@ -60,7 +56,9 @@ public class MoveToTarget extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    if (pathCommand != null) pathCommand.end(interrupted);
+    if (pathCommand != null) {
+      pathCommand.end(interrupted);
+    }
   }
 
   // Returns true when the command should end.
