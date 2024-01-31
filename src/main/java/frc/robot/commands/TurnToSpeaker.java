@@ -36,7 +36,7 @@ public class TurnToSpeaker extends SwerveJoystickCommand {
 
   public Double rotation() {
     SmartDashboard.putNumber("turnning", doSpin.get());
-    if (doSpin.get() > 0) {
+    // if (doSpin.get() > 0) {
       double robot_x = this.swerveDrivetrain.getState().Pose.getX();
       double robot_y = this.swerveDrivetrain.getState().Pose.getY();
       double robot_rotation = this.swerveDrivetrain.getState().Pose.getRotation().getRadians() % Math.PI*2;
@@ -53,9 +53,9 @@ public class TurnToSpeaker extends SwerveJoystickCommand {
       double angle;
       if (speaker_x != robot_x) {
         angle = Math.atan(Math.abs((speaker_y - robot_y) / (speaker_x - robot_x)));
-      } else {
-        angle = 0;
-      }
+      // } else {
+      //   angle = 0;
+      // }
 
       SmartDashboard.putNumber("angle", angle);
 
