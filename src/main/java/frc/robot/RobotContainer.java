@@ -40,7 +40,7 @@ public class RobotContainer {
             () -> -joystick.getRawAxis(1),
             () -> -joystick.getRawAxis(0),
             () -> -joystick.getRawAxis(2),
-            () -> (joystick.getRawAxis(3) - joystick.getRawAxis(4) + 2d) / 2d + 0.5,
+            () -> (joystick.getRawAxis(3) - joystick.getRawAxis(4)) / 4d + 0.5,
             driveTrain);
     driveTrain.setDefaultCommand(swerveJoystickCommand);
 
