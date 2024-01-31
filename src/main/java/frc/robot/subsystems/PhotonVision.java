@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -9,6 +10,7 @@ import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
+import org.photonvision.targeting.TargetCorner;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
@@ -31,6 +33,7 @@ public class PhotonVision extends SubsystemBase {
     Transform3d robotToCam = new Transform3d(new Translation3d(0, 0, 0), new Rotation3d(0, cameraPitch, 0));
     AprilTagFieldLayout aprilTagFieldLayout;
     PhotonPoseEstimator photonPoseEstimator;
+    Transform3d savedResult3 = new Transform3d();
 
     private static double cameraHeight = 0.3;
     private static double targetHeight = 1;
@@ -51,6 +54,139 @@ public class PhotonVision extends SubsystemBase {
 
         return pvisioninstance;
     }
+  
+  public double getDistance() {
+
+    PhotonTrackedTarget target = getBestTarget(getPipeline());
+    if (target == null) return -1;
+    Optional<Pose3d> targetPose3dOptional = aprilTagFieldLayout.getTagPose(target.getFiducialId());
+    if (targetPose3dOptional.isEmpty()) return -1;
+    Pose3d targetPose3d = targetPose3dOptional.get();
+    double distance =
+        PhotonUtils.calculateDistanceToTargetMeters(
+            cameraHeight,
+            targetPose3d.getZ(),
+            cameraPitch,
+            Units.degreesToRadians(target.getPitch()));
+    return distance;
+  }
+
+  // todo when implementing with odemoetry make sure not to return savedrselut2 in if-statement
+  // compensenate for angle of the camera --> whip out trig
+
+  public Transform3d getRobotPose3dFromTag() {
+    PhotonPipelineResult result = getPipeline();
+    if (!result.hasTargets()) {
+      return savedResult3;
+    }
+    if (result.getMultiTagResult().estimatedPose.isPresent) {
+      Transform3d fieldToCamera = result.getMultiTagResult().estimatedPose.best;
+      savedResult3 = fieldToCamera;
+      return fieldToCamera;
+    } else {
+
+      return savedResult3;
+    }
+    /*
+    PhotonTrackedTarget target = getBestTarget(result);
+    savedTarget = target;
+    Optional<Pose3d> tagPoseOptional = aprilTagFieldLayout.getTagPose(target.getFiducialId());
+
+    if (tagPoseOptional.isEmpty()) {
+      return savedResult2;
+    } else {
+      Pose3d tagPose = tagPoseOptional.get();
+      Transform3d camToTarget = target.getBestCameraToTarget();
+      savedResult2 = tagPose.plus(camToTarget.inverse());
+      return savedResult2;
+      */
+  }
+
+
+  public Transform3d getTransformToTarget() {
+    PhotonPipelineResult pipeline = getPipeline();
+    if (!pipeline.hasTargets()) {
+      return new Transform3d(0.0, 0.0, 0.0, new Rotation3d());
+    }
+    PhotonTrackedTarget target = getBestTarget(pipeline);
+    SmartDashboard.putNumber("pose ambiguity", target.getPoseAmbiguity());
+    return target.getBestCameraToTarget();
+  }
+
+  public Pose3d getTagPose(int id) {
+    Optional<Pose3d> tagPoseOptional = aprilTagFieldLayout.getTagPose(id);
+    if (tagPoseOptional.isEmpty()) return null;
+    return tagPoseOptional.get();
+  }
+
+  public double get3dDist() {
+    return getTransformToTarget().getTranslation().getNorm();
+  }
+
+  public double get3dDist(Transform3d robotPose) {
+    double dx = robotPose.getX();
+    double dy = robotPose.getY();
+    double dz = robotPose.getZ();
+    return Math.sqrt(dx * dx + dy * dy + dz * dz);
+  }
+
+  public void testPose3d() {
+    PhotonPipelineResult pipeline = getPipeline();
+    PhotonTrackedTarget target = getBestTarget(pipeline);
+
+    TargetCorner c = new TargetCorner(100, 200);
+
+    Pose3d tagPose = getTagPose(target.getFiducialId());
+    double d3 = get3dDist();
+    double h = tagPose.getZ();
+    double zt = target.getYaw();
+  }
+
+  /**
+   * Gives the Pose3d of the AprilTag with the given ID using the built-in AprilTagFieldLayout.
+   * @param tagID ID of the AprilTag to find the Pose3d for
+   * @return The Pose3d of the given tag, or null if none is found
+   */
+  public Pose3d getTagPose3d(int tagID){
+    Optional<Pose3d> optional = aprilTagFieldLayout.getTagPose(tagID);
+    if(optional.isPresent()) {
+      return optional.get();
+    } else {
+      return null;
+    }
+  }
+
+  /**
+   * Get Robot Pose3d using math (robot yaw and 3d dist).
+   * Assuming that passed target parameter is not null.
+   */
+  public Pose3d getMathRobotPose3d(PhotonTrackedTarget target){
+    int tagID = target.getFiducialId();
+    Pose3d tagPose3d = getTagPose3d(tagID);
+    double visibleAngle = angleFromScreen(target);
+
+    return null;
+  }
+
+  /**
+   * Gets the angle from camera normal to detected target, in degrees
+   */
+  public double angleFromScreen(PhotonTrackedTarget target) {
+    // PhotonPipelineResult pipeline = getPipeline();
+    // PhotonTrackedTarget target = getBestTarget(pipeline);
+    // if (!pipeline.hasTargets() || target == null) return Double.NaN;
+
+    // Get tag center pixel
+    List<TargetCorner> corners = target.getDetectedCorners();
+    double sumX = 0;
+    double sumY = 0;
+    for (TargetCorner corner : corners) {
+      sumX += corner.x;
+      sumY += corner.y;
+    }
+
+    return 0.0;
+  }
 
     public PhotonPipelineResult getPipeline() {
         return camera.getLatestResult();
@@ -72,13 +208,6 @@ public class PhotonVision extends SubsystemBase {
         return result.getBestTarget();
     }
 
-    public double getDistance() {
-
-        PhotonTrackedTarget target = getBestTarget(getPipeline());
-        double distance = PhotonUtils.calculateDistanceToTargetMeters(cameraHeight, targetHeight, cameraPitch,
-                Units.degreesToRadians(target.getPitch()));
-        return distance;
-    }
 
     public Pose3d getRobotPose3d() {
         // //TODO: If has no target, the numbers freeze, so make it so that savedResult gets cleared
@@ -107,20 +236,6 @@ public class PhotonVision extends SubsystemBase {
         }
         return savedResult;
 
-    }
-
-    public Transform3d getTransformToTarget(){
-        PhotonPipelineResult pipeline = getPipeline();
-        if(!pipeline.hasTargets()){
-            return new Transform3d(0.0, 0.0, 0.0, new Rotation3d());
-        }
-        PhotonTrackedTarget target = getBestTarget(getPipeline());
-        SmartDashboard.putNumber("pose ambiguity", target.getPoseAmbiguity());
-        return target.getBestCameraToTarget();
-    }
-
-    public double get3dDist(){
-        return getTransformToTarget().getTranslation().getNorm();
     }
 
     public Pose2d getRobotPose2d() {
