@@ -32,9 +32,9 @@ public class RobotContainer {
   // Constructs a Pose2d array of the note locations by a specific indexing so they can be accessed
   // by the eventual autonomous chooser
   private enum NoteLocation {
-    AMPSIDE(Constants.Landmarks.LEFT_NOTE_LOCATION),
+    AMPSIDE(Constants.Landmarks.AMPSIDE_NOTE_LOCATION),
     MIDDLE(Constants.Landmarks.MIDDLE_NOTE_LOCATION),
-    STAGESIDE(Constants.Landmarks.RIGHT_NOTE_LOCATION);
+    STAGESIDE(Constants.Landmarks.STAGESIDE_NOTE_LOCATION);
 
     private final Pose2d pose;
 

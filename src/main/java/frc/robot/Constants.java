@@ -20,9 +20,9 @@ public class Constants {
 
   public static class Landmarks {
     // Landmarks on the Blue side can be reflected to show the respective locations on the Blue side
-    public static final Pose2d RIGHT_NOTE_LOCATION = new Pose2d(2.5, 4.1, new Rotation2d());
+    public static final Pose2d STAGESIDE_NOTE_LOCATION = new Pose2d(2.5, 4.1, new Rotation2d());
     public static final Pose2d MIDDLE_NOTE_LOCATION = new Pose2d(2.5, 5.5, new Rotation2d());
-    public static final Pose2d LEFT_NOTE_LOCATION = new Pose2d(2.5, 7, new Rotation2d());
+    public static final Pose2d AMPSIDE_NOTE_LOCATION = new Pose2d(2.5, 7, new Rotation2d());
     public static final Pose2d SUBWOOFER_LOCATION = new Pose2d(0.6, 5.7, new Rotation2d());
     public static final double CENTER_LINE_LOCATION = 8.27;
   }
