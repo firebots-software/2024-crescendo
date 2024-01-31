@@ -1,5 +1,7 @@
 package frc.robot;
 
+import java.util.ArrayList;
+
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain.SwerveDriveState;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -9,21 +11,33 @@ import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StringPublisher;
+import edu.wpi.first.util.datalog.BooleanLogEntry;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.util.datalog.StringLogEntry;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj.DataLogManager;
 
 public class Telemetry {
   private final double MaxSpeed;
-
   /**
    * Construct a telemetry object, with the specified max speed of the robot
    *
    * @param maxSpeed Maximum speed in meters per second
    */
+  StringLogEntry CommandAsString;
+  ArrayList<CommandWithTime> runningCommands;
   public Telemetry() {
+    DataLog log = DataLogManager.getLog();
+    CommandAsString = new StringLogEntry(log, "commands_run");
+    runningCommands = new ArrayList<>();
+
+    DataLogManager.start(); 
     MaxSpeed = Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND;
     // SignalLogger.start();
   }
@@ -129,5 +143,35 @@ public class Telemetry {
     SmartDashboard.putNumber("posegetx", pose.getX());
     SmartDashboard.putNumber("posegety", pose.getY());
     SmartDashboard.putNumber("posegetrotation", pose.getRotation().getRotations());
+    for(CommandWithTime c : runningCommands){
+      if(c.getCommand() == null || c.getCommand().isFinished()){
+        CommandAsString.append("ST: " + c.getStartTime() + " |ET: " + this.lastTime +" |C: " + c.getCommandString());
+      }
+    }
+  }
+
+  public void addCommandToLog(Command c) {
+    runningCommands.add(new CommandWithTime(c,lastTime));
+  }
+}
+
+class CommandWithTime{
+  Command c;
+  double stime;
+  public CommandWithTime(Command c, double initTime){
+    this.c=c;
+    this.stime = initTime;
+  }
+
+  public String getCommandString(){
+    return c.toString();
+  }
+
+  public Command getCommand(){
+    return c;
+  }
+
+  public String getStartTime(){
+    return this.stime+"";
   }
 }
