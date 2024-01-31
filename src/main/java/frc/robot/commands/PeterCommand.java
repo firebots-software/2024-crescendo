@@ -12,7 +12,6 @@ public class PeterCommand extends Command {
   private final PeterSubsystem peterSubsystem;
 
   /**
-   * 
    * @param peterSubsystem intake/shooter or peter subsystem
    */
   public PeterCommand(PeterSubsystem peterSubsystem) {

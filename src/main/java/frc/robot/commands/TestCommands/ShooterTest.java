@@ -37,8 +37,6 @@ public class ShooterTest extends Command {
   public void end(boolean interrupted) {
     peterSubsystem.stopShooter();
   }
-  
-  
 
   // Returns true when the command should end.
   @Override

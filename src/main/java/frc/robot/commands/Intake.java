@@ -20,7 +20,6 @@ public class Intake extends Command {
     this.peterSubsystem = peterSubsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(peterSubsystem);
-    
   }
 
   // Called when the command is initially scheduled.

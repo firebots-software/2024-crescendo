@@ -3,17 +3,18 @@ package frc.robot.commands.TestCommands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.PeterSubsystem;
 
-public class LeftShooterTest extends Command{
-    private PeterSubsystem peterSubsystem;
+public class LeftShooterTest extends Command {
+  private PeterSubsystem peterSubsystem;
 
-    /**
-     * Test the left flywheels on the shooter
-     * @param peterSubsystem the subsystem this command uses
-     */
-    public LeftShooterTest(PeterSubsystem peterSubsystem){
-        this.peterSubsystem = peterSubsystem;
-        addRequirements(peterSubsystem);
-    }
+  /**
+   * Test the left flywheels on the shooter
+   *
+   * @param peterSubsystem the subsystem this command uses
+   */
+  public LeftShooterTest(PeterSubsystem peterSubsystem) {
+    this.peterSubsystem = peterSubsystem;
+    addRequirements(peterSubsystem);
+  }
 
   @Override
   public void initialize() {}
@@ -29,14 +30,10 @@ public class LeftShooterTest extends Command{
   public void end(boolean interrupted) {
     peterSubsystem.stopLeftShooter();
   }
-  
-  
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     return false; // wait for x seconds
   }
-}
-
 }
