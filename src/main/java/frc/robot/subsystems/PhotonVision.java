@@ -72,6 +72,10 @@ public class PhotonVision extends SubsystemBase {
     return target.getPitch();
   }
 
+  public Pose2d getPose2d() {
+    return new Pose2d();
+  }
+  
   public PhotonTrackedTarget getBestTarget(PhotonPipelineResult result) {
     return result.getBestTarget();
   }

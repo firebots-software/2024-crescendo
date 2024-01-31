@@ -9,9 +9,11 @@ import java.io.IOException;
 
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.PhotonVision;
+import frc.robot.subsystems.SwerveSubsystem;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -54,6 +56,7 @@ public class Robot extends TimedRobot {
     // robot's periodic
     // block in order for anything in the Command-based framework to work.
     m_robotContainer.doTelemetry();
+    SwerveSubsystem.getInstance().addVisionMeasurement(PhotonVision.getInstance().getPose2d(), Timer.getFPGATimestamp());
     CommandScheduler.getInstance().run();
   }
 
