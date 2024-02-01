@@ -12,6 +12,15 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 
 public class Constants {
+
+    public static class LIGHTS {
+        public static final int LED_PWM_PORT = 9;
+        public static final int LIGHT_SETTINGS_COUNT = 5; 
+        public static final int LED_BUFFER_LENGTH = 60;
+        public static final int[] YELLOW_3501 = {255, 234, 5};
+        public static final int[] BLUE_3501 = {70,105,225};
+    }
+
   public static class OI {
     public static final double LEFT_JOYSTICK_DEADBAND = 0.07;
     public static final double RIGHT_JOYSTICK_DEADBAND = 0.07;
@@ -187,5 +196,7 @@ public class Constants {
             Units.inchesToMeters(BACK_RIGHT_X_POS_INCHES),
             Units.inchesToMeters(BACK_RIGHT_Y_POS_INCHES),
             INVERT_RIGHT_SIDE);
+
   }
+
 }
