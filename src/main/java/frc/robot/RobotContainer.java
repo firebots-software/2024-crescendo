@@ -4,11 +4,13 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import frc.robot.commands.SwerveJoystickCommand;
 import frc.robot.subsystems.SwerveSubsystem;
@@ -61,6 +63,8 @@ public class RobotContainer {
     // joystick.getHID().setRumble(GenericHID.RumbleType.kRightRumble, 1);
     // joystick.getHID().setRumble(GenericHID.RumbleType.kLeftRumble, 1);
 
+    NamedCommands.registerCommand("intakeNote", new PrintCommand("intaking"));
+    NamedCommands.registerCommand("shootNote", new PrintCommand("shooting"));
     configureBindings();
   }
 
@@ -68,6 +72,6 @@ public class RobotContainer {
     // autonomous command applies brake
     // final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     // return driveTrain.applyRequest(() -> brake);
-    return new PathPlannerAuto("New Auto");
+    return new PathPlannerAuto("New New Auto");
   }
 }
