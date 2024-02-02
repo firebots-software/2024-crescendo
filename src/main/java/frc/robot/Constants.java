@@ -264,3 +264,6 @@ public class Constants {
   }
 }
 
+
+
+public static final String LIGHTS = null;

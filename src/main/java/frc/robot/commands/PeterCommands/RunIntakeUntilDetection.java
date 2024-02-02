@@ -4,11 +4,13 @@
 package frc.robot.commands.PeterCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.PeterSubsystem;
 
 /** An example command that uses an example subsystem. */
 public class RunIntakeUntilDetection extends Command {
   private PeterSubsystem peterSubsystem;
+  private LEDSubsystem ledSubsystem;
 
   public RunIntakeUntilDetection(PeterSubsystem peterSubsystem) {
     this.peterSubsystem = peterSubsystem;
@@ -22,9 +24,11 @@ public class RunIntakeUntilDetection extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    peterSubsystem.runIntake(0.5);
+    peterSubsystem.runIntakeAtRPS(0.5);
+    ledSubsystem.intaking();
     if (peterSubsystem.notePresent()) {
-      peterSubsystem.runIntake(0);
+      peterSubsystem.runIntakeAtRPS(0);
+      ledSubsystem.noteDetected();
       // peterSubsystem.runPreShooter(0.5);
     }
   }
@@ -34,7 +38,7 @@ public class RunIntakeUntilDetection extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    peterSubsystem.runIntake(0);
+    peterSubsystem.runIntakeAtRPS(0);
   }
 
   // Returns true when the command should end.

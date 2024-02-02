@@ -5,11 +5,13 @@
 package frc.robot.commands.PeterCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.PeterSubsystem;
 
 /** An example command that uses an example subsystem. */
 public class Shooter extends Command {
   private PeterSubsystem peterSubsystem;
+  private LEDSubsystem ledSubsystem;
 
   /**
    * Creates a new ExampleCommand.
@@ -30,6 +32,7 @@ public class Shooter extends Command {
   @Override
   public void execute() {
     peterSubsystem.spinUpShooter();
+    ledSubsystem.shootingInProgress();
     if (peterSubsystem.isShooterReady()) {
       peterSubsystem.moveNoteToShooter();
     }
