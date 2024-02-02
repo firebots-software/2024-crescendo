@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.AddressableLED;
+import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -20,6 +22,8 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
   private LEDSubsystem lights;
+  private AddressableLED m_led;
+  private AddressableLEDBuffer m_ledBuffer;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -30,8 +34,23 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer. This will perform all our button bindings,
     // and put our
     // autonomous chooser on the dashboard.
-    lights = LEDSubsystem.getInstance();
-    lights.basicTest();
+    // lights = LEDSubsystem.getInstance();
+    // lights.basicTest();
+    m_led = new AddressableLED(6);
+
+    // Reuse buffer
+    // Default to a length of 60, start empty output
+    // Length is expensive to set, so only set it once, then just update data
+    m_ledBuffer = new AddressableLEDBuffer(34);
+    m_led.setLength(m_ledBuffer.getLength());
+
+    // // Set the data
+    // for (var i = 0; i < m_ledBuffer.getLength(); i++) {
+    //   // Sets the specified LED to the RGB values for red
+    //   m_ledBuffer.setRGB(i, 255, 0, 0);
+    // }
+    // For every pixel
+
     absoluteInit();
     m_robotContainer = new RobotContainer();
   }
@@ -43,6 +62,8 @@ public class Robot extends TimedRobot {
    * <p>This runs after the mode specific periodic functions, but before LiveWindow and
    * SmartDashboard integrated updating.
    */
+  public int m_rainbowFirstPixelHue = 0;
+
   @Override
   public void robotPeriodic() {
     // Runs the Scheduler. This is responsible for polling buttons, adding
@@ -52,6 +73,49 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods. This must be called from the
     // robot's periodic
     // block in order for anything in the Command-based framework to work.
+    // for (var i = 0; i < m_ledBuffer.getLength(); i++) {
+    //   // Calculate the hue - hue is easier for rainbows because the color
+    //   // shape is a circle so only one value needs to precess
+    //   final var hue = (m_rainbowFirstPixelHue + (i * 180 / m_ledBuffer.getLength())) % 180;
+    //   // Set the value
+    //   m_ledBuffer.setHSV(i, hue, 255, 128);
+    // }
+    // // Increase by to make the rainbow "move"
+    // m_rainbowFirstPixelHue += 3;
+    // // Check bounds
+    // m_rainbowFirstPixelHue %= 180;
+    // m_led.setData(m_ledBuffer);
+    // m_led.start();
+    // Constants for fire colors
+    final int FIRE_HUE_MIN = 0; // Red
+    final int FIRE_HUE_MAX = 30; // Orange/Yellow
+    final int FIRE_SATURATION = 255; // Full saturation
+    final int FIRE_BRIGHTNESS = 128; // Moderate brightness
+
+    // Oscillation frequency
+    final int OSCILLATION_FREQ = 3;
+
+    // For every pixel
+    for (var i = 0; i < m_ledBuffer.getLength(); i++) {
+      // Calculate the hue - use sine function for oscillation
+      final var hue =
+          (int)
+              (FIRE_HUE_MIN
+                  + (Math.sin((m_rainbowFirstPixelHue + i) * OSCILLATION_FREQ) + 1)
+                      * (FIRE_HUE_MAX - FIRE_HUE_MIN)
+                      / 2);
+      // Set the value
+      m_ledBuffer.setHSV(i, hue, FIRE_SATURATION, FIRE_BRIGHTNESS);
+    }
+
+    // Increase by to make the fire "move"
+    m_rainbowFirstPixelHue += 1;
+    // Check bounds
+    m_rainbowFirstPixelHue %=
+        180; // You can adjust the modulo value based on the desired oscillation range
+
+    m_led.setData(m_ledBuffer);
+    m_led.start();
     m_robotContainer.doTelemetry();
     CommandScheduler.getInstance().run();
   }
