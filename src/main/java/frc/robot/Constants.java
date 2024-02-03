@@ -6,6 +6,10 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.ClosedLoopOutputType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants.SteerFeedbackType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstantsFactory;
+
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 
 public class Constants {
@@ -15,7 +19,14 @@ public class Constants {
     public static final int JOYSTICK_PORT = 0;
   }
 
+  public static class FieldObjects {
+      public static Pose2d SPEAKER = new Pose2d(0, 5.5, new Rotation2d());
+
+  }
+
   public static class Swerve {
+
+    public static final PIDController TurnToSpeakerPID = new PIDController(0.4, 0.01, 0);
 
     public static final double PHYSICAL_MAX_SPEED_METERS_PER_SECOND = 4.8768;
     public static final double PHYSICAL_MAX_ANGLUAR_SPEED_RADIANS_PER_SECOND = 2 * 2 * Math.PI;

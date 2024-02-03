@@ -42,6 +42,7 @@ public class RobotContainer {
             () -> -joystick.getRawAxis(0),
             () -> -joystick.getRawAxis(2),
             () -> (joystick.getRawAxis(3) - joystick.getRawAxis(4) + 2d) / 2d + 0.5,
+            () -> joystick.square().getAsBoolean(),
             driveTrain);
     joystick.square().onFalse(SwerveJoystickCommand);
     joystick
@@ -62,7 +63,7 @@ public class RobotContainer {
             driveTrain.runOnce(
                 () ->
                     driveTrain.seedFieldRelative(
-                        new Pose2d(new Translation2d(1.36, 5.5), new Rotation2d(0)))));
+                        new Pose2d(new Translation2d(0, 5.5), new Rotation2d(0)))));
     driveTrain.registerTelemetry(logger::telemeterize);
   }
 

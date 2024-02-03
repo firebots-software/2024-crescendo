@@ -12,6 +12,7 @@ import java.util.function.Supplier;
 
 public class SwerveJoystickCommand extends Command {
   protected Supplier<Double> xSpdFunction, ySpdFunction, turningSpdFunction, speedControlFunction;
+  protected Supplier<Boolean> selfRotation;
 
   // Limits rate of change (in this case x, y, and turning movement)
   protected final SlewRateLimiter xLimiter, yLimiter, turningLimiter;
@@ -24,8 +25,9 @@ public class SwerveJoystickCommand extends Command {
       Supplier<Double> leftRightFunction,
       Supplier<Double> turningSpdFunction,
       Supplier<Double> speedControlFunction,
+      Supplier<Boolean> selfRotation,
       SwerveSubsystem swerveSubsystem) {
-
+    this.selfRotation=selfRotation;
     this.xSpdFunction = frontBackFunction;
     this.ySpdFunction = leftRightFunction;
     this.turningSpdFunction = turningSpdFunction;
@@ -42,6 +44,36 @@ public class SwerveJoystickCommand extends Command {
     addRequirements(swerveDrivetrain);
   }
 
+
+  public Double rotateToSpeaker() {
+    SmartDashboard.putNumber("turning", turningSpdFunction.get());
+    // if (doSpin.get() > 0) {
+    double robot_x = this.swerveDrivetrain.getState().Pose.getX();
+    double robot_y = this.swerveDrivetrain.getState().Pose.getY();
+    double robot_rotation =
+        this.swerveDrivetrain.getState().Pose.getRotation().getRadians() % Math.PI * 2;
+
+    double speaker_x = Constants.FieldObjects.SPEAKER.getX();
+    double speaker_y = Constants.FieldObjects.SPEAKER.getY();
+
+    SmartDashboard.putNumber("robot_x", robot_x);
+    SmartDashboard.putNumber("robot_y", robot_y);
+    SmartDashboard.putNumber("robot_rotation", robot_rotation);
+    SmartDashboard.putNumber("speaker_x", speaker_x);
+    SmartDashboard.putNumber("speaker_y", speaker_y);
+
+    double angle;
+    if (speaker_x != robot_x) {
+      angle = Math.atan2((speaker_y - robot_y), (speaker_x - robot_x)) % Math.PI * 2;
+    } else {
+      angle = robot_rotation; // do not turn
+    }
+
+      SmartDashboard.putNumber("angle", angle);
+
+      return Constants.Swerve.TurnToSpeakerPID.calculate(robot_rotation, angle);
+  }
+
   @Override
   public void initialize() {}
 
@@ -51,16 +83,13 @@ public class SwerveJoystickCommand extends Command {
     double xSpeed = xSpdFunction.get(); // xSpeed is actually front back (front +, back -)
     double ySpeed = ySpdFunction.get(); // ySpeed is actually left right (left +, right -)
     double turningSpeed;
-    if (turningSpdFunction != null) {
-      SmartDashboard.putBoolean("turning speed is null", false);
-
-      turningSpeed = turningSpdFunction.get(); // turning speed is (anti-clockwise +, clockwise -)
+    if (selfRotation.get() == true) {
+      turningSpeed = rotateToSpeaker();
     } else {
-      SmartDashboard.putBoolean("turning speed is null", true);
-      turningSpeed = 0;
+      turningSpeed = turningSpdFunction.get(); // turning speed is (anti-clockwise +, clockwise -)
     }
-    SmartDashboard.putNumber("Turning Speed", turningSpeed);
 
+    SmartDashboard.putNumber("Turning Speed", turningSpeed);
     // 2. Normalize inputs
     double length = xSpeed * xSpeed + ySpeed * ySpeed; // acutally length squared
     if (length > 1d) {
