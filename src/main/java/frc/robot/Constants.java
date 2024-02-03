@@ -183,7 +183,7 @@ public final class Constants {
             .withSteerMotorInverted(STEER_MOTOR_REVERSED);
 
     // CHANGE FOR NEW ROBOT:
-    // Front Right
+    // Front Left
     private static final int FRONT_LEFT_DRIVE_MOTOR_ID = 0;
     private static final int FRONT_LEFT_STEER_MOTOR_ID = 7;
     private static final int FRONT_LEFT_ENCODER_ID = 11;

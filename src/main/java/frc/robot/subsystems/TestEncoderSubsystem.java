@@ -23,7 +23,7 @@ public class TestEncoderSubsystem extends SubsystemBase {
   // private TrapezoidProfile.Constraints tp;
 
   private MotionMagicConfigs mmc;
-  private static ArmSubsystem instance;
+  private static TestEncoderSubsystem instance;
   private double targetPos;
 
   public TestEncoderSubsystem() {
@@ -33,12 +33,12 @@ public class TestEncoderSubsystem extends SubsystemBase {
 
     Slot0Configs s0c = new Slot0Configs().withKP(0.1).withKI(0).withKD(0);
     armff = new ArmFeedforward(0, 0, 0);
-    r1 = new TalonFX(Constants.Arm.R1_PORT);
-    r2 = new TalonFX(Constants.Arm.R2_PORT);
-    l1 = new TalonFX(Constants.Arm.L1_PORT);
-    l2 = new TalonFX(Constants.Arm.L2_PORT);
+    r1 = new TalonFX(Constants.Swerve.FRONT_RIGHT.SteerMotorId);
+    r2 = new TalonFX(Constants.Swerve.BACK_RIGHT.SteerMotorId);
+    l1 = new TalonFX(Constants.Swerve.FRONT_LEFT.SteerMotorId);
+    l2 = new TalonFX(Constants.Swerve.BACK_LEFT.SteerMotorId);
 
-    Follower f = new Follower(Constants.Arm.R1_PORT, false);
+    Follower f = new Follower(Constants.Swerve.FRONT_RIGHT.SteerMotorId, false);
     r2.setControl(f);
     l1.setInverted(true);
     l1.setControl(f);
@@ -54,7 +54,7 @@ public class TestEncoderSubsystem extends SubsystemBase {
     TalonFXConfigurator masterConfigurator = master.getConfigurator();
     masterConfigurator.apply(s0c);
     masterConfigurator.apply(
-        new FeedbackConfigs().withFeedbackRemoteSensorID(Constants.Arm.ENCODER_ID));
+        new FeedbackConfigs().withFeedbackRemoteSensorID(Constants.Swerve.FRONT_RIGHT.CANcoderId));
 
     mmc = new MotionMagicConfigs();
     mmc.MotionMagicCruiseVelocity = 80;
@@ -62,7 +62,7 @@ public class TestEncoderSubsystem extends SubsystemBase {
     mmc.MotionMagicJerk = 1600;
     master.getConfigurator().apply(mmc);
 
-    absoluteEncoder = new CANcoder(Constants.Arm.ENCODER_ID);
+    absoluteEncoder = new CANcoder(Constants.Swerve.FRONT_RIGHT.CANcoderId);
 
     targetPos = Constants.Arm.DEFAULT_ARM_ANGLE;
   }
@@ -72,14 +72,14 @@ public class TestEncoderSubsystem extends SubsystemBase {
   //   throw new UnsupportedOperationException("Unimplemented method 'apply'");
   // }
 
-  public static ArmSubsystem getInstance() {
+  public static TestEncoderSubsystem getInstance() {
     if (instance == null) {
-      instance = new ArmSubsystem();
+      instance = new TestEncoderSubsystem();
     }
     return instance;
   }
 
-  private void setPosition(double angleDegrees) {
+  public void setPosition(double angleDegrees) {
     MotionMagicVoltage m_request = new MotionMagicVoltage(master.getPosition().getValue());
     master.setControl(
         m_request
@@ -100,12 +100,12 @@ public class TestEncoderSubsystem extends SubsystemBase {
     return -1;
   }
 
-  public void rotateArmToSpeakerPosition() {
-    setPosition(Constants.Arm.ARM_ENCODER_OFFSET + Constants.Arm.SPEAKER_ANGLE);
+  public void rotateToSpeakerPosition() {
+    setPosition(Constants.Swerve.FRONT_RIGHT.CANcoderOffset + 60.0);
   }
 
-  public void rotateArmToRestPosition() {
-    setPosition(Constants.Arm.ARM_ENCODER_OFFSET);
+  public void rotateToResetPosition() {
+    setPosition(Constants.Swerve.FRONT_RIGHT.CANcoderOffset);
   }
 
   // public void toPosition() {
