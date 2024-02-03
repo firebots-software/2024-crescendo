@@ -63,8 +63,10 @@ public class RobotContainer {
     // joystick.getHID().setRumble(GenericHID.RumbleType.kRightRumble, 1);
     // joystick.getHID().setRumble(GenericHID.RumbleType.kLeftRumble, 1);
 
-    NamedCommands.registerCommand("intakeNote", new PrintCommand("intaking"));
-    NamedCommands.registerCommand("shootNote", new PrintCommand("shooting"));
+    NamedCommands.registerCommand("shootNote", new PrintCommand("************************************************shooting"));
+    // NamedCommands.registerCommand("wait", new PrintCommand("waiting for 3 secs"));
+    NamedCommands.registerCommand("intakeNote", new PrintCommand("************************************************intaking"));
+
     configureBindings();
   }
 
@@ -72,6 +74,6 @@ public class RobotContainer {
     // autonomous command applies brake
     // final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     // return driveTrain.applyRequest(() -> brake);
-    return new PathPlannerAuto("New New Auto");
+    return new PathPlannerAuto("Test Auto");
   }
 }
