@@ -69,7 +69,7 @@ public class RobotContainer {
    */
   public RobotContainer() {
     // Configure the trigger bindings
-    m_exampleSubsystem = PhotonVision.getInstance(driveTrain);
+    m_exampleSubsystem = PhotonVision.getInstance();
     configureBindings();
   }
 
