@@ -29,10 +29,10 @@
   ],
   "java.test.defaultConfig": "WPIlibUnitTests",
   "[java]": {
-    "spotlessGradle.format.enable": true,
-    "spotlessGradle.diagnostics.enable": true,
-    "editor.codeActionsOnSave": {
-      "source.fixAll.spotlessGradle": "explicit"
-    }
+    "spotlessGradle.format.enable": false,
+    "spotlessGradle.diagnostics.enable": false,
+    // "editor.codeActionsOnSave": {
+    //   "source.fixAll.spotlessGradle": "explicit"
+    // }
   }
 }
