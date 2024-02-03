@@ -8,6 +8,7 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants.SteerFeedbackTy
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstantsFactory;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
@@ -26,7 +27,7 @@ public class Constants {
 
   public static class Swerve {
 
-    public static final PIDController TurnToSpeakerPID = new PIDController(0.4, 0.01, 0);
+    public static final PIDController TurnToSpeakerPID = new PIDController(0.32, 0.1, 0.05);
 
     public static final double PHYSICAL_MAX_SPEED_METERS_PER_SECOND = 4.8768;
     public static final double PHYSICAL_MAX_ANGLUAR_SPEED_RADIANS_PER_SECOND = 2 * 2 * Math.PI;

@@ -1,7 +1,11 @@
 package frc.robot.commands;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -18,7 +22,7 @@ public class SwerveJoystickCommand extends Command {
   protected final SlewRateLimiter xLimiter, yLimiter, turningLimiter;
 
   protected final SwerveSubsystem swerveDrivetrain;
-
+  Slot0Configs pid;
   // Sets everything
   public SwerveJoystickCommand(
       Supplier<Double> frontBackFunction,
@@ -39,7 +43,6 @@ public class SwerveJoystickCommand extends Command {
     this.turningLimiter =
         new SlewRateLimiter(Constants.Swerve.TELE_DRIVE_MAX_ANGULAR_ACCELERATION_UNITS_PER_SECOND);
     this.swerveDrivetrain = swerveSubsystem;
-
     // Adds the subsystem as a requirement (prevents two commands from acting on subsystem at once)
     addRequirements(swerveDrivetrain);
   }
@@ -51,27 +54,26 @@ public class SwerveJoystickCommand extends Command {
     double robot_x = this.swerveDrivetrain.getState().Pose.getX();
     double robot_y = this.swerveDrivetrain.getState().Pose.getY();
     double robot_rotation =
-        this.swerveDrivetrain.getState().Pose.getRotation().getRadians() % Math.PI * 2;
+        (this.swerveDrivetrain.getState().Pose.getRotation().getRadians()) % Math.PI * 2;
 
     double speaker_x = Constants.FieldObjects.SPEAKER.getX();
     double speaker_y = Constants.FieldObjects.SPEAKER.getY();
 
     SmartDashboard.putNumber("robot_x", robot_x);
     SmartDashboard.putNumber("robot_y", robot_y);
-    SmartDashboard.putNumber("robot_rotation", robot_rotation);
+    // SmartDashboard.putNumber("robot_rotation", robot_rotation);
     SmartDashboard.putNumber("speaker_x", speaker_x);
     SmartDashboard.putNumber("speaker_y", speaker_y);
 
     double angle;
     if (speaker_x != robot_x) {
-      angle = Math.atan2((speaker_y - robot_y), (speaker_x - robot_x)) % Math.PI * 2;
+      angle = (Math.atan2((speaker_y - robot_y), (speaker_x - robot_x))) % Math.PI * 2;
     } else {
       angle = robot_rotation; // do not turn
     }
 
-      SmartDashboard.putNumber("angle", angle);
-
-      return Constants.Swerve.TurnToSpeakerPID.calculate(robot_rotation, angle);
+    SmartDashboard.putNumber("angle", angle);
+    return MathUtil.clamp(Constants.Swerve.TurnToSpeakerPID.calculate(robot_rotation, angle)*1.1, -1, 1);
   }
 
   @Override
@@ -79,6 +81,7 @@ public class SwerveJoystickCommand extends Command {
 
   @Override
   public void execute() {
+    SmartDashboard.putNumber("robot_rotation", this.swerveDrivetrain.getState().Pose.getRotation().getRadians() % Math.PI * 2);
     // 1. Get real-time joystick inputs
     double xSpeed = xSpdFunction.get(); // xSpeed is actually front back (front +, back -)
     double ySpeed = ySpdFunction.get(); // ySpeed is actually left right (left +, right -)
