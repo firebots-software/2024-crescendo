@@ -167,7 +167,7 @@ public class PeterSubsystem extends SubsystemBase {
     SmartDashboard.putBoolean("Note Detected", notePresent()); // false = note detected!!
   }
 
-  public void runShooter(int i) {
+  public void runShooter(double i) {
     // TODO Auto-generated method stub
     throw new UnsupportedOperationException("Unimplemented method 'runShooter'");
   }
