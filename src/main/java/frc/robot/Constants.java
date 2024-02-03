@@ -73,6 +73,7 @@ public final class Constants {
     public static final int R2_PORT = 5;
     public static final int L1_PORT = 6;
     public static final int L2_PORT = 7;
+    public static final int ENCODER_ID = 0; // subject to chan
   }
 
   public static class OI {

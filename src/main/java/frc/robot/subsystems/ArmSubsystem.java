@@ -1,10 +1,13 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -13,16 +16,17 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class ArmSubsystem extends SubsystemBase {
-
   private TalonFX r1, r2, l1, l2;
   private TalonFX master;
   private Encoder mEncoder;
+  private CANcoder absoluteEncoder;
   private ArmFeedforward armff;
   // private TrapezoidProfile profile;
   // private TrapezoidProfile.Constraints tp;
 
   private MotionMagicConfigs mmc;
   private static ArmSubsystem instance;
+  private double targetPos;
 
   public ArmSubsystem() {
     // tp = new TrapezoidProfile.Constraints(10, 20);
@@ -50,7 +54,10 @@ public class ArmSubsystem extends SubsystemBase {
     l2.getConfigurator().apply(clc);
 
     master = r1;
-    master.getConfigurator().apply(s0c);
+    TalonFXConfigurator masterConfigurator = master.getConfigurator();
+    masterConfigurator.apply(s0c);
+    masterConfigurator.apply(
+        new FeedbackConfigs().withFeedbackRemoteSensorID(Constants.Arm.ENCODER_ID));
 
     mmc = new MotionMagicConfigs();
     mmc.MotionMagicCruiseVelocity = 80;
@@ -58,9 +65,15 @@ public class ArmSubsystem extends SubsystemBase {
     mmc.MotionMagicJerk = 1600;
     master.getConfigurator().apply(mmc);
 
-    // What ports is the encoder on? They should be two different DIO ports:
-    // mEncoder = new Encoder(0, 1);
+    absoluteEncoder = new CANcoder(Constants.Arm.ENCODER_ID);
+
+    targetPos = Constants.Arm.DEFAULT_ARM_ANGLE;
   }
+
+  // private TalonFXConfigurator apply(Slot0Configs s0c) {
+  //   // TODO Auto-generated method stub the method wasn't being used so commented our for now
+  //   throw new UnsupportedOperationException("Unimplemented method 'apply'");
+  // }
 
   public static ArmSubsystem getInstance() {
     if (instance == null) {
@@ -71,12 +84,19 @@ public class ArmSubsystem extends SubsystemBase {
 
   private void setPosition(double angleDegrees) {
     MotionMagicVoltage m_request = new MotionMagicVoltage(master.getPosition().getValue());
-    m_request.withFeedForward(armff.calculate(angleDegrees * Math.PI * 2, 0, 0));
-    master.setControl(m_request.withPosition(angleDegrees / 360));
+    master.setControl(
+        m_request
+            .withPosition(angleDegrees / 360)
+            .withFeedForward(armff.calculate(getPosition() * Math.PI * 2 / 360, 0)));
+    // input is in rotations
   }
 
   public double getPosition() {
     return master.getPosition().getValue();
+  }
+
+  public void setTargetPosition(double angleDegrees) {
+    targetPos = angleDegrees;
   }
 
   public double determineAngle(Pose2d a, double fkla) {
@@ -108,4 +128,9 @@ public class ArmSubsystem extends SubsystemBase {
   // m_positionControl.Velocity = setPoint.velocity;
   // master.setControl(m_positionControl);
   // }
+
+  @Override
+  public void periodic() {
+    setPosition(targetPos);
+  }
 }
