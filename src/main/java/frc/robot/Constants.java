@@ -12,6 +12,12 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 
 public class Constants {
+  public static class LED {
+    public static final int LED_STRIP_LENGTH = 34;
+    public static final int LED_STRIP_PORT = 6;
+    public static final int[] PURE_RED = {0, 100, 100};
+  }
+  
   public static class OI {
     public static final double LEFT_JOYSTICK_DEADBAND = 0.07;
     public static final double RIGHT_JOYSTICK_DEADBAND = 0.07;
