@@ -152,7 +152,7 @@ public class RobotContainer {
     SwerveTest swerveTestCommand = new SwerveTest(testEncoderSubsystem, () -> mjoystick.getRawAxis(0)*30.0);
     mjoystick.circle().whileTrue(swerveTestCommand);
 
-    sjoystick.getRawAxis(3); // Trigger
-    sjoystick.getRawAxis(4); // Trigger
+    //sjoystick.getRawAxis(3); // Trigger
+    //sjoystick.getRawAxis(4); // Trigger
   }
 }

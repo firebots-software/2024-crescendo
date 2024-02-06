@@ -11,6 +11,7 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -32,7 +33,7 @@ public class TestEncoderSubsystem extends SubsystemBase {
     CurrentLimitsConfigs clc = new CurrentLimitsConfigs().withSupplyCurrentLimit(5.0);
 
     Slot0Configs s0c = new Slot0Configs().withKP(0.1).withKI(0).withKD(0);
-    armff = new ArmFeedforward(0, 0, 0);
+    armff = new ArmFeedforward(0.1, 0.1, 0.1);
     r1 = new TalonFX(Constants.Swerve.FRONT_RIGHT.SteerMotorId);
     r2 = new TalonFX(Constants.Swerve.BACK_RIGHT.SteerMotorId);
     l1 = new TalonFX(Constants.Swerve.FRONT_LEFT.SteerMotorId);
@@ -80,11 +81,11 @@ public class TestEncoderSubsystem extends SubsystemBase {
   }
 
   public void setPosition(double angleDegrees) {
-    MotionMagicVoltage m_request = new MotionMagicVoltage(master.getPosition().getValue());
+    MotionMagicVoltage m_request = new MotionMagicVoltage(getPosition());
     master.setControl(
         m_request
             .withPosition(angleDegrees / 360)
-            .withFeedForward(armff.calculate(getPosition() * Math.PI * 2 / 360, 0)));
+            .withFeedForward(armff.calculate(getPosition() * Math.PI * 2, 0.1)));
     // input is in rotations
   }
 
@@ -128,6 +129,7 @@ public class TestEncoderSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    setPosition(targetPos);
+    //setPosition(targetPos);
+    SmartDashboard.putNumber("Front right motor pos: ", getPosition());
   }
 }

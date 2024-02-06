@@ -1,5 +1,6 @@
 package frc.robot.commands.TestCommands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.TestEncoderSubsystem;
@@ -20,7 +21,10 @@ public class SwerveTest extends Command{
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    testEncoderSubsystem.setPosition(Constants.Swerve.FRONT_RIGHT.CANcoderOffset + 60.0 + angleOffsetSupplier.get());
+    SmartDashboard.putBoolean("SwerveTest running", isScheduled());
+    double setPos = Constants.Swerve.FRONT_RIGHT.CANcoderOffset + 60.0 + angleOffsetSupplier.get();
+    SmartDashboard.putNumber("SwerveTest pos", setPos);
+    testEncoderSubsystem.setPosition(setPos);
   }
 
   // Called once the command ends or is interrupted.
