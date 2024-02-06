@@ -7,6 +7,7 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.controller.ArmFeedforward;
@@ -30,9 +31,9 @@ public class TestEncoderSubsystem extends SubsystemBase {
   public TestEncoderSubsystem() {
     // tp = new TrapezoidProfile.Constraints(10, 20);
     // profile = new TrapezoidProfile(tp);
-    CurrentLimitsConfigs clc = new CurrentLimitsConfigs().withSupplyCurrentLimit(5.0);
+    CurrentLimitsConfigs clc = new CurrentLimitsConfigs().withSupplyCurrentLimit(25.0);
 
-    Slot0Configs s0c = new Slot0Configs().withKP(0.1).withKI(0).withKD(0);
+    Slot0Configs s0c = new Slot0Configs().withKP(50).withKI(0).withKD(0.2);
     armff = new ArmFeedforward(0.1, 0.1, 0.1);
     r1 = new TalonFX(Constants.Swerve.FRONT_RIGHT.SteerMotorId);
     r2 = new TalonFX(Constants.Swerve.BACK_RIGHT.SteerMotorId);
@@ -81,11 +82,13 @@ public class TestEncoderSubsystem extends SubsystemBase {
   }
 
   public void setPosition(double angleDegrees) {
-    MotionMagicVoltage m_request = new MotionMagicVoltage(getPosition());
-    master.setControl(
-        m_request
-            .withPosition(angleDegrees / 360)
-            .withFeedForward(armff.calculate(getPosition() * Math.PI * 2, 0.1)));
+    PositionVoltage m_request = new PositionVoltage(angleDegrees / 360);
+    master.setControl(m_request);
+    // master.setControl(
+    //     m_request
+    //         .withPosition(angleDegrees / 360)
+    //         .withFeedForward(armff.calculate(getPosition() * Math.PI * 2, 0)));
+    //master.set(0.2);
     // input is in rotations
   }
 
@@ -131,5 +134,7 @@ public class TestEncoderSubsystem extends SubsystemBase {
   public void periodic() {
     //setPosition(targetPos);
     SmartDashboard.putNumber("Front right motor pos: ", getPosition());
+    SmartDashboard.putBoolean("Front right sensor overflow: ", master.getFault_RemoteSensorPosOverflow().getValue());
+    SmartDashboard.putNumber("Front right set speed: ", master.get());
   }
 }

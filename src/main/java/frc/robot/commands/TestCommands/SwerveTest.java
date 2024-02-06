@@ -21,8 +21,9 @@ public class SwerveTest extends Command{
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    //System.out.println("running");
     SmartDashboard.putBoolean("SwerveTest running", isScheduled());
-    double setPos = Constants.Swerve.FRONT_RIGHT.CANcoderOffset + 60.0 + angleOffsetSupplier.get();
+    double setPos = Constants.Swerve.FRONT_RIGHT.CANcoderOffset*360 + 60.0 + angleOffsetSupplier.get();
     SmartDashboard.putNumber("SwerveTest pos", setPos);
     testEncoderSubsystem.setPosition(setPos);
   }
@@ -36,6 +37,6 @@ public class SwerveTest extends Command{
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return true; // wait for x seconds
+    return false; // wait for x seconds
   }
 }
