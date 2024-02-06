@@ -1,6 +1,5 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj2.command.Subsystem;
@@ -16,16 +15,42 @@ public class LightsSubsystem implements Subsystem {
     public enum LightSetting {
         FULL_RED {
             @Override
-            public int[] apply(int[] hsv, long t, int pos) {
+            public int[] apply(long t, int pos) {
+                int[] hsv = new int[3];
                 hsv[0] = Constants.LED.PURE_RED[0];
                 hsv[1] = Constants.LED.PURE_RED[1];
                 hsv[2] = Constants.LED.PURE_RED[2];
-                // change test
+                return hsv;
+            }
+        },
+        FULL_BLUE {
+            @Override
+            public int[] apply(long t, int pos) {
+                int[] hsv = new int[3];
+                hsv[0] = Constants.LED.PURE_BLUE[0];
+                hsv[1] = Constants.LED.PURE_BLUE[1];
+                hsv[2] = Constants.LED.PURE_BLUE[2];
+                return hsv;
+            }
+        },
+        FULL_YELLOW {
+            @Override
+            public int[] apply(long t, int pos) {
+                int[] hsv = new int[3];
+                hsv[0] = Constants.LED.PURE_YELLOW[0];
+                hsv[1] = Constants.LED.PURE_YELLOW[1];
+                hsv[2] = Constants.LED.PURE_YELLOW[2];
+                return hsv;
+            }
+        },
+        FULL_RAINBOW {
+            @Override
+            public int[] apply(long t, int pos) {
+                int[] hsv = new int[3];
                 return hsv;
             }
         };
 
-        private int[] hsv = new int[3];
         private LightSetting() {
             // this.pose = pose;
         }
@@ -33,7 +58,7 @@ public class LightsSubsystem implements Subsystem {
         // private Pose2d getNoteLocation() {
         // // return this.pose;
         // }
-        public abstract int[] apply(int[] hsv, long t, int pos);
+        public abstract int[] apply(long t, int pos);
     }
 
     public LightsSubsystem() {
