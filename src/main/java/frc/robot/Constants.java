@@ -83,6 +83,7 @@ public class Constants {
     public static final int LED_BUFFER_LENGTH = 34;
     public static final int[] YELLOW_3501 = {255, 234, 5};
     public static final int[] BLUE_3501 = {70, 105, 225};
+    public static final int ENCODER_ID = 0; // subject to chan
   }
 
   public static class OI {

@@ -24,11 +24,9 @@ public class RunIntakeUntilDetection extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    peterSubsystem.runIntakeAtRPS(0.5);
-    ledSubsystem.intaking();
+    peterSubsystem.spinUpIntake();
     if (peterSubsystem.notePresent()) {
-      peterSubsystem.runIntakeAtRPS(0);
-      ledSubsystem.noteDetected();
+      peterSubsystem.stopIntake();
       // peterSubsystem.runPreShooter(0.5);
     }
   }
@@ -38,7 +36,7 @@ public class RunIntakeUntilDetection extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    peterSubsystem.runIntakeAtRPS(0);
+    peterSubsystem.stopIntake();
   }
 
   // Returns true when the command should end.

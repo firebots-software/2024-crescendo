@@ -166,4 +166,9 @@ public class PeterSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
     SmartDashboard.putBoolean("Note Detected", notePresent()); // false = note detected!!
   }
+
+  public void runShooter(int i) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'runShooter'");
+  }
 }

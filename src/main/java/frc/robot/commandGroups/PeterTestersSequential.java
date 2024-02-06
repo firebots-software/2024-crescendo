@@ -8,4 +8,3 @@ public class PeterTestersSequential extends SequentialCommandGroup {
     
   }
 }
-}
