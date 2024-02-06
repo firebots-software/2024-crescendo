@@ -79,33 +79,31 @@ public class LEDSubsystem implements Subsystem {
 
   public void intaking() {
     for (var i = 0; i < m_ledBuffer.getLength(); i++) {
-      m_ledBuffer.setRGB(i, 255, 255, 204); //yellow
+      m_ledBuffer.setRGB(i, 255, 0, 0); //red
     }
     m_led.setData(m_ledBuffer);
   }
 
   public void noteDetected() {
     for (var i = 0; i < m_ledBuffer.getLength(); i++) {
-      m_ledBuffer.setRGB(i, 0, 255, 0); //green
+      m_ledBuffer.setRGB(i, 88, 255, 10); // orange
     }
     m_led.setData(m_ledBuffer);
   }
 
   public void shootingInProgress() {
     for (var i = 0; i < m_ledBuffer.getLength(); i++) {
-      m_ledBuffer.setRGB(i, 255, 255, 204); //yellow
+      m_ledBuffer.setRGB(i, 0, 0, 255); // blue
     }
     m_led.setData(m_ledBuffer);
   }
 
   public void noteShot() {
     for (var i = 0; i < m_ledBuffer.getLength(); i++) {
-      m_ledBuffer.setRGB(i, 0, 255, 0); //green
+      m_ledBuffer.setRGB(i, 255, 255, 0); // yellow
     }
     m_led.setData(m_ledBuffer);
   }
-
-
 
   public static LEDSubsystem getInstance() {
     if (instance == null) {

@@ -17,15 +17,14 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import frc.robot.commands.MoveToTarget;
 import frc.robot.commands.SwerveJoystickCommand;
-import frc.robot.subsystems.ArmSubsystem;
-import frc.robot.subsystems.PeterSubsystem;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import java.util.Optional;
 
-/** should be declared. Since Command-based is a
- * "declarative" paradigm, very little robo
- * This class is where the bulk of the robott logic should actually be handled in the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
+/**
+ * should be declared. Since Command-based is a "declarative" paradigm, very little robo This class
+ * is where the bulk of the robott logic should actually be handled in the {@link Robot} periodic
+ * methods (other than the scheduler calls). Instead, the structure of the robot (including
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
@@ -116,8 +115,9 @@ public class RobotContainer {
   private final CommandPS4Controller sjoystick =
       new CommandPS4Controller(Constants.OI.ARM_JOYSTICK_PORT);
   private final SwerveSubsystem driveTrain = SwerveSubsystem.getInstance();
-  private final PeterSubsystem peterSubsystem = PeterSubsystem.getInstance();
-  private final ArmSubsystem armSubsystem = ArmSubsystem.getInstance();
+  // private final PeterSubsystem peterSubsystem = PeterSubsystem.getInstance();
+  // private final ArmSubsystem armSubsystem = ArmSubsystem.getInstance();
+  private final LEDSubsystem ledSubsystem = LEDSubsystem.getInstance();
   public final Telemetry logger = new Telemetry();
 
   // Starts telemetry operations (essentially logging -> look on SmartDashboard, AdvantageScope)
@@ -147,5 +147,9 @@ public class RobotContainer {
 
     sjoystick.getRawAxis(3); // Trigger
     sjoystick.getRawAxis(4); // Trigger
+    mjoystick.circle().whileTrue(ledSubsystem.run(() -> ledSubsystem.intaking()));
+    mjoystick.triangle().whileTrue(ledSubsystem.run(() -> ledSubsystem.noteDetected()));
+    mjoystick.cross().whileTrue(ledSubsystem.run(() -> ledSubsystem.shootingInProgress()));
+    mjoystick.square().whileTrue(ledSubsystem.run(() -> ledSubsystem.noteShot()));
   }
 }

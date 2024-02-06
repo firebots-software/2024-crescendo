@@ -76,14 +76,15 @@ public final class Constants {
     public static final int R2_PORT = 5;
     public static final int L1_PORT = 6;
     public static final int L2_PORT = 7;
-public class Constants {
+
+    public static final int ENCODER_ID = 0; // subject to chan
+  }
 
   public static class LIGHTS {
     public static final int LED_PWM_PORT = 6;
     public static final int LED_BUFFER_LENGTH = 34;
     public static final int[] YELLOW_3501 = {255, 234, 5};
     public static final int[] BLUE_3501 = {70, 105, 225};
-    public static final int ENCODER_ID = 0; // subject to chan
   }
 
   public static class OI {
@@ -264,7 +265,3 @@ public class Constants {
             INVERT_RIGHT_SIDE);
   }
 }
-
-
-
-public static final String LIGHTS = null;
