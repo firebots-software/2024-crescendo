@@ -59,7 +59,7 @@ public class PeterSubsystem extends SubsystemBase {
 
   // INTAKE FUNCTIONS:
   public void spinUpIntake() {
-    runIntakeAtRPS(Constants.Intake.INTAKE_WHEEL_SPEED_RPM);
+    runIntakeAtRPS(Constants.Intake.INTAKE_WHEEL_SPEED_RPS);
   }
 
   public void stopIntake() {
@@ -68,7 +68,7 @@ public class PeterSubsystem extends SubsystemBase {
 
   private void runIntakeAtRPS(double speed) {
     VelocityVoltage m_velocityControl =
-        new VelocityVoltage(Constants.Intake.INTAKE_WHEEL_SPEED_RPM);
+        new VelocityVoltage(Constants.Intake.INTAKE_WHEEL_SPEED_RPS);
     m_velocityControl.withFeedForward(0.1);
     intakeMotor.setControl(m_velocityControl);
   }
