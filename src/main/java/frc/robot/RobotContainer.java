@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import frc.robot.commands.MoveToTarget;
 // import frc.robot.commands.ArmRotateCommand;
 import frc.robot.commands.SwerveJoystickCommand;
+import frc.robot.commands.TestCommands.Supplier;
 import frc.robot.commands.TestCommands.SwerveTest;
 import frc.robot.commands.TestCommands.TestArmCommand;
 import frc.robot.subsystems.ArmSubsystem;
@@ -116,8 +117,7 @@ public class RobotContainer {
 
   /* Setting up bindings for necessary control of the swerve drive platform */
 
-  private final CommandPS4Controller mjoystick =
-      new CommandPS4Controller(Constants.OI.MOVEMENT_JOYSTICK_PORT);
+  private final CommandPS4Controller mjoystick = new CommandPS4Controller(Constants.OI.MOVEMENT_JOYSTICK_PORT);
   private final CommandPS4Controller sjoystick =
       new CommandPS4Controller(Constants.OI.ARM_JOYSTICK_PORT);
   //private final SwerveSubsystem driveTrain = SwerveSubsystem.getInstance();
@@ -132,6 +132,14 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
+    Supplier<Double> joystick0 = () -> mjoystick.getRawAxis(0);
+      new TestArmCommand(
+      () -> mjoystick.getRawAxis(0)
+      );
+
+  // TestArmCommand tac = new TestArmCommand(
+  //   armSubsystem, 
+  //   () -> mjoystick.getRawAxis(0));
     // SwerveJoystickCommand swerveJoystickCommand =
     //     new SwerveJoystickCommand(
     //         () -> ((redAlliance) ? mjoystick.getRawAxis(1) : -mjoystick.getRawAxis(1)),
@@ -152,11 +160,9 @@ public class RobotContainer {
     // driveTrain.registerTelemetry(logger::telemeterize);
     // SwerveTest swerveTestCommand = new SwerveTest(testEncoderSubsystem, () -> mjoystick.getRawAxis(0)*30.0);
     // mjoystick.circle().whileTrue(swerveTestCommand);
-armSubsystem.setDefaultCommand(
-  new TestArmCommand(
-    armSubsystem, 
-    () -> mjoystick.getRawAxis(1)
-  ));
+// armSubsystem.setDefaultCommand(
+
+  // ));
 
     //sjoystick.getRawAxis(3); // Trigger
     //sjoystick.getRawAxis(4); // Trigger
