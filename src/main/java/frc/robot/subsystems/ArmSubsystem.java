@@ -29,10 +29,10 @@ public class ArmSubsystem extends SubsystemBase {
 
     Slot0Configs s0c = new Slot0Configs().withKP(0.1).withKI(0).withKD(0);
     armff = new ArmFeedforward(0, 0, 0);
-    r1 = new TalonFX(Constants.Arm.R1_PORT);
-    r2 = new TalonFX(Constants.Arm.R2_PORT);
-    l1 = new TalonFX(Constants.Arm.L1_PORT);
-    l2 = new TalonFX(Constants.Arm.L2_PORT);
+    r1 = new TalonFX(Constants.Arm.R1_PORT, Constants.Swerve.CANBUS_NAME);
+    r2 = new TalonFX(Constants.Arm.R2_PORT, Constants.Swerve.CANBUS_NAME);
+    l1 = new TalonFX(Constants.Arm.L1_PORT, Constants.Swerve.CANBUS_NAME);
+    l2 = new TalonFX(Constants.Arm.L2_PORT, Constants.Swerve.CANBUS_NAME);
 
     Follower f = new Follower(Constants.Arm.R1_PORT, false);
     r2.setControl(f);
@@ -45,6 +45,8 @@ public class ArmSubsystem extends SubsystemBase {
     r2.getConfigurator().apply(clc);
     l1.getConfigurator().apply(clc);
     l2.getConfigurator().apply(clc);
+
+    
 
     master = r1;
     TalonFXConfigurator masterConfigurator = master.getConfigurator();
@@ -61,6 +63,7 @@ public class ArmSubsystem extends SubsystemBase {
     absoluteEncoder = new CANcoder(Constants.Arm.ENCODER_ID);
 
     targetPos = Constants.Arm.DEFAULT_ARM_ANGLE;
+    Constants.Arm.ARM_ENCODER_OFFSET = master.getPosition().getValue();
   }
 
   public static ArmSubsystem getInstance() {
@@ -75,6 +78,7 @@ public class ArmSubsystem extends SubsystemBase {
     master.setControl(
         m_request
             .withPosition(angleDegrees / 360)
+            .withEnableFOC(true)
             .withFeedForward(armff.calculate(getPosition() * Math.PI * 2 / 360, 0)));
   }
 
