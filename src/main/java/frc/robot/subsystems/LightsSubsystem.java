@@ -2,10 +2,12 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
-public class LightsSubsystem implements Subsystem {
+public class LightsSubsystem extends SubsystemBase {
     private AddressableLED lights;
     private AddressableLEDBuffer ledBuffer;
     private LightSetting currentSetting;
@@ -83,6 +85,7 @@ public class LightsSubsystem implements Subsystem {
 
     @Override
     public void periodic() {
+        SmartDashboard.putNumber("yes is running", 1);
         for (int i = 0; i < Constants.LED.LED_STRIP_LENGTH; i++) {
             int hsv[] = currentSetting.apply(periodicCounter, i);
             ledBuffer.setHSV(i, hsv[0], hsv[1], hsv[2]);
