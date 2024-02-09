@@ -18,7 +18,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import frc.robot.commands.MoveToTarget;
 // import frc.robot.commands.ArmRotateCommand;
 import frc.robot.commands.SwerveJoystickCommand;
-import frc.robot.commands.TestCommands.Supplier;
 import frc.robot.commands.TestCommands.SwerveTest;
 import frc.robot.commands.TestCommands.TestArmCommand;
 import frc.robot.subsystems.ArmSubsystem;
@@ -132,14 +131,14 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    mjoystick.L1();
-    double yes = mjoystick.getRawAxis(0);
-    Supplier<Double> a = () -> yes;
+    // mjoystick.L1();
+    // double yes = mjoystick.getRawAxis(0);
+    // Supplier
     
 
-  // TestArmCommand tac = new TestArmCommand(
-  //   armSubsystem, 
-  //   () -> mjoystick.getRawAxis(0));
+  TestArmCommand tac = new TestArmCommand(
+    armSubsystem, 
+    () -> mjoystick.getRawAxis(0));
     // SwerveJoystickCommand swerveJoystickCommand =
     //     new SwerveJoystickCommand(
     //         () -> ((redAlliance) ? mjoystick.getRawAxis(1) : -mjoystick.getRawAxis(1)),

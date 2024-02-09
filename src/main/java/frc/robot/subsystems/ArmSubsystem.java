@@ -83,7 +83,9 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void setTargetPosition(double angleDegrees) {
-    targetPos = angleDegrees;
+    // targetPos = angleDegrees;
+    setPosition(Constants.Arm.ARM_ENCODER_OFFSET + angleDegrees);
+
   }
 
   public double determineAngle(Pose2d a, double fkla) {
