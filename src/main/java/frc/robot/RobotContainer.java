@@ -132,10 +132,10 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    Supplier<Double> joystick0 = () -> mjoystick.getRawAxis(0);
-      new TestArmCommand(
-      () -> mjoystick.getRawAxis(0)
-      );
+    mjoystick.L1();
+    double yes = mjoystick.getRawAxis(0);
+    Supplier<Double> a = () -> yes;
+    
 
   // TestArmCommand tac = new TestArmCommand(
   //   armSubsystem, 
