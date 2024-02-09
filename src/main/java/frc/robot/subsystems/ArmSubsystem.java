@@ -19,16 +19,12 @@ public class ArmSubsystem extends SubsystemBase {
   private TalonFX master;
   private CANcoder absoluteEncoder;
   private ArmFeedforward armff;
-  // private TrapezoidProfile profile;
-  // private TrapezoidProfile.Constraints tp;
 
   private MotionMagicConfigs mmc;
   private static ArmSubsystem instance;
   private double targetPos;
 
   public ArmSubsystem() {
-    // tp = new TrapezoidProfile.Constraints(10, 20);
-    // profile = new TrapezoidProfile(tp);
     CurrentLimitsConfigs clc = new CurrentLimitsConfigs().withSupplyCurrentLimit(5.0);
 
     Slot0Configs s0c = new Slot0Configs().withKP(0.1).withKI(0).withKD(0);
@@ -67,11 +63,6 @@ public class ArmSubsystem extends SubsystemBase {
     targetPos = Constants.Arm.DEFAULT_ARM_ANGLE;
   }
 
-  // private TalonFXConfigurator apply(Slot0Configs s0c) {
-  //   // TODO Auto-generated method stub the method wasn't being used so commented our for now
-  //   throw new UnsupportedOperationException("Unimplemented method 'apply'");
-  // }
-
   public static ArmSubsystem getInstance() {
     if (instance == null) {
       instance = new ArmSubsystem();
@@ -85,7 +76,6 @@ public class ArmSubsystem extends SubsystemBase {
         m_request
             .withPosition(angleDegrees / 360)
             .withFeedForward(armff.calculate(getPosition() * Math.PI * 2 / 360, 0)));
-    // input is in rotations
   }
 
   public double getPosition() {
