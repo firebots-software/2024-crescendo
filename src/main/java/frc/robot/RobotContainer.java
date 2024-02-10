@@ -25,6 +25,7 @@ import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.TestEncoderSubsystem;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -149,7 +150,11 @@ public class RobotContainer {
     //                 driveTrain.seedFieldRelative(
     //                     new Pose2d(new Translation2d(0, 0), new Rotation2d(0)))));
     // driveTrain.registerTelemetry(logger::telemeterize);
-    SwerveTest swerveTestCommand = new SwerveTest(testEncoderSubsystem, () -> mjoystick.getRawAxis(0)*30.0);
+
+    // This supplier should return only three distinct values: 0.0, -30.0, and 30.0.
+    Supplier<Double> swerveAngleOffset = () -> (int)(mjoystick.getRawAxis(0)*1.5) * 30.0;
+
+    SwerveTest swerveTestCommand = new SwerveTest(testEncoderSubsystem, swerveAngleOffset);
     mjoystick.circle().whileTrue(swerveTestCommand);
 
     //sjoystick.getRawAxis(3); // Trigger

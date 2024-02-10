@@ -117,7 +117,7 @@ public class TestEncoderSubsystem extends SubsystemBase {
   //   MotionMagicVoltage m_request = new MotionMagicVoltage(master.getPosition().getValue());
   //   master.setControl(m_request.withPosition(setPos));
 
-  // Trapizoidal Motion:
+  // // Trapizoidal Motion:
   // TrapezoidProfile.State setPoint = new TrapezoidProfile.State(setPos, 0);
   // TrapezoidProfile.State currentPoint = new
   // TrapezoidProfile.State(master.getPosition().getValue(),master.getVelocity().getValue());

@@ -128,6 +128,6 @@ public class ArmSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    setPosition(targetPos);
+    //setPosition(targetPos);
   }
 }
