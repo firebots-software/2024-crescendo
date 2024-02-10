@@ -67,6 +67,7 @@ public class LightsSubsystem extends SubsystemBase {
     public LightsSubsystem() {
         lights = new AddressableLED(Constants.LED.LED_STRIP_PORT);
         ledBuffer = new AddressableLEDBuffer(Constants.LED.LED_STRIP_LENGTH);
+        lights.setLength(ledBuffer.getLength());
         periodicCounter = 0;
         currentSetting = LightSetting.FULL_RAINBOW;
     }
@@ -84,10 +85,17 @@ public class LightsSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("yes is running", 1);
+        SmartDashboard.putNumber("yes is running", periodicCounter);
+        if (periodicCounter == 10000) {
+            this.setLightSetting(LightSetting.FULL_BLUE);
+        }
         for (int i = 0; i < Constants.LED.LED_STRIP_LENGTH; i++) {
             int hsv[] = currentSetting.apply(periodicCounter, i);
             ledBuffer.setHSV(i, hsv[0], hsv[1], hsv[2]);
+            SmartDashboard.putNumber("loc", i);
+            SmartDashboard.putNumber("h", hsv[0]);
+            SmartDashboard.putNumber("s", hsv[1]);
+            SmartDashboard.putNumber("v", hsv[2]);
         }
         lights.setData(ledBuffer);
         periodicCounter++;
