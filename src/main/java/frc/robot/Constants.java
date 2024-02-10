@@ -144,7 +144,7 @@ public final class Constants {
 
     private static final double DRIVE_GEAR_RATIO =
         6.746031746031747; // 6.12 for new robot: CHANGE FOR NEW ROBOT
-    private static final double STEEP_GEAR_RATIO = 21.428571428571427;
+    public static final double STEER_GEAR_RATIO = 21.428571428571427;
     private static final double WHEEL_RADIUS_INCHES = 2;
 
     private static final boolean STEER_MOTOR_REVERSED = true;
@@ -167,7 +167,7 @@ public final class Constants {
     private static final SwerveModuleConstantsFactory ConstantCreator =
         new SwerveModuleConstantsFactory()
             .withDriveMotorGearRatio(DRIVE_GEAR_RATIO)
-            .withSteerMotorGearRatio(STEEP_GEAR_RATIO)
+            .withSteerMotorGearRatio(STEER_GEAR_RATIO)
             .withWheelRadius(WHEEL_RADIUS_INCHES)
             .withSlipCurrent(SLIP_CURRENT_AMPS)
             .withSteerMotorGains(STEER_GAINS)
