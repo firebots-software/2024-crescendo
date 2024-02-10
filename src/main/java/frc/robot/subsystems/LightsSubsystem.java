@@ -12,7 +12,6 @@ public class LightsSubsystem extends SubsystemBase {
     private AddressableLEDBuffer ledBuffer;
     private LightSetting currentSetting;
     private int periodicCounter;
-
     private static LightsSubsystem instance;
 
     public enum LightSetting {
