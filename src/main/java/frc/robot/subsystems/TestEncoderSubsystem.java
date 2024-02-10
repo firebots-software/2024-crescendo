@@ -33,7 +33,7 @@ public class TestEncoderSubsystem extends SubsystemBase {
     // profile = new TrapezoidProfile(tp);
     CurrentLimitsConfigs clc = new CurrentLimitsConfigs().withSupplyCurrentLimit(25.0);
 
-    Slot0Configs s0c = new Slot0Configs().withKP(50).withKI(0).withKD(0.2);
+    Slot0Configs s0c = new Slot0Configs().withKP(37).withKI(0).withKD(0.2);
     armff = new ArmFeedforward(0.1, 0.1, 0.1);
     r1 = new TalonFX(Constants.Swerve.FRONT_RIGHT.SteerMotorId);
     r2 = new TalonFX(Constants.Swerve.BACK_RIGHT.SteerMotorId);
