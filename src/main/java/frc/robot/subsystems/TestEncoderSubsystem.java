@@ -11,6 +11,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -31,12 +32,12 @@ public class TestEncoderSubsystem extends SubsystemBase {
     // profile = new TrapezoidProfile(tp);
     CurrentLimitsConfigs clc = new CurrentLimitsConfigs().withSupplyCurrentLimit(5.0);
 
-    Slot0Configs s0c = new Slot0Configs().withKP(0.1).withKI(0).withKD(0);
-    armff = new ArmFeedforward(0, 0, 0);
-    r1 = new TalonFX(Constants.Arm.R1_PORT);
-    r2 = new TalonFX(Constants.Arm.R2_PORT);
-    l1 = new TalonFX(Constants.Arm.L1_PORT);
-    l2 = new TalonFX(Constants.Arm.L2_PORT);
+    Slot0Configs s0c = new Slot0Configs().withKP(37).withKI(0).withKD(0);
+    armff = new ArmFeedforward(0.1, 0.1, 0.1);
+    r1 = new TalonFX(Constants.Swerve.FRONT_RIGHT.SteerMotorId, Constants.Swerve.CANBUS_NAME);
+    r2 = new TalonFX(Constants.Swerve.BACK_RIGHT.SteerMotorId, Constants.Swerve.CANBUS_NAME);
+    l1 = new TalonFX(Constants.Swerve.FRONT_LEFT.SteerMotorId, Constants.Swerve.CANBUS_NAME);
+    l2 = new TalonFX(Constants.Swerve.BACK_LEFT.SteerMotorId, Constants.Swerve.CANBUS_NAME);
 
     Follower f = new Follower(Constants.Arm.R1_PORT, false);
     r2.setControl(f);
@@ -102,12 +103,12 @@ public class TestEncoderSubsystem extends SubsystemBase {
     return -1;
   }
 
-  public void rotateArmToSpeakerPosition() {
-    setPosition(Constants.Arm.ARM_ENCODER_OFFSET + Constants.Arm.SPEAKER_ANGLE);
+  public void rotateToSpeakerPosition() {
+    setTargetPosition(Constants.Swerve.FRONT_RIGHT.CANcoderOffset + 60.0);
   }
 
-  public void rotateArmToRestPosition() {
-    setPosition(Constants.Arm.ARM_ENCODER_OFFSET);
+  public void rotateToResetPosition() {
+    setTargetPosition(Constants.Swerve.FRONT_RIGHT.CANcoderOffset);
   }
 
   // public void toPosition() {
@@ -115,7 +116,7 @@ public class TestEncoderSubsystem extends SubsystemBase {
   //   MotionMagicVoltage m_request = new MotionMagicVoltage(master.getPosition().getValue());
   //   master.setControl(m_request.withPosition(setPos));
 
-  // Trapizoidal Motion:
+  // // Trapizoidal Motion:
   // TrapezoidProfile.State setPoint = new TrapezoidProfile.State(setPos, 0);
   // TrapezoidProfile.State currentPoint = new
   // TrapezoidProfile.State(master.getPosition().getValue(),master.getVelocity().getValue());
@@ -131,5 +132,8 @@ public class TestEncoderSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     setPosition(targetPos);
+    SmartDashboard.putNumber("Front right motor pos: ", getPosition());
+    SmartDashboard.putBoolean("Front right sensor overflow: ", master.getFault_RemoteSensorPosOverflow().getValue());
+    SmartDashboard.putNumber("Front right set speed: ", master.get());
   }
 }

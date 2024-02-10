@@ -87,9 +87,7 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void setTargetPosition(double angleDegrees) {
-    // targetPos = angleDegrees;
-    setPosition(Constants.Arm.ARM_ENCODER_OFFSET + angleDegrees);
-
+    targetPos = angleDegrees;
   }
 
   public double determineAngle(Pose2d a, double fkla) {
@@ -97,11 +95,11 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void rotateArmToSpeakerPosition() {
-    setPosition(Constants.Arm.ARM_ENCODER_OFFSET + Constants.Arm.SPEAKER_ANGLE);
+    setTargetPosition(Constants.Arm.ARM_ENCODER_OFFSET + Constants.Arm.SPEAKER_ANGLE);
   }
 
   public void rotateArmToRestPosition() {
-    setPosition(Constants.Arm.ARM_ENCODER_OFFSET);
+    setTargetPosition(Constants.Arm.ARM_ENCODER_OFFSET);
   }
 
   // public void toPosition() {
