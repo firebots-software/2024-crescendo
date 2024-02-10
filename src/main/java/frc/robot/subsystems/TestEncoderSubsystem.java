@@ -7,7 +7,6 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
-import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -61,10 +60,12 @@ public class TestEncoderSubsystem extends SubsystemBase {
     mmc.MotionMagicCruiseVelocity = 80;
     mmc.MotionMagicAcceleration = 160;
     mmc.MotionMagicJerk = 1600;
-    master.getConfigurator().apply(mmc);
+    masterConfigurator.apply(mmc);
 
     revEncoder = new DutyCycleEncoder(Constants.Arm.ENCODER_PORT);
-
+    revEncoder.setPositionOffset(Constants.Arm.ARM_ENCODER_OFFSET);
+    master.setPosition((revEncoder.getAbsolutePosition() - 0.1) * Constants.Arm.INTEGRATED_ABSOLUTE_CONVERSION_FACTOR);
+    
     targetPos = Constants.Arm.DEFAULT_ARM_ANGLE;
   }
 

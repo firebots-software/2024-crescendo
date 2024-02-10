@@ -77,6 +77,7 @@ public final class Constants {
     public static final int L1_PORT = 6;
     public static final int L2_PORT = 4;
     public static final int ENCODER_PORT = 1; // subject to chan
+    public static final double INTEGRATED_ABSOLUTE_CONVERSION_FACTOR = 36 + 2.0/3.0;
   }
 
   public static class OI {
