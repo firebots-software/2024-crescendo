@@ -24,8 +24,8 @@ public class PeterSubsystem extends SubsystemBase {
   public PeterSubsystem() {
     // Initalize shooter
     // Follower f = new Follower(Constants.Intake.SHOOTER_PORT_LEFT, false );
-    shooterMotorLeft = new TalonFX(Constants.Intake.SHOOTER_PORT_LEFT);
-    shooterMotorRight = new TalonFX(Constants.Intake.SHOOTER_PORT_RIGHT);
+    shooterMotorLeft = new TalonFX(Constants.Intake.SHOOTER_PORT_LEFT, "Paul the Pumpkin");
+    shooterMotorRight = new TalonFX(Constants.Intake.SHOOTER_PORT_RIGHT, "Paul the Pumpkin");
     shooterMotorRight.setInverted(true);
     // shooterMotorRight.setControl(f);
     Slot0Configs s0c =
@@ -35,7 +35,7 @@ public class PeterSubsystem extends SubsystemBase {
     shooterMotorLeft.getConfigurator().apply(s0c);
 
     // Preshooter
-    preShooterMotor = new TalonFX(Constants.Intake.PRE_SHOOTER_PORT);
+    preShooterMotor = new TalonFX(Constants.Intake.PRE_SHOOTER_PORT, "Paul the Pumpkin");
     mmcPreShooter = new MotionMagicConfigs();
     mmcPreShooter.MotionMagicCruiseVelocity = 80;
     mmcPreShooter.MotionMagicAcceleration = 160;
@@ -43,9 +43,9 @@ public class PeterSubsystem extends SubsystemBase {
     preShooterMotor.getConfigurator().apply(mmcPreShooter);
 
     // Intake
-    intakeMotor = new TalonFX(Constants.Intake.INTAKE_MOTOR_PORT);
+    // intakeMotor = new TalonFX(Constants.Intake.INTAKE_MOTOR_PORT, "Paul the Pumpkin");
 
-    noteSensor = new DigitalInput(Constants.Intake.NOTE_DETECTOR_PORT);
+    // noteSensor = new DigitalInput(Constants.Intake.NOTE_DETECTOR_PORT);
 
     preShooterPosition = preShooterMotor.getPosition();
   }
@@ -138,7 +138,7 @@ public class PeterSubsystem extends SubsystemBase {
   }
 
   public boolean notePresent() {
-    return noteSensor.get();
+    return false; // noteSensor.get();
   }
 
   // PRE-SHOOTER FUNCTIONS:

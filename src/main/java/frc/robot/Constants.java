@@ -37,10 +37,10 @@ public final class Constants {
   }
 
   public static final class Intake {
-    public static final int INTAKE_MOTOR_PORT = 0;
+    public static final int INTAKE_MOTOR_PORT = 4;
     public static final double SHOOTER_SPEED = 3;
     public static final int NOTE_DETECTOR_PORT = 7;
-    public static final int PRE_SHOOTER_PORT = 3;
+    public static final int PRE_SHOOTER_PORT = 6;
     public static final int SHOOTER_PORT_RIGHT = 0;
     public static final int SHOOTER_PORT_LEFT = 3;
 

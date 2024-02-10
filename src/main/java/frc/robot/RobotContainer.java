@@ -7,6 +7,7 @@ package frc.robot;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
+import frc.robot.commands.ArmAndPeterCommand;
 import frc.robot.commands.TestCommands.IntakeMotorTest;
 import frc.robot.commands.TestCommands.LeftShooterTest;
 import frc.robot.commands.TestCommands.PreShooterTest;
@@ -62,11 +63,14 @@ public class RobotContainer {
         sjoystick.getRawAxis(3); // Trigger
         sjoystick.getRawAxis(4); // Trigger
     */
-    mjoystick.circle().onTrue(new IntakeMotorTest(peterSubsystem));
-    mjoystick.square().onTrue(new PreShooterTest(peterSubsystem));
-    mjoystick.triangle().onTrue(new ShooterTest(peterSubsystem));
-    mjoystick.cross().onTrue(new LeftShooterTest(peterSubsystem));
-    mjoystick.povUp().onTrue(new RightShooterTest(peterSubsystem));
+    mjoystick.circle().whileTrue(new IntakeMotorTest(peterSubsystem));
+    mjoystick.square().whileTrue(new PreShooterTest(peterSubsystem));
+    mjoystick.triangle().whileTrue(new ShooterTest(peterSubsystem));
+    mjoystick.cross().whileTrue(new LeftShooterTest(peterSubsystem));
+    mjoystick.povUp().whileTrue(new RightShooterTest(peterSubsystem));
+    peterSubsystem.setDefaultCommand(
+        new ArmAndPeterCommand(
+            () -> -mjoystick.getRawAxis(3), () -> -mjoystick.getRawAxis(4), peterSubsystem));
   }
 
   public RobotContainer() {
