@@ -35,10 +35,10 @@ public class TestEncoderSubsystem extends SubsystemBase {
 
     Slot0Configs s0c = new Slot0Configs().withKP(37).withKI(0).withKD(0.2);
     armff = new ArmFeedforward(0.1, 0.1, 0.1);
-    r1 = new TalonFX(Constants.Swerve.FRONT_RIGHT.SteerMotorId);
-    r2 = new TalonFX(Constants.Swerve.BACK_RIGHT.SteerMotorId);
-    l1 = new TalonFX(Constants.Swerve.FRONT_LEFT.SteerMotorId);
-    l2 = new TalonFX(Constants.Swerve.BACK_LEFT.SteerMotorId);
+    r1 = new TalonFX(Constants.Swerve.FRONT_RIGHT.SteerMotorId, Constants.Swerve.CANBUS_NAME);
+    r2 = new TalonFX(Constants.Swerve.BACK_RIGHT.SteerMotorId, Constants.Swerve.CANBUS_NAME);
+    l1 = new TalonFX(Constants.Swerve.FRONT_LEFT.SteerMotorId, Constants.Swerve.CANBUS_NAME);
+    l2 = new TalonFX(Constants.Swerve.BACK_LEFT.SteerMotorId, Constants.Swerve.CANBUS_NAME);
 
     Follower f = new Follower(Constants.Swerve.FRONT_RIGHT.SteerMotorId, false);
     r2.setControl(f);
@@ -105,11 +105,11 @@ public class TestEncoderSubsystem extends SubsystemBase {
   }
 
   public void rotateToSpeakerPosition() {
-    setPosition(Constants.Swerve.FRONT_RIGHT.CANcoderOffset + 60.0);
+    setTargetPosition(Constants.Swerve.FRONT_RIGHT.CANcoderOffset + 60.0);
   }
 
   public void rotateToResetPosition() {
-    setPosition(Constants.Swerve.FRONT_RIGHT.CANcoderOffset);
+    setTargetPosition(Constants.Swerve.FRONT_RIGHT.CANcoderOffset);
   }
 
   // public void toPosition() {
@@ -132,7 +132,7 @@ public class TestEncoderSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    //setPosition(targetPos);
+    setPosition(targetPos);
     SmartDashboard.putNumber("Front right motor pos: ", getPosition());
     SmartDashboard.putBoolean("Front right sensor overflow: ", master.getFault_RemoteSensorPosOverflow().getValue());
     SmartDashboard.putNumber("Front right set speed: ", master.get());

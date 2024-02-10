@@ -27,7 +27,7 @@ public class SwerveTest extends Command{
     double supplierVal = angleOffsetSupplier.get();
     SmartDashboard.putNumber("SwerveTest pos", setPos);
     SmartDashboard.putNumber("SwerveTest supplier", supplierVal);
-    //testEncoderSubsystem.setPosition(setPos);
+    testEncoderSubsystem.setTargetPosition(setPos);
   }
 
   // Called once the command ends or is interrupted.
