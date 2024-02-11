@@ -102,7 +102,7 @@ public class TestEncoderSubsystem extends SubsystemBase {
   public void periodic() {
     setPosition(targetDegrees);
     SmartDashboard.putNumber("Front right motor pos: ", getPosRotations());
-    SmartDashboard.putBoolean("Front right sensor overflow: ", master.getFault_RemoteSensorPosOverflow().getValue());
+    //SmartDashboard.putBoolean("Front right sensor overflow: ", master.getFault_RemoteSensorPosOverflow().getValue());
     SmartDashboard.putNumber("Front right set speed: ", master.get());
   }
 }

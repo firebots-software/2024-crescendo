@@ -27,7 +27,7 @@ public void initialize() {
 
 @Override
 public void execute() {
-    SmartDashboard.putNumber("Arm Values", 1.0);
+    //SmartDashboard.putNumber("Arm Values", 1.0);
     armSubsystem.setTargetPosition(joystickSpeed.get());
 }
 

@@ -164,7 +164,7 @@ public class PeterSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putBoolean("Note Detected", notePresent()); // false = note detected!!
+    //SmartDashboard.putBoolean("Note Detected", notePresent()); // false = note detected!!
   }
 
   public void runShooter(double i) {

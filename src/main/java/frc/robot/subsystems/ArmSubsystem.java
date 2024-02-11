@@ -52,7 +52,7 @@ public class ArmSubsystem extends SubsystemBase {
     TalonFXConfigurator masterConfigurator = master.getConfigurator();
     masterConfigurator.apply(s0c);
     masterConfigurator.apply(
-        new FeedbackConfigs().withFeedbackRemoteSensorID(Constants.Arm.ENCODER_ID));
+        new FeedbackConfigs().withFeedbackRemoteSensorID(Constants.Arm.ENCODER_PORT));
 
     mmc = new MotionMagicConfigs();
     mmc.MotionMagicCruiseVelocity = 80;
@@ -60,7 +60,7 @@ public class ArmSubsystem extends SubsystemBase {
     mmc.MotionMagicJerk = 1600;
     master.getConfigurator().apply(mmc);
 
-    absoluteEncoder = new CANcoder(Constants.Arm.ENCODER_ID);
+    absoluteEncoder = new CANcoder(Constants.Arm.ENCODER_PORT);
 
     targetPos = Constants.Arm.DEFAULT_ARM_ANGLE;
     Constants.Arm.ARM_ENCODER_OFFSET = master.getPosition().getValue();

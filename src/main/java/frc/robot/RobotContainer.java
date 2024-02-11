@@ -84,8 +84,8 @@ public class RobotContainer {
     pickup2choice.addOption("MIDDLE NOTE", Optional.of(NoteLocation.MIDDLE));
     pickup2choice.addOption("STAGESIDE NOTE", Optional.of(NoteLocation.STAGESIDE));
 
-    SmartDashboard.putData(pickup1choice);
-    SmartDashboard.putData(pickup2choice);
+    //SmartDashboard.putData(pickup1choice);
+    //SmartDashboard.putData(pickup2choice);
   }
 
   public RobotContainer() {
