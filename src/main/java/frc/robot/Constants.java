@@ -14,7 +14,7 @@ import edu.wpi.first.math.util.Units;
 public class Constants {
   public static class LED {
     public static final int LED_STRIP_LENGTH = 34;
-    public static final int LED_STRIP_PORT = 6;
+    public static final int LED_STRIP_PORT = 7;
     public static final int[] PURE_RED = {0, 100, 100};
     public static final int[] PURE_BLUE = {201, 100, 100};
     public static final int[] PURE_YELLOW = {61, 100, 100};

@@ -68,6 +68,7 @@ public class LightsSubsystem extends SubsystemBase {
         lights = new AddressableLED(Constants.LED.LED_STRIP_PORT);
         ledBuffer = new AddressableLEDBuffer(Constants.LED.LED_STRIP_LENGTH);
         lights.setLength(ledBuffer.getLength());
+        lights.start();
         periodicCounter = 0;
         currentSetting = LightSetting.FULL_RAINBOW;
     }
