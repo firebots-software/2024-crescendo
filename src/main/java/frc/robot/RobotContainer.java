@@ -122,7 +122,7 @@ public class RobotContainer {
       new CommandPS4Controller(Constants.OI.ARM_JOYSTICK_PORT);
   //private final SwerveSubsystem driveTrain = SwerveSubsystem.getInstance();
   //private final PeterSubsystem peterSubsystem = PeterSubsystem.getInstance();
-  private final ArmSubsystem armSubsystem = ArmSubsystem.getInstance();
+  //private final ArmSubsystem armSubsystem = ArmSubsystem.getInstance();
   private final TestEncoderSubsystem testEncoderSubsystem = TestEncoderSubsystem.getInstance();
   public final Telemetry logger = new Telemetry();
 
@@ -137,9 +137,9 @@ public class RobotContainer {
     // Supplier
     
 
-  TestArmCommand tac = new TestArmCommand(
-    armSubsystem, 
-    () -> mjoystick.getRawAxis(0));
+  //TestArmCommand tac = new TestArmCommand(
+    //armSubsystem, 
+    //() -> mjoystick.getRawAxis(0));
     // SwerveJoystickCommand swerveJoystickCommand =
     //     new SwerveJoystickCommand(
     //         () -> ((redAlliance) ? mjoystick.getRawAxis(1) : -mjoystick.getRawAxis(1)),

@@ -8,11 +8,17 @@ import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants;
 
 public class TestEncoderSubsystem extends SubsystemBase {
@@ -24,6 +30,7 @@ public class TestEncoderSubsystem extends SubsystemBase {
   private MotionMagicConfigs mmc;
   private static TestEncoderSubsystem instance;
   private double targetDegrees;
+  private double integratedArmEncoderOffset;
 
   public TestEncoderSubsystem() {
     CurrentLimitsConfigs clc = new CurrentLimitsConfigs().withSupplyCurrentLimit(5.0);
@@ -58,10 +65,16 @@ public class TestEncoderSubsystem extends SubsystemBase {
     masterConfigurator.apply(mmc);
 
     revEncoder = new DutyCycleEncoder(Constants.Arm.ENCODER_PORT);
-    revEncoder.setPositionOffset(Constants.Arm.ARM_ENCODER_OFFSET);
 
-    master.setPosition((revEncoder.getAbsolutePosition() - 0.1) * Constants.Arm.INTEGRATED_ABSOLUTE_CONVERSION_FACTOR);
-    
+    // new Thread(() -> {
+    //   try {
+    //     Thread.sleep(1000);
+    //     integratedArmEncoderOffset = (getAbsolutePosition() - 0.1) * Constants.Arm.INTEGRATED_ABSOLUTE_CONVERSION_FACTOR);
+    //     System.out.println("set position");
+    //   } catch (Exception e) {
+    //   }
+    // }).start();
+
     targetDegrees = Constants.Arm.DEFAULT_ARM_ANGLE;
   }
 
@@ -72,9 +85,13 @@ public class TestEncoderSubsystem extends SubsystemBase {
     return instance;
   }
 
+  private double getAbsolutePosition() {
+    return MathUtil.clamp(revEncoder.getAbsolutePosition() + Constants.Arm.ARM_ENCODER_OFFSET, 0d, 1d);
+  }
+
   private void setPosition(double angleDegrees) {
     master.setControl(new MotionMagicVoltage(Constants.Swerve.STEER_GEAR_RATIO * angleDegrees / 360d));
-            //.withFeedForward(armff.calculate(getPosRotations() * Math.PI * 2 / 360, 0)));
+    // .withFeedForward(armff.calculate(getPosRotations() * Math.PI * 2 / 360, 0)));
     // input is in rotations
   }
 
@@ -100,10 +117,12 @@ public class TestEncoderSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    setPosition(targetDegrees);
-    SmartDashboard.putNumber("Rev encoder", revEncoder.getAbsolutePosition());
+    // setPosition(targetDegrees);
+    SmartDashboard.putNumber("Rev encoder", getAbsolutePosition());
     SmartDashboard.putNumber("Front right motor pos: ", getPosRotations());
-    //SmartDashboard.putBoolean("Front right sensor overflow: ", master.getFault_RemoteSensorPosOverflow().getValue());
+    SmartDashboard.putNumber("Integrated: ", master.getPosition().getValue());
+    // SmartDashboard.putBoolean("Front right sensor overflow: ",
+    // master.getFault_RemoteSensorPosOverflow().getValue());
     SmartDashboard.putNumber("Front right set speed: ", master.get());
   }
 }

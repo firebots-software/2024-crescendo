@@ -63,7 +63,7 @@ public class ArmSubsystem extends SubsystemBase {
     absoluteEncoder = new CANcoder(Constants.Arm.ENCODER_PORT);
 
     targetPos = Constants.Arm.DEFAULT_ARM_ANGLE;
-    Constants.Arm.ARM_ENCODER_OFFSET = master.getPosition().getValue();
+    //Constants.Arm.ARM_ENCODER_OFFSET = master.getPosition().getValue();
   }
 
   public static ArmSubsystem getInstance() {

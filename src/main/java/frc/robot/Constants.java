@@ -67,8 +67,7 @@ public final class Constants {
     public static final double DEFAULT_ARM_ANGLE = 45.0;
     public final double INTAKE_ANGLE = 0; // subject to change
     public final double AMP_ANGLE = 100; // subject to change
-    public static double ARM_ENCODER_OFFSET =
-        0; // TODO: Change the offset so that the 0 position is when the arm is at its resting
+    public static final double ARM_ENCODER_OFFSET = 0.5; // TODO: Change the offset so that the 0 position is when the arm is at its resting
     // position.
     public static final double SPEAKER_ANGLE =
         0; // TODO: Replace with the function based on distance
