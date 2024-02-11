@@ -35,7 +35,7 @@ public class TestEncoderSubsystem extends SubsystemBase {
     l1 = new TalonFX(Constants.Swerve.FRONT_LEFT.SteerMotorId, Constants.Swerve.CANBUS_NAME);
     l2 = new TalonFX(Constants.Swerve.BACK_LEFT.SteerMotorId, Constants.Swerve.CANBUS_NAME);
 
-    Follower f = new Follower(Constants.Arm.R1_PORT, false);
+    Follower f = new Follower(Constants.Swerve.FRONT_RIGHT.SteerMotorId, false);
     r2.setControl(f);
     l1.setInverted(true);
     l1.setControl(f);
@@ -101,6 +101,7 @@ public class TestEncoderSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     setPosition(targetDegrees);
+    SmartDashboard.putNumber("Rev encoder", revEncoder.getAbsolutePosition());
     SmartDashboard.putNumber("Front right motor pos: ", getPosRotations());
     //SmartDashboard.putBoolean("Front right sensor overflow: ", master.getFault_RemoteSensorPosOverflow().getValue());
     SmartDashboard.putNumber("Front right set speed: ", master.get());
