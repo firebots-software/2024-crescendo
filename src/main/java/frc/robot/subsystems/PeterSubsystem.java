@@ -24,8 +24,10 @@ public class PeterSubsystem extends SubsystemBase {
   public PeterSubsystem() {
     // Initalize shooter
     // Follower f = new Follower(Constants.Intake.SHOOTER_PORT_LEFT, false );
-    shooterMotorLeft = new TalonFX(Constants.Intake.SHOOTER_PORT_LEFT, "Paul the Pumpkin");
-    shooterMotorRight = new TalonFX(Constants.Intake.SHOOTER_PORT_RIGHT, "Paul the Pumpkin");
+    shooterMotorLeft =
+        new TalonFX(Constants.Intake.SHOOTER_PORT_LEFT, Constants.Intake.CANBUS_NAME);
+    shooterMotorRight =
+        new TalonFX(Constants.Intake.SHOOTER_PORT_RIGHT, Constants.Intake.CANBUS_NAME);
     shooterMotorRight.setInverted(true);
     // shooterMotorRight.setControl(f);
     Slot0Configs s0c =
@@ -35,7 +37,7 @@ public class PeterSubsystem extends SubsystemBase {
     shooterMotorLeft.getConfigurator().apply(s0c);
 
     // Preshooter
-    preShooterMotor = new TalonFX(Constants.Intake.PRE_SHOOTER_PORT, "Paul the Pumpkin");
+    preShooterMotor = new TalonFX(Constants.Intake.PRE_SHOOTER_PORT, Constants.Intake.CANBUS_NAME);
     mmcPreShooter = new MotionMagicConfigs();
     mmcPreShooter.MotionMagicCruiseVelocity = 80;
     mmcPreShooter.MotionMagicAcceleration = 160;
@@ -43,8 +45,12 @@ public class PeterSubsystem extends SubsystemBase {
     preShooterMotor.getConfigurator().apply(mmcPreShooter);
 
     // Intake
-    // intakeMotor = new TalonFX(Constants.Intake.INTAKE_MOTOR_PORT, "Paul the Pumpkin");
+    Slot0Configs intakePid =
+        new Slot0Configs().withKP(0.1).withKI(0).withKD(0).withKG(0).withKV(0).withKA(0);
 
+    intakeMotor = new TalonFX(Constants.Intake.INTAKE_MOTOR_PORT, Constants.Intake.CANBUS_NAME);
+    intakeMotor.getConfigurator().apply(intakePid);
+    intakeMotor.setInverted(true);
     // noteSensor = new DigitalInput(Constants.Intake.NOTE_DETECTOR_PORT);
 
     preShooterPosition = preShooterMotor.getPosition();
@@ -63,7 +69,7 @@ public class PeterSubsystem extends SubsystemBase {
   }
 
   public void stopIntake() {
-    runIntakeAtRPS(0);
+    intakeMotor.stopMotor();
   }
 
   private void runIntakeAtRPS(double speed) {
@@ -75,11 +81,14 @@ public class PeterSubsystem extends SubsystemBase {
 
   // SHOOTER FUNCTIONS:
   public void spinUpShooter() {
-    runShooterAtRPS(Constants.Intake.SHOOT_WHEEL_SPEED_RPS);
+    // runShooterAtRPS(Constants.Intake.SHOOT_WHEEL_SPEED_RPS);
+    runRightShooterAtRPS(Constants.Intake.SHOOT_WHEEL_SPEED_RPS);
+    runLeftShooterAtRPS(Constants.Intake.SHOOT_WHEEL_SPEED_RPS);
   }
 
   public void stopShooter() {
-    runShooterAtRPS(0);
+    shooterMotorLeft.stopMotor();
+    shooterMotorRight.stopMotor();
   }
 
   public void spinRightShooter() {
@@ -91,11 +100,11 @@ public class PeterSubsystem extends SubsystemBase {
   }
 
   public void stopRightShooter() {
-    runRightShooterAtRPS(0);
+    shooterMotorRight.stopMotor();
   }
 
   public void stopLeftShooter() {
-    runLeftShooterAtRPS(0);
+    shooterMotorLeft.stopMotor();
   }
 
   private void runRightShooterAtRPS(double speed) {

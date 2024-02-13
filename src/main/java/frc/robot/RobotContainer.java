@@ -7,13 +7,12 @@ package frc.robot;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
-import frc.robot.commands.ArmAndPeterCommand;
 import frc.robot.commands.TestCommands.IntakeMotorTest;
 import frc.robot.commands.TestCommands.LeftShooterTest;
 import frc.robot.commands.TestCommands.PreShooterTest;
 import frc.robot.commands.TestCommands.RightShooterTest;
 import frc.robot.commands.TestCommands.ShooterTest;
-import frc.robot.subsystems.ArmSubsystem;
+// import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.PeterSubsystem;
 
 /**
@@ -32,7 +31,7 @@ public class RobotContainer {
       new CommandPS4Controller(Constants.OI.ARM_JOYSTICK_PORT);
   // private final SwerveSubsystem driveTrain = SwerveSubsystem.getInstance();
   private final PeterSubsystem peterSubsystem = PeterSubsystem.getInstance();
-  private final ArmSubsystem armSubsystem = ArmSubsystem.getInstance();
+  // private final ArmSubsystem armSubsystem = ArmSubsystem.getInstance();
   public final Telemetry logger = new Telemetry();
 
   // Starts telemetry operations (essentially logging -> look on SmartDashboard, AdvantageScope)
@@ -68,9 +67,12 @@ public class RobotContainer {
     mjoystick.triangle().whileTrue(new ShooterTest(peterSubsystem));
     mjoystick.cross().whileTrue(new LeftShooterTest(peterSubsystem));
     mjoystick.povUp().whileTrue(new RightShooterTest(peterSubsystem));
-    peterSubsystem.setDefaultCommand(
-        new ArmAndPeterCommand(
-            () -> -mjoystick.getRawAxis(3), () -> -mjoystick.getRawAxis(4), peterSubsystem));
+    /* mjoystick
+    .povRight()
+    .whileTrue(new PeterTestersSequential(peterSubsystem, peterSubsystem, peterSubsystem)); */
+    // peterSubsystem.setDefaultCommand(
+    //    new ArmAndPeterCommand(
+    //        () -> -mjoystick.getRawAxis(3), () -> -mjoystick.getRawAxis(4), peterSubsystem));
   }
 
   public RobotContainer() {
