@@ -1,24 +1,18 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
-import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants;
 
 public class TestEncoderSubsystem extends SubsystemBase {
@@ -26,9 +20,9 @@ public class TestEncoderSubsystem extends SubsystemBase {
   private TalonFX master;
   private DutyCycleEncoder revEncoder;
   private ArmFeedforward armff;
-
   private MotionMagicConfigs mmc;
   private static TestEncoderSubsystem instance;
+  
   private double targetDegrees;
   private double integratedArmEncoderOffset;
 
@@ -117,12 +111,12 @@ public class TestEncoderSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // setPosition(targetDegrees);
+    setPosition(targetDegrees);
     SmartDashboard.putNumber("Rev encoder", getAbsolutePosition());
     SmartDashboard.putNumber("Front right motor pos: ", getPosRotations());
     SmartDashboard.putNumber("Integrated: ", master.getPosition().getValue());
-    // SmartDashboard.putBoolean("Front right sensor overflow: ",
-    // master.getFault_RemoteSensorPosOverflow().getValue());
+    SmartDashboard.putBoolean("Front right sensor overflow: ",
+    master.getFault_RemoteSensorPosOverflow().getValue());
     SmartDashboard.putNumber("Front right set speed: ", master.get());
     SmartDashboard.putNumber("Error: ", master.getClosedLoopError().getValue());
     SmartDashboard.putNumber("TargetPos: ", targetDegrees);

@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import frc.robot.commands.MoveToTarget;
 // import frc.robot.commands.ArmRotateCommand;
 import frc.robot.commands.SwerveJoystickCommand;
+import frc.robot.commands.TestCommands.ArmUp;
 import frc.robot.commands.TestCommands.SwerveTest;
 import frc.robot.commands.TestCommands.TestArmCommand;
 import frc.robot.subsystems.ArmSubsystem;
@@ -124,6 +125,7 @@ public class RobotContainer {
   //private final PeterSubsystem peterSubsystem = PeterSubsystem.getInstance();
   //private final ArmSubsystem armSubsystem = ArmSubsystem.getInstance();
   private final TestEncoderSubsystem testEncoderSubsystem = TestEncoderSubsystem.getInstance();
+  private final ArmSubsystem armSubsystem = ArmSubsystem.getInstance();
   public final Telemetry logger = new Telemetry();
 
   // Starts telemetry operations (essentially logging -> look on SmartDashboard, AdvantageScope)
@@ -159,12 +161,15 @@ public class RobotContainer {
     //                     new Pose2d(new Translation2d(0, 0), new Rotation2d(0)))));
     // driveTrain.registerTelemetry(logger::telemeterize);
 
-    // This supplier should return only three distinct values: 0.0, -30.0, and 30.0.
-    Supplier<Double> swerveAngleOffset = () -> (int)(mjoystick.getRawAxis(0)*1.5) * 30.0;
+    // // (SwerveTest command, used on old Robot to test the testEncoderSubsystem)
+    // // This supplier should return only three distinct values: 0.0, -30.0, and 30.0.
+    // Supplier<Double> swerveAngleOffset = () -> (int)(mjoystick.getRawAxis(0)*1.5) * 30.0;
+    // SwerveTest swerveTestCommand = new SwerveTest(testEncoderSubsystem, swerveAngleOffset);
+    // mjoystick.circle().whileTrue(swerveTestCommand);
 
-    SwerveTest swerveTestCommand = new SwerveTest(testEncoderSubsystem, swerveAngleOffset);
-    mjoystick.circle().whileTrue(swerveTestCommand);
-
+    ArmUp moveArmUpCommand = new ArmUp(armSubsystem);
+    mjoystick.R2().whileTrue(moveArmUpCommand);
+    
     //sjoystick.getRawAxis(3); // Trigger
     //sjoystick.getRawAxis(4); // Trigger
   }

@@ -69,14 +69,16 @@ public final class Constants {
     public final double AMP_ANGLE = 100; // subject to change
     public static final double ARM_ENCODER_OFFSET = 0.5; // TODO: Change the offset so that the 0 position is when the arm is at its resting
     // position.
-    public static final double SPEAKER_ANGLE =
-        0; // TODO: Replace with the function based on distance
-    public static final int R1_PORT = 0;
-    public static final int R2_PORT = 3;
-    public static final int L1_PORT = 6;
-    public static final int L2_PORT = 4;
+    public static final double SPEAKER_ANGLE = 0; // TODO: Replace with the function based on distance
+    public static final int RT_PORT = 14; // Right Top motor
+    public static final int RB_PORT = 13; // Right Bottom motor
+    public static final int LT_PORT = 12; // Left Top motor
+    public static final int LB_PORT = 11; // Left Bottom motor
     public static final int ENCODER_PORT = 1; // subject to chan
-    public static final double INTEGRATED_ABSOLUTE_CONVERSION_FACTOR = 36 + 2.0/3.0;
+    public static final double INTEGRATED_ABSOLUTE_CONVERSION_FACTOR = 34 + 2.0/3.0;
+    public static final double INTEGRATED_ARM_CONVERSION_FACTOR = 80.888888;
+    public static final double ABSOLUTE_ENCODER_HORIZONTAL = 0.1;
+    public static final double ABSOLUTE_HORIZONTAL_OFFSET = 0.1;
   }
 
   public static class OI {
@@ -150,7 +152,8 @@ public final class Constants {
     private static final boolean INVERT_LEFT_SIDE = false;
     private static final boolean INVERT_RIGHT_SIDE = true;
 
-    public static final String CANBUS_NAME = "Paul the Pumpkin";
+    public static final String CANBUS_NAME = "Patrice the Pineapple";
+    public static final String ROBORIO = "rio";
     private static final int PIGEON_ID = 13;
 
     // These are only used for simulation

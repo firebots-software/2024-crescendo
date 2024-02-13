@@ -1,40 +1,41 @@
 package frc.robot.subsystems;
-
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
-import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
-import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class ArmSubsystem extends SubsystemBase {
   private TalonFX r1, r2, l1, l2;
   private TalonFX master;
-  private CANcoder absoluteEncoder;
+  private DutyCycleEncoder revEncoder;
   private ArmFeedforward armff;
-
   private MotionMagicConfigs mmc;
   private static ArmSubsystem instance;
-  private double targetPos;
+  
+  private double targetDegrees;
+  private double integratedArmEncoderOffset;
 
   public ArmSubsystem() {
     CurrentLimitsConfigs clc = new CurrentLimitsConfigs().withSupplyCurrentLimit(5.0);
 
-    Slot0Configs s0c = new Slot0Configs().withKP(0.1).withKI(0).withKD(0);
-    armff = new ArmFeedforward(0, 0, 0);
-    r1 = new TalonFX(Constants.Arm.R1_PORT, Constants.Swerve.CANBUS_NAME);
-    r2 = new TalonFX(Constants.Arm.R2_PORT, Constants.Swerve.CANBUS_NAME);
-    l1 = new TalonFX(Constants.Arm.L1_PORT, Constants.Swerve.CANBUS_NAME);
-    l2 = new TalonFX(Constants.Arm.L2_PORT, Constants.Swerve.CANBUS_NAME);
+    Slot0Configs s0c = new Slot0Configs().withKP(37).withKI(0).withKD(0);
+    armff = new ArmFeedforward(0.1, 0.1, 0.1);
+    r1 = new TalonFX(Constants.Arm.RT_PORT, Constants.Swerve.CANBUS_NAME);
+    r2 = new TalonFX(Constants.Arm.RB_PORT, Constants.Swerve.CANBUS_NAME);
+    l1 = new TalonFX(Constants.Arm.LT_PORT, Constants.Swerve.CANBUS_NAME);
+    l2 = new TalonFX(Constants.Arm.LB_PORT, Constants.Swerve.CANBUS_NAME);
 
-    Follower f = new Follower(Constants.Arm.R1_PORT, false);
+    Follower f = new Follower(Constants.Arm.RT_PORT, false);
     r2.setControl(f);
     l1.setInverted(true);
     l1.setControl(f);
@@ -46,24 +47,30 @@ public class ArmSubsystem extends SubsystemBase {
     l1.getConfigurator().apply(clc);
     l2.getConfigurator().apply(clc);
 
-    
-
     master = r1;
     TalonFXConfigurator masterConfigurator = master.getConfigurator();
     masterConfigurator.apply(s0c);
-    masterConfigurator.apply(
-        new FeedbackConfigs().withFeedbackRemoteSensorID(Constants.Arm.ENCODER_PORT));
 
     mmc = new MotionMagicConfigs();
     mmc.MotionMagicCruiseVelocity = 80;
     mmc.MotionMagicAcceleration = 160;
     mmc.MotionMagicJerk = 1600;
-    master.getConfigurator().apply(mmc);
+    masterConfigurator.apply(mmc);
 
-    absoluteEncoder = new CANcoder(Constants.Arm.ENCODER_PORT);
+    revEncoder = new DutyCycleEncoder(Constants.Arm.ENCODER_PORT);
 
-    targetPos = Constants.Arm.DEFAULT_ARM_ANGLE;
-    //Constants.Arm.ARM_ENCODER_OFFSET = master.getPosition().getValue();
+    // ==== EXPLANATION: ====
+    // getAbsolutePosition(): Absolute Encoder's current reading
+    // ABSOLUTE_ENCODER_HORIZONTAL: What the Absolute Encoder reads at horizontal
+    // ABSOLUTE_HORIZONTAL_OFFSET: Number of rotations to offset angle count from horizontal, to avoid "pretzeling" or slamming into robot
+    // What this next line does:
+    // Uses the Absolute Encoder to set the position of the Master motor, so that when the Master motor reads 0 rotations,
+    // it represents the arm being at horizontal. After this next line runs, the Master motor's encoder reading can be used
+    // like expected, so you simply need to divide its reading by INTEGRATED_ARM_CONVERSION_FACTOR to get the arm's angle in rotations.
+    // ======================
+    master.setPosition((getAbsolutePosition()-Constants.Arm.ABSOLUTE_ENCODER_HORIZONTAL-Constants.Arm.ABSOLUTE_HORIZONTAL_OFFSET)*Constants.Arm.INTEGRATED_ABSOLUTE_CONVERSION_FACTOR);
+
+    targetDegrees = Constants.Arm.DEFAULT_ARM_ANGLE;
   }
 
   public static ArmSubsystem getInstance() {
@@ -74,20 +81,26 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   private void setPosition(double angleDegrees) {
-    MotionMagicVoltage m_request = new MotionMagicVoltage(master.getPosition().getValue());
-    master.setControl(
-        m_request
-            .withPosition(angleDegrees / 360)
-            .withEnableFOC(true)
-            .withFeedForward(armff.calculate(getPosition() * Math.PI * 2 / 360, 0)));
+    master.setControl(new MotionMagicVoltage(
+      integratedArmEncoderOffset + Constants.Arm.INTEGRATED_ARM_CONVERSION_FACTOR * angleDegrees / 360d));
+    // .withFeedForward(armff.calculate(getPosRotations() * Math.PI * 2 / 360, 0)));
+    // input is in rotations
   }
 
-  public double getPosition() {
+  private double getAbsolutePosition() {
+    return MathUtil.clamp(revEncoder.getAbsolutePosition() + Constants.Arm.ARM_ENCODER_OFFSET, 0d, 1d);
+  }
+
+  public double getPosRotations() {
     return master.getPosition().getValue();
   }
 
-  public void setTargetPosition(double angleDegrees) {
-    targetPos = angleDegrees;
+  public double getArmPosRotations() {
+    return getPosRotations() / Constants.Arm.INTEGRATED_ARM_CONVERSION_FACTOR;
+  }
+
+  public void setTargetDegrees(double angleDegrees) {
+    targetDegrees = angleDegrees;
   }
 
   public double determineAngle(Pose2d a, double fkla) {
@@ -95,11 +108,11 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void rotateArmToSpeakerPosition() {
-    setTargetPosition(Constants.Arm.ARM_ENCODER_OFFSET + Constants.Arm.SPEAKER_ANGLE);
+    setTargetDegrees(Constants.Arm.SPEAKER_ANGLE);
   }
 
   public void rotateArmToRestPosition() {
-    setTargetPosition(Constants.Arm.ARM_ENCODER_OFFSET);
+    setTargetDegrees(0);
   }
 
   // public void toPosition() {
@@ -122,6 +135,11 @@ public class ArmSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    setPosition(targetPos);
+    //setPosition(targetDegrees);
+    SmartDashboard.putNumber("Absolute Raw", revEncoder.getAbsolutePosition());
+    SmartDashboard.putNumber("Absolute via Function", getAbsolutePosition());
+    SmartDashboard.putNumber("Integrated: ", getPosRotations());
+    SmartDashboard.putNumber("Target Degrees: ", targetDegrees);
+    SmartDashboard.putNumber("Integrated: ", targetDegrees);
   }
 }

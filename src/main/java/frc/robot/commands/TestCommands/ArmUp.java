@@ -3,11 +3,11 @@ package frc.robot.commands.TestCommands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ArmSubsystem;
 
-public class ArmTest extends Command {
+public class ArmUp extends Command {
 
   private ArmSubsystem armSubsystem;
 
-  public ArmTest(ArmSubsystem armSubsystem) {
+  public ArmUp(ArmSubsystem armSubsystem) {
     this.armSubsystem = armSubsystem;
     addRequirements(armSubsystem);
   }
@@ -19,7 +19,7 @@ public class ArmTest extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    armSubsystem.rotateArmToSpeakerPosition();
+    armSubsystem.setTargetDegrees(60);
   }
 
   // Called once the command ends or is interrupted.
