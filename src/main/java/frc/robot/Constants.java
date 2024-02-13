@@ -10,8 +10,8 @@ import edu.wpi.first.math.util.Units;
 
 public class Constants {
   public static class OI {
-    public static final double LEFT_JOYSTICK_DEADBAND = 0.07;
-    public static final double RIGHT_JOYSTICK_DEADBAND = 0.07;
+    public static final double LEFT_JOYSTICK_DEADBAND = 0.1;
+    public static final double RIGHT_JOYSTICK_DEADBAND = 0.1;
     public static final int JOYSTICK_PORT = 0;
   }
 
