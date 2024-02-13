@@ -3,6 +3,7 @@ package frc.robot.commands;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.SwerveSubsystem;
@@ -97,6 +98,10 @@ public class SwerveJoystickCommand extends Command {
 
     // 5. Applying the drive request on the swerve drivetrain
     // Uses SwerveRequestFieldCentric (from java.frc.robot.util to apply module optimization)
+    SmartDashboard.putNumber("X Speed", x);
+    SmartDashboard.putNumber("Y Speed", y);
+    SmartDashboard.putNumber("Turning Speed", turningSpeed);
+
     final SwerveRequest.FieldCentric drive =
         new FieldCentricOptimizedSwerve()
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
