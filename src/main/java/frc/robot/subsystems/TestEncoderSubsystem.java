@@ -33,12 +33,13 @@ public class TestEncoderSubsystem extends SubsystemBase {
     // profile = new TrapezoidProfile(tp);
     CurrentLimitsConfigs clc = new CurrentLimitsConfigs().withSupplyCurrentLimit(25.0);
 
-    Slot0Configs s0c = new Slot0Configs().withKP(37).withKI(0).withKD(0.2);
+    Slot0Configs s0c = new Slot0Configs().withKP(37).withKI(0).withKD(0);
+
     armff = new ArmFeedforward(0.1, 0.1, 0.1);
-    r1 = new TalonFX(Constants.Swerve.FRONT_RIGHT.SteerMotorId);
-    r2 = new TalonFX(Constants.Swerve.BACK_RIGHT.SteerMotorId);
-    l1 = new TalonFX(Constants.Swerve.FRONT_LEFT.SteerMotorId);
-    l2 = new TalonFX(Constants.Swerve.BACK_LEFT.SteerMotorId);
+    r1 = new TalonFX(Constants.Swerve.FRONT_RIGHT.SteerMotorId, Constants.Arm.CANBUS_NAME);
+    r2 = new TalonFX(Constants.Swerve.BACK_RIGHT.SteerMotorId, Constants.Arm.CANBUS_NAME);
+    l1 = new TalonFX(Constants.Swerve.FRONT_LEFT.SteerMotorId, Constants.Arm.CANBUS_NAME);
+    l2 = new TalonFX(Constants.Swerve.BACK_LEFT.SteerMotorId, Constants.Arm.CANBUS_NAME);
 
     Follower f = new Follower(Constants.Swerve.FRONT_RIGHT.SteerMotorId, false);
     r2.setControl(f);
@@ -64,7 +65,7 @@ public class TestEncoderSubsystem extends SubsystemBase {
     mmc.MotionMagicJerk = 1600;
     master.getConfigurator().apply(mmc);
 
-    absoluteEncoder = new CANcoder(Constants.Swerve.FRONT_RIGHT.CANcoderId);
+    absoluteEncoder = new CANcoder(Constants.Swerve.FRONT_RIGHT.CANcoderId, Constants.Arm.CANBUS_NAME);
 
     targetPos = Constants.Arm.DEFAULT_ARM_ANGLE;
   }
@@ -81,8 +82,8 @@ public class TestEncoderSubsystem extends SubsystemBase {
     return instance;
   }
 
-  public void setPosition(double angleDegrees) {
-    PositionVoltage m_request = new PositionVoltage(angleDegrees / 360);
+  private void setPosition(double angleDegrees) {
+    PositionVoltage m_request = new PositionVoltage(Constants.Swerve.STEEP_GEAR_RATIO * angleDegrees / 360d);
     master.setControl(m_request);
     // master.setControl(
     //     m_request
@@ -93,7 +94,7 @@ public class TestEncoderSubsystem extends SubsystemBase {
   }
 
   public double getPosition() {
-    return master.getPosition().getValue();
+    return master.getPosition().getValue() / Constants.Swerve.STEEP_GEAR_RATIO;
   }
 
   public void setTargetPosition(double angleDegrees) {
@@ -105,11 +106,11 @@ public class TestEncoderSubsystem extends SubsystemBase {
   }
 
   public void rotateToSpeakerPosition() {
-    setPosition(Constants.Swerve.FRONT_RIGHT.CANcoderOffset + 60.0);
+    setTargetPosition(Constants.Swerve.FRONT_RIGHT.CANcoderOffset + 60.0);
   }
 
   public void rotateToResetPosition() {
-    setPosition(Constants.Swerve.FRONT_RIGHT.CANcoderOffset);
+    setTargetPosition(Constants.Swerve.FRONT_RIGHT.CANcoderOffset);
   }
 
   // public void toPosition() {
@@ -132,9 +133,12 @@ public class TestEncoderSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    //setPosition(targetPos);
+    setPosition(targetPos);
     SmartDashboard.putNumber("Front right motor pos: ", getPosition());
     SmartDashboard.putBoolean("Front right sensor overflow: ", master.getFault_RemoteSensorPosOverflow().getValue());
     SmartDashboard.putNumber("Front right set speed: ", master.get());
+    SmartDashboard.putNumber("Error: ", master.getClosedLoopError().getValue());
+    SmartDashboard.putNumber("TargetPos: ",targetPos);
+    SmartDashboard.putNumber("Absolute Position", master.getPosition().getValue());
   }
 }

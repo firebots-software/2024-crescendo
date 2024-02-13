@@ -121,7 +121,7 @@ public class RobotContainer {
       new CommandPS4Controller(Constants.OI.ARM_JOYSTICK_PORT);
   //private final SwerveSubsystem driveTrain = SwerveSubsystem.getInstance();
   //private final PeterSubsystem peterSubsystem = PeterSubsystem.getInstance();
-  private final ArmSubsystem armSubsystem = ArmSubsystem.getInstance();
+  //private final ArmSubsystem armSubsystem = ArmSubsystem.getInstance();
   private final TestEncoderSubsystem testEncoderSubsystem = TestEncoderSubsystem.getInstance();
   public final Telemetry logger = new Telemetry();
 

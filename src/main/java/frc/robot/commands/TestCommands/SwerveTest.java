@@ -25,15 +25,17 @@ public class SwerveTest extends Command{
     SmartDashboard.putBoolean("SwerveTest running", isScheduled());
     double setPos = Constants.Swerve.FRONT_RIGHT.CANcoderOffset*360 + 60.0 + angleOffsetSupplier.get();
     double supplierVal = angleOffsetSupplier.get();
+    SmartDashboard.putNumber("CANCODER OFFSET: ", Constants.Swerve.FRONT_RIGHT.CANcoderOffset);
     SmartDashboard.putNumber("SwerveTest pos", setPos);
     SmartDashboard.putNumber("SwerveTest supplier", supplierVal);
-    //testEncoderSubsystem.setPosition(setPos);
+    SmartDashboard.putNumber("The PID value: ", supplierVal);
+    testEncoderSubsystem.setTargetPosition(setPos);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    //testEncoderSubsystem.rotateToResetPosition();
+    testEncoderSubsystem.rotateToResetPosition();
   }
 
   // Returns true when the command should end.

@@ -77,6 +77,8 @@ public final class Constants {
     public static final int L1_PORT = 6;
     public static final int L2_PORT = 7;
     public static final int ENCODER_ID = 0; // subject to chan
+
+    public static final String CANBUS_NAME = "Paul the Pumpkin";
   }
 
   public static class OI {
@@ -143,7 +145,7 @@ public final class Constants {
 
     private static final double DRIVE_GEAR_RATIO =
         6.746031746031747; // 6.12 for new robot: CHANGE FOR NEW ROBOT
-    private static final double STEEP_GEAR_RATIO = 21.428571428571427;
+    public static final double STEEP_GEAR_RATIO = 21.428571428571427;
     private static final double WHEEL_RADIUS_INCHES = 2;
 
     private static final boolean STEER_MOTOR_REVERSED = true;
