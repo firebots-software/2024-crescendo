@@ -19,12 +19,14 @@ import frc.robot.commands.MoveToTarget;
 // import frc.robot.commands.ArmRotateCommand;
 import frc.robot.commands.SwerveJoystickCommand;
 import frc.robot.commands.TestCommands.SwerveTest;
+import frc.robot.commands.TestCommands.TestArmCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.PeterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.TestEncoderSubsystem;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -82,8 +84,8 @@ public class RobotContainer {
     pickup2choice.addOption("MIDDLE NOTE", Optional.of(NoteLocation.MIDDLE));
     pickup2choice.addOption("STAGESIDE NOTE", Optional.of(NoteLocation.STAGESIDE));
 
-    SmartDashboard.putData(pickup1choice);
-    SmartDashboard.putData(pickup2choice);
+    //SmartDashboard.putData(pickup1choice);
+    //SmartDashboard.putData(pickup2choice);
   }
 
   public RobotContainer() {
@@ -115,8 +117,7 @@ public class RobotContainer {
 
   /* Setting up bindings for necessary control of the swerve drive platform */
 
-  private final CommandPS4Controller mjoystick =
-      new CommandPS4Controller(Constants.OI.MOVEMENT_JOYSTICK_PORT);
+  private final CommandPS4Controller mjoystick = new CommandPS4Controller(Constants.OI.MOVEMENT_JOYSTICK_PORT);
   private final CommandPS4Controller sjoystick =
       new CommandPS4Controller(Constants.OI.ARM_JOYSTICK_PORT);
   //private final SwerveSubsystem driveTrain = SwerveSubsystem.getInstance();
@@ -131,6 +132,14 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
+    // mjoystick.L1();
+    // double yes = mjoystick.getRawAxis(0);
+    // Supplier
+    
+
+  //TestArmCommand tac = new TestArmCommand(
+    //armSubsystem, 
+    //() -> mjoystick.getRawAxis(0));
     // SwerveJoystickCommand swerveJoystickCommand =
     //     new SwerveJoystickCommand(
     //         () -> ((redAlliance) ? mjoystick.getRawAxis(1) : -mjoystick.getRawAxis(1)),
@@ -149,7 +158,11 @@ public class RobotContainer {
     //                 driveTrain.seedFieldRelative(
     //                     new Pose2d(new Translation2d(0, 0), new Rotation2d(0)))));
     // driveTrain.registerTelemetry(logger::telemeterize);
-    SwerveTest swerveTestCommand = new SwerveTest(testEncoderSubsystem, () -> mjoystick.getRawAxis(0)*30.0);
+
+    // This supplier should return only three distinct values: 0.0, -30.0, and 30.0.
+    Supplier<Double> swerveAngleOffset = () -> (int)(mjoystick.getRawAxis(0)*1.5) * 30.0;
+
+    SwerveTest swerveTestCommand = new SwerveTest(testEncoderSubsystem, swerveAngleOffset);
     mjoystick.circle().whileTrue(swerveTestCommand);
 
     //sjoystick.getRawAxis(3); // Trigger

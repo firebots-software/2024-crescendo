@@ -19,24 +19,20 @@ public class ArmSubsystem extends SubsystemBase {
   private TalonFX master;
   private CANcoder absoluteEncoder;
   private ArmFeedforward armff;
-  // private TrapezoidProfile profile;
-  // private TrapezoidProfile.Constraints tp;
 
   private MotionMagicConfigs mmc;
   private static ArmSubsystem instance;
   private double targetPos;
 
   public ArmSubsystem() {
-    // tp = new TrapezoidProfile.Constraints(10, 20);
-    // profile = new TrapezoidProfile(tp);
     CurrentLimitsConfigs clc = new CurrentLimitsConfigs().withSupplyCurrentLimit(5.0);
 
     Slot0Configs s0c = new Slot0Configs().withKP(0.1).withKI(0).withKD(0);
     armff = new ArmFeedforward(0, 0, 0);
-    r1 = new TalonFX(Constants.Arm.R1_PORT);
-    r2 = new TalonFX(Constants.Arm.R2_PORT);
-    l1 = new TalonFX(Constants.Arm.L1_PORT);
-    l2 = new TalonFX(Constants.Arm.L2_PORT);
+    r1 = new TalonFX(Constants.Arm.R1_PORT, Constants.Swerve.CANBUS_NAME);
+    r2 = new TalonFX(Constants.Arm.R2_PORT, Constants.Swerve.CANBUS_NAME);
+    l1 = new TalonFX(Constants.Arm.L1_PORT, Constants.Swerve.CANBUS_NAME);
+    l2 = new TalonFX(Constants.Arm.L2_PORT, Constants.Swerve.CANBUS_NAME);
 
     Follower f = new Follower(Constants.Arm.R1_PORT, false);
     r2.setControl(f);
@@ -50,11 +46,13 @@ public class ArmSubsystem extends SubsystemBase {
     l1.getConfigurator().apply(clc);
     l2.getConfigurator().apply(clc);
 
+    
+
     master = r1;
     TalonFXConfigurator masterConfigurator = master.getConfigurator();
     masterConfigurator.apply(s0c);
     masterConfigurator.apply(
-        new FeedbackConfigs().withFeedbackRemoteSensorID(Constants.Arm.ENCODER_ID));
+        new FeedbackConfigs().withFeedbackRemoteSensorID(Constants.Arm.ENCODER_PORT));
 
     mmc = new MotionMagicConfigs();
     mmc.MotionMagicCruiseVelocity = 80;
@@ -62,15 +60,11 @@ public class ArmSubsystem extends SubsystemBase {
     mmc.MotionMagicJerk = 1600;
     master.getConfigurator().apply(mmc);
 
-    absoluteEncoder = new CANcoder(Constants.Arm.ENCODER_ID);
+    absoluteEncoder = new CANcoder(Constants.Arm.ENCODER_PORT);
 
     targetPos = Constants.Arm.DEFAULT_ARM_ANGLE;
+    //Constants.Arm.ARM_ENCODER_OFFSET = master.getPosition().getValue();
   }
-
-  // private TalonFXConfigurator apply(Slot0Configs s0c) {
-  //   // TODO Auto-generated method stub the method wasn't being used so commented our for now
-  //   throw new UnsupportedOperationException("Unimplemented method 'apply'");
-  // }
 
   public static ArmSubsystem getInstance() {
     if (instance == null) {
@@ -84,8 +78,8 @@ public class ArmSubsystem extends SubsystemBase {
     master.setControl(
         m_request
             .withPosition(angleDegrees / 360)
+            .withEnableFOC(true)
             .withFeedForward(armff.calculate(getPosition() * Math.PI * 2 / 360, 0)));
-    // input is in rotations
   }
 
   public double getPosition() {
@@ -101,11 +95,11 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void rotateArmToSpeakerPosition() {
-    setPosition(Constants.Arm.ARM_ENCODER_OFFSET + Constants.Arm.SPEAKER_ANGLE);
+    setTargetPosition(Constants.Arm.ARM_ENCODER_OFFSET + Constants.Arm.SPEAKER_ANGLE);
   }
 
   public void rotateArmToRestPosition() {
-    setPosition(Constants.Arm.ARM_ENCODER_OFFSET);
+    setTargetPosition(Constants.Arm.ARM_ENCODER_OFFSET);
   }
 
   // public void toPosition() {

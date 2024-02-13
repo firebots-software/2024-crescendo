@@ -67,18 +67,16 @@ public final class Constants {
     public static final double DEFAULT_ARM_ANGLE = 45.0;
     public final double INTAKE_ANGLE = 0; // subject to change
     public final double AMP_ANGLE = 100; // subject to change
-    public static final double ARM_ENCODER_OFFSET =
-        0; // TODO: Change the offset so that the 0 position is when the arm is at its resting
+    public static final double ARM_ENCODER_OFFSET = 0.5; // TODO: Change the offset so that the 0 position is when the arm is at its resting
     // position.
     public static final double SPEAKER_ANGLE =
         0; // TODO: Replace with the function based on distance
-    public static final int R1_PORT = 4;
-    public static final int R2_PORT = 5;
+    public static final int R1_PORT = 0;
+    public static final int R2_PORT = 3;
     public static final int L1_PORT = 6;
-    public static final int L2_PORT = 7;
-    public static final int ENCODER_ID = 0; // subject to chan
-
-    public static final String CANBUS_NAME = "Paul the Pumpkin";
+    public static final int L2_PORT = 4;
+    public static final int ENCODER_PORT = 1; // subject to chan
+    public static final double INTEGRATED_ABSOLUTE_CONVERSION_FACTOR = 36 + 2.0/3.0;
   }
 
   public static class OI {
@@ -145,14 +143,14 @@ public final class Constants {
 
     private static final double DRIVE_GEAR_RATIO =
         6.746031746031747; // 6.12 for new robot: CHANGE FOR NEW ROBOT
-    public static final double STEEP_GEAR_RATIO = 21.428571428571427;
+    public static final double STEER_GEAR_RATIO = 21.428571428571427;
     private static final double WHEEL_RADIUS_INCHES = 2;
 
     private static final boolean STEER_MOTOR_REVERSED = true;
     private static final boolean INVERT_LEFT_SIDE = false;
     private static final boolean INVERT_RIGHT_SIDE = true;
 
-    private static final String CANBUS_NAME = "";
+    public static final String CANBUS_NAME = "Paul the Pumpkin";
     private static final int PIGEON_ID = 13;
 
     // These are only used for simulation
@@ -168,7 +166,7 @@ public final class Constants {
     private static final SwerveModuleConstantsFactory ConstantCreator =
         new SwerveModuleConstantsFactory()
             .withDriveMotorGearRatio(DRIVE_GEAR_RATIO)
-            .withSteerMotorGearRatio(STEEP_GEAR_RATIO)
+            .withSteerMotorGearRatio(STEER_GEAR_RATIO)
             .withWheelRadius(WHEEL_RADIUS_INCHES)
             .withSlipCurrent(SLIP_CURRENT_AMPS)
             .withSteerMotorGains(STEER_GAINS)

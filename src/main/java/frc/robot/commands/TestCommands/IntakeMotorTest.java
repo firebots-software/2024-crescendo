@@ -11,7 +11,7 @@ import frc.robot.subsystems.PeterSubsystem;
 /** An example command that uses an example subsystem. */
 public class IntakeMotorTest extends Command {
   private PeterSubsystem peterSubsystem;
-  private Supplier<Double> XButton;
+  // private Supplier<Double> XButton;
 
   /**
    * Tests the intake by spinning them up and stopping them

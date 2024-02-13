@@ -7,39 +7,40 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
-import com.ctre.phoenix6.controls.PositionVoltage;
-import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants;
 
 public class TestEncoderSubsystem extends SubsystemBase {
   private TalonFX r1, r2, l1, l2;
   private TalonFX master;
-  private CANcoder absoluteEncoder;
+  private DutyCycleEncoder revEncoder;
   private ArmFeedforward armff;
-  // private TrapezoidProfile profile;
-  // private TrapezoidProfile.Constraints tp;
 
   private MotionMagicConfigs mmc;
   private static TestEncoderSubsystem instance;
-  private double targetPos;
+  private double targetDegrees;
+  private double integratedArmEncoderOffset;
 
   public TestEncoderSubsystem() {
-    // tp = new TrapezoidProfile.Constraints(10, 20);
-    // profile = new TrapezoidProfile(tp);
-    CurrentLimitsConfigs clc = new CurrentLimitsConfigs().withSupplyCurrentLimit(25.0);
+    CurrentLimitsConfigs clc = new CurrentLimitsConfigs().withSupplyCurrentLimit(5.0);
 
     Slot0Configs s0c = new Slot0Configs().withKP(37).withKI(0).withKD(0);
-
     armff = new ArmFeedforward(0.1, 0.1, 0.1);
-    r1 = new TalonFX(Constants.Swerve.FRONT_RIGHT.SteerMotorId, Constants.Arm.CANBUS_NAME);
-    r2 = new TalonFX(Constants.Swerve.BACK_RIGHT.SteerMotorId, Constants.Arm.CANBUS_NAME);
-    l1 = new TalonFX(Constants.Swerve.FRONT_LEFT.SteerMotorId, Constants.Arm.CANBUS_NAME);
-    l2 = new TalonFX(Constants.Swerve.BACK_LEFT.SteerMotorId, Constants.Arm.CANBUS_NAME);
+    r1 = new TalonFX(Constants.Swerve.FRONT_RIGHT.SteerMotorId, Constants.Swerve.CANBUS_NAME);
+    r2 = new TalonFX(Constants.Swerve.BACK_RIGHT.SteerMotorId, Constants.Swerve.CANBUS_NAME);
+    l1 = new TalonFX(Constants.Swerve.FRONT_LEFT.SteerMotorId, Constants.Swerve.CANBUS_NAME);
+    l2 = new TalonFX(Constants.Swerve.BACK_LEFT.SteerMotorId, Constants.Swerve.CANBUS_NAME);
 
     Follower f = new Follower(Constants.Swerve.FRONT_RIGHT.SteerMotorId, false);
     r2.setControl(f);
@@ -56,24 +57,26 @@ public class TestEncoderSubsystem extends SubsystemBase {
     master = r1;
     TalonFXConfigurator masterConfigurator = master.getConfigurator();
     masterConfigurator.apply(s0c);
-    masterConfigurator.apply(
-        new FeedbackConfigs().withFeedbackRemoteSensorID(Constants.Swerve.FRONT_RIGHT.CANcoderId));
 
     mmc = new MotionMagicConfigs();
     mmc.MotionMagicCruiseVelocity = 80;
     mmc.MotionMagicAcceleration = 160;
     mmc.MotionMagicJerk = 1600;
-    master.getConfigurator().apply(mmc);
+    masterConfigurator.apply(mmc);
 
-    absoluteEncoder = new CANcoder(Constants.Swerve.FRONT_RIGHT.CANcoderId, Constants.Arm.CANBUS_NAME);
+    revEncoder = new DutyCycleEncoder(Constants.Arm.ENCODER_PORT);
 
-    targetPos = Constants.Arm.DEFAULT_ARM_ANGLE;
+    // new Thread(() -> {
+    //   try {
+    //     Thread.sleep(1000);
+    //     integratedArmEncoderOffset = (getAbsolutePosition() - 0.1) * Constants.Arm.INTEGRATED_ABSOLUTE_CONVERSION_FACTOR);
+    //     System.out.println("set position");
+    //   } catch (Exception e) {
+    //   }
+    // }).start();
+
+    targetDegrees = Constants.Arm.DEFAULT_ARM_ANGLE;
   }
-
-  // private TalonFXConfigurator apply(Slot0Configs s0c) {
-  //   // TODO Auto-generated method stub the method wasn't being used so commented our for now
-  //   throw new UnsupportedOperationException("Unimplemented method 'apply'");
-  // }
 
   public static TestEncoderSubsystem getInstance() {
     if (instance == null) {
@@ -82,23 +85,22 @@ public class TestEncoderSubsystem extends SubsystemBase {
     return instance;
   }
 
+  private double getAbsolutePosition() {
+    return MathUtil.clamp(revEncoder.getAbsolutePosition() + Constants.Arm.ARM_ENCODER_OFFSET, 0d, 1d);
+  }
+
   private void setPosition(double angleDegrees) {
-    PositionVoltage m_request = new PositionVoltage(Constants.Swerve.STEEP_GEAR_RATIO * angleDegrees / 360d);
-    master.setControl(m_request);
-    // master.setControl(
-    //     m_request
-    //         .withPosition(angleDegrees / 360)
-    //         .withFeedForward(armff.calculate(getPosition() * Math.PI * 2, 0)));
-    //master.set(0.2);
+    master.setControl(new MotionMagicVoltage(Constants.Swerve.STEER_GEAR_RATIO * angleDegrees / 360d));
+    // .withFeedForward(armff.calculate(getPosRotations() * Math.PI * 2 / 360, 0)));
     // input is in rotations
   }
 
-  public double getPosition() {
-    return master.getPosition().getValue() / Constants.Swerve.STEEP_GEAR_RATIO;
+  public double getPosRotations() {
+    return master.getPosition().getValue() / Constants.Swerve.STEER_GEAR_RATIO;
   }
 
-  public void setTargetPosition(double angleDegrees) {
-    targetPos = angleDegrees;
+  public void setTargetDegrees(double angleDegrees) {
+    targetDegrees = angleDegrees;
   }
 
   public double determineAngle(Pose2d a, double fkla) {
@@ -106,39 +108,24 @@ public class TestEncoderSubsystem extends SubsystemBase {
   }
 
   public void rotateToSpeakerPosition() {
-    setTargetPosition(Constants.Swerve.FRONT_RIGHT.CANcoderOffset + 60.0);
+    setTargetDegrees(Constants.Swerve.FRONT_RIGHT.CANcoderOffset + 60.0);
   }
 
   public void rotateToResetPosition() {
-    setTargetPosition(Constants.Swerve.FRONT_RIGHT.CANcoderOffset);
+    setTargetDegrees(Constants.Swerve.FRONT_RIGHT.CANcoderOffset);
   }
-
-  // public void toPosition() {
-  //   // Magic Motion:
-  //   MotionMagicVoltage m_request = new MotionMagicVoltage(master.getPosition().getValue());
-  //   master.setControl(m_request.withPosition(setPos));
-
-  // Trapizoidal Motion:
-  // TrapezoidProfile.State setPoint = new TrapezoidProfile.State(setPos, 0);
-  // TrapezoidProfile.State currentPoint = new
-  // TrapezoidProfile.State(master.getPosition().getValue(),master.getVelocity().getValue());
-
-  // setPoint = profile.calculate(profile.totalTime(), currentPoint, setPoint);
-  // PositionDutyCycle m_positionControl = new
-  // PositionDutyCycle(setPoint.position);
-  // m_positionControl.Position = setPoint.position;
-  // m_positionControl.Velocity = setPoint.velocity;
-  // master.setControl(m_positionControl);
-  // }
 
   @Override
   public void periodic() {
-    setPosition(targetPos);
-    SmartDashboard.putNumber("Front right motor pos: ", getPosition());
-    SmartDashboard.putBoolean("Front right sensor overflow: ", master.getFault_RemoteSensorPosOverflow().getValue());
+    // setPosition(targetDegrees);
+    SmartDashboard.putNumber("Rev encoder", getAbsolutePosition());
+    SmartDashboard.putNumber("Front right motor pos: ", getPosRotations());
+    SmartDashboard.putNumber("Integrated: ", master.getPosition().getValue());
+    // SmartDashboard.putBoolean("Front right sensor overflow: ",
+    // master.getFault_RemoteSensorPosOverflow().getValue());
     SmartDashboard.putNumber("Front right set speed: ", master.get());
     SmartDashboard.putNumber("Error: ", master.getClosedLoopError().getValue());
-    SmartDashboard.putNumber("TargetPos: ",targetPos);
+    SmartDashboard.putNumber("TargetPos: ", targetDegrees);
     SmartDashboard.putNumber("Absolute Position", master.getPosition().getValue());
   }
 }
