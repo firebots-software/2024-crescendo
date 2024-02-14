@@ -135,11 +135,15 @@ public class ArmSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+
+    SmartDashboard.putString("Command:", this.getCurrentCommand() == null ? "none" : this.getCurrentCommand().getName());
     //setPosition(targetDegrees);
     SmartDashboard.putNumber("Absolute Raw", revEncoder.getAbsolutePosition());
     SmartDashboard.putNumber("Absolute via Function", getAbsolutePosition());
-    SmartDashboard.putNumber("Integrated: ", getPosRotations());
+    SmartDashboard.putNumber("Integrated Rotations: ", getPosRotations());
+    SmartDashboard.putNumber("Integrated Current: ", master.getSupplyCurrent().getValue());
+    SmartDashboard.putNumber("Integrated Error: ", master.getClosedLoopError().getValue());
     SmartDashboard.putNumber("Target Degrees: ", targetDegrees);
-    SmartDashboard.putNumber("Integrated: ", targetDegrees);
+    SmartDashboard.putNumber("Arm Rotations: ", getArmPosRotations());
   }
 }
