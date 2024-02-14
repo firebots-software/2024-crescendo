@@ -1,5 +1,6 @@
 package frc.robot.commands.TestCommands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.PeterSubsystem;
 
@@ -17,7 +18,9 @@ public class LeftShooterTest extends Command {
   }
 
   @Override
-  public void initialize() {}
+  public void initialize() {
+    SmartDashboard.getBoolean(this.toString(), true);
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override

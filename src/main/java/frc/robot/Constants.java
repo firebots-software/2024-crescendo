@@ -40,17 +40,19 @@ public final class Constants {
   }
 
   public static final class Intake {
-    public static final int INTAKE_MOTOR_PORT = 14;
-    public static final double SHOOTER_SPEED = 0.8;
+    public static final int INTAKE_MOTOR_PORT = 33;
+    public static final double SHOOTER_SPEED = 3;
     public static final int NOTE_DETECTOR_PORT = 7;
-    public static final int PRE_SHOOTER_PORT = 3;
-    public static final int SHOOTER_PORT_RIGHT = 4;
-    public static final int SHOOTER_PORT_LEFT = 5;
+    public static final int PRE_SHOOTER_PORT = 32;
+    public static final int SHOOTER_PORT_RIGHT = 30;
+    public static final int SHOOTER_PORT_LEFT = 31;
 
-    public static final double INTAKE_WHEEL_SPEED_RPM = 100 / 60;
+    public static final double INTAKE_WHEEL_SPEED_RPS = 100;
     public static final double ROTATIONS_TO_SHOOTER = 5d;
 
-    public static final double SHOOT_WHEEL_SPEED_RPS = 100 / 60;
+    public static final double SHOOT_WHEEL_SPEED_RPS = 10.0;
+
+    public static final String CANBUS_NAME = "rio";
   }
 
   public static final class FieldDimensions {
