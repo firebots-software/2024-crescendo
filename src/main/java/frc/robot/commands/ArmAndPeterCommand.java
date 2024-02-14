@@ -5,14 +5,14 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.ArmSubsystem;
+// import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.PeterSubsystem;
 import java.util.function.Supplier;
 
 /** An example command that uses an example subsystem. */
 public class ArmAndPeterCommand extends Command {
   private PeterSubsystem peter;
-  private ArmSubsystem arm;
+  // private ArmSubsystem arm;
   private Supplier<Double> RTrigger;
   private Supplier<Double> LTrigger;
 
@@ -22,17 +22,15 @@ public class ArmAndPeterCommand extends Command {
    * @param subsystem The subsystem used by this command.
    */
   public ArmAndPeterCommand(
-      Supplier<Double> RTrigger,
-      Supplier<Double> LTrigger,
-      PeterSubsystem peter,
-      ArmSubsystem arm) {
+      Supplier<Double> RTrigger, Supplier<Double> LTrigger, PeterSubsystem peter) {
     this.RTrigger = RTrigger;
     this.LTrigger = LTrigger;
     this.peter = peter;
-    this.arm = arm;
+    // this.arm = arm;
 
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(arm, peter);
+    // addRequirements(arm, peter);
+    addRequirements(peter);
   }
 
   // Called when the command is initially scheduled.
@@ -47,16 +45,17 @@ public class ArmAndPeterCommand extends Command {
 
     if (right) {
       peter.spinUpShooter();
-      if (aim() && peter.isShooterReady()) {
+      // if (aim() && peter.isShooterReady())
+      if (peter.isShooterReady()) {
         peter.moveNoteToShooter();
       }
     }
     if (left) {
       if (peter.notePresent()) {
-        arm.rotateArmToSpeakerPosition();
+        // arm.rotateArmToSpeakerPosition();
         peter.spinUpShooter();
       } else {
-        arm.rotateArmToRestPosition();
+        // arm.rotateArmToRestPosition();
         peter.spinUpIntake();
       }
     } else {
@@ -67,10 +66,10 @@ public class ArmAndPeterCommand extends Command {
     }
   }
 
-  public boolean aim() {
+  /*public boolean aim() {
     // TODO: Add logic to rotate the robot to the proper angle
     return true;
-  }
+  }*/
 
   // Called once the command ends or is interrupted.
   @Override
@@ -78,7 +77,8 @@ public class ArmAndPeterCommand extends Command {
     peter.stopIntake();
     peter.stopShooter();
     peter.stopPreShooterMotor();
-    arm.rotateArmToRestPosition();
+
+    // arm.rotateArmToRestPosition();
   }
 
   // Returns true when the command should end.

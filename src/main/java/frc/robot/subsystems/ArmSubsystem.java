@@ -171,7 +171,7 @@ public class ArmSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putString("Command:", this.getCurrentCommand() == null ? "none" : this.getCurrentCommand().getName());
-    //setPosition(targetDegrees);
+    
     SmartDashboard.putNumber("Absolute Raw", revEncoder.getAbsolutePosition());
     SmartDashboard.putNumber("Absolute via Function", getAbsolutePosition());
     SmartDashboard.putNumber("Integrated Rotations: ", getPosRotations());
