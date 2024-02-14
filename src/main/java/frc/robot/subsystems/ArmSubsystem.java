@@ -21,33 +21,38 @@ public class ArmSubsystem extends SubsystemBase {
   private ArmFeedforward armff;
   private MotionMagicConfigs mmc;
   private static ArmSubsystem instance;
+
+  private boolean initialize = false;
   
   private double targetDegrees;
-  private double integratedArmEncoderOffset;
+  private double absEncPretzelClamp = Constants.Arm.ABSOLUTE_ENCODER_HORIZONTAL*8/10d;
+  private double armHorizontalOffset;
 
   public ArmSubsystem() {
     CurrentLimitsConfigs clc = new CurrentLimitsConfigs().withSupplyCurrentLimit(5.0);
 
     Slot0Configs s0c = new Slot0Configs().withKP(37).withKI(0).withKD(0);
     armff = new ArmFeedforward(0.1, 0.1, 0.1);
-    r1 = new TalonFX(Constants.Arm.RT_PORT, Constants.Swerve.CANBUS_NAME);
-    r2 = new TalonFX(Constants.Arm.RB_PORT, Constants.Swerve.CANBUS_NAME);
+    //r1 = new TalonFX(Constants.Arm.RT_PORT, Constants.Swerve.CANBUS_NAME);
+    // r2 = new TalonFX(Constants.Arm.RB_PORT, Constants.Swerve.CANBUS_NAME);
     l1 = new TalonFX(Constants.Arm.LT_PORT, Constants.Swerve.CANBUS_NAME);
-    l2 = new TalonFX(Constants.Arm.LB_PORT, Constants.Swerve.CANBUS_NAME);
+    // l2 = new TalonFX(Constants.Arm.LB_PORT, Constants.Swerve.CANBUS_NAME);
 
-    Follower f = new Follower(Constants.Arm.RT_PORT, false);
-    r2.setControl(f);
-    l1.setInverted(true);
-    l1.setControl(f);
-    l2.setInverted(true);
-    l2.setControl(f);
+    // Follower f = new Follower(Constants.Arm.LT_PORT, false);
+    // r1.setControl(f);
+    // r1.setInverted(true);
+    // r2.setControl(f);
+    // r2.setInverted(true);
+    // l2.setControl(f);
 
-    r1.getConfigurator().apply(clc);
-    r2.getConfigurator().apply(clc);
+    
+
+    //r1.getConfigurator().apply(clc);
+    // r2.getConfigurator().apply(clc);
     l1.getConfigurator().apply(clc);
-    l2.getConfigurator().apply(clc);
+    // l2.getConfigurator().apply(clc);
 
-    master = r1;
+    master = l1;
     TalonFXConfigurator masterConfigurator = master.getConfigurator();
     masterConfigurator.apply(s0c);
 
@@ -58,7 +63,6 @@ public class ArmSubsystem extends SubsystemBase {
     masterConfigurator.apply(mmc);
 
     revEncoder = new DutyCycleEncoder(Constants.Arm.ENCODER_PORT);
-
     // ==== EXPLANATION: ====
     // getAbsolutePosition(): Absolute Encoder's current reading
     // ABSOLUTE_ENCODER_HORIZONTAL: What the Absolute Encoder reads at horizontal
@@ -68,7 +72,21 @@ public class ArmSubsystem extends SubsystemBase {
     // it represents the arm being at horizontal. After this next line runs, the Master motor's encoder reading can be used
     // like expected, so you simply need to divide its reading by INTEGRATED_ARM_CONVERSION_FACTOR to get the arm's angle in rotations.
     // ======================
-    master.setPosition((getAbsolutePosition()-Constants.Arm.ABSOLUTE_ENCODER_HORIZONTAL-Constants.Arm.ABSOLUTE_HORIZONTAL_OFFSET)*Constants.Arm.INTEGRATED_ABSOLUTE_CONVERSION_FACTOR);
+    new Thread(() -> {
+      try {
+        do {
+          Thread.sleep(250);
+        } while (!revEncoder.isConnected());
+        master.setPosition((getAbsolutePosition())*Constants.Arm.INTEGRATED_ABSOLUTE_CONVERSION_FACTOR);
+        initialize = true;
+        armHorizontalOffset = Constants.Arm.ABSOLUTE_HORIZONTAL_OFFSET/Constants.Arm.ABSOLUTE_ARM_CONVERSION_FACTOR;
+        
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+    }
+    ).run();
+    
 
     targetDegrees = Constants.Arm.DEFAULT_ARM_ANGLE;
   }
@@ -81,18 +99,30 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   private void setPosition(double angleDegrees) {
-    master.setControl(new MotionMagicVoltage(
-      integratedArmEncoderOffset + Constants.Arm.INTEGRATED_ARM_CONVERSION_FACTOR * angleDegrees / 360d));
+    if(initialize)
+    {
+      master.setControl(new MotionMagicVoltage(getIntegratedTargetRots(angleDegrees)));
+    }
     // .withFeedForward(armff.calculate(getPosRotations() * Math.PI * 2 / 360, 0)));
     // input is in rotations
   }
 
+  private double getIntegratedTargetRots(double angleDegrees){
+    double armRots = angleDegrees/360d + armHorizontalOffset;
+    return armRots * Constants.Arm.INTEGRATED_ARM_CONVERSION_FACTOR;
+  }
+
   private double getAbsolutePosition() {
-    return MathUtil.clamp(revEncoder.getAbsolutePosition() + Constants.Arm.ARM_ENCODER_OFFSET, 0d, 1d);
+    return(MathUtil.clamp(revEncoder.getAbsolutePosition(), absEncPretzelClamp, 1) - Constants.Arm.ABSOLUTE_ENCODER_HORIZONTAL+Constants.Arm.ABSOLUTE_HORIZONTAL_OFFSET + 1d) % 1;
   }
 
   public double getPosRotations() {
+    if(!initialize){
+      System.out.println("WARNING: Motor Position looked at, but initialization not complete yet. Returning 0");
+      return 0;
+    }
     return master.getPosition().getValue();
+    //return 0;
   }
 
   public double getArmPosRotations() {
@@ -112,7 +142,12 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void rotateArmToRestPosition() {
-    setTargetDegrees(0);
+    setTargetDegrees(25);
+  }
+
+  public double getArmDegrees()
+  {
+    return getArmPosRotations() * 360d;
   }
 
   // public void toPosition() {
@@ -135,7 +170,6 @@ public class ArmSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-
     SmartDashboard.putString("Command:", this.getCurrentCommand() == null ? "none" : this.getCurrentCommand().getName());
     //setPosition(targetDegrees);
     SmartDashboard.putNumber("Absolute Raw", revEncoder.getAbsolutePosition());
@@ -145,5 +179,7 @@ public class ArmSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Integrated Error: ", master.getClosedLoopError().getValue());
     SmartDashboard.putNumber("Target Degrees: ", targetDegrees);
     SmartDashboard.putNumber("Arm Rotations: ", getArmPosRotations());
+    SmartDashboard.putNumber("Arm Degrees", getArmDegrees());
+    SmartDashboard.putNumber("Target Integrated Rots: ", getIntegratedTargetRots(targetDegrees));
   }
 }

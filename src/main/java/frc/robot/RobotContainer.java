@@ -19,12 +19,12 @@ import frc.robot.commands.MoveToTarget;
 // import frc.robot.commands.ArmRotateCommand;
 import frc.robot.commands.SwerveJoystickCommand;
 import frc.robot.commands.TestCommands.ArmUp;
-import frc.robot.commands.TestCommands.SwerveTest;
+
 import frc.robot.commands.TestCommands.TestArmCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.PeterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
-import frc.robot.subsystems.TestEncoderSubsystem;
+//import frc.robot.subsystems.TestEncoderSubsystem;
 
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -124,7 +124,7 @@ public class RobotContainer {
   //private final SwerveSubsystem driveTrain = SwerveSubsystem.getInstance();
   //private final PeterSubsystem peterSubsystem = PeterSubsystem.getInstance();
   //private final ArmSubsystem armSubsystem = ArmSubsystem.getInstance();
-  private final TestEncoderSubsystem testEncoderSubsystem = TestEncoderSubsystem.getInstance();
+  //private final TestEncoderSubsystem testEncoderSubsystem = TestEncoderSubsystem.getInstance();
   private final ArmSubsystem armSubsystem = ArmSubsystem.getInstance();
   public final Telemetry logger = new Telemetry();
 
