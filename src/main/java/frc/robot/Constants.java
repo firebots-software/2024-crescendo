@@ -71,7 +71,7 @@ public final class Constants {
     public final double AMP_ANGLE = 100; // subject to change
     public static final double ARM_ENCODER_OFFSET = 0.5; // TODO: Change the offset so that the 0 position is when the arm is at its resting
     // position.
-    public static final double SPEAKER_ANGLE = 0; // TODO: Replace with the function based on distance
+    public static final double SPEAKER_ANGLE = 20; // TODO: Replace with the function based on distance
     public static final int RT_PORT = 14; // Right Top motor
     public static final int RB_PORT = 13; // Right Bottom motor
     public static final int LT_PORT = 12; // Left Top motor

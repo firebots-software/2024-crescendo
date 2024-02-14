@@ -19,11 +19,11 @@ public class AimArm extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // if (PeterSubsystem.noteStaticPresent()) {
-    //   armSubsystem.rotateArmToRestPosition();
-    // } else {
-    //   armSubsystem.rotateArmToSpeakerPosition();
-    // }
+    if (PeterSubsystem.noteStaticPresent()) {
+      armSubsystem.rotateArmToRestPosition();
+    } else {
+      armSubsystem.rotateArmToSpeakerPosition();
+    }
   }
 
   // Called once the command ends or is interrupted.

@@ -142,32 +142,6 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    // mjoystick.L1();
-    // double yes = mjoystick.getRawAxis(0);
-    // Supplier
-    
-
-  //TestArmCommand tac = new TestArmCommand(
-    //armSubsystem, 
-    //() -> mjoystick.getRawAxis(0));
-    // SwerveJoystickCommand swerveJoystickCommand =
-    //     new SwerveJoystickCommand(
-    //         () -> ((redAlliance) ? mjoystick.getRawAxis(1) : -mjoystick.getRawAxis(1)),
-    //         () -> ((redAlliance) ? mjoystick.getRawAxis(0) : -mjoystick.getRawAxis(0)),
-    //         () -> -mjoystick.getRawAxis(2),
-    //         () -> (mjoystick.getRawAxis(3) - mjoystick.getRawAxis(4)) / 4d + 0.5,
-    //         driveTrain);
-    // driveTrain.setDefaultCommand(swerveJoystickCommand);
-
-    // // zero-heading
-    // mjoystick
-    //     .circle()
-    //     .onTrue(
-    //         driveTrain.runOnce(
-    //             () ->
-    //                 driveTrain.seedFieldRelative(
-    //                     new Pose2d(new Translation2d(0, 0), new Rotation2d(0)))));
-    // driveTrain.registerTelemetry(logger::telemeterize);
 
     // // (SwerveTest command, used on old Robot to test the testEncoderSubsystem)
     // // This supplier should return only three distinct values: 0.0, -30.0, and 30.0.
@@ -175,16 +149,14 @@ public class RobotContainer {
     // SwerveTest swerveTestCommand = new SwerveTest(testEncoderSubsystem, swerveAngleOffset);
     // mjoystick.circle().whileTrue(swerveTestCommand);
 
-    mjoystick.circle().whileTrue(new IntakeMotorTest(peterSubsystem));
-    mjoystick.square().whileTrue(new PreShooterTest(peterSubsystem));
-    mjoystick.triangle().whileTrue(new ShooterTest(peterSubsystem));
-    mjoystick.cross().whileTrue(new LeftShooterTest(peterSubsystem));
-    mjoystick.povUp().whileTrue(new RightShooterTest(peterSubsystem));
+    // mjoystick.circle().whileTrue(new IntakeMotorTest(peterSubsystem));
+    // mjoystick.square().whileTrue(new PreShooterTest(peterSubsystem));
+    // mjoystick.triangle().whileTrue(new ShooterTest(peterSubsystem));
+    // mjoystick.cross().whileTrue(new LeftShooterTest(peterSubsystem));
+    // mjoystick.povUp().whileTrue(new RightShooterTest(peterSubsystem));
 
     ArmUp moveArmUpCommand = new ArmUp(armSubsystem);
     mjoystick.R2().whileTrue(moveArmUpCommand);
     
-    //sjoystick.getRawAxis(3); // Trigger
-    //sjoystick.getRawAxis(4); // Trigger
   }
 }
