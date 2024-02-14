@@ -142,7 +142,7 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void rotateArmToRestPosition() {
-    setTargetDegrees(25);
+    setTargetDegrees(5);
   }
 
   public double getArmDegrees()
