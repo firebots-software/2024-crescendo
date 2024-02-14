@@ -23,7 +23,8 @@ import frc.robot.subsystems.SwerveSubsystem;
  */
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
-
+  SwerveSubsystem ss = SwerveSubsystem.getInstance();
+  PhotonVision vision = PhotonVision.getInstance();
   private RobotContainer m_robotContainer;
 
   /**
@@ -56,7 +57,10 @@ public class Robot extends TimedRobot {
     // robot's periodic
     // block in order for anything in the Command-based framework to work.
     m_robotContainer.doTelemetry();
-    SwerveSubsystem.getInstance().addVisionMeasurement(PhotonVision.getInstance().getPose2d(), Timer.getFPGATimestamp());
+    if(vision.hasTarget(vision.getPipeline())){
+      ss.addVisionMeasurement(vision.getRobotPose2d(), Timer.getFPGATimestamp());
+    }
+    
     CommandScheduler.getInstance().run();
   }
 

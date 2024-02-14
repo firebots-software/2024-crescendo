@@ -83,15 +83,9 @@ public class PhotonVision extends SubsystemBase {
     }
 
     public Pose3d getRobotPose3d() {
-        // //TODO: If has no target, the numbers freeze, so make it so that savedResult gets cleared
-        // Optional<EstimatedRobotPose> result = photonPoseEstimator.update();
-        // if (result.isPresent()) {
-        //     savedResult = result.get().estimatedPose;
-        //     return savedResult;
-        // } else {\
-        //     return savedResult;
-        // }
+
         PhotonPipelineResult result = getPipeline();
+
         if(!result.hasTargets()){
             return savedResult;
         }
@@ -126,34 +120,8 @@ public class PhotonVision extends SubsystemBase {
     }
 
     public Pose2d getRobotPose2d() {
-        // This tries to use PhotonUtils.estimateFieldToRobot() to get the robot's
-        // Pose2d.
-        // I followed the PhotonVision documentation:
-        // https://docs.photonvision.org/en/latest/docs/programming/photonlib/getting-target-data.html
-
-        // TO-DO: Test this on robot and fix anything that needs fixing for this to
-        // work.
-
-        // these shouldn't need tuning.
-        double targetPitch = Units.degreesToRadians(getBestTarget(getPipeline()).getPitch());
-        Rotation2d targetYaw = Rotation2d.fromDegrees(-getBestTarget(getPipeline()).getYaw());
-
-        // need the pose of the AprilTag. somehow use TargetID to get the pose.
-        // int targetID = target.getFiducialId();
-        Pose2d targetPose = new Pose2d(-2, 3, new Rotation2d());
-
-        // need to tune this constant later
-        Transform2d cameraToRobot = new Transform2d(0.5, 0.5, new Rotation2d());
-
-        // PhotonVision's built in Pose2D estimator. Need to have actual parameters.
-        // the gyro.getRotation2d() has to be rechecked; not sure if this is the right
-        // way to implement.
-        Pose2d robotPose = PhotonUtils.estimateFieldToRobot(
-                cameraHeight, targetHeight, cameraPitch, targetPitch, targetYaw, gyro.getRotation2d(), targetPose,
-                cameraToRobot);
-
-        // for testing: try displaying the robotPose
-        return robotPose;
+      Pose3d p = getRobotPose3d();
+      return new Pose2d(p.getX(), p.getY(), new Rotation2d(p.getRotation().getAngle()));
     }
 
     public double metersToInches(double meters){
