@@ -7,11 +7,12 @@ package frc.robot;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
-import frc.robot.commands.TestCommands.IntakeMotorTest;
-import frc.robot.commands.TestCommands.LeftShooterTest;
-import frc.robot.commands.TestCommands.PreShooterTest;
-import frc.robot.commands.TestCommands.RightShooterTest;
-import frc.robot.commands.TestCommands.ShooterTest;
+import frc.robot.commands.DebugCommands.IntakeMotorTest;
+import frc.robot.commands.DebugCommands.LeftShooterTest;
+import frc.robot.commands.DebugCommands.PeterTest;
+import frc.robot.commands.DebugCommands.PreShooterTest;
+import frc.robot.commands.DebugCommands.RightShooterTest;
+import frc.robot.commands.DebugCommands.ShooterTest;
 // import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.PeterSubsystem;
 
@@ -67,6 +68,7 @@ public class RobotContainer {
     mjoystick.triangle().whileTrue(new ShooterTest(peterSubsystem));
     mjoystick.cross().whileTrue(new LeftShooterTest(peterSubsystem));
     mjoystick.povUp().whileTrue(new RightShooterTest(peterSubsystem));
+    mjoystick.povDown().whileTrue(new PeterTest(peterSubsystem));
     /* mjoystick
     .povRight()
     .whileTrue(new PeterTestersSequential(peterSubsystem, peterSubsystem, peterSubsystem)); */

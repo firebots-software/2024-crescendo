@@ -3,7 +3,6 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -51,7 +50,7 @@ public class PeterSubsystem extends SubsystemBase {
     intakeMotor = new TalonFX(Constants.Intake.INTAKE_MOTOR_PORT, Constants.Intake.CANBUS_NAME);
     intakeMotor.getConfigurator().apply(intakePid);
     intakeMotor.setInverted(true);
-    // noteSensor = new DigitalInput(Constants.Intake.NOTE_DETECTOR_PORT);
+    noteSensor = new DigitalInput(Constants.Intake.NOTE_DETECTOR_PORT);
 
     preShooterPosition = preShooterMotor.getPosition();
   }
@@ -74,7 +73,7 @@ public class PeterSubsystem extends SubsystemBase {
 
   private void runIntakeAtRPS(double speed) {
     VelocityVoltage m_velocityControl =
-        new VelocityVoltage(Constants.Intake.INTAKE_WHEEL_SPEED_RPS);
+        new VelocityVoltage(speed * Constants.Intake.INTAKE_GEAR_RATIO);
     m_velocityControl.withFeedForward(0.1);
     intakeMotor.setControl(m_velocityControl);
   }
@@ -114,7 +113,8 @@ public class PeterSubsystem extends SubsystemBase {
   }
 
   private void runLeftShooterAtRPS(double speed) {
-    VelocityVoltage m_velocityControl = new VelocityVoltage(speed);
+    VelocityVoltage m_velocityControl =
+        new VelocityVoltage(speed * Constants.Intake.SHOOTER_WHEELS_GEAR_RATIOS);
     m_velocityControl.withFeedForward(0.1);
     shooterMotorLeft.setControl(m_velocityControl);
   }
@@ -137,43 +137,52 @@ public class PeterSubsystem extends SubsystemBase {
   }
 
   // SENSOR FUNCTIONS:
-  public static boolean noteStaticPresent() {
-    if (instance != null) {
-      return instance.notePresent(); // true = note present
-    } else {
-      throw new NullPointerException(
-          "In order to use the Arm subsystem, we need to access the sensor from shooter. Please initalize the PeterSubsystem before using an Arm Command");
-    }
-  }
-
   public boolean notePresent() {
-    return false; // noteSensor.get();
+    return !noteSensor.get();
   }
 
   // PRE-SHOOTER FUNCTIONS:
-  public void moveNoteToShooter() {
-    movePreShooterMotorPosition(Constants.Intake.ROTATIONS_TO_SHOOTER); // 5 rotations
-  }
+  /* public void moveNoteToShooter() {
+    movePreShooterMotorPosition(
+        Constants.Intake.ROTATIONS_TO_SHOOTER
+            * Constants.Intake.PRESHOOTER_GEAR_RATIO); // 5 rotations
+  }*/
 
   public void stopPreShooterMotor() {
-    movePreShooterMotorPosition(0);
+    preShooterMotor.stopMotor();
   }
 
-  public void movePreShooterMotorPosition(double position) { // rotates by `position` more rotations
+  /* public void movePreShooterMotorPosition(double position) { // rotates by `position` more rotations
     MotionMagicVoltage m_request = new MotionMagicVoltage(preShooterMotor.getPosition().getValue());
     preShooterMotor.setControl(
         m_request.withPosition(
             preShooterMotor.getPosition().getValue() + position)); // rotate 5 more rotations
+  } */
+
+  public void spinUpPreShooter() {
+    runPreShooterAtRPS(Constants.Intake.ROTATIONS_TO_SHOOTER);
   }
 
-  public double getPreShooterPosition() {
-    return preShooterPosition.getValue();
+  private void runPreShooterAtRPS(double speed) {
+    VelocityVoltage m_velocityControl =
+        new VelocityVoltage(speed * Constants.Intake.PRESHOOTER_GEAR_RATIO);
+    m_velocityControl.withFeedForward(0.1);
+    preShooterMotor.setControl(m_velocityControl);
   }
+
+  /* public double getPreShooterPosition() {
+    return preShooterPosition.getValue();
+  } */
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     SmartDashboard.putBoolean("Note Detected", notePresent()); // false = note detected!!
+    SmartDashboard.putString(
+        "Command",
+        (this.getCurrentCommand() == null
+            ? "none"
+            : this.getCurrentCommand().getName())); // false = note detected!!
   }
 
   public void runShooter(int i) {

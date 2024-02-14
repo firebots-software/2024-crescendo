@@ -30,7 +30,7 @@ public class Intake extends Command {
   @Override
   public void execute() {
     peterSubsystem.spinUpIntake();
-    peterSubsystem.moveNoteToShooter();
+    // peterSubsystem.moveNoteToShooter();
   }
 
   // Called once the command ends or is interrupted.

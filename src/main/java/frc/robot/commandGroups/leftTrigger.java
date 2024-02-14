@@ -10,7 +10,7 @@ public class leftTrigger extends ParallelCommandGroup {
   private boolean warmed;
 
   public leftTrigger(PeterSubsystem shooter, ArmSubsystem arm, double angle) {
-    addCommands(new ArmRotateCommand(arm), new ShootNote(shooter));
+    addCommands(new ArmRotateCommand(arm, shooter), new ShootNote(shooter));
     warmed = true;
   }
 }

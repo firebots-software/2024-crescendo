@@ -3,14 +3,13 @@
 // the WPILib BSD license file in the root directory of this project.
 
 // delete in future
-package frc.robot.commands.TestCommands;
+package frc.robot.commands.DebugCommands;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.PeterSubsystem;
 
 /** An example command that uses an example subsystem. */
-public class IntakeMotorTest extends Command {
+public class PeterTest extends Command {
   private PeterSubsystem peterSubsystem;
 
   /**
@@ -18,7 +17,7 @@ public class IntakeMotorTest extends Command {
    *
    * @param peterSubsystem The subsystem used by this command.
    */
-  public IntakeMotorTest(PeterSubsystem peterSubsystem) {
+  public PeterTest(PeterSubsystem peterSubsystem) {
     this.peterSubsystem = peterSubsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(peterSubsystem);
@@ -27,19 +26,23 @@ public class IntakeMotorTest extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    SmartDashboard.getBoolean(this.toString(), true);
+    // SmartDashboard.getBoolean(this.toString(), true);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     peterSubsystem.spinUpIntake();
+    peterSubsystem.spinUpPreShooter();
+    peterSubsystem.spinUpShooter();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     peterSubsystem.stopIntake();
+    peterSubsystem.stopPreShooterMotor();
+    peterSubsystem.stopShooter();
   }
 
   // Returns true when the command should end.
