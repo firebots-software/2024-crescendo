@@ -33,21 +33,19 @@ public class ArmSubsystem extends SubsystemBase {
 
     Slot0Configs s0c = new Slot0Configs().withKP(37).withKI(0).withKD(0);
     armff = new ArmFeedforward(0.1, 0.1, 0.1);
-    //r1 = new TalonFX(Constants.Arm.RT_PORT, Constants.Swerve.CANBUS_NAME);
+    r1 = new TalonFX(Constants.Arm.RT_PORT, Constants.Swerve.CANBUS_NAME);
     // r2 = new TalonFX(Constants.Arm.RB_PORT, Constants.Swerve.CANBUS_NAME);
     l1 = new TalonFX(Constants.Arm.LT_PORT, Constants.Swerve.CANBUS_NAME);
     // l2 = new TalonFX(Constants.Arm.LB_PORT, Constants.Swerve.CANBUS_NAME);
 
-    // Follower f = new Follower(Constants.Arm.LT_PORT, false);
-    // r1.setControl(f);
-    // r1.setInverted(true);
+     Follower follower = new Follower(Constants.Arm.LT_PORT, true);
+     r1.setControl(follower);
     // r2.setControl(f);
-    // r2.setInverted(true);
-    // l2.setControl(f);
+    // l2.setControl(follower);
 
     
 
-    //r1.getConfigurator().apply(clc);
+    r1.getConfigurator().apply(clc);
     // r2.getConfigurator().apply(clc);
     l1.getConfigurator().apply(clc);
     // l2.getConfigurator().apply(clc);
@@ -113,7 +111,7 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   private double getAbsolutePosition() {
-    return(MathUtil.clamp(revEncoder.getAbsolutePosition(), absEncPretzelClamp, 1) - Constants.Arm.ABSOLUTE_ENCODER_HORIZONTAL+Constants.Arm.ABSOLUTE_HORIZONTAL_OFFSET + 1d) % 1;
+    return (revEncoder.getAbsolutePosition() - Constants.Arm.ABSOLUTE_ENCODER_HORIZONTAL+Constants.Arm.ABSOLUTE_HORIZONTAL_OFFSET + 1d) % 1;
   }
 
   public double getPosRotations() {
@@ -142,7 +140,7 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void rotateArmToRestPosition() {
-    setTargetDegrees(5);
+    setTargetDegrees(0);
   }
 
   public double getArmDegrees()
@@ -170,6 +168,7 @@ public class ArmSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    setPosition(targetDegrees);;
     SmartDashboard.putString("Command:", this.getCurrentCommand() == null ? "none" : this.getCurrentCommand().getName());
     
     SmartDashboard.putNumber("Absolute Raw", revEncoder.getAbsolutePosition());

@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import frc.robot.commands.MoveToTarget;
+import frc.robot.commands.TestCommands.ArmDown;
 // import frc.robot.commands.ArmRotateCommand;
 //import frc.robot.commands.SwerveJoystickCommand;
 import frc.robot.commands.TestCommands.ArmUp;
@@ -155,8 +156,7 @@ public class RobotContainer {
     // mjoystick.cross().whileTrue(new LeftShooterTest(peterSubsystem));
     // mjoystick.povUp().whileTrue(new RightShooterTest(peterSubsystem));
 
-    ArmUp moveArmUpCommand = new ArmUp(armSubsystem);
-    mjoystick.R2().whileTrue(moveArmUpCommand);
-    
+    mjoystick.R2().whileTrue(new ArmUp(armSubsystem));
+    mjoystick.L2().whileTrue(new ArmDown(armSubsystem));
   }
 }
