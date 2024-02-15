@@ -82,7 +82,7 @@ public class Constants {
     private static final boolean INVERT_LEFT_SIDE = false;
     private static final boolean INVERT_RIGHT_SIDE = true;
 
-    private static final String CANBUS_NAME = "Patrice the Pineapple";
+    public static final String CANBUS_NAME = "Patrice the Pineapple";
     private static final int PIGEON_ID = 40;
 
     // These are only used for simulation
@@ -119,36 +119,36 @@ public class Constants {
     private static final double moveCOMX = 0.046007;
 
     // Front Left
-    private static final int FRONT_LEFT_STEER_MOTOR_ID = 3;
-    private static final int FRONT_LEFT_DRIVE_MOTOR_ID = 4;
-    private static final int FRONT_LEFT_ENCODER_ID = 21;
+    public static final int FRONT_LEFT_STEER_MOTOR_ID = 3;
+    public static final int FRONT_LEFT_DRIVE_MOTOR_ID = 4;
+    public static final int FRONT_LEFT_ENCODER_ID = 21;
     private static final double FRONT_LEFT_ENCODER_OFFSET = -0.47021484375;
 
     private static final double FRONT_LEFT_X_POS_INCHES = 11.26 + moveCOMX;
     private static final double FRONT_LEFT_Y_POS_INCHES = 11.417 + moveCOMY;
 
     // Front Right
-    private static final int FRONT_RIGHT_STEER_MOTOR_ID = 5;
-    private static final int FRONT_RIGHT_DRIVE_MOTOR_ID = 6;
-    private static final int FRONT_RIGHT_ENCODER_ID = 22;
+    public static final int FRONT_RIGHT_STEER_MOTOR_ID = 5;
+    public static final int FRONT_RIGHT_DRIVE_MOTOR_ID = 6;
+    public static final int FRONT_RIGHT_ENCODER_ID = 22;
     private static final double FRONT_RIGHT_ENCODER_OFFSET = -0.4453125;
 
     private static final double FRONT_RIGHT_X_POS_INCHES = 11.26 + moveCOMX;
     private static final double FRONT_RIGHT_Y_POS_INCHES = -11.417 - moveCOMY;
  
     // Back Left
-    private static final int BACK_LEFT_STEER_MOTOR_ID = 1;
-    private static final int BACK_LEFT_DRIVE_MOTOR_ID = 2;
-    private static final int BACK_LEFT_ENCODER_ID = 20;
+    public static final int BACK_LEFT_STEER_MOTOR_ID = 1;
+    public static final int BACK_LEFT_DRIVE_MOTOR_ID = 2;
+    public static final int BACK_LEFT_ENCODER_ID = 20;
     private static final double BACK_LEFT_ENCODER_OFFSET = -0.167724609375;
 
     private static final double BACK_LEFT_X_POS_INCHES = -11.26 - moveCOMX;
     private static final double BACK_LEFT_Y_POS_INCHES = 11.417 + moveCOMY;
 
     // Back Right
-    private static final int BACK_RIGHT_STEER_MOTOR_ID = 7;
-    private static final int BACK_RIGHT_DRIVE_MOTOR_ID = 8;
-    private static final int BACK_RIGHT_ENCODER_ID = 23;
+    public static final int BACK_RIGHT_STEER_MOTOR_ID = 7;
+    public static final int BACK_RIGHT_DRIVE_MOTOR_ID = 8;
+    public static final int BACK_RIGHT_ENCODER_ID = 23;
     private static final double BACK_RIGHT_ENCODER_OFFSET = -0.345703125;
 
     private static final double BACK_RIGHT_X_POS_INCHES = -11.26 - moveCOMX;
