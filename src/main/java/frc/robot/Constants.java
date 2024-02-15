@@ -73,8 +73,7 @@ public class Constants {
 
     private static final double COUPLE_RATIO = 3.5714285714285716;
 
-    private static final double DRIVE_GEAR_RATIO =
-        6.12; // 6.12 for new robot: CHANGE FOR NEW ROBOT
+    private static final double DRIVE_GEAR_RATIO = 6.12; // 6.12 for new robot: CHANGE FOR NEW ROBOT
     private static final double STEER_GEAR_RATIO = 21.428571428571427;
     private static final double WHEEL_RADIUS_INCHES = 2;
 
@@ -135,7 +134,7 @@ public class Constants {
 
     private static final double FRONT_RIGHT_X_POS_INCHES = 11.26 + moveCOMX;
     private static final double FRONT_RIGHT_Y_POS_INCHES = -11.417 - moveCOMY;
- 
+
     // Back Left
     public static final int BACK_LEFT_STEER_MOTOR_ID = 1;
     public static final int BACK_LEFT_DRIVE_MOTOR_ID = 2;

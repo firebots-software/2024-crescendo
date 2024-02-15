@@ -36,8 +36,7 @@ public class FieldCentricOptimizedSwerve extends FieldCentric {
             parameters.updatePeriod);
     SmartDashboard.putNumber("ChassisSpeedsXIntercepted", speeds.vxMetersPerSecond);
     SmartDashboard.putNumber("ChassisSpeedsYIntercepted", speeds.vyMetersPerSecond);
-    SmartDashboard.putNumber(
-        "ChassisSpeedsRadiansIntercepted", speeds.omegaRadiansPerSecond);
+    SmartDashboard.putNumber("ChassisSpeedsRadiansIntercepted", speeds.omegaRadiansPerSecond);
     // Chassis Speeds conversion to individual module states
     var states = parameters.kinematics.toSwerveModuleStates(speeds, new Translation2d());
 
