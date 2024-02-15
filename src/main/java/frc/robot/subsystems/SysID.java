@@ -18,20 +18,35 @@ import frc.robot.Constants;
 import java.util.function.DoubleSupplier;
 
 public class SysID extends SubsystemBase {
-  private final TalonFX fl =
-      new TalonFX(Constants.Swerve.FRONT_LEFT_DRIVE_MOTOR_ID, Constants.Swerve.CANBUS_NAME);
-  private final TalonFX bl =
-      new TalonFX(Constants.Swerve.BACK_LEFT_DRIVE_MOTOR_ID, Constants.Swerve.CANBUS_NAME);
-  private final TalonFX br =
-      new TalonFX(Constants.Swerve.BACK_RIGHT_DRIVE_MOTOR_ID, Constants.Swerve.CANBUS_NAME);
-  private final TalonFX fr =
-      new TalonFX(Constants.Swerve.FRONT_RIGHT_DRIVE_MOTOR_ID, Constants.Swerve.CANBUS_NAME);
-  private TalonFX master;
+  private final TalonFX fl;
+  private final TalonFX bl;
+  private final TalonFX br;
+  private final TalonFX fr;
+  private final TalonFX master;
 
   private final DutyCycleOut m_joystickControl = new DutyCycleOut(0);
   private final VoltageOut m_sysidControl = new VoltageOut(0);
+  // private final Follower f = new Follower(Constants.Swerve.FRONT_LEFT_DRIVE_MOTOR_ID, false);
 
-  private SysIdRoutine m_SysIdRoutine =
+  private SysIdRoutine m_SysIdRoutine;
+
+  public SysID() {
+    fl = new TalonFX(Constants.Swerve.FRONT_LEFT_DRIVE_MOTOR_ID, Constants.Swerve.CANBUS_NAME);
+    bl = new TalonFX(Constants.Swerve.BACK_LEFT_DRIVE_MOTOR_ID, Constants.Swerve.CANBUS_NAME);
+    br = new TalonFX(Constants.Swerve.BACK_RIGHT_DRIVE_MOTOR_ID, Constants.Swerve.CANBUS_NAME);
+    fr = new TalonFX(Constants.Swerve.FRONT_RIGHT_DRIVE_MOTOR_ID, Constants.Swerve.CANBUS_NAME);
+
+    fr.setControl(new Follower(Constants.Swerve.FRONT_LEFT_DRIVE_MOTOR_ID, true));
+    br.setControl(new Follower(Constants.Swerve.FRONT_LEFT_DRIVE_MOTOR_ID, true));
+    bl.setControl(new Follower(Constants.Swerve.FRONT_LEFT_DRIVE_MOTOR_ID, false));
+    
+    master = fl;
+
+    // fr.setInverted(true);
+    // br.setControl(f);
+    // br.setInverted(true);
+    // bl.setControl(f);
+    m_SysIdRoutine =
       new SysIdRoutine(
           new SysIdRoutine.Config(
               null, // Default ramp rate is acceptable
@@ -44,16 +59,6 @@ public class SysID extends SubsystemBase {
                   master.setControl(m_sysidControl.withOutput(volts.in(Volts))),
               null,
               this));
-
-  public SysID() {
-    Follower f = new Follower(Constants.Swerve.FRONT_LEFT_DRIVE_MOTOR_ID, false);
-    fr.setControl(f);
-    fr.setInverted(true);
-    br.setControl(f);
-    br.setInverted(true);
-    bl.setControl(f);
-
-    master = fl;
 
     setName("DrivetrainSysID");
 
