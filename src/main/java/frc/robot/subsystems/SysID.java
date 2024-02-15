@@ -50,14 +50,9 @@ public class SysID extends SubsystemBase {
         br.setInverted(true);
         bl.setControl(f);
 
-        // fl.getConfigurator().apply(clc);
-        // fr.getConfigurator().apply(clc);
-        // bl.getConfigurator().apply(clc);
-        // br.getConfigurator().apply(clc);
-
         master = fl;
 
-        setName("Flywheel");
+        setName("DrivetrainSysID");
 
         TalonFXConfiguration cfg = new TalonFXConfiguration();
         master.getConfigurator().apply(cfg);

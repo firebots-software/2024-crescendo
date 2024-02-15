@@ -48,7 +48,7 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods. This must be called from the
     // robot's periodic
     // block in order for anything in the Command-based framework to work.
-    m_robotContainer.doTelemetry();
+    // m_robotContainer.doTelemetry();
     CommandScheduler.getInstance().run();
   }
 
@@ -113,6 +113,6 @@ public class Robot extends TimedRobot {
   public void simulationPeriodic() {}
 
   private void absoluteInit() {
-    RobotContainer.setAlliance();
+    // RobotContainer.setAlliance();
   }
 }
