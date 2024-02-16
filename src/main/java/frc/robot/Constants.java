@@ -13,8 +13,8 @@ import edu.wpi.first.math.util.Units;
 
 public class Constants {
   public static class OI {
-    public static final double LEFT_JOYSTICK_DEADBAND = 0.1;
-    public static final double RIGHT_JOYSTICK_DEADBAND = 0.1;
+    public static final double LEFT_JOYSTICK_DEADBAND = 0.07;
+    public static final double RIGHT_JOYSTICK_DEADBAND = 0.07;
     public static final int JOYSTICK_PORT = 0;
   }
 
@@ -73,7 +73,8 @@ public class Constants {
 
     private static final double COUPLE_RATIO = 3.5714285714285716;
 
-    private static final double DRIVE_GEAR_RATIO = 6.12; // 6.12 for new robot: CHANGE FOR NEW ROBOT
+    private static final double DRIVE_GEAR_RATIO =
+        6.12; // 6.12 for new robot: CHANGE FOR NEW ROBOT
     private static final double STEER_GEAR_RATIO = 21.428571428571427;
     private static final double WHEEL_RADIUS_INCHES = 2;
 
@@ -114,8 +115,8 @@ public class Constants {
             .withSteerMotorInverted(STEER_MOTOR_REVERSED);
 
     // CHANGE FOR NEW ROBOT:
-    private static final double moveCOMY = -3.36044;
-    private static final double moveCOMX = 0.046007;
+    private static final double moveCOMX = 3.36044;
+    private static final double moveCOMY = -.046007;
 
     // Front Left
     public static final int FRONT_LEFT_STEER_MOTOR_ID = 3;
@@ -123,7 +124,7 @@ public class Constants {
     public static final int FRONT_LEFT_ENCODER_ID = 21;
     private static final double FRONT_LEFT_ENCODER_OFFSET = -0.47021484375;
 
-    private static final double FRONT_LEFT_X_POS_INCHES = 11.26 + moveCOMX;
+    private static final double FRONT_LEFT_X_POS_INCHES = moveCOMX;
     private static final double FRONT_LEFT_Y_POS_INCHES = 11.417 + moveCOMY;
 
     // Front Right
@@ -134,7 +135,7 @@ public class Constants {
 
     private static final double FRONT_RIGHT_X_POS_INCHES = 11.26 + moveCOMX;
     private static final double FRONT_RIGHT_Y_POS_INCHES = -11.417 - moveCOMY;
-
+ 
     // Back Left
     public static final int BACK_LEFT_STEER_MOTOR_ID = 1;
     public static final int BACK_LEFT_DRIVE_MOTOR_ID = 2;
