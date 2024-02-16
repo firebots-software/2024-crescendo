@@ -12,7 +12,7 @@ public class WarmUpShooter extends Command {
   private PeterSubsystem peterSubsystem;
 
   /**
-   * Creates a new ExampleCommand.
+   * Warm up the shooter
    *
    * @param subsystem The subsystem used by this command.
    */

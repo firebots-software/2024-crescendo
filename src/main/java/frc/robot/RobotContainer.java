@@ -13,6 +13,8 @@ import frc.robot.commands.DebugCommands.PeterTest;
 import frc.robot.commands.DebugCommands.PreShooterTest;
 import frc.robot.commands.DebugCommands.RightShooterTest;
 import frc.robot.commands.DebugCommands.ShooterTest;
+import frc.robot.commands.PeterCommands.RunIntakeUntilDetection;
+import frc.robot.commands.PeterCommands.ShootNote;
 // import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.PeterSubsystem;
 
@@ -69,6 +71,8 @@ public class RobotContainer {
     mjoystick.cross().whileTrue(new LeftShooterTest(peterSubsystem));
     mjoystick.povUp().whileTrue(new RightShooterTest(peterSubsystem));
     mjoystick.povDown().whileTrue(new PeterTest(peterSubsystem));
+    mjoystick.povRight().whileTrue(new RunIntakeUntilDetection(peterSubsystem));
+    mjoystick.povLeft().whileTrue(new ShootNote(peterSubsystem, peterSubsystem)); 
     /* mjoystick
     .povRight()
     .whileTrue(new PeterTestersSequential(peterSubsystem, peterSubsystem, peterSubsystem)); */
