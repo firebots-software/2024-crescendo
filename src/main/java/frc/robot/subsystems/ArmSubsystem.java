@@ -55,8 +55,8 @@ public class ArmSubsystem extends SubsystemBase {
     masterConfigurator.apply(s0c);
 
     mmc = new MotionMagicConfigs();
-    mmc.MotionMagicCruiseVelocity = 80;
-    mmc.MotionMagicAcceleration = 160;
+    mmc.MotionMagicCruiseVelocity = 1*Constants.Arm.INTEGRATED_ARM_CONVERSION_FACTOR;
+    mmc.MotionMagicAcceleration = 0.25*Constants.Arm.INTEGRATED_ARM_CONVERSION_FACTOR;
     mmc.MotionMagicJerk = 1600;
     masterConfigurator.apply(mmc);
 
@@ -140,7 +140,7 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void rotateArmToRestPosition() {
-    setTargetDegrees(0);
+    setTargetDegrees(Constants.Arm.DEFAULT_ARM_ANGLE);
   }
 
   public double getArmDegrees()

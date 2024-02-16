@@ -21,7 +21,7 @@ public class ArmDown extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    armSubsystem.setTargetDegrees(20);
+    armSubsystem.setTargetDegrees(50);
   }
 
   // Called once the command ends or is interrupted.

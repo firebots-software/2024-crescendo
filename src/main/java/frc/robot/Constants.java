@@ -69,7 +69,7 @@ public final class Constants {
     public static final double DEFAULT_ARM_ANGLE = 15;
     public final double INTAKE_ANGLE = 0; // subject to change
     public final double AMP_ANGLE = 100; // subject to change
-    public static final double ARM_ENCODER_OFFSET = 0; // TODO: Change the offset so that the 0 position is when the arm is at its resting
+    //public static final double ARM_ENCODER_OFFSET = 0; // TODO: Change the offset so that the 0 position is when the arm is at its resting
     // position.
     public static final double SPEAKER_ANGLE = 40; // TODO: Replace with the function based on distance
     public static final int RT_PORT = 14; // Right Top motor
@@ -78,10 +78,10 @@ public final class Constants {
     public static final int LB_PORT = 11; // Left Bottom motor
     public static final int ENCODER_PORT = 0; // subject to change
     
-    public static final double ABSOLUTE_ARM_CONVERSION_FACTOR = 42/15d;
+    public static final double ABSOLUTE_ARM_CONVERSION_FACTOR = 42d/18d;
     public static final double INTEGRATED_ABSOLUTE_CONVERSION_FACTOR = 34 + 2.0/3.0;
-    public static final double INTEGRATED_ARM_CONVERSION_FACTOR = 97.0667;
-    public static final double ABSOLUTE_ENCODER_HORIZONTAL = 0.142;
+    public static final double INTEGRATED_ARM_CONVERSION_FACTOR = ABSOLUTE_ARM_CONVERSION_FACTOR * INTEGRATED_ABSOLUTE_CONVERSION_FACTOR; //80.88888888888888888888888888888888888888;
+    public static final double ABSOLUTE_ENCODER_HORIZONTAL = 0.28;
     public static final double ABSOLUTE_HORIZONTAL_OFFSET = 0.05;
   }
 
