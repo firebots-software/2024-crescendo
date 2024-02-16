@@ -117,7 +117,6 @@ public class Telemetry {
     }
 
     SmartDashboard.putNumber("Odom period seconds", state.OdometryPeriod);
-// pose.getTranslation()
     SmartDashboard.putNumber("posegetx", pose.getX());
     SmartDashboard.putNumber("posegety", pose.getY());
     SmartDashboard.putNumber("posegetrotation", pose.getRotation().getRotations());
