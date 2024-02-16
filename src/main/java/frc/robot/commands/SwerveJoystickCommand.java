@@ -98,10 +98,6 @@ public class SwerveJoystickCommand extends Command {
 
     // 5. Applying the drive request on the swerve drivetrain
     // Uses SwerveRequestFieldCentric (from java.frc.robot.util to apply module optimization)
-    SmartDashboard.putNumber("X Speed", x);
-    SmartDashboard.putNumber("Y Speed", y);
-    SmartDashboard.putNumber("Turning Speed", turningSpeed);
-
     final SwerveRequest.FieldCentric drive =
         new FieldCentricOptimizedSwerve()
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
