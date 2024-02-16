@@ -131,8 +131,8 @@ public class PhotonVision extends SubsystemBase {
     public void periodic() {
         PhotonPipelineResult result = getPipeline();
         PhotonTrackedTarget target = getBestTarget(getPipeline());
-        Optional<Pose3d> tagPose = aprilTagFieldLayout.getTagPose(target.getFiducialId());
         if(result.hasTargets()){
+            Optional<Pose3d> tagPose = aprilTagFieldLayout.getTagPose(target.getFiducialId());
             double x = getTransformToTarget().getX();
             double z = getTransformToTarget().getZ();
             double y = getTransformToTarget().getY();
@@ -142,10 +142,9 @@ public class PhotonVision extends SubsystemBase {
             SmartDashboard.putNumber("PoseY", getRobotPose3d().getY());
             SmartDashboard.putNumber("PoseZ", getRobotPose3d().getZ());
             SmartDashboard.putNumber("Angle z from pose", Math.toDegrees(getRobotPose3d().getRotation().getZ()));
-            SmartDashboard.putNumber("X",x);
-            SmartDashboard.putNumber("Y",y);
-            SmartDashboard.putNumber("Y from Distance: ", tagPose.get().getY() - getRobotPose3d().getY());
-            SmartDashboard.putNumber("Z", z);
+            SmartDashboard.putNumber("X",tagPose.get().getX() - getRobotPose3d().getX());
+            SmartDashboard.putNumber("Y",tagPose.get().getY() - getRobotPose3d().getY());
+            SmartDashboard.putNumber("Z", tagPose.get().getZ() - getRobotPose3d().getZ());
             SmartDashboard.putNumber("Dist", dist);
             // double x=getBestTarget(result).getBestCameraToTarget().getX();
             // double y= getBestTarget(result).getBestCameraToTarget().getY();
