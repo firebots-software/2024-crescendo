@@ -34,17 +34,11 @@ public class FieldCentricOptimizedSwerve extends FieldCentric {
             ChassisSpeeds.fromFieldRelativeSpeeds(
                 toApplyX, toApplyY, toApplyOmega, parameters.currentPose.getRotation()),
             parameters.updatePeriod);
-    SmartDashboard.putNumber("ChassisSpeedsXIntercepted", speeds.vxMetersPerSecond);
-    SmartDashboard.putNumber("ChassisSpeedsYIntercepted", speeds.vyMetersPerSecond);
-    SmartDashboard.putNumber(
-        "ChassisSpeedsRadiansIntercepted", speeds.omegaRadiansPerSecond);
     // Chassis Speeds conversion to individual module states
     var states = parameters.kinematics.toSwerveModuleStates(speeds, new Translation2d());
 
     // Applies module states individually + uses optimization
     for (int i = 0; i < modulesToApply.length; ++i) {
-      SmartDashboard.putNumber("modulespeed", states[i].speedMetersPerSecond);
-      SmartDashboard.putNumber("moduleangle", states[i].angle.getDegrees());
       modulesToApply[i].apply(
           SwerveModuleState.optimize(states[i], states[i].angle),
           DriveRequestType,
