@@ -11,11 +11,85 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 
-public class Constants {
+/**
+ * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
+ * constants. This class should not be used for any other purpose. All constants should be declared
+ * globally (i.e. public static). Do not put anything functional in this class.
+ *
+ * <p>It is advised to statically import this class (or one of its inner classes) wherever the
+ * constants are needed, to reduce verbosity.
+ */
+public final class Constants {
+  public static class OperatorConstants {
+    public static final int kDriverControllerPort = 0;
+    public static final int PS4_CONTROLLER_PORT_1 = 3;
+    public static final int SQUARE_BUTTON_PORT = 1;
+    public static final int X_BUTTON_PORT = 2;
+    public static final int CIRCLE_BUTTON_PORT = 3;
+    public static final int TRIANGLE_BUTTON_PORT = 4;
+    public static final int L1_BUTTON_PORT = 5;
+    public static final int R1_BUTTON_PORT = 6;
+    public static final int L2_BUTTON_PORT = 7;
+    public static final int R2_BUTTON_PORT = 8;
+    public static final int PS_SHARE_BUTTON_PORT = 9;
+    public static final int OPTIONS_BUTTON_PORT = 10;
+    public static final int L3_BUTTON_PORT = 11;
+    public static final int R3_BUTTON_PORT = 12;
+    public static final int PS_BUTTON_PORT = 13;
+    public static final int BIG_BUTTON_PORT = 14;
+  }
+
+  public static final class Intake {
+    public static final int INTAKE_MOTOR_PORT = 33;
+    public static final double SHOOTER_SPEED = 3;
+    public static final int NOTE_DETECTOR_PORT = 7;
+    public static final int PRE_SHOOTER_PORT = 32;
+    public static final int SHOOTER_PORT_RIGHT = 30;
+    public static final int SHOOTER_PORT_LEFT = 31;
+
+    public static final double INTAKE_WHEEL_SPEED_RPS = 100;
+    public static final double ROTATIONS_TO_SHOOTER = 5d;
+
+    public static final double SHOOT_WHEEL_SPEED_RPS = 10.0;
+
+    public static final String CANBUS_NAME = "rio";
+  }
+
+  public static final class FieldDimensions {
+    public static final double SPEAKER_HEIGHT_INCHES = 78.0;
+    public static final double AMP_HEIGHT_INCHES = 35.0;
+    public static final double INTAKE_MODE_HEIGHT_INCHES = 4.0;
+    public static final double SPEAKER_HEIGHT_METERS = Units.inchesToMeters(SPEAKER_HEIGHT_INCHES);
+    public static final double AMP_HEIGHT_METERS = Units.inchesToMeters(AMP_HEIGHT_INCHES);
+    public static final double INTAKE_MODE_HEIGHT_METERS =
+        Units.inchesToMeters(INTAKE_MODE_HEIGHT_INCHES);
+  }
+
+  public static final class Arm {
+    public static final double DEFAULT_ARM_ANGLE = 15;
+    public final double INTAKE_ANGLE = 0; // subject to change
+    public final double AMP_ANGLE = 100; // subject to change
+    //public static final double ARM_ENCODER_OFFSET = 0; // TODO: Change the offset so that the 0 position is when the arm is at its resting
+    // position.
+    public static final double SPEAKER_ANGLE = 40; // TODO: Replace with the function based on distance
+    public static final int RT_PORT = 14; // Right Top motor
+    public static final int RB_PORT = 13; // Right Bottom motor
+    public static final int LT_PORT = 12; // Left Top motor
+    public static final int LB_PORT = 11; // Left Bottom motor
+    public static final int ENCODER_PORT = 0; // subject to change
+    
+    public static final double ABSOLUTE_ARM_CONVERSION_FACTOR = 42d/18d;
+    public static final double INTEGRATED_ABSOLUTE_CONVERSION_FACTOR = 34 + 2.0/3.0;
+    public static final double INTEGRATED_ARM_CONVERSION_FACTOR = ABSOLUTE_ARM_CONVERSION_FACTOR * INTEGRATED_ABSOLUTE_CONVERSION_FACTOR; //80.88888888888888888888888888888888888888;
+    public static final double ABSOLUTE_ENCODER_HORIZONTAL = 0.28;
+    public static final double ABSOLUTE_HORIZONTAL_OFFSET = 0.05;
+  }
+
   public static class OI {
     public static final double LEFT_JOYSTICK_DEADBAND = 0.07;
     public static final double RIGHT_JOYSTICK_DEADBAND = 0.07;
-    public static final int JOYSTICK_PORT = 0;
+    public static final int MOVEMENT_JOYSTICK_PORT = 0;
+    public static final int ARM_JOYSTICK_PORT = 1;
   }
 
   public static class Landmarks {
@@ -75,14 +149,15 @@ public class Constants {
 
     private static final double DRIVE_GEAR_RATIO =
         6.746031746031747; // 6.12 for new robot: CHANGE FOR NEW ROBOT
-    private static final double STEEP_GEAR_RATIO = 21.428571428571427;
+    public static final double STEER_GEAR_RATIO = 21.428571428571427;
     private static final double WHEEL_RADIUS_INCHES = 2;
 
     private static final boolean STEER_MOTOR_REVERSED = true;
     private static final boolean INVERT_LEFT_SIDE = false;
     private static final boolean INVERT_RIGHT_SIDE = true;
 
-    private static final String CANBUS_NAME = "";
+    public static final String CANBUS_NAME = "Patrice the Pineapple";
+    public static final String ROBORIO = "rio";
     private static final int PIGEON_ID = 13;
 
     // These are only used for simulation
@@ -98,7 +173,7 @@ public class Constants {
     private static final SwerveModuleConstantsFactory ConstantCreator =
         new SwerveModuleConstantsFactory()
             .withDriveMotorGearRatio(DRIVE_GEAR_RATIO)
-            .withSteerMotorGearRatio(STEEP_GEAR_RATIO)
+            .withSteerMotorGearRatio(STEER_GEAR_RATIO)
             .withWheelRadius(WHEEL_RADIUS_INCHES)
             .withSlipCurrent(SLIP_CURRENT_AMPS)
             .withSteerMotorGains(STEER_GAINS)
@@ -115,7 +190,7 @@ public class Constants {
             .withSteerMotorInverted(STEER_MOTOR_REVERSED);
 
     // CHANGE FOR NEW ROBOT:
-    // Front Right
+    // Front Left
     private static final int FRONT_LEFT_DRIVE_MOTOR_ID = 0;
     private static final int FRONT_LEFT_STEER_MOTOR_ID = 7;
     private static final int FRONT_LEFT_ENCODER_ID = 11;

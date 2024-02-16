@@ -47,9 +47,9 @@ public class MoveToTarget extends Command {
     pathCommand = AutoBuilder.followPath(constructedPath);
     pathCommand.initialize();
 
-    SmartDashboard.putNumber("TranslationX", absolutePose.getX());
-    SmartDashboard.putNumber("TranslationY", absolutePose.getY());
-    SmartDashboard.putNumber("Rotation", absolutePose.getRotation().getDegrees());
+    //SmartDashboard.putNumber("TranslationX", absolutePose.getX());
+    //SmartDashboard.putNumber("TranslationY", absolutePose.getY());
+    //SmartDashboard.putNumber("Rotation", absolutePose.getRotation().getDegrees());
   }
 
   public void execute() {
