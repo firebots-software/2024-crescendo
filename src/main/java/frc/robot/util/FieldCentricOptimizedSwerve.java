@@ -6,7 +6,6 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest.FieldCentric;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class FieldCentricOptimizedSwerve extends FieldCentric {
   // Apply function that does module optimization
@@ -34,6 +33,7 @@ public class FieldCentricOptimizedSwerve extends FieldCentric {
             ChassisSpeeds.fromFieldRelativeSpeeds(
                 toApplyX, toApplyY, toApplyOmega, parameters.currentPose.getRotation()),
             parameters.updatePeriod);
+            
     // Chassis Speeds conversion to individual module states
     var states = parameters.kinematics.toSwerveModuleStates(speeds, new Translation2d());
 
