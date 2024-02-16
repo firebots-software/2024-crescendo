@@ -51,7 +51,7 @@ public class Constants {
     // When using closed-loop control, the drive motor uses the control
     // output type specified by SwerveModuleConstants.DriveMotorClosedLoopOutput
     private static final Slot0Configs DRIVE_GAINS =
-        new Slot0Configs().withKP(3).withKI(0).withKD(0).withKS(0).withKV(0).withKA(0);
+        new Slot0Configs().withKP(0.18014).withKI(0).withKD(0).withKS(-0.023265).withKV(0.12681).withKA(0.058864);
 
     // The closed-loop output type to use for the steer motors;
     // This affects the PID/FF gains for the steer motors
@@ -115,8 +115,8 @@ public class Constants {
             .withSteerMotorInverted(STEER_MOTOR_REVERSED);
 
     // CHANGE FOR NEW ROBOT:
-    private static final double moveCOMY = -3.36044;
-    private static final double moveCOMX = 0.046007;
+    private static final double moveCOMY = 0.046007;
+    private static final double moveCOMX = -3.36044;
 
     // Front Left
     private static final int FRONT_LEFT_STEER_MOTOR_ID = 3;
@@ -134,7 +134,7 @@ public class Constants {
     private static final double FRONT_RIGHT_ENCODER_OFFSET = -0.4453125;
 
     private static final double FRONT_RIGHT_X_POS_INCHES = 11.26 + moveCOMX;
-    private static final double FRONT_RIGHT_Y_POS_INCHES = -11.417 - moveCOMY;
+    private static final double FRONT_RIGHT_Y_POS_INCHES = -11.417 + moveCOMY;
  
     // Back Left
     private static final int BACK_LEFT_STEER_MOTOR_ID = 1;
@@ -142,7 +142,7 @@ public class Constants {
     private static final int BACK_LEFT_ENCODER_ID = 20;
     private static final double BACK_LEFT_ENCODER_OFFSET = -0.167724609375;
 
-    private static final double BACK_LEFT_X_POS_INCHES = -11.26 - moveCOMX;
+    private static final double BACK_LEFT_X_POS_INCHES = -11.26 + moveCOMX;
     private static final double BACK_LEFT_Y_POS_INCHES = 11.417 + moveCOMY;
 
     // Back Right
@@ -151,8 +151,8 @@ public class Constants {
     private static final int BACK_RIGHT_ENCODER_ID = 23;
     private static final double BACK_RIGHT_ENCODER_OFFSET = -0.345703125;
 
-    private static final double BACK_RIGHT_X_POS_INCHES = -11.26 - moveCOMX;
-    private static final double BACK_RIGHT_Y_POS_INCHES = -11.417 - moveCOMY;
+    private static final double BACK_RIGHT_X_POS_INCHES = -11.26 + moveCOMX;
+    private static final double BACK_RIGHT_Y_POS_INCHES = -11.417 + moveCOMY;
 
     public static final SwerveModuleConstants FRONT_LEFT =
         ConstantCreator.createModuleConstants(
