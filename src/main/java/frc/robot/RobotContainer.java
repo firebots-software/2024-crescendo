@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import frc.robot.commands.MoveToTarget;
+import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.commands.TestCommands.ArmDown;
 // import frc.robot.commands.ArmRotateCommand;
 //import frc.robot.commands.SwerveJoystickCommand;
@@ -93,8 +94,8 @@ public class RobotContainer {
     pickup2choice.addOption("MIDDLE NOTE", Optional.of(NoteLocation.MIDDLE));
     pickup2choice.addOption("STAGESIDE NOTE", Optional.of(NoteLocation.STAGESIDE));
 
-    //SmartDashboard.putData(pickup1choice);
-    //SmartDashboard.putData(pickup2choice);
+    SmartDashboard.putData(pickup1choice);
+    SmartDashboard.putData(pickup2choice);
   }
 
   public RobotContainer() {
@@ -106,35 +107,31 @@ public class RobotContainer {
     setupChooser();
   }
 
-  // public Command getAutonomousCommand() {
+  public Command getAutonomousCommand() {
 
-  //   String autonName = (redAlliance) ? "ThreeNoteAutonRed" : "ThreeNoteAutonBlue";
-  //   SmartDashboard.putString("Auton to be run", autonName);
-  //   SmartDashboard.putBoolean("Red Alliance?", redAlliance);
-  //   return new PathPlannerAuto(autonName)
-  //       .andThen(
-  //           (pickup1choice.getSelected().isEmpty())
-  //               ? new WaitCommand(2.0)
-  //               : MoveToTarget.withMirror(
-  //                   driveTrain, pickup1choice.getSelected().get().getNoteLocation(), redAlliance))
-  //       .andThen(
-  //           (pickup2choice.getSelected().isEmpty())
-  //               ? new WaitCommand(2.0)
-  //               : MoveToTarget.withMirror(
-  //                   driveTrain, pickup2choice.getSelected().get().getNoteLocation(), redAlliance));
-  // }
+    String autonName = (redAlliance) ? "ThreeNoteAutonRed" : "ThreeNoteAutonBlue";
+    SmartDashboard.putString("Auton to be run", autonName);
+    SmartDashboard.putBoolean("Red Alliance?", redAlliance);
+    return new PathPlannerAuto(autonName)
+        .andThen(
+            (pickup1choice.getSelected().isEmpty())
+                ? new WaitCommand(2.0)
+                : MoveToTarget.withMirror(
+                    driveTrain, pickup1choice.getSelected().get().getNoteLocation(), redAlliance))
+        .andThen(
+            (pickup2choice.getSelected().isEmpty())
+                ? new WaitCommand(2.0)
+                : MoveToTarget.withMirror(
+                    driveTrain, pickup2choice.getSelected().get().getNoteLocation(), redAlliance));
+  }
 
   /* Setting up bindings for necessary control of the swerve drive platform */
 
-  private final CommandPS4Controller mjoystick = new CommandPS4Controller(Constants.OI.MOVEMENT_JOYSTICK_PORT);
-  private final CommandPS4Controller sjoystick =
-      new CommandPS4Controller(Constants.OI.ARM_JOYSTICK_PORT);
-  //private final SwerveSubsystem driveTrain = SwerveSubsystem.getInstance();
-  //private final PeterSubsystem peterSubsystem = PeterSubsystem.getInstance();
-  //private final ArmSubsystem armSubsystem = ArmSubsystem.getInstance();
-  //private final TestEncoderSubsystem testEncoderSubsystem = TestEncoderSubsystem.getInstance();
+  private final CommandPS4Controller joystick =
+      new CommandPS4Controller(Constants.OI.MOVEMENT_JOYSTICK_PORT);
+  private final SwerveSubsystem driveTrain = SwerveSubsystem.getInstance();
   private final ArmSubsystem armSubsystem = ArmSubsystem.getInstance();
-  private final PeterSubsystem peterSubsystem = PeterSubsystem.getInstance();
+  // private final PeterSubsystem peterSubsystem = PeterSubsystem.getInstance();
   public final Telemetry logger = new Telemetry();
 
   // Starts telemetry operations (essentially logging -> look on SmartDashboard, AdvantageScope)
@@ -143,7 +140,24 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
+ SwerveJoystickCommand swerveJoystickCommand =
+        new SwerveJoystickCommand(
+            () -> ((redAlliance) ? joystick.getRawAxis(1) : -joystick.getRawAxis(1)),
+            () -> ((redAlliance) ? joystick.getRawAxis(0) : -joystick.getRawAxis(0)),
+            () -> -joystick.getRawAxis(2),
+            () -> (joystick.getRawAxis(3) - joystick.getRawAxis(4)) / 4d + 0.5,
+            driveTrain);
+    driveTrain.setDefaultCommand(swerveJoystickCommand);
 
+    // zero-heading
+    joystick
+        .circle()
+        .onTrue(
+            driveTrain.runOnce(
+                () ->
+                    driveTrain.seedFieldRelative(
+                        new Pose2d(new Translation2d(0, 0), new Rotation2d(0)))));
+    driveTrain.registerTelemetry(logger::telemeterize);
     // // (SwerveTest command, used on old Robot to test the testEncoderSubsystem)
     // // This supplier should return only three distinct values: 0.0, -30.0, and 30.0.
     // Supplier<Double> swerveAngleOffset = () -> (int)(mjoystick.getRawAxis(0)*1.5) * 30.0;
@@ -156,7 +170,7 @@ public class RobotContainer {
     // mjoystick.cross().whileTrue(new LeftShooterTest(peterSubsystem));
     // mjoystick.povUp().whileTrue(new RightShooterTest(peterSubsystem));
 
-    mjoystick.R2().whileTrue(new ArmUp(armSubsystem));
-    mjoystick.L2().whileTrue(new ArmDown(armSubsystem));
+    joystick.R2().whileTrue(new ArmUp(armSubsystem));
+    joystick.L2().whileTrue(new ArmDown(armSubsystem));
   }
 }

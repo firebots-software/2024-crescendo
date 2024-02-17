@@ -72,6 +72,7 @@ public final class Constants {
     public static final double SPEAKER_ANGLE = 40; // TODO: Replace with the function based on distance
     //public static final double ARM_ENCODER_OFFSET = 0; // TODO: Change the offset so that the 0 position is when the arm is at its resting
     // position.
+    public static final String CANBUS_NAME = "Patrice the Pineapple";
     
     public static final int RT_PORT = 14; // Right Top motor
     public static final int RB_PORT = 13; // Right Bottom motor

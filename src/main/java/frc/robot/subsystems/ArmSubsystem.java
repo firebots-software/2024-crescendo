@@ -44,10 +44,10 @@ public class ArmSubsystem extends SubsystemBase {
     armff = new ArmFeedforward(Constants.Arm.ARMFF_KS, Constants.Arm.ARMFF_KG, Constants.Arm.ARMFF_KV);
     
     // Initialize motors
-    rt = new TalonFX(Constants.Arm.RT_PORT, Constants.Swerve.CANBUS_NAME);
-    rb = new TalonFX(Constants.Arm.RB_PORT, Constants.Swerve.CANBUS_NAME);
-    lt = new TalonFX(Constants.Arm.LT_PORT, Constants.Swerve.CANBUS_NAME);
-    lb = new TalonFX(Constants.Arm.LB_PORT, Constants.Swerve.CANBUS_NAME);
+    rt = new TalonFX(Constants.Arm.RT_PORT, Constants.Arm.CANBUS_NAME);
+    rb = new TalonFX(Constants.Arm.RB_PORT, Constants.Arm.CANBUS_NAME);
+    lt = new TalonFX(Constants.Arm.LT_PORT, Constants.Arm.CANBUS_NAME);
+    lb = new TalonFX(Constants.Arm.LB_PORT, Constants.Arm.CANBUS_NAME);
 
     // Set up motor followers and deal with inverted motors
     Follower follower = new Follower(Constants.Arm.LT_PORT, true);
