@@ -155,6 +155,21 @@ public class ArmSubsystem extends SubsystemBase {
   //   return -1;
   // }
 
+  public double determineSpeakerAngle(double flatDistToTag){
+    // Prototype of calculating the needed arm angle to shoot into the speaker.
+    // Uses the flat distance from the shooter to the center speaker AprilTag.
+    // Need to first check if this angle will work before shooting:
+    // - check if flywheels are at correct velocity
+    // - possibly use trajectory calculation to ensure the note won't hit speaker wall (meaning robot is too far)
+    double shooterHeight = 1; // need to measure more accurately, also using arm angle
+    double flatDistToLip = flatDistToTag - 0.46; // in meters; might need to tune since shooter isn't centered with robot
+    double heightOffset = 1.98 - shooterHeight;
+    double maxAngle = Math.atan(heightOffset/flatDistToLip);
+    double minAngle = Math.atan(heightOffset/flatDistToTag);
+    double finalAngle = minAngle + 0.85*(maxAngle-minAngle); // tune the constant (how close finalAngle should be to maxAngle, 1.0 being very close)
+    return finalAngle;
+  }
+
   public void rotateArmToSpeakerPosition() {
     setTargetDegrees(calculateAngleToSpeaker());
   }
