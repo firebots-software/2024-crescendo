@@ -51,7 +51,13 @@ public class Constants {
     // When using closed-loop control, the drive motor uses the control
     // output type specified by SwerveModuleConstants.DriveMotorClosedLoopOutput
     private static final Slot0Configs DRIVE_GAINS =
-        new Slot0Configs().withKP(0.18014).withKI(0).withKD(0).withKS(-0.023265).withKV(0.12681).withKA(0.058864);
+        new Slot0Configs()
+            .withKP(0.18014)
+            .withKI(0)
+            .withKD(0)
+            .withKS(-0.023265)
+            .withKV(0.12681)
+            .withKA(0.058864);
 
     // The closed-loop output type to use for the steer motors;
     // This affects the PID/FF gains for the steer motors
@@ -73,8 +79,7 @@ public class Constants {
 
     private static final double COUPLE_RATIO = 3.5714285714285716;
 
-    private static final double DRIVE_GEAR_RATIO =
-        6.12; // 6.12 for new robot: CHANGE FOR NEW ROBOT
+    private static final double DRIVE_GEAR_RATIO = 6.12; // 6.12 for new robot: CHANGE FOR NEW ROBOT
     private static final double STEER_GEAR_RATIO = 21.428571428571427;
     private static final double WHEEL_RADIUS_INCHES = 2;
 
@@ -135,7 +140,7 @@ public class Constants {
 
     private static final double FRONT_RIGHT_X_POS_INCHES = 11.26 - moveCOMX;
     private static final double FRONT_RIGHT_Y_POS_INCHES = -11.417 - moveCOMY;
- 
+
     // Back Left
     private static final int BACK_LEFT_STEER_MOTOR_ID = 1;
     private static final int BACK_LEFT_DRIVE_MOTOR_ID = 2;
