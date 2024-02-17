@@ -11,6 +11,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -160,8 +161,10 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   private double calculateAngleToSpeaker() {
+  
+  // return n
 
-    return 10d;
+     return 10d;
   }
 
   public void rotateToAmpPosition() {
