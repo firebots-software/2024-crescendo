@@ -27,8 +27,8 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer. This will perform all our button bindings,
     // and put our
     // autonomous chooser on the dashboard.
-    absoluteInit();
     m_robotContainer = new RobotContainer();
+    absoluteInit();
   }
 
   /**
@@ -62,12 +62,12 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     absoluteInit();
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    // m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
-    // schedule the autonomous command (example)
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
-    }
+    // // schedule the autonomous command (example)
+    // if (m_autonomousCommand != null) {
+    //   m_autonomousCommand.schedule();
+    // }
   }
 
   /** This function is called periodically during autonomous. */

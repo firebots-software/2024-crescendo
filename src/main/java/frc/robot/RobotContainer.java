@@ -31,7 +31,13 @@ import frc.robot.commands.PeterCommands.RunIntakeUntilDetection;
 import frc.robot.commands.PeterCommands.ShootNote;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.subsystems.PeterSubsystem;
+import frc.robot.commands.TestCommands.ArmDown;
+// import frc.robot.commands.ArmRotateCommand;
+// import frc.robot.commands.SwerveJoystickCommand;
+import frc.robot.commands.TestCommands.ArmUp;
+import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
+// import frc.robot.subsystems.TestEncoderSubsystem;
 import java.util.Optional;
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -127,14 +133,8 @@ public class RobotContainer {
   private final CommandPS4Controller sjoystick =
       new CommandPS4Controller(Constants.OI.ARM_JOYSTICK_PORT);
   private final SwerveSubsystem driveTrain = SwerveSubsystem.getInstance();
+  private final ArmSubsystem armSubsystem = ArmSubsystem.getInstance();
   private final PeterSubsystem peterSubsystem = PeterSubsystem.getInstance();
-  // private final ArmSubsystem armSubsystem = ArmSubsystem.getInstance();
-  public final Telemetry logger = new Telemetry();
-
-  // Starts telemetry operations (essentially logging -> look on SmartDashboard, AdvantageScope)
-  /*  public void doTelemetry() {
-    logger.telemeterize(driveTrain.getState());
-  } */
 
   private final Command backupCommand = new FunctionalCommand(() -> {
     peterSubsystem.resetPreshooterPosition();
@@ -145,6 +145,12 @@ public class RobotContainer {
   }, () -> false);
 
   Command runUntilDetection = new RunIntakeUntilDetection(peterSubsystem);
+  public final Telemetry logger = new Telemetry();
+
+  // Starts telemetry operations (essentially logging -> look on SmartDashboard, AdvantageScope)
+  public void doTelemetry() {
+    // logger.telemeterize(driveTrain.getState());
+  }
 
   private void configureBindings() {
     var spinUpShooter = new FunctionalCommand(() -> {}, () -> {
@@ -185,14 +191,6 @@ public class RobotContainer {
       peterSubsystem.stopRightShooter();
       peterSubsystem.stopPreShooterMotor();
     }, peterSubsystem));
-    /*   SwerveJoystickCommand swerveJoystickCommand =
-            new SwerveJoystickCommand(
-                () -> -mjoystick.getRawAxis(1),
-                () -> -mjoystick.getRawAxis(0),
-                () -> -mjoystick.getRawAxis(2),
-                () -> (mjoystick.getRawAxis(3) - mjoystick.getRawAxis(4) + 2d) / 2d + 0.5,
-                driveTrain);
-        driveTrain.setDefaultCommand(swerveJoystickCommand);
 
         // zero-heading
         mjoystick
@@ -204,9 +202,7 @@ public class RobotContainer {
                             new Pose2d(new Translation2d(0, 0), new Rotation2d(0)))));
         driveTrain.registerTelemetry(logger::telemeterize);
 
-    sjoystick.getRawAxis(3); // Trigger
-    sjoystick.getRawAxis(4); // Trigger
-    */
+  
     sjoystick.circle().whileTrue(new IntakeMotorTest(peterSubsystem));
     sjoystick.square().whileTrue(new PreShooterTest(peterSubsystem));
     sjoystick.triangle().whileTrue(new ShooterTest(peterSubsystem));
@@ -221,5 +217,17 @@ public class RobotContainer {
     // peterSubsystem.setDefaultCommand(
     //    new ArmAndPeterCommand(
     //        () -> -sjoystick.getRawAxis(3), () -> -sjoystick.getRawAxis(4), peterSubsystem));
+    // zero-heading
+   mjoystick     
+        .circle()
+        .onTrue(
+            driveTrain.runOnce(
+                () ->
+                    driveTrain.seedFieldRelative(
+                        new Pose2d(new Translation2d(0, 0), new Rotation2d(0)))));
+    driveTrain.registerTelemetry(logger::telemeterize);
+
+    sjoystick.R2().whileTrue(new ArmUp(armSubsystem));
+    sjoystick.L2().whileTrue(new ArmDown(armSubsystem));
   }
 }

@@ -1,16 +1,14 @@
-package frc.robot.commands.ArmCommands;
+package frc.robot.commands.TestCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ArmSubsystem;
-import frc.robot.subsystems.PeterSubsystem;
 
-public class ArmRotateCommand extends Command {
+public class ArmUp extends Command {
+
   private ArmSubsystem armSubsystem;
-  private PeterSubsystem peterSubsystem;
 
-  public ArmRotateCommand(ArmSubsystem armSubsystem, PeterSubsystem peterSubsystem) {
+  public ArmUp(ArmSubsystem armSubsystem) {
     this.armSubsystem = armSubsystem;
-    this.peterSubsystem = peterSubsystem;
     addRequirements(armSubsystem);
   }
 
@@ -21,11 +19,7 @@ public class ArmRotateCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (peterSubsystem.notePresent()) {
-      armSubsystem.rotateArmToRestPosition();
-    } else {
-      armSubsystem.rotateArmToSpeakerPosition();
-    }
+    armSubsystem.setTargetDegrees(70);
   }
 
   // Called once the command ends or is interrupted.
@@ -37,6 +31,6 @@ public class ArmRotateCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return false; // wait for x seconds
   }
 }
