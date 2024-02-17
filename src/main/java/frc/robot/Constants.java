@@ -128,7 +128,6 @@ public class Constants {
     private static final int FRONT_LEFT_ENCODER_ID = 21;
     private static final double FRONT_LEFT_ENCODER_OFFSET = -0.472412109375;
 
-
     private static final double FRONT_LEFT_X_POS_INCHES = 11.26 - moveCOMX;
     private static final double FRONT_LEFT_Y_POS_INCHES = 11.417 - moveCOMY;
 
@@ -158,7 +157,6 @@ public class Constants {
 
     private static final double BACK_RIGHT_X_POS_INCHES = -11.26 - moveCOMX;
     private static final double BACK_RIGHT_Y_POS_INCHES = -11.417 - moveCOMY;
-
 
     public static final SwerveModuleConstants FRONT_LEFT =
         ConstantCreator.createModuleConstants(
