@@ -15,4 +15,30 @@ public class MiscUtils {
         point.getY(),
         new Rotation2d(Math.PI - point.getRotation().getRadians()));
   }
+
+  /**
+   * 
+   * Returns the angle between Robot's current angle and angle to face target
+   * 
+   * @param robotPose The Pose2d of the robot
+   * @param targetPose The Pose2d of the taret location
+   * @return
+   */
+  public static Double getAlignmentRotation(Pose2d robotPose, Pose2d targetPose){
+    double robot_x = robotPose.getX();
+    double robot_y = robotPose.getY();
+    double robot_rotation =
+        ((robotPose.getRotation().getRadians()) + Math.PI * 2 ) % Math.PI * 2;
+
+    double target_x = targetPose.getX();
+    double target_y = targetPose.getY();
+
+    double angle;
+    if (target_y != robot_x) {
+      angle = (Math.atan2((target_y - robot_y), (target_x - robot_x)) + Math.PI * 2) % Math.PI * 2;
+    } else {
+      angle = robot_rotation; // do not turn
+    }
+    return angle;
+  }
 }
