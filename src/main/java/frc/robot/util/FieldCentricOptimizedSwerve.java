@@ -33,7 +33,7 @@ public class FieldCentricOptimizedSwerve extends FieldCentric {
             ChassisSpeeds.fromFieldRelativeSpeeds(
                 toApplyX, toApplyY, toApplyOmega, parameters.currentPose.getRotation()),
             parameters.updatePeriod);
-            
+
     // Chassis Speeds conversion to individual module states
     var states = parameters.kinematics.toSwerveModuleStates(speeds, new Translation2d());
 
