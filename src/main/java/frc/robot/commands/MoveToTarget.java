@@ -5,7 +5,6 @@ import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.SwerveSubsystem;
@@ -47,9 +46,9 @@ public class MoveToTarget extends Command {
     pathCommand = AutoBuilder.followPath(constructedPath);
     pathCommand.initialize();
 
-    SmartDashboard.putNumber("TranslationX", absolutePose.getX());
-    SmartDashboard.putNumber("TranslationY", absolutePose.getY());
-    SmartDashboard.putNumber("Rotation", absolutePose.getRotation().getDegrees());
+    // SmartDashboard.putNumber("TranslationX", absolutePose.getX());
+    // SmartDashboard.putNumber("TranslationY", absolutePose.getY());
+    // SmartDashboard.putNumber("Rotation", absolutePose.getRotation().getDegrees());
   }
 
   public void execute() {
