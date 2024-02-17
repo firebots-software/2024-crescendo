@@ -24,7 +24,7 @@ public class MiscUtils {
    * @param targetPose The Pose2d of the taret location
    * @return
    */
-  public static Double getAlignmentRotation(Pose2d robotPose, Pose2d targetPose){
+  public static Double getAlignmentBaseRotation(Pose2d robotPose, Pose2d targetPose){
     double robot_x = robotPose.getX();
     double robot_y = robotPose.getY();
     double robot_rotation =
@@ -40,5 +40,16 @@ public class MiscUtils {
       angle = robot_rotation; // do not turn
     }
     return angle;
+  }
+
+  public static Double getAlignmentArmRotation(Pose2d robotPose) {
+    double robot_x = robotPose.getX();
+    double robot_y = robotPose.getY();
+
+    double distToTargetX = Math.abs(robot_x-Constants.Landmarks.SUBWOOFER_LOCATION_GROUND.getX());
+    double distToTargetY = Math.abs(robot_y-Constants.Landmarks.SUBWOOFER_LOCATION_GROUND.getY());
+
+    double distance = Math.sqrt(Math.pow(distToTargetX,2) + Math.pow(distToTargetY,2));
+    return Math.atan2(1.35, distance);
   }
 }

@@ -23,7 +23,8 @@ public class Constants {
     public static final Pose2d STAGESIDE_NOTE_LOCATION = new Pose2d(2.5, 4.1, new Rotation2d());
     public static final Pose2d MIDDLE_NOTE_LOCATION = new Pose2d(2.5, 5.5, new Rotation2d());
     public static final Pose2d AMPSIDE_NOTE_LOCATION = new Pose2d(2.5, 7, new Rotation2d());
-    public static final Pose2d SUBWOOFER_LOCATION = new Pose2d(0.6, 5.7, new Rotation2d());
+    public static final Pose2d SUBWOOFER_LOCATION_GROUND = new Pose2d(0.6, 5.7, new Rotation2d());
+    public static final double SUBWOOFER_TARGET_HEIGHT = 1.93;
     public static final double CENTER_LINE_LOCATION = 8.27;
   }
 
