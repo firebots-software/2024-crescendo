@@ -3,11 +3,15 @@ import javax.swing.text.StyleContext.SmallAttributeSet;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -35,6 +39,7 @@ public class ArmSubsystem extends SubsystemBase {
   public ArmSubsystem() {
     // Initialize Current Limit, Slot0Configs, and ArmFeedForward
     CurrentLimitsConfigs clc = new CurrentLimitsConfigs().withSupplyCurrentLimit(Constants.Arm.CURRENT_LIMIT);
+    MotorOutputConfigs moc = new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Brake);
     Slot0Configs s0c = new Slot0Configs().withKP(Constants.Arm.S0C_KP).withKI(0).withKD(0);
     armff = new ArmFeedforward(Constants.Arm.ARMFF_KS, Constants.Arm.ARMFF_KG, Constants.Arm.ARMFF_KV);
     
@@ -51,11 +56,21 @@ public class ArmSubsystem extends SubsystemBase {
     rb.setControl(follower);
     lb.setControl(invertedFollower);
 
+    TalonFXConfigurator rtConfig = rt.getConfigurator();
+    TalonFXConfigurator rbConfig = rb.getConfigurator();
+    TalonFXConfigurator ltConfig = lt.getConfigurator();
+    TalonFXConfigurator lbConfig = lb.getConfigurator();
+
+    rtConfig.apply(moc);
+    rbConfig.apply(moc);
+    ltConfig.apply(moc);
+    lbConfig.apply(moc);
+
     // Apply Current Limit to all motors
-    rt.getConfigurator().apply(clc);
-    rb.getConfigurator().apply(clc);
-    lt.getConfigurator().apply(clc);
-    lb.getConfigurator().apply(clc);
+    rtConfig.apply(clc);
+    rbConfig.apply(clc);
+    ltConfig.apply(clc);
+    lbConfig.apply(clc);
 
     // Assign master motor and apply Slot0Configs to master
     master = lt;
@@ -118,8 +133,8 @@ public class ArmSubsystem extends SubsystemBase {
   private void setPosition(double angleDegrees) {
     if(initialized)
     {
-      master.setControl(new MotionMagicVoltage(getIntegratedTargetRots(angleDegrees))
-      .withFeedForward(armff.calculate((2*Math.PI*getArmDegrees())/360d, 0)));
+      master.setControl(new MotionMagicVoltage(calculateIntegratedTargetRots(angleDegrees))
+      .withFeedForward(armff.calculate((2*Math.PI*getRawDegrees())/360d, 0)));
     }
   }
 
@@ -132,55 +147,73 @@ public class ArmSubsystem extends SubsystemBase {
   // }
 
   public void rotateArmToSpeakerPosition() {
-    setTargetDegrees(Constants.Arm.SPEAKER_ANGLE);
+    setTargetDegrees(calculateAngleToSpeaker());
   }
 
-  public void rotateArmToRestPosition() {
+  private double calculateAngleToSpeaker(){
+
+    return 10d;
+  }
+
+  public void rotateToAmpPosition(){
+    setTargetDegrees(Constants.Arm.AMP_ANGLE);
+  }
+
+  public void rotateToRestPosition() {
     setTargetDegrees(Constants.Arm.DEFAULT_ARM_ANGLE);
   }
 
   private double getAbsolutePosition() {
+    // uses the absolute encoder rotations to get the absolute position
     return (revEncoder.getAbsolutePosition() - Constants.Arm.ABSOLUTE_ENCODER_HORIZONTAL+Constants.Arm.ABSOLUTE_HORIZONTAL_OFFSET + 1d) % 1;
   }
 
-  public double getPosRotations() {
+  private double getMotorPosRotations() {
     if(!initialized){
       System.out.println("WARNING: Motor Position looked at, but initialization not complete yet. Returning 0");
       return 0;
     }
     return master.getPosition().getValue();
-    //return 0;
+  }
+  
+  private double getArmPosRotations() {
+    // uses motor position to return arm position in rotations by dividing by the conversion factor
+    return getMotorPosRotations() / Constants.Arm.INTEGRATED_ARM_CONVERSION_FACTOR;
   }
 
-  public double getArmPosRotations() {
-    return getPosRotations() / Constants.Arm.INTEGRATED_ARM_CONVERSION_FACTOR;
-  }
-
-  public double getArmDegrees()
+  public double getRawDegrees()
   {
+    // uses the arm position in rotations to get the degrees
     return getArmPosRotations() * 360d;
   }
 
-  private double getIntegratedTargetRots(double angleDegrees){
+  private double calculateIntegratedTargetRots(double angleDegrees){
+    // gets the target rotations for the motor given a target angle
     double armRots = angleDegrees/360d + armHorizontalOffset;
     return armRots * Constants.Arm.INTEGRATED_ARM_CONVERSION_FACTOR;
   }
 
+  public double getCorrectedDegrees()
+  {
+    // gets the actual degrees of the arm using the raw degrees of motor and subtracting the known offset
+    return getRawDegrees()-armHorizontalOffset*360d;
+  }
+
   @Override
   public void periodic() {
-    setPosition(targetDegrees);;
+    setPosition(targetDegrees);
+
     SmartDashboard.putString("ARM Command:", this.getCurrentCommand() == null ? "none" : this.getCurrentCommand().getName());
-    
     SmartDashboard.putNumber("ARM Abs Enc Raw: ", revEncoder.getAbsolutePosition());
     SmartDashboard.putNumber("ARM Abs Enc Func: ", getAbsolutePosition());
-    SmartDashboard.putNumber("ARM Integrated Rotations: ", getPosRotations());
+    SmartDashboard.putNumber("ARM Integrated Rotations: ", getMotorPosRotations());
     SmartDashboard.putNumber("ARM Integrated Current: ", master.getSupplyCurrent().getValue());
     SmartDashboard.putNumber("ARM Integrated Error: ", master.getClosedLoopError().getValue());
     SmartDashboard.putNumber("ARM Arm Rotations: ", getArmPosRotations());
-    SmartDashboard.putNumber("ARM Arm Degrees: ", getArmDegrees());
-    SmartDashboard.putNumber("ARM Arm Degrees Corrected: ", getArmDegrees()-(armHorizontalOffset*360d));
+    SmartDashboard.putNumber("ARM Arm Degrees: ", getRawDegrees());
+    SmartDashboard.putNumber("ARM Arm Degrees Corrected: ", getCorrectedDegrees());
     SmartDashboard.putNumber("ARM Target Degrees: ", targetDegrees);
-    SmartDashboard.putNumber("ARM Target Integrated Rots: ", getIntegratedTargetRots(targetDegrees));
-    SmartDashboard.putNumber("ARM FeedForward Calculations: ", armff.calculate((2*Math.PI*getArmDegrees())/360d, 0));
+    SmartDashboard.putNumber("ARM Target Integrated Rots: ", calculateIntegratedTargetRots(targetDegrees));
+    SmartDashboard.putNumber("ARM FeedForward Calculations: ", armff.calculate((2*Math.PI*getRawDegrees())/360d, 0));
   }
 }

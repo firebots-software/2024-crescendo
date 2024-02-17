@@ -33,7 +33,7 @@ public void execute() {
 
 @Override
 public void end(boolean interrupted) {
-  armSubsystem.rotateArmToRestPosition();
+  armSubsystem.rotateToRestPosition();
 }
 
 // Returns true when the command should end.

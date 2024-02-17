@@ -19,7 +19,7 @@ public class ArmRotateCommand extends Command {
   @Override
   public void execute() {
     if (PeterSubsystem.noteStaticPresent()) {
-      armSubsystem.rotateArmToRestPosition();
+      armSubsystem.rotateToRestPosition();
     } else {
       armSubsystem.rotateArmToSpeakerPosition();
     }
@@ -28,7 +28,7 @@ public class ArmRotateCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    armSubsystem.rotateArmToRestPosition();
+    armSubsystem.rotateToRestPosition();
   }
 
   // Returns true when the command should end.

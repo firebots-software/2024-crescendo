@@ -20,7 +20,7 @@ public class AimArm extends Command {
   @Override
   public void execute() {
     if (PeterSubsystem.noteStaticPresent()) {
-      armSubsystem.rotateArmToRestPosition();
+      armSubsystem.rotateToRestPosition();
     } else {
       armSubsystem.rotateArmToSpeakerPosition();
     }
