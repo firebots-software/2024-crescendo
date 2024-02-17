@@ -6,7 +6,11 @@ package frc.robot.commands.PeterCommands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.PeterSubsystem;
 
-/** An example command that uses an example subsystem. */
+/**
+ * Runs the intake and preshooter until IR sensor detects note
+ *
+ * @param subsystem The subsystem used by this command.
+ */
 public class RunIntakeUntilDetection extends Command {
   private PeterSubsystem peterSubsystem;
 
@@ -23,18 +27,14 @@ public class RunIntakeUntilDetection extends Command {
   @Override
   public void execute() {
     peterSubsystem.spinUpIntake();
-    if (peterSubsystem.notePresent()) {
-      peterSubsystem.stopIntake();
-      // peterSubsystem.runPreShooter(0.5);
-    }
+    peterSubsystem.spinUpPreShooter();
   }
-
-  // peterSubsystem.runPreShooter(0);
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     peterSubsystem.stopIntake();
+    peterSubsystem.stopPreShooterMotor();
   }
 
   // Returns true when the command should end.

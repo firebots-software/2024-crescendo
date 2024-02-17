@@ -1,15 +1,15 @@
-package frc.robot.commands.TestCommands;
+package frc.robot.commands.DebugCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.PeterSubsystem;
 
-public class ArmUp extends Command {
+/** An example command that uses an example subsystem. */
+public class RunPreShooter extends Command {
+  private PeterSubsystem shooter;
 
-  private ArmSubsystem armSubsystem;
-
-  public ArmUp(ArmSubsystem armSubsystem) {
-    this.armSubsystem = armSubsystem;
-    addRequirements(armSubsystem);
+  public RunPreShooter(PeterSubsystem shooter) {
+    this.shooter = shooter;
+    addRequirements(shooter);
   }
 
   // Called when the command is initially scheduled.
@@ -19,18 +19,18 @@ public class ArmUp extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    armSubsystem.setTargetDegrees(10);
+    // shooter.moveNoteToShooter();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    armSubsystem.rotateToRestPosition();
+    shooter.runShooter(0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false; // wait for x seconds
+    return false;
   }
 }

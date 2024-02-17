@@ -31,7 +31,7 @@ public class Shooter extends Command {
   public void execute() {
     peterSubsystem.spinUpShooter();
     if (peterSubsystem.isShooterReady()) {
-      peterSubsystem.moveNoteToShooter();
+      peterSubsystem.spinUpPreShooter();
     }
   }
 

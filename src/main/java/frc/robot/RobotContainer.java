@@ -4,19 +4,33 @@
 
 package frc.robot;
 
+
+// import frc.robot.subsystems.ArmSubsystem;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
+import frc.robot.commands.DebugCommands.IntakeMotorTest;
+import frc.robot.commands.DebugCommands.LeftShooterTest;
+import frc.robot.commands.DebugCommands.PeterTest;
+import frc.robot.commands.DebugCommands.PreShooterTest;
+import frc.robot.commands.DebugCommands.RightShooterTest;
+import frc.robot.commands.DebugCommands.ShooterTest;
 import frc.robot.commands.MoveToTarget;
+import frc.robot.commands.PeterCommands.RunIntakeUntilDetection;
+import frc.robot.commands.PeterCommands.ShootNote;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
+import frc.robot.subsystems.PeterSubsystem;
 import frc.robot.commands.TestCommands.ArmDown;
 // import frc.robot.commands.ArmRotateCommand;
 // import frc.robot.commands.SwerveJoystickCommand;
@@ -25,7 +39,6 @@ import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 // import frc.robot.subsystems.TestEncoderSubsystem;
 import java.util.Optional;
-
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -115,11 +128,23 @@ public class RobotContainer {
 
   /* Setting up bindings for necessary control of the swerve drive platform */
 
-  private final CommandPS4Controller joystick =
+  private final CommandPS4Controller mjoystick =
       new CommandPS4Controller(Constants.OI.MOVEMENT_JOYSTICK_PORT);
+  private final CommandPS4Controller sjoystick =
+      new CommandPS4Controller(Constants.OI.ARM_JOYSTICK_PORT);
   private final SwerveSubsystem driveTrain = SwerveSubsystem.getInstance();
   private final ArmSubsystem armSubsystem = ArmSubsystem.getInstance();
-  // private final PeterSubsystem peterSubsystem = PeterSubsystem.getInstance();
+  private final PeterSubsystem peterSubsystem = PeterSubsystem.getInstance();
+
+  private final Command backupCommand = new FunctionalCommand(() -> {
+    peterSubsystem.resetPreshooterPosition();
+  }, () -> {
+    peterSubsystem.reversePreshooterRotations(1);
+  }, (a) -> {
+    peterSubsystem.stopPreShooterMotor();
+  }, () -> false);
+
+  Command runUntilDetection = new RunIntakeUntilDetection(peterSubsystem);
   public final Telemetry logger = new Telemetry();
 
   // Starts telemetry operations (essentially logging -> look on SmartDashboard, AdvantageScope)
@@ -128,17 +153,72 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
+    var spinUpShooter = new FunctionalCommand(() -> {}, () -> {
+      peterSubsystem.spinLeftShooter();
+      peterSubsystem.spinRightShooter();
+    }, (a) -> {}, () -> {return peterSubsystem.isShooterReady();}, peterSubsystem);
     SwerveJoystickCommand swerveJoystickCommand =
         new SwerveJoystickCommand(
-            () -> ((redAlliance) ? joystick.getRawAxis(1) : -joystick.getRawAxis(1)),
-            () -> ((redAlliance) ? joystick.getRawAxis(0) : -joystick.getRawAxis(0)),
-            () -> -joystick.getRawAxis(2),
-            () -> (joystick.getRawAxis(3) - joystick.getRawAxis(4)) / 4d + 0.5,
+            () -> ((redAlliance) ? mjoystick.getRawAxis(1) : -mjoystick.getRawAxis(1)),
+            () -> ((redAlliance) ? mjoystick.getRawAxis(0) : -mjoystick.getRawAxis(0)),
+            () -> -mjoystick.getRawAxis(2),
+            () -> (mjoystick.getRawAxis(3) - mjoystick.getRawAxis(4)) / 4d + 0.5,
             driveTrain);
     driveTrain.setDefaultCommand(swerveJoystickCommand);
 
+    var shoot = new FunctionalCommand(() -> {}, () -> {
+      peterSubsystem.spinLeftShooter();
+      peterSubsystem.spinRightShooter();
+      peterSubsystem.spinUpPreShooter();
+    },  (a) -> {
+      peterSubsystem.stopLeftShooter();
+      peterSubsystem.stopRightShooter();
+      peterSubsystem.stopPreShooterMotor();
+    }, () -> {
+      return false;
+    }, peterSubsystem);
+
+    sjoystick.L2().whileTrue(new SequentialCommandGroup(runUntilDetection, backupCommand));
+    sjoystick.R2().whileTrue(new SequentialCommandGroup(spinUpShooter, shoot));
+
+    sjoystick.L1().whileTrue(new RunCommand( () -> {
+      peterSubsystem.reverseMechanism();
+    }, peterSubsystem));
+
+    peterSubsystem.setDefaultCommand(new RunCommand(() -> {
+      peterSubsystem.stopIntake();
+      peterSubsystem.stopLeftShooter();
+      peterSubsystem.stopRightShooter();
+      peterSubsystem.stopPreShooterMotor();
+    }, peterSubsystem));
+
+        // zero-heading
+        mjoystick
+            .circle()
+            .onTrue(
+                driveTrain.runOnce(
+                    () ->
+                        driveTrain.seedFieldRelative(
+                            new Pose2d(new Translation2d(0, 0), new Rotation2d(0)))));
+        driveTrain.registerTelemetry(logger::telemeterize);
+
+  
+    sjoystick.circle().whileTrue(new IntakeMotorTest(peterSubsystem));
+    sjoystick.square().whileTrue(new PreShooterTest(peterSubsystem));
+    sjoystick.triangle().whileTrue(new ShooterTest(peterSubsystem));
+    sjoystick.cross().whileTrue(new LeftShooterTest(peterSubsystem));
+    sjoystick.povUp().whileTrue(new RightShooterTest(peterSubsystem));
+    sjoystick.povDown().whileTrue(new PeterTest(peterSubsystem));
+    sjoystick.povRight().whileTrue(new RunIntakeUntilDetection(peterSubsystem));
+    sjoystick.povLeft().whileTrue(new ShootNote(peterSubsystem, peterSubsystem)); 
+    /* sjoystick
+    .povRight()
+    .whileTrue(new PeterTestersSequential(peterSubsystem, peterSubsystem, peterSubsystem)); */
+    // peterSubsystem.setDefaultCommand(
+    //    new ArmAndPeterCommand(
+    //        () -> -sjoystick.getRawAxis(3), () -> -sjoystick.getRawAxis(4), peterSubsystem));
     // zero-heading
-    joystick     
+   mjoystick     
         .circle()
         .onTrue(
             driveTrain.runOnce(
@@ -146,19 +226,8 @@ public class RobotContainer {
                     driveTrain.seedFieldRelative(
                         new Pose2d(new Translation2d(0, 0), new Rotation2d(0)))));
     driveTrain.registerTelemetry(logger::telemeterize);
-    // // (SwerveTest command, used on old Robot to test the testEncoderSubsystem)
-    // // This supplier should return only three distinct values: 0.0, -30.0, and 30.0.
-    // Supplier<Double> swerveAngleOffset = () -> (int)(mjoystick.getRawAxis(0)*1.5) * 30.0;
-    // SwerveTest swerveTestCommand = new SwerveTest(testEncoderSubsystem, swerveAngleOffset);
-    // mjoystick.circle().whileTrue(swerveTestCommand);
 
-    // mjoystick.circle().whileTrue(new IntakeMotorTest(peterSubsystem));
-    // mjoystick.square().whileTrue(new PreShooterTest(peterSubsystem));
-    // mjoystick.triangle().whileTrue(new ShooterTest(peterSubsystem));
-    // mjoystick.cross().whileTrue(new LeftShooterTest(peterSubsystem));
-    // mjoystick.povUp().whileTrue(new RightShooterTest(peterSubsystem));
-
-    joystick.R2().whileTrue(new ArmUp(armSubsystem));
-    joystick.L2().whileTrue(new ArmDown(armSubsystem));
+    sjoystick.R1().whileTrue(new ArmUp(armSubsystem));
+    //sjoystick.L2().whileTrue(new ArmDown(armSubsystem));
   }
 }

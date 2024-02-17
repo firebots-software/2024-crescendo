@@ -47,7 +47,7 @@ public class ArmAndPeterCommand extends Command {
       peter.spinUpShooter();
       // if (aim() && peter.isShooterReady())
       if (peter.isShooterReady()) {
-        peter.moveNoteToShooter();
+        peter.spinUpPreShooter();
       }
     }
     if (left) {
