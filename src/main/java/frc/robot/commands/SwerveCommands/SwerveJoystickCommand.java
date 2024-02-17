@@ -99,7 +99,7 @@ public class SwerveJoystickCommand extends Command {
     // Uses SwerveRequestFieldCentric (from java.frc.robot.util to apply module optimization)
     final SwerveRequest.FieldCentric drive =
         new FieldCentricOptimizedSwerve()
-            .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
+            .withDriveRequestType(DriveRequestType.Velocity)
             .withVelocityX(x)
             .withVelocityY(y)
             .withRotationalRate(turn); // OPEN LOOP CONTROL
