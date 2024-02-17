@@ -47,14 +47,14 @@ public class Constants {
     // The steer motor uses any SwerveModule.SteerRequestType control request with
     // the output type specified by SwerveModuleConstants.SteerMotorClosedLoopOutput
     private static final Slot0Configs STEER_GAINS =
-        new Slot0Configs().withKP(100).withKI(0).withKD(0.2).withKS(0).withKV(1.5).withKA(0);
+        new Slot0Configs().withKP(100).withKI(0).withKD(0).withKS(0).withKV(1.5).withKA(0);
     // When using closed-loop control, the drive motor uses the control
     // output type specified by SwerveModuleConstants.DriveMotorClosedLoopOutput
-    // private static final Slot0Configs DRIVE_GAINS =
-    //     new Slot0Configs().withKP(0.18014).withKI(0).withKD(0).withKS(-0.023265).withKV(0.12681).withKA(0.058864);
-
     private static final Slot0Configs DRIVE_GAINS =
-        new Slot0Configs().withKP(0).withKI(0).withKD(0).withKS(0).withKV(0).withKA(0);
+        new Slot0Configs().withKP(0.18014).withKI(0).withKD(0).withKS(-0.023265).withKV(0.12681).withKA(0.058864);
+
+    // private static final Slot0Configs DRIVE_GAINS =
+    //     new Slot0Configs().withKP(0).withKI(0).withKD(0).withKS(0).withKV(0).withKA(0);
     // The closed-loop output type to use for the steer motors;
     // This affects the PID/FF gains for the steer motors
     private static final ClosedLoopOutputType STEER_CLOSED_LOOP_OUTPUT =
@@ -118,43 +118,48 @@ public class Constants {
 
     // CHANGE FOR NEW ROBOT:
     private static final double moveCOMY = 0.046007;
-    private static final double moveCOMX = -3.36044;
+    private static final double moveCOMX = 3.36044;
 
     // Front Left
     private static final int FRONT_LEFT_STEER_MOTOR_ID = 3;
     private static final int FRONT_LEFT_DRIVE_MOTOR_ID = 4;
     private static final int FRONT_LEFT_ENCODER_ID = 21;
-    private static final double FRONT_LEFT_ENCODER_OFFSET = -0.47021484375;
+    // private static final double FRONT_LEFT_ENCODER_OFFSET = -0.47021484375;
+    private static final double FRONT_LEFT_ENCODER_OFFSET = -0.472412109375;
 
-    private static final double FRONT_LEFT_X_POS_INCHES = 11.26 + moveCOMX;
-    private static final double FRONT_LEFT_Y_POS_INCHES = 11.417 + moveCOMY;
+
+    private static final double FRONT_LEFT_X_POS_INCHES = 11.26 - moveCOMX;
+    private static final double FRONT_LEFT_Y_POS_INCHES = 11.417 - moveCOMY;
 
     // Front Right
     private static final int FRONT_RIGHT_STEER_MOTOR_ID = 5;
     private static final int FRONT_RIGHT_DRIVE_MOTOR_ID = 6;
     private static final int FRONT_RIGHT_ENCODER_ID = 22;
-    private static final double FRONT_RIGHT_ENCODER_OFFSET = -0.4453125;
+    // private static final double FRONT_RIGHT_ENCODER_OFFSET = -0.4453125;
+    private static final double FRONT_RIGHT_ENCODER_OFFSET = -0.436767578125;
 
-    private static final double FRONT_RIGHT_X_POS_INCHES = 11.26 + moveCOMX;
-    private static final double FRONT_RIGHT_Y_POS_INCHES = -11.417 + moveCOMY;
+    private static final double FRONT_RIGHT_X_POS_INCHES = 11.26 - moveCOMX;
+    private static final double FRONT_RIGHT_Y_POS_INCHES = -11.417 - moveCOMY;
  
     // Back Left
     private static final int BACK_LEFT_STEER_MOTOR_ID = 1;
     private static final int BACK_LEFT_DRIVE_MOTOR_ID = 2;
     private static final int BACK_LEFT_ENCODER_ID = 20;
-    private static final double BACK_LEFT_ENCODER_OFFSET = -0.167724609375;
+    // private static final double BACK_LEFT_ENCODER_OFFSET = -0.167724609375;
+    private static final double BACK_LEFT_ENCODER_OFFSET = -0.165283203125;
 
-    private static final double BACK_LEFT_X_POS_INCHES = -11.26 + moveCOMX;
-    private static final double BACK_LEFT_Y_POS_INCHES = 11.417 + moveCOMY;
+    private static final double BACK_LEFT_X_POS_INCHES = -11.26 - moveCOMX;
+    private static final double BACK_LEFT_Y_POS_INCHES = 11.417 - moveCOMY;
 
     // Back Right
     private static final int BACK_RIGHT_STEER_MOTOR_ID = 7;
     private static final int BACK_RIGHT_DRIVE_MOTOR_ID = 8;
     private static final int BACK_RIGHT_ENCODER_ID = 23;
-    private static final double BACK_RIGHT_ENCODER_OFFSET = -0.345703125;
+    // private static final double BACK_RIGHT_ENCODER_OFFSET = -0.345703125;
+    private static final double BACK_RIGHT_ENCODER_OFFSET = -0.336181640625;
 
-    private static final double BACK_RIGHT_X_POS_INCHES = -11.26 + moveCOMX;
-    private static final double BACK_RIGHT_Y_POS_INCHES = -11.417 + moveCOMY;
+    private static final double BACK_RIGHT_X_POS_INCHES = -11.26 - moveCOMX;
+    private static final double BACK_RIGHT_Y_POS_INCHES = -11.417 - moveCOMY;
 
     public static final SwerveModuleConstants FRONT_LEFT =
         ConstantCreator.createModuleConstants(
