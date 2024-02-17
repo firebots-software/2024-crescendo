@@ -17,6 +17,8 @@ public class SwerveJoystickCommand extends Command {
       ySpdFunction,
       turningSpdFunction,
       speedControlFunction;
+  
+      private final Supplier<Boolean> automaticTurnFunction;
 
   // Limits rate of change (in this case x, y, and turning movement)
   private final SlewRateLimiter xLimiter, yLimiter, turningLimiter;
@@ -29,12 +31,14 @@ public class SwerveJoystickCommand extends Command {
       Supplier<Double> leftRightFunction,
       Supplier<Double> turningSpdFunction,
       Supplier<Double> speedControlFunction,
+      Supplier<Boolean> automaticTurnFunction,
       SwerveSubsystem swerveSubsystem) {
-
+    
     this.xSpdFunction = frontBackFunction;
     this.ySpdFunction = leftRightFunction;
     this.turningSpdFunction = turningSpdFunction;
     this.speedControlFunction = speedControlFunction;
+    this.automaticTurnFunction = automaticTurnFunction;
     this.xLimiter =
         new SlewRateLimiter(Constants.Swerve.TELE_DRIVE_MAX_ACCELERATION_UNITS_PER_SECOND);
     this.yLimiter =
@@ -73,7 +77,7 @@ public class SwerveJoystickCommand extends Command {
 
     SmartDashboard.putNumber("angle", angle);
 
-    return 0;
+    return Constants.Swerve.AUTONOMOUS_TURNING.calculate(robot_rotation,angle);
   }
 
   @Override
@@ -86,7 +90,9 @@ public class SwerveJoystickCommand extends Command {
     double ySpeed = ySpdFunction.get(); // ySpeed is actually left right (left +, right -)
     double turningSpeed =
         turningSpdFunction.get(); // turning speed is (anti-clockwise +, clockwise -)
-
+    if(automaticTurnFunction.get()){
+      turningSpeed = rotateToSpeaker();
+    }
     // 2. Normalize inputs
     double length = xSpeed * xSpeed + ySpeed * ySpeed; // acutally length squared
     if (length > 1d) {
@@ -134,7 +140,7 @@ public class SwerveJoystickCommand extends Command {
             .withDriveRequestType(DriveRequestType.Velocity)
             .withVelocityX(x)
             .withVelocityY(y)
-            .withRotationalRate(turn); // OPEN LOOP CONTROL
+            .withRotationalRate(turn);
             
 
     // Applies request

@@ -7,6 +7,8 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants.SteerFeedbackType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstantsFactory;
 import com.pathplanner.lib.path.PathConstraints;
+
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
@@ -33,6 +35,8 @@ public class Constants {
       public static final PathConstraints PATH_PLANNER_CONSTRAINTS =
           new PathConstraints(3.0, 3.0, 2 * Math.PI, 4 * Math.PI);
     }
+
+    public static final PIDController AUTONOMOUS_TURNING = new PIDController(0.1,0,0);
 
     public static final double PHYSICAL_MAX_SPEED_METERS_PER_SECOND = 4.8768;
     public static final double PHYSICAL_MAX_ANGLUAR_SPEED_RADIANS_PER_SECOND = 2 * 2 * Math.PI;

@@ -127,6 +127,7 @@ public class RobotContainer {
             () -> ((redAlliance) ? joystick.getRawAxis(0) : -joystick.getRawAxis(0)),
             () -> -joystick.getRawAxis(2),
             () -> (joystick.getRawAxis(3) - joystick.getRawAxis(4)) / 4d + 0.5,
+            () -> (joystick.L1().getAsBoolean()),
             driveTrain);
     driveTrain.setDefaultCommand(swerveJoystickCommand);
 
