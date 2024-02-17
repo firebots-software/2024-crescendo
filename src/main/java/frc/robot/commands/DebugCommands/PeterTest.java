@@ -3,9 +3,8 @@
 // the WPILib BSD license file in the root directory of this project.
 
 // delete in future
-package frc.robot.commands.TestCommands;
+package frc.robot.commands.DebugCommands;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.PeterSubsystem;
 
@@ -27,7 +26,7 @@ public class PeterTest extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    SmartDashboard.getBoolean(this.toString(), true);
+    // SmartDashboard.getBoolean(this.toString(), true);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

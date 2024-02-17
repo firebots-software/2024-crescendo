@@ -6,9 +6,11 @@ import frc.robot.subsystems.PeterSubsystem;
 
 public class ArmRotateCommand extends Command {
   private ArmSubsystem armSubsystem;
+  private PeterSubsystem peterSubsystem;
 
-  public ArmRotateCommand(ArmSubsystem armSubsystem) {
+  public ArmRotateCommand(ArmSubsystem armSubsystem, PeterSubsystem peterSubsystem) {
     this.armSubsystem = armSubsystem;
+    this.peterSubsystem = peterSubsystem;
     addRequirements(armSubsystem);
   }
 
@@ -19,7 +21,7 @@ public class ArmRotateCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (PeterSubsystem.noteStaticPresent()) {
+    if (peterSubsystem.notePresent()) {
       armSubsystem.rotateToRestPosition();
     } else {
       armSubsystem.rotateArmToSpeakerPosition();

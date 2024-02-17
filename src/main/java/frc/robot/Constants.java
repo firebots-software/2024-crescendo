@@ -39,20 +39,23 @@ public final class Constants {
     public static final int BIG_BUTTON_PORT = 14;
   }
 
-  public static final class Intake {
+  public static final class Peter {
     public static final int INTAKE_MOTOR_PORT = 33;
-    public static final double SHOOTER_SPEED = 3;
-    public static final int NOTE_DETECTOR_PORT = 7;
+   // public static final double SHOOTER_SPEED = 3; // Shooter gear ratio: 15:12
+    public static final int NOTE_DETECTOR_PORT = 1;
     public static final int PRE_SHOOTER_PORT = 32;
     public static final int SHOOTER_PORT_RIGHT = 30;
     public static final int SHOOTER_PORT_LEFT = 31;
 
-    public static final double INTAKE_WHEEL_SPEED_RPS = 100;
-    public static final double ROTATIONS_TO_SHOOTER = 5d;
-
-    public static final double SHOOT_WHEEL_SPEED_RPS = 10.0;
-
+    public static final double INTAKE_WHEEL_SPEED_RPS = 200; // Intake gear ratio: 2:1
+    public static final double ROTATIONS_TO_SHOOTER = 300; // Preshooter gear ratio: 4:1
+    public static final double SHOOT_WHEEL_SPEED_RPS = 4500.0 / 60.0;
+   
     public static final String CANBUS_NAME = "rio";
+
+    public static final double INTAKE_GEAR_RATIO = 2;
+    public static final double PRESHOOTER_GEAR_RATIO = 4;
+    public static final double SHOOTER_WHEELS_GEAR_RATIOS = 15.0 / 12.0;
   }
 
   public static final class FieldDimensions {
