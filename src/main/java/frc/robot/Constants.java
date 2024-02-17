@@ -24,6 +24,7 @@ public class Constants {
     public static final Pose2d MIDDLE_NOTE_LOCATION = new Pose2d(2.5, 5.5, new Rotation2d());
     public static final Pose2d AMPSIDE_NOTE_LOCATION = new Pose2d(2.5, 7, new Rotation2d());
     public static final Pose2d SUBWOOFER_LOCATION = new Pose2d(0.6, 5.7, new Rotation2d());
+    public static final Pose2d SPEAKER_LOCATION = new Pose2d(0.30, 5.49, new Rotation2d());
     public static final double CENTER_LINE_LOCATION = 8.27;
   }
 
@@ -46,7 +47,7 @@ public class Constants {
 
     // The steer motor uses any SwerveModule.SteerRequestType control request with
     // the output type specified by SwerveModuleConstants.SteerMotorClosedLoopOutput
-    private static final Slot0Configs STEER_GAINS =
+    public static final Slot0Configs STEER_GAINS =
         new Slot0Configs().withKP(100).withKI(0).withKD(0).withKS(0).withKV(1.5).withKA(0);
     // When using closed-loop control, the drive motor uses the control
     // output type specified by SwerveModuleConstants.DriveMotorClosedLoopOutput

@@ -2,6 +2,8 @@ package frc.robot.commands;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -43,6 +45,35 @@ public class SwerveJoystickCommand extends Command {
 
     // Adds the subsystem as a requirement (prevents two commands from acting on subsystem at once)
     addRequirements(swerveDrivetrain);
+  }
+
+    public Double rotateToSpeaker() {
+    SmartDashboard.putNumber("turning", turningSpdFunction.get());
+    // if (doSpin.get() > 0) {
+    double robot_x = this.swerveDrivetrain.getState().Pose.getX();
+    double robot_y = this.swerveDrivetrain.getState().Pose.getY();
+    double robot_rotation =
+        (this.swerveDrivetrain.getState().Pose.getRotation().getRadians()) % Math.PI * 2;
+
+    double speaker_x = Constants.Landmarks.SPEAKER_LOCATION.getX();
+    double speaker_y = Constants.Landmarks.SPEAKER_LOCATION.getY();
+
+    SmartDashboard.putNumber("robot_x", robot_x);
+    SmartDashboard.putNumber("robot_y", robot_y);
+    // SmartDashboard.putNumber("robot_rotation", robot_rotation);
+    SmartDashboard.putNumber("speaker_x", speaker_x);
+    SmartDashboard.putNumber("speaker_y", speaker_y);
+
+    double angle;
+    if (speaker_x != robot_x) {
+      angle = (Math.atan2((speaker_y - robot_y), (speaker_x - robot_x))) % Math.PI * 2;
+    } else {
+      angle = robot_rotation; // do not turn
+    }
+
+    SmartDashboard.putNumber("angle", angle);
+
+    return 0;
   }
 
   @Override
@@ -104,6 +135,7 @@ public class SwerveJoystickCommand extends Command {
             .withVelocityX(x)
             .withVelocityY(y)
             .withRotationalRate(turn); // OPEN LOOP CONTROL
+            
 
     // Applies request
     this.swerveDrivetrain.setControl(drive);
