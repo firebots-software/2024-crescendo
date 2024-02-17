@@ -1,4 +1,4 @@
-package frc.robot.commands.PeterCommands;
+package frc.robot.commands.DebugCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.PeterSubsystem;
