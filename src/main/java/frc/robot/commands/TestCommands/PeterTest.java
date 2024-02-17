@@ -34,7 +34,7 @@ public class PeterTest extends Command {
   @Override
   public void execute() {
     peterSubsystem.spinUpIntake();
-    peterSubsystem.movePreShooterMotorPosition(3);
+    peterSubsystem.spinUpPreShooter();
     peterSubsystem.spinUpShooter();
   }
 

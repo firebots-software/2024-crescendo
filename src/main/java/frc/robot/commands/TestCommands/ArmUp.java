@@ -19,7 +19,7 @@ public class ArmUp extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    armSubsystem.setTargetDegrees(70);
+    armSubsystem.setTargetDegrees(10);
   }
 
   // Called once the command ends or is interrupted.

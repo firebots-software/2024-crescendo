@@ -227,7 +227,7 @@ public class RobotContainer {
                         new Pose2d(new Translation2d(0, 0), new Rotation2d(0)))));
     driveTrain.registerTelemetry(logger::telemeterize);
 
-    sjoystick.R2().whileTrue(new ArmUp(armSubsystem));
-    sjoystick.L2().whileTrue(new ArmDown(armSubsystem));
+    sjoystick.R1().whileTrue(new ArmUp(armSubsystem));
+    //sjoystick.L2().whileTrue(new ArmDown(armSubsystem));
   }
 }

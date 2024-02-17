@@ -168,7 +168,8 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void rotateToRestPosition() {
-    setTargetDegrees(Constants.Arm.DEFAULT_ARM_ANGLE);
+    //setTargetDegrees(Constants.Arm.DEFAULT_ARM_ANGLE);
+    setTargetDegrees(1);
   }
 
   private double getAbsolutePosition() {

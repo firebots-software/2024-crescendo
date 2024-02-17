@@ -22,7 +22,7 @@ public class ArmRotateCommand extends Command {
   @Override
   public void execute() {
     if (peterSubsystem.notePresent()) {
-      armSubsystem.rotateArmToRestPosition();
+      armSubsystem.rotateToRestPosition();
     } else {
       armSubsystem.rotateArmToSpeakerPosition();
     }
