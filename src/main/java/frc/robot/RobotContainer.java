@@ -172,10 +172,10 @@ public class RobotContainer {
       return false;
     }, peterSubsystem);
 
-    mjoystick.L2().whileTrue(new SequentialCommandGroup(runUntilDetection, backupCommand));
-    mjoystick.R2().whileTrue(new SequentialCommandGroup(spinUpShooter, shoot));
+    sjoystick.L2().whileTrue(new SequentialCommandGroup(runUntilDetection, backupCommand));
+    sjoystick.R2().whileTrue(new SequentialCommandGroup(spinUpShooter, shoot));
 
-    mjoystick.L1().whileTrue(new RunCommand( () -> {
+    sjoystick.L1().whileTrue(new RunCommand( () -> {
       peterSubsystem.reverseMechanism();
     }, peterSubsystem));
 
@@ -207,14 +207,14 @@ public class RobotContainer {
         sjoystick.getRawAxis(3); // Trigger
         sjoystick.getRawAxis(4); // Trigger
     */
-    mjoystick.circle().whileTrue(new IntakeMotorTest(peterSubsystem));
-    mjoystick.square().whileTrue(new PreShooterTest(peterSubsystem));
-    mjoystick.triangle().whileTrue(new ShooterTest(peterSubsystem));
-    mjoystick.cross().whileTrue(new LeftShooterTest(peterSubsystem));
-    mjoystick.povUp().whileTrue(new RightShooterTest(peterSubsystem));
-    mjoystick.povDown().whileTrue(new PeterTest(peterSubsystem));
-    mjoystick.povRight().whileTrue(new RunIntakeUntilDetection(peterSubsystem));
-    mjoystick.povLeft().whileTrue(new ShootNote(peterSubsystem, peterSubsystem)); 
+    sjoystick.circle().whileTrue(new IntakeMotorTest(peterSubsystem));
+    sjoystick.square().whileTrue(new PreShooterTest(peterSubsystem));
+    sjoystick.triangle().whileTrue(new ShooterTest(peterSubsystem));
+    sjoystick.cross().whileTrue(new LeftShooterTest(peterSubsystem));
+    sjoystick.povUp().whileTrue(new RightShooterTest(peterSubsystem));
+    sjoystick.povDown().whileTrue(new PeterTest(peterSubsystem));
+    sjoystick.povRight().whileTrue(new RunIntakeUntilDetection(peterSubsystem));
+    sjoystick.povLeft().whileTrue(new ShootNote(peterSubsystem, peterSubsystem)); 
     /* mjoystick
     .povRight()
     .whileTrue(new PeterTestersSequential(peterSubsystem, peterSubsystem, peterSubsystem)); */
