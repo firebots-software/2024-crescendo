@@ -26,7 +26,6 @@ public class IntakeMotorTest extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    // SmartDashboard.getBoolean(this.toString(), true);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

@@ -18,7 +18,6 @@ public class LeftShooterTest extends Command {
 
   @Override
   public void initialize() {
-    // SmartDashboard.getBoolean(this.toString(), true);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

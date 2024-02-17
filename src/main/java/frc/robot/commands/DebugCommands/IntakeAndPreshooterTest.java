@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.PeterSubsystem;
 
 /** An example command that uses an example subsystem. */
-public class Intake extends Command {
+public class IntakeAndPreshooterTest extends Command {
   private PeterSubsystem peterSubsystem;
 
   /**
@@ -16,7 +16,7 @@ public class Intake extends Command {
    *
    * @param peterSubsystem The subsystem used by this command.
    */
-  public Intake(PeterSubsystem peterSubsystem) {
+  public IntakeAndPreshooterTest(PeterSubsystem peterSubsystem) {
     this.peterSubsystem = peterSubsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(peterSubsystem);
@@ -30,7 +30,7 @@ public class Intake extends Command {
   @Override
   public void execute() {
     peterSubsystem.spinUpIntake();
-    // peterSubsystem.moveNoteToShooter();
+    peterSubsystem.spinUpPreShooter();
   }
 
   // Called once the command ends or is interrupted.

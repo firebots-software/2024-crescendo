@@ -204,8 +204,8 @@ public class RobotContainer {
                             new Pose2d(new Translation2d(0, 0), new Rotation2d(0)))));
         driveTrain.registerTelemetry(logger::telemeterize);
 
-        sjoystick.getRawAxis(3); // Trigger
-        sjoystick.getRawAxis(4); // Trigger
+    sjoystick.getRawAxis(3); // Trigger
+    sjoystick.getRawAxis(4); // Trigger
     */
     sjoystick.circle().whileTrue(new IntakeMotorTest(peterSubsystem));
     sjoystick.square().whileTrue(new PreShooterTest(peterSubsystem));
@@ -215,11 +215,11 @@ public class RobotContainer {
     sjoystick.povDown().whileTrue(new PeterTest(peterSubsystem));
     sjoystick.povRight().whileTrue(new RunIntakeUntilDetection(peterSubsystem));
     sjoystick.povLeft().whileTrue(new ShootNote(peterSubsystem, peterSubsystem)); 
-    /* mjoystick
+    /* sjoystick
     .povRight()
     .whileTrue(new PeterTestersSequential(peterSubsystem, peterSubsystem, peterSubsystem)); */
     // peterSubsystem.setDefaultCommand(
     //    new ArmAndPeterCommand(
-    //        () -> -mjoystick.getRawAxis(3), () -> -mjoystick.getRawAxis(4), peterSubsystem));
+    //        () -> -sjoystick.getRawAxis(3), () -> -sjoystick.getRawAxis(4), peterSubsystem));
   }
 }
