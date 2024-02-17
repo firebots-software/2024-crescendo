@@ -1,8 +1,11 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -30,10 +33,14 @@ public class PeterSubsystem extends SubsystemBase {
     shooterMotorRight.setInverted(true);
     // shooterMotorRight.setControl(f);
     Slot0Configs s0c =
-        new Slot0Configs().withKP(0.1).withKI(0).withKD(0).withKG(0).withKV(0).withKA(0);
+        new Slot0Configs().withKP(0.001).withKI(0).withKD(0).withKG(0).withKV(0.2).withKA(0);
 
     shooterMotorRight.getConfigurator().apply(s0c);
     shooterMotorLeft.getConfigurator().apply(s0c);
+    shooterMotorLeft.getConfigurator()
+        .apply(new CurrentLimitsConfigs().withStatorCurrentLimitEnable(true).withStatorCurrentLimit(50));
+    shooterMotorRight.getConfigurator()
+        .apply(new CurrentLimitsConfigs().withStatorCurrentLimitEnable(true).withStatorCurrentLimit(50));
 
     // Preshooter
     preShooterMotor = new TalonFX(Constants.Peter.PRE_SHOOTER_PORT, Constants.Peter.CANBUS_NAME);
@@ -42,6 +49,9 @@ public class PeterSubsystem extends SubsystemBase {
     mmcPreShooter.MotionMagicAcceleration = 160;
     mmcPreShooter.MotionMagicJerk = 1600;
     preShooterMotor.getConfigurator().apply(mmcPreShooter);
+
+    Slot0Configs preshooterPID = new Slot0Configs().withKP(3).withKV(1);
+    preShooterMotor.getConfigurator().apply(preshooterPID);
 
     // Intake
     Slot0Configs intakePid =
@@ -126,9 +136,24 @@ public class PeterSubsystem extends SubsystemBase {
     shooterMotorLeft.stopMotor();
   }
 
+  public void resetPreshooterPosition() {
+    preShooterMotor.setPosition(0);
+  }
+
+  public void reversePreshooterRotations(double count) {
+    preShooterMotor.setControl(new PositionVoltage(count * -1 * 4));
+  }
+  
+  public void reverseMechanism() {
+    preShooterMotor.setControl(new DutyCycleOut(-0.5));
+    shooterMotorLeft.setControl(new DutyCycleOut(-0.5));
+    shooterMotorRight.setControl(new DutyCycleOut(-0.5));
+    intakeMotor.setControl(new DutyCycleOut(-0.5));
+  }
+
   public boolean isShooterReady() {
-    if (Math.abs(shooterMotorLeft.getVelocity().getValue() - Constants.Peter.SHOOT_WHEEL_SPEED_RPS)
-        < 0.001) {
+    if (Math.abs(shooterMotorLeft.getVelocity().getValueAsDouble() - (Constants.Peter.SHOOT_WHEEL_SPEED_RPS * Constants.Peter.SHOOTER_WHEELS_GEAR_RATIOS))
+        < 10) {
       return true;
     }
     return false;
@@ -193,6 +218,13 @@ public class PeterSubsystem extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     SmartDashboard.putBoolean("Note Detected", notePresent()); // false = note detected!!
+    SmartDashboard.putNumber("Shooter left speed", shooterMotorLeft.getVelocity().getValueAsDouble());
+    SmartDashboard.putNumber("Shooter right speed", shooterMotorRight.getVelocity().getValueAsDouble());
+    SmartDashboard.putNumber("Shooter left power", shooterMotorLeft.getDutyCycle().getValueAsDouble());
+    SmartDashboard.putNumber("Shooter right power", shooterMotorRight.getDutyCycle().getValueAsDouble());
+    SmartDashboard.putNumber("Shooter left current", shooterMotorLeft.getStatorCurrent().getValueAsDouble());
+    SmartDashboard.putNumber("Shooter right current", shooterMotorRight.getStatorCurrent().getValueAsDouble());
+
     SmartDashboard.putString(
         "Command",
         (this.getCurrentCommand() == null

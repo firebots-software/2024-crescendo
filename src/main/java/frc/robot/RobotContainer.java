@@ -6,6 +6,9 @@ package frc.robot;
 
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import frc.robot.commands.DebugCommands.IntakeMotorTest;
 import frc.robot.commands.DebugCommands.LeftShooterTest;
@@ -41,6 +44,15 @@ public class RobotContainer {
   /*  public void doTelemetry() {
     logger.telemeterize(driveTrain.getState());
   } */
+  private final Command backupCommand = new FunctionalCommand(() -> {
+    peterSubsystem.resetPreshooterPosition();
+  }, () -> {
+    peterSubsystem.reversePreshooterRotations(3);
+  }, (a) -> {
+    peterSubsystem.stopPreShooterMotor();
+  }, () -> false);
+
+  Command runUntilDetection = new RunIntakeUntilDetection(peterSubsystem);
 
   private void configureBindings() {
     /*   SwerveJoystickCommand swerveJoystickCommand =
@@ -73,6 +85,53 @@ public class RobotContainer {
     mjoystick.povDown().whileTrue(new PeterTest(peterSubsystem));
     mjoystick.povRight().whileTrue(new RunIntakeUntilDetection(peterSubsystem));
     mjoystick.povLeft().whileTrue(new ShootNote(peterSubsystem, peterSubsystem)); 
+
+    var spinUpShooter = new FunctionalCommand(() -> {}, () -> {
+      peterSubsystem.spinLeftShooter();
+      peterSubsystem.spinRightShooter();
+    }, (a) -> {}, () -> {return peterSubsystem.isShooterReady();}, peterSubsystem);
+
+    var shoot = new FunctionalCommand(() -> {}, () -> {
+      peterSubsystem.spinLeftShooter();
+      peterSubsystem.spinRightShooter();
+      peterSubsystem.spinUpPreShooter();
+    },  (a) -> {
+      peterSubsystem.stopLeftShooter();
+      peterSubsystem.stopRightShooter();
+      peterSubsystem.stopPreShooterMotor();
+    }, () -> {
+      return false;
+    }, peterSubsystem);
+
+    mjoystick.L2().whileTrue(new SequentialCommandGroup(runUntilDetection, backupCommand));
+    mjoystick.R2().whileTrue(new SequentialCommandGroup(spinUpShooter, shoot));
+
+    mjoystick.L1().whileTrue(new RunCommand( () -> {
+      peterSubsystem.reverseMechanism();
+    }, peterSubsystem));
+
+    // mjoystick.L1().whileTrue(new FunctionalCommand(() -> {}, () -> {
+    //   peterSubsystem.spinUpPreShooter();
+    // }, (a) -> {
+    //   peterSubsystem.stopPreShooterMotor();
+    // }, () -> false));
+
+    // mjoystick.R1().whileTrue(new FunctionalCommand(() -> {}, () -> {
+    //   peterSubsystem.spinLeftShooter();
+    //   peterSubsystem.spinRightShooter();
+    // }, (a) -> {
+    //   peterSubsystem.stopLeftShooter();
+    //   peterSubsystem.spinRightShooter();
+    // }, () -> false));
+
+
+    peterSubsystem.setDefaultCommand(new RunCommand(() -> {
+      peterSubsystem.stopIntake();
+      peterSubsystem.stopLeftShooter();
+      peterSubsystem.stopRightShooter();
+      peterSubsystem.stopPreShooterMotor();
+    }, peterSubsystem));
+
     /* mjoystick
     .povRight()
     .whileTrue(new PeterTestersSequential(peterSubsystem, peterSubsystem, peterSubsystem)); */
