@@ -24,7 +24,7 @@ public class Telemetry {
 
   /**
    * Construct a telemetry object, with the specified max speed of the robot
-  
+   *
    * @param maxSpeed Maximum speed in meters per second
    */
   StringLogEntry CommandAsString;
@@ -126,18 +126,19 @@ public class Telemetry {
       m_moduleDirections[i].setAngle(state.ModuleStates[i].angle);
       m_moduleSpeeds[i].setLength(state.ModuleStates[i].speedMetersPerSecond / (2 * MaxSpeed));
 
-      //SmartDashboard.putData("Module " + i, m_moduleMechanisms[i]);
+      // SmartDashboard.putData("Module " + i, m_moduleMechanisms[i]);
     }
 
-    //SmartDashboard.putNumber("Odom period seconds", state.OdometryPeriod);
+    // SmartDashboard.putNumber("Odom period seconds", state.OdometryPeriod);
 
-    //SmartDashboard.putNumber("posegetx", pose.getX());
-    //SmartDashboard.putNumber("posegety", pose.getY());
-    //SmartDashboard.putNumber("posegetrotation", pose.getRotation().getRotations());
+    // SmartDashboard.putNumber("posegetx", pose.getX());
+    // SmartDashboard.putNumber("posegety", pose.getY());
+    // SmartDashboard.putNumber("posegetrotation", pose.getRotation().getRotations());
     // for (CommandWithTime c : runningCommands) {
     //   if (c.getCommand() == null || c.getCommand().isFinished()) {
     //     CommandAsString.append(
-    //         "ST: " + c.getStartTime() + " |ET: " + this.lastTime + " |C: " + c.getCommandString());
+    //         "ST: " + c.getStartTime() + " |ET: " + this.lastTime + " |C: " +
+    // c.getCommandString());
     //   }
     // }
   }

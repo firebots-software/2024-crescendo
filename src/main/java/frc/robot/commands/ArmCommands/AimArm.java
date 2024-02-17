@@ -5,14 +5,14 @@ import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.PeterSubsystem;
 
 public class AimArm extends Command {
-    private ArmSubsystem armSubsystem;
+  private ArmSubsystem armSubsystem;
 
-    public AimArm(ArmSubsystem armSubsystem){
-        this.armSubsystem = armSubsystem;
-        addRequirements(armSubsystem);
-    }
+  public AimArm(ArmSubsystem armSubsystem) {
+    this.armSubsystem = armSubsystem;
+    addRequirements(armSubsystem);
+  }
 
-    // Called when the command is initially scheduled.
+  // Called when the command is initially scheduled.
   @Override
   public void initialize() {}
 
@@ -37,5 +37,4 @@ public class AimArm extends Command {
   public boolean isFinished() {
     return false;
   }
-
 }

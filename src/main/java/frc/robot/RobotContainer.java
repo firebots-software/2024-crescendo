@@ -19,24 +19,12 @@ import frc.robot.commands.MoveToTarget;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.commands.TestCommands.ArmDown;
 // import frc.robot.commands.ArmRotateCommand;
-//import frc.robot.commands.SwerveJoystickCommand;
+// import frc.robot.commands.SwerveJoystickCommand;
 import frc.robot.commands.TestCommands.ArmUp;
-
-import frc.robot.commands.TestCommands.TestArmCommand;
 import frc.robot.subsystems.ArmSubsystem;
-import frc.robot.subsystems.PeterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
-//import frc.robot.subsystems.TestEncoderSubsystem;
-
+// import frc.robot.subsystems.TestEncoderSubsystem;
 import java.util.Optional;
-import java.util.function.Supplier;
-import frc.robot.commands.TestCommands.IntakeMotorTest;
-import frc.robot.commands.TestCommands.LeftShooterTest;
-import frc.robot.commands.TestCommands.PreShooterTest;
-import frc.robot.commands.TestCommands.RightShooterTest;
-import frc.robot.commands.TestCommands.ShooterTest;
-import frc.robot.subsystems.ArmSubsystem;
-import frc.robot.subsystems.PeterSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -136,11 +124,11 @@ public class RobotContainer {
 
   // Starts telemetry operations (essentially logging -> look on SmartDashboard, AdvantageScope)
   public void doTelemetry() {
-    //logger.telemeterize(driveTrain.getState());
+    // logger.telemeterize(driveTrain.getState());
   }
 
   private void configureBindings() {
- SwerveJoystickCommand swerveJoystickCommand =
+    SwerveJoystickCommand swerveJoystickCommand =
         new SwerveJoystickCommand(
             () -> ((redAlliance) ? joystick.getRawAxis(1) : -joystick.getRawAxis(1)),
             () -> ((redAlliance) ? joystick.getRawAxis(0) : -joystick.getRawAxis(0)),
@@ -150,7 +138,7 @@ public class RobotContainer {
     driveTrain.setDefaultCommand(swerveJoystickCommand);
 
     // zero-heading
-    joystick
+    joystick     
         .circle()
         .onTrue(
             driveTrain.runOnce(
