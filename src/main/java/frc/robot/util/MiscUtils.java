@@ -1,5 +1,6 @@
 package frc.robot.util;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.Constants;
@@ -35,7 +36,7 @@ public class MiscUtils {
 
     double angle;
     if (target_y != robot_x) {
-      angle = (Math.atan2((target_y - robot_y), (target_x - robot_x)) + Math.PI * 2) % Math.PI * 2;
+      angle = (Math.atan2((target_y - robot_y), (target_x - robot_x)) + Math.PI) % Math.PI * 2;
     } else {
       angle = robot_rotation; // do not turn
     }
@@ -50,6 +51,6 @@ public class MiscUtils {
     double distToTargetY = Math.abs(robot_y-Constants.Landmarks.SUBWOOFER_LOCATION_GROUND.getY());
 
     double distance = Math.sqrt(Math.pow(distToTargetX,2) + Math.pow(distToTargetY,2));
-    return Math.atan2(1.35, distance);
+    return MathUtil.clamp(Math.atan2(1.35, distance)-Math.toRadians(56.4675),Math.toRadians(5),Math.PI/3);
   }
 }

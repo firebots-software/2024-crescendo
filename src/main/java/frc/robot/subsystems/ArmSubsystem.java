@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.util.MiscUtils;
 
 public class ArmSubsystem extends SubsystemBase {
   private static ArmSubsystem instance;
@@ -155,12 +156,7 @@ public class ArmSubsystem extends SubsystemBase {
   // }
 
   public void rotateArmToSpeakerPosition() {
-    setTargetDegrees(calculateAngleToSpeaker());
-  }
-
-  private double calculateAngleToSpeaker() {
-
-    return 10d;
+    setTargetDegrees(0);
   }
 
   public void rotateToAmpPosition() {

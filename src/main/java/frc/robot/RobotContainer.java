@@ -26,6 +26,7 @@ import frc.robot.commands.DebugCommands.PeterTest;
 import frc.robot.commands.DebugCommands.PreShooterTest;
 import frc.robot.commands.DebugCommands.RightShooterTest;
 import frc.robot.commands.DebugCommands.ShooterTest;
+import frc.robot.commandGroups.AlignAndShoot;
 import frc.robot.commands.MoveToTarget;
 import frc.robot.commands.PeterCommands.RunIntakeUntilDetection;
 import frc.robot.commands.PeterCommands.ShootNote;
@@ -199,14 +200,15 @@ public class RobotContainer {
                 driveTrain.runOnce(
                     () ->
                         driveTrain.seedFieldRelative(
-                            new Pose2d(new Translation2d(0, 0), new Rotation2d(0)))));
+                            new Pose2d(new Translation2d(1.25, 5.5), new Rotation2d(0)))));
         driveTrain.registerTelemetry(logger::telemeterize);
 
-  
+    
     sjoystick.circle().whileTrue(new IntakeMotorTest(peterSubsystem));
     sjoystick.square().whileTrue(new PreShooterTest(peterSubsystem));
     sjoystick.triangle().whileTrue(new ShooterTest(peterSubsystem));
-    sjoystick.cross().whileTrue(new LeftShooterTest(peterSubsystem));
+    // sjoystick.cross().whileTrue(new LeftShooterTest(peterSubsystem));
+    sjoystick.cross().whileTrue(new AlignAndShoot(driveTrain, armSubsystem, peterSubsystem));
     sjoystick.povUp().whileTrue(new RightShooterTest(peterSubsystem));
     sjoystick.povDown().whileTrue(new PeterTest(peterSubsystem));
     sjoystick.povRight().whileTrue(new RunIntakeUntilDetection(peterSubsystem));
