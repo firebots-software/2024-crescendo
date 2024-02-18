@@ -90,9 +90,7 @@ public class SwerveJoystickCommand extends Command {
     double ySpeed = ySpdFunction.get(); // ySpeed is actually left right (left +, right -)
     double turningSpeed =
         turningSpdFunction.get(); // turning speed is (anti-clockwise +, clockwise -)
-    if(automaticTurnFunction.get()){
-      turningSpeed = rotateToSpeaker();
-    }
+
     // 2. Normalize inputs
     double length = xSpeed * xSpeed + ySpeed * ySpeed; // acutally length squared
     if (length > 1d) {
@@ -106,7 +104,7 @@ public class SwerveJoystickCommand extends Command {
     ySpeed = Math.abs(ySpeed) > Constants.OI.LEFT_JOYSTICK_DEADBAND ? ySpeed : 0.0;
     turningSpeed =
         Math.abs(turningSpeed) > Constants.OI.RIGHT_JOYSTICK_DEADBAND ? turningSpeed : 0.0;
-
+  
     // 4. Make the driving smoother
     // This is a double between TELE_DRIVE_SLOW_MODE_SPEED_PERCENT and
     // TELE_DRIVE_FAST_MODE_SPEED_PERCENT
@@ -127,7 +125,11 @@ public class SwerveJoystickCommand extends Command {
         turningLimiter.calculate(turningSpeed)
             * driveSpeed
             * Constants.Swerve.PHYSICAL_MAX_ANGLUAR_SPEED_RADIANS_PER_SECOND;
-
+    
+    // Turn to Speaker
+    if(automaticTurnFunction.get()){
+      turningSpeed = rotateToSpeaker();
+    }
     // Final values to apply to drivetrain
     final double x = xSpeed;
     final double y = ySpeed;

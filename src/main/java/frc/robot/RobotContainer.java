@@ -138,7 +138,7 @@ public class RobotContainer {
             driveTrain.runOnce(
                 () ->
                     driveTrain.seedFieldRelative(
-                        new Pose2d(new Translation2d(0, 0), new Rotation2d(0)))));
+                        new Pose2d(new Translation2d(1.25, 5.50), new Rotation2d(0)))));
     driveTrain.registerTelemetry(logger::telemeterize);
   }
 }
