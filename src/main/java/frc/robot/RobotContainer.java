@@ -26,18 +26,14 @@ import frc.robot.commands.DebugCommands.PeterTest;
 import frc.robot.commands.DebugCommands.PreShooterTest;
 import frc.robot.commands.DebugCommands.RightShooterTest;
 import frc.robot.commands.DebugCommands.ShooterTest;
-import frc.robot.commands.MoveToTarget;
+import frc.robot.commands.ArmCommands.ArmUp;
+import frc.robot.commands.Auton.MoveToTarget;
 import frc.robot.commands.PeterCommands.RunIntakeUntilDetection;
 import frc.robot.commands.PeterCommands.ShootNote;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.subsystems.PeterSubsystem;
-import frc.robot.commands.TestCommands.ArmDown;
-// import frc.robot.commands.ArmRotateCommand;
-// import frc.robot.commands.SwerveJoystickCommand;
-import frc.robot.commands.TestCommands.ArmUp;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
-// import frc.robot.subsystems.TestEncoderSubsystem;
 import java.util.Optional;
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -210,14 +206,11 @@ public class RobotContainer {
     sjoystick.povUp().whileTrue(new RightShooterTest(peterSubsystem));
     sjoystick.povDown().whileTrue(new PeterTest(peterSubsystem));
     sjoystick.povRight().whileTrue(new RunIntakeUntilDetection(peterSubsystem));
-    sjoystick.povLeft().whileTrue(new ShootNote(peterSubsystem, peterSubsystem)); 
+    sjoystick.povLeft().whileTrue(new ShootNote(peterSubsystem)); 
     /* sjoystick
     .povRight()
     .whileTrue(new PeterTestersSequential(peterSubsystem, peterSubsystem, peterSubsystem)); */
-    // peterSubsystem.setDefaultCommand(
-    //    new ArmAndPeterCommand(
-    //        () -> -sjoystick.getRawAxis(3), () -> -sjoystick.getRawAxis(4), peterSubsystem));
-    // zero-heading
+
    mjoystick     
         .circle()
         .onTrue(

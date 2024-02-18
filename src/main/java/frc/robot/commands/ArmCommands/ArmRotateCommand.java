@@ -10,7 +10,7 @@ public class ArmRotateCommand extends Command {
 
   public ArmRotateCommand(ArmSubsystem armSubsystem, PeterSubsystem peterSubsystem) {
     this.armSubsystem = armSubsystem;
-    this.peterSubsystem = peterSubsystem;
+    this.peterSubsystem = peterSubsystem; //DOES NOT USE THE MOTORS FROM THE PETER SUBSYSTEM
     addRequirements(armSubsystem);
   }
 

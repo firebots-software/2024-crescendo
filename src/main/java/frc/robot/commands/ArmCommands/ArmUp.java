@@ -1,13 +1,13 @@
-package frc.robot.commands.TestCommands;
+package frc.robot.commands.ArmCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ArmSubsystem;
 
-public class ArmDown extends Command {
+public class ArmUp extends Command {
 
   private ArmSubsystem armSubsystem;
 
-  public ArmDown(ArmSubsystem armSubsystem) {
+  public ArmUp(ArmSubsystem armSubsystem) {
     this.armSubsystem = armSubsystem;
     addRequirements(armSubsystem);
   }
@@ -19,7 +19,7 @@ public class ArmDown extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    armSubsystem.setTargetDegrees(50);
+    armSubsystem.setTargetDegrees(10);
   }
 
   // Called once the command ends or is interrupted.
