@@ -29,7 +29,9 @@ import frc.robot.commands.DebugCommands.ShooterTest;
 import frc.robot.commands.ArmCommands.ArmUp;
 import frc.robot.commands.Auton.MoveToTarget;
 import frc.robot.commands.PeterCommands.RunIntakeUntilDetection;
+import frc.robot.commands.PeterCommands.Shoot;
 import frc.robot.commands.PeterCommands.ShootNote;
+import frc.robot.commands.PeterCommands.SpinUpShooter;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.subsystems.PeterSubsystem;
 import frc.robot.subsystems.ArmSubsystem;
@@ -132,6 +134,7 @@ public class RobotContainer {
   private final ArmSubsystem armSubsystem = ArmSubsystem.getInstance();
   private final PeterSubsystem peterSubsystem = PeterSubsystem.getInstance();
 
+  //TODO: Rename backupCommand (Does not tell us what this does)
   private final Command backupCommand = new FunctionalCommand(() -> {
     peterSubsystem.resetPreshooterPosition();
   }, () -> {
@@ -140,7 +143,7 @@ public class RobotContainer {
     peterSubsystem.stopPreShooterMotor();
   }, () -> false);
 
-  Command runUntilDetection = new RunIntakeUntilDetection(peterSubsystem);
+  // Command runUntilDetection = new RunIntakeUntilDetection(peterSubsystem);
   public final Telemetry logger = new Telemetry();
 
   // Starts telemetry operations (essentially logging -> look on SmartDashboard, AdvantageScope)
@@ -149,38 +152,41 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    var spinUpShooter = new FunctionalCommand(() -> {}, () -> {
-      peterSubsystem.spinLeftShooter();
-      peterSubsystem.spinRightShooter();
-    }, (a) -> {}, () -> {return peterSubsystem.isShooterReady();}, peterSubsystem);
-    SwerveJoystickCommand swerveJoystickCommand =
-        new SwerveJoystickCommand(
-            () -> ((redAlliance) ? mjoystick.getRawAxis(1) : -mjoystick.getRawAxis(1)),
-            () -> ((redAlliance) ? mjoystick.getRawAxis(0) : -mjoystick.getRawAxis(0)),
-            () -> -mjoystick.getRawAxis(2),
-            () -> (mjoystick.getRawAxis(3) - mjoystick.getRawAxis(4)) / 4d + 0.5,
-            driveTrain);
-    driveTrain.setDefaultCommand(swerveJoystickCommand);
+      SwerveJoystickCommand swerveJoystickCommand =
+      new SwerveJoystickCommand(
+          () -> ((redAlliance) ? mjoystick.getRawAxis(1) : -mjoystick.getRawAxis(1)),
+          () -> ((redAlliance) ? mjoystick.getRawAxis(0) : -mjoystick.getRawAxis(0)),
+          () -> -mjoystick.getRawAxis(2),
+          () -> (mjoystick.getRawAxis(3) - mjoystick.getRawAxis(4)) / 4d + 0.5,
+          driveTrain);
+      driveTrain.setDefaultCommand(swerveJoystickCommand);
 
-    var shoot = new FunctionalCommand(() -> {}, () -> {
-      peterSubsystem.spinLeftShooter();
-      peterSubsystem.spinRightShooter();
-      peterSubsystem.spinUpPreShooter();
-    },  (a) -> {
-      peterSubsystem.stopLeftShooter();
-      peterSubsystem.stopRightShooter();
-      peterSubsystem.stopPreShooterMotor();
-    }, () -> {
-      return false;
-    }, peterSubsystem);
+    // var spinUpShooter = new FunctionalCommand(() -> {}, () -> {
+    //   peterSubsystem.spinLeftShooter();
+    //   peterSubsystem.spinRightShooter();
+    // }, (a) -> {}, () -> {return peterSubsystem.isShooterReady();}, peterSubsystem);
 
-    sjoystick.L2().whileTrue(new SequentialCommandGroup(runUntilDetection, backupCommand));
-    sjoystick.R2().whileTrue(new SequentialCommandGroup(spinUpShooter, shoot));
+
+    // var shoot = new FunctionalCommand(() -> {}, () -> {
+    //   peterSubsystem.spinLeftShooter();
+    //   peterSubsystem.spinRightShooter();
+    //   peterSubsystem.spinUpPreShooter();
+    // },  (a) -> {
+    //   peterSubsystem.stopLeftShooter();
+    //   peterSubsystem.stopRightShooter();
+    //   peterSubsystem.stopPreShooterMotor();
+    // }, () -> {
+    //   return false;
+    // }, peterSubsystem);
+
+    sjoystick.L2().whileTrue(new SequentialCommandGroup(new RunIntakeUntilDetection(peterSubsystem), backupCommand));
+    sjoystick.R2().whileTrue(new SequentialCommandGroup(new SpinUpShooter(peterSubsystem), new Shoot(peterSubsystem)));
 
     sjoystick.L1().whileTrue(new RunCommand( () -> {
       peterSubsystem.reverseMechanism();
     }, peterSubsystem));
 
+    //When no Commands are being issued, Peter motors should not be moving
     peterSubsystem.setDefaultCommand(new RunCommand(() -> {
       peterSubsystem.stopIntake();
       peterSubsystem.stopLeftShooter();
@@ -188,15 +194,15 @@ public class RobotContainer {
       peterSubsystem.stopPreShooterMotor();
     }, peterSubsystem));
 
-        // zero-heading
-        mjoystick
-            .circle()
-            .onTrue(
-                driveTrain.runOnce(
-                    () ->
-                        driveTrain.seedFieldRelative(
-                            new Pose2d(new Translation2d(0, 0), new Rotation2d(0)))));
-        driveTrain.registerTelemetry(logger::telemeterize);
+      // zero-heading
+      mjoystick
+          .circle()
+          .onTrue(
+              driveTrain.runOnce(
+                  () ->
+                      driveTrain.seedFieldRelative(
+                          new Pose2d(new Translation2d(0, 0), new Rotation2d(0)))));
+      driveTrain.registerTelemetry(logger::telemeterize);
 
   
     sjoystick.circle().whileTrue(new IntakeMotorTest(peterSubsystem));
