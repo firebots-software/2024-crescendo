@@ -56,7 +56,7 @@ public final class Constants {
 
     public static final double INTAKE_GEAR_RATIO = 2;
     public static final double PRESHOOTER_GEAR_RATIO = 4;
-    public static final double SHOOTER_WHEELS_GEAR_RATIOS = 15.0 / 12.0;
+    public static final double SHOOTER_WHEELS_GEAR_RATIOS = 24d / 18d;
   }
 
   public static final class FieldDimensions {
@@ -93,13 +93,13 @@ public final class Constants {
     public static final double CURRENT_LIMIT = 5.0;
     public static final double S0C_KP = 18.5;
     public static final double ARMFF_KS = 0.1;
-    public static final double ARMFF_KG = 0.55;
-    public static final double ARMFF_KV = 1.45;
+    public static final double ARMFF_KG = 0.21;
+    public static final double ARMFF_KV = 2.49;
     public static final double MOTIONMAGIC_KV = 1; // MotionMagic Cruise Velocity in RPS of the arm
     public static final double MOTIONMAGIC_KA = 0.5; // MotionMagic Acceleration in RPS^2 of the arm
 
     public static final double ABSOLUTE_ARM_CONVERSION_FACTOR = 42d / 18d;
-    public static final double INTEGRATED_ABSOLUTE_CONVERSION_FACTOR = 34 + 2.0 / 3.0;
+    public static final double INTEGRATED_ABSOLUTE_CONVERSION_FACTOR = 55.9867;
     public static final double INTEGRATED_ARM_CONVERSION_FACTOR =
         ABSOLUTE_ARM_CONVERSION_FACTOR
             * INTEGRATED_ABSOLUTE_CONVERSION_FACTOR; // 80.88888888888888888888888888888888888888;

@@ -21,18 +21,21 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.ArmCommands.AimArmCmd;
+import frc.robot.commands.ArmCommands.ArmToNeutralCmd;
 import frc.robot.commands.ArmCommands.ArmToPickupCmd;
 import frc.robot.commands.Auton.MoveToTarget;
 import frc.robot.commands.PeterCommands.RunIntakeUntilDetection;
 import frc.robot.commands.PeterCommands.Shoot;
 import frc.robot.commands.PeterCommands.SpinUpShooter;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
-import frc.robot.commands.SwerveCommands.SwerveTargetCmd;
+import frc.robot.commands.SwerveCommands.SwerveLockedAngleCmd;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.PeterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -153,35 +156,23 @@ public class RobotContainer {
 
   private void configureBindings() {
 
-    var leftShoulderTrigger = joystick.L1();
+    Trigger leftShoulderTrigger = joystick.L1();
+    Supplier<Double> frontBackFunction =
+        () -> ((redAlliance) ? joystick.getRawAxis(1) : -joystick.getRawAxis(1));
+    Supplier<Double> leftRightFunction =
+        () -> ((redAlliance) ? joystick.getRawAxis(0) : -joystick.getRawAxis(0));
+    Supplier<Double> rotationFunction = () -> -joystick.getRawAxis(2);
+    Supplier<Double> speedFunction = () -> // slowmode when left shoulder is pressed, otherwise fast
+        leftShoulderTrigger.getAsBoolean() ? 0d : 1d;
+
     SwerveJoystickCommand swerveJoystickCommand =
         new SwerveJoystickCommand(
-            () -> ((redAlliance) ? joystick.getRawAxis(1) : -joystick.getRawAxis(1)),
-            () -> ((redAlliance) ? joystick.getRawAxis(0) : -joystick.getRawAxis(0)),
-            () -> -joystick.getRawAxis(2),
-            () ->
-                leftShoulderTrigger.getAsBoolean()
-                    ? 0d
-                    : 1d, // slowmode when left shoulder is pressed, otherwise fast
+            frontBackFunction,
+            leftRightFunction,
+            rotationFunction,
+            speedFunction, // slowmode when left shoulder is pressed, otherwise fast
             driveTrain);
     driveTrain.setDefaultCommand(swerveJoystickCommand);
-
-    // var spinUpShooter = new FunctionalCommand(() -> {}, () -> {
-    //   peterSubsystem.spinLeftShooter();
-    //   peterSubsystem.spinRightShooter();
-    // }, (a) -> {}, () -> {return peterSubsystem.isShooterReady();}, peterSubsystem);
-
-    // var shoot = new FunctionalCommand(() -> {}, () -> {
-    //   peterSubsystem.spinLeftShooter();
-    //   peterSubsystem.spinRightShooter();
-    //   peterSubsystem.spinUpPreShooter();
-    // },  (a) -> {
-    //   peterSubsystem.stopLeftShooter();
-    //   peterSubsystem.stopRightShooter();
-    //   peterSubsystem.stopPreShooterMotor();
-    // }, () -> {
-    //   return false;
-    // }, peterSubsystem);
 
     // Intake
     joystick
@@ -190,7 +181,7 @@ public class RobotContainer {
             new SequentialCommandGroup(
                 new ParallelCommandGroup(
                     new ArmToPickupCmd(armSubsystem), new RunIntakeUntilDetection(peterSubsystem)),
-                new ParallelCommandGroup(backupCommand)));
+                new ParallelCommandGroup(new ArmToNeutralCmd(armSubsystem), backupCommand)));
 
     // Outtake
     joystick
@@ -206,37 +197,46 @@ public class RobotContainer {
         new ParallelCommandGroup(
             new SpinUpShooter(peterSubsystem),
             new AimArmCmd(armSubsystem, driveTrain),
-            new SwerveTargetCmd(
-                () -> ((redAlliance) ? joystick.getRawAxis(1) : -joystick.getRawAxis(1)),
-                () -> ((redAlliance) ? joystick.getRawAxis(0) : -joystick.getRawAxis(0)),
-                () -> Constants.FieldDimensions.Speaker.POSE,
-                () ->
-                    leftShoulderTrigger.getAsBoolean()
-                        ? 0d
-                        : 1d, // slowmode when left shoulder is pressed, otherwise fast
-                driveTrain));
+            SwerveLockedAngleCmd.fromPose(
+                    frontBackFunction,
+                    leftRightFunction,
+                    () -> Constants.FieldDimensions.Speaker.POSE.getTranslation(),
+                    speedFunction,
+                    driveTrain)
+                .withToleranceEnd(0.02));
 
     Command aimCommand2 =
         new ParallelCommandGroup(
             new SpinUpShooter(peterSubsystem),
             new AimArmCmd(armSubsystem, driveTrain),
-            new SwerveTargetCmd(
-                () -> ((redAlliance) ? joystick.getRawAxis(1) : -joystick.getRawAxis(1)),
-                () -> ((redAlliance) ? joystick.getRawAxis(0) : -joystick.getRawAxis(0)),
-                () -> Constants.FieldDimensions.Speaker.POSE,
-                () ->
-                    leftShoulderTrigger.getAsBoolean()
-                        ? 0d
-                        : 1d, // slowmode when left shoulder is pressed, otherwise fast
-                driveTrain));
+            SwerveLockedAngleCmd.fromPose(
+                    frontBackFunction,
+                    leftRightFunction,
+                    () -> Constants.FieldDimensions.Speaker.POSE.getTranslation(),
+                    speedFunction,
+                    driveTrain)
+                .withToleranceEnd(0.02) // need this to end so we know we've finished aiming
+            );
     // Aim
-    joystick.square().and(() -> peterSubsystem.notePresent()).whileTrue(aimCommand);
+    joystick.square().whileTrue(aimCommand);
 
     // Fire
     joystick
         .cross()
-        .and(() -> peterSubsystem.notePresent())
-        .whileTrue(new SequentialCommandGroup(aimCommand2, new Shoot(peterSubsystem)));
+        .whileTrue(
+            new SequentialCommandGroup(
+                aimCommand2,
+                new ParallelCommandGroup(
+                    new Shoot(peterSubsystem),
+
+                    // we need this a second time because the first one ended in the aimCommand,
+                    // this time without a tolerance end
+                    SwerveLockedAngleCmd.fromPose(
+                        frontBackFunction,
+                        leftRightFunction,
+                        () -> Constants.FieldDimensions.Speaker.POSE.getTranslation(),
+                        speedFunction,
+                        driveTrain))));
 
     // When no Commands are being issued, Peter motors should not be moving
     peterSubsystem.setDefaultCommand(
