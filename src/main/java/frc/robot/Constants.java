@@ -9,6 +9,7 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstantsFactory;
 import com.pathplanner.lib.path.PathConstraints;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 
 /**
@@ -41,7 +42,7 @@ public final class Constants {
 
   public static final class Peter {
     public static final int INTAKE_MOTOR_PORT = 33;
-   // public static final double SHOOTER_SPEED = 3; // Shooter gear ratio: 15:12
+    // public static final double SHOOTER_SPEED = 3; // Shooter gear ratio: 15:12
     public static final int NOTE_DETECTOR_PORT = 1;
     public static final int PRE_SHOOTER_PORT = 32;
     public static final int SHOOTER_PORT_RIGHT = 30;
@@ -50,7 +51,7 @@ public final class Constants {
     public static final double INTAKE_WHEEL_SPEED_RPS = 200; // Intake gear ratio: 2:1
     public static final double ROTATIONS_TO_SHOOTER = 300; // Preshooter gear ratio: 4:1
     public static final double SHOOT_WHEEL_SPEED_RPS = 4500.0 / 60.0;
-   
+
     public static final String CANBUS_NAME = "rio";
 
     public static final double INTAKE_GEAR_RATIO = 2;
@@ -59,10 +60,14 @@ public final class Constants {
   }
 
   public static final class FieldDimensions {
-    public static final double SPEAKER_HEIGHT_INCHES = 78.0;
+    public static final class Speaker {
+      public static final double HEIGHT_INCHES = 78.0;
+      public static final double HEIGHT_METERS = Units.inchesToMeters(HEIGHT_INCHES);
+      public static final Pose2d POSE = new Pose2d(new Translation2d(0.5, 5.5), new Rotation2d(0));
+    }
+
     public static final double AMP_HEIGHT_INCHES = 35.0;
     public static final double INTAKE_MODE_HEIGHT_INCHES = 4.0;
-    public static final double SPEAKER_HEIGHT_METERS = Units.inchesToMeters(SPEAKER_HEIGHT_INCHES);
     public static final double AMP_HEIGHT_METERS = Units.inchesToMeters(AMP_HEIGHT_INCHES);
     public static final double INTAKE_MODE_HEIGHT_METERS =
         Units.inchesToMeters(INTAKE_MODE_HEIGHT_INCHES);

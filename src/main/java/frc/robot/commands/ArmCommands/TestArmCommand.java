@@ -11,7 +11,7 @@ public class TestArmCommand extends Command {
   public TestArmCommand(ArmSubsystem armSubsystem, Supplier<Double> joystickSpeed) {
     this.armSubsystem = armSubsystem;
     this.joystickSpeed = joystickSpeed;
-  } 
+  }
 
   @Override
   public void initialize() {}

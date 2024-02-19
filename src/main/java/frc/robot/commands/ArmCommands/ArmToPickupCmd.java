@@ -1,13 +1,13 @@
-package frc.robot.commands.DebugCommands;
+package frc.robot.commands.ArmCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ArmSubsystem;
 
-public class ArmTest extends Command {
+public class ArmToPickupCmd extends Command {
 
   private ArmSubsystem armSubsystem;
 
-  public ArmTest(ArmSubsystem armSubsystem) {
+  public ArmToPickupCmd(ArmSubsystem armSubsystem) {
     this.armSubsystem = armSubsystem;
     addRequirements(armSubsystem);
   }
@@ -19,18 +19,16 @@ public class ArmTest extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    armSubsystem.rotateArmToSpeakerPosition();
+    armSubsystem.setTargetDegrees(1);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    armSubsystem.rotateToRestPosition();
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false; // wait for x seconds
+    return armSubsystem.atTarget(2); // wait for x seconds
   }
 }

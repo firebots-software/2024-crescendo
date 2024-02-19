@@ -4,39 +4,36 @@
 
 package frc.robot;
 
-
 // import frc.robot.subsystems.ArmSubsystem;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
-import frc.robot.commands.DebugCommands.IntakeMotorTest;
-import frc.robot.commands.DebugCommands.LeftShooterTest;
-import frc.robot.commands.DebugCommands.PeterTest;
-import frc.robot.commands.DebugCommands.PreShooterTest;
-import frc.robot.commands.DebugCommands.RightShooterTest;
-import frc.robot.commands.DebugCommands.ShooterTest;
-import frc.robot.commands.ArmCommands.ArmUp;
+import frc.robot.commands.ArmCommands.AimArmCmd;
+import frc.robot.commands.ArmCommands.ArmToPickupCmd;
 import frc.robot.commands.Auton.MoveToTarget;
 import frc.robot.commands.PeterCommands.RunIntakeUntilDetection;
 import frc.robot.commands.PeterCommands.Shoot;
-import frc.robot.commands.PeterCommands.ShootNote;
 import frc.robot.commands.PeterCommands.SpinUpShooter;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
-import frc.robot.subsystems.PeterSubsystem;
+import frc.robot.commands.SwerveCommands.SwerveTargetCmd;
 import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.PeterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import java.util.Optional;
+
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -126,22 +123,25 @@ public class RobotContainer {
 
   /* Setting up bindings for necessary control of the swerve drive platform */
 
-  private final CommandPS4Controller mjoystick =
+  private final CommandPS4Controller joystick =
       new CommandPS4Controller(Constants.OI.MOVEMENT_JOYSTICK_PORT);
-  private final CommandPS4Controller sjoystick =
-      new CommandPS4Controller(Constants.OI.ARM_JOYSTICK_PORT);
   private final SwerveSubsystem driveTrain = SwerveSubsystem.getInstance();
   private final ArmSubsystem armSubsystem = ArmSubsystem.getInstance();
   private final PeterSubsystem peterSubsystem = PeterSubsystem.getInstance();
 
-  //TODO: Rename backupCommand (Does not tell us what this does)
-  private final Command backupCommand = new FunctionalCommand(() -> {
-    peterSubsystem.resetPreshooterPosition();
-  }, () -> {
-    peterSubsystem.reversePreshooterRotations(1);
-  }, (a) -> {
-    peterSubsystem.stopPreShooterMotor();
-  }, () -> false);
+  // TODO: Rename backupCommand (Does not tell us what this does)
+  private final Command backupCommand =
+      new FunctionalCommand(
+          () -> {
+            peterSubsystem.resetPreshooterPosition();
+          },
+          () -> {
+            peterSubsystem.reversePreshooterRotations(1);
+          },
+          (a) -> {
+            peterSubsystem.stopPreShooterMotor();
+          },
+          () -> false);
 
   // Command runUntilDetection = new RunIntakeUntilDetection(peterSubsystem);
   public final Telemetry logger = new Telemetry();
@@ -152,20 +152,24 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-      SwerveJoystickCommand swerveJoystickCommand =
-      new SwerveJoystickCommand(
-          () -> ((redAlliance) ? mjoystick.getRawAxis(1) : -mjoystick.getRawAxis(1)),
-          () -> ((redAlliance) ? mjoystick.getRawAxis(0) : -mjoystick.getRawAxis(0)),
-          () -> -mjoystick.getRawAxis(2),
-          () -> (mjoystick.getRawAxis(3) - mjoystick.getRawAxis(4)) / 4d + 0.5,
-          driveTrain);
-      driveTrain.setDefaultCommand(swerveJoystickCommand);
+
+    var leftShoulderTrigger = joystick.L1();
+    SwerveJoystickCommand swerveJoystickCommand =
+        new SwerveJoystickCommand(
+            () -> ((redAlliance) ? joystick.getRawAxis(1) : -joystick.getRawAxis(1)),
+            () -> ((redAlliance) ? joystick.getRawAxis(0) : -joystick.getRawAxis(0)),
+            () -> -joystick.getRawAxis(2),
+            () ->
+                leftShoulderTrigger.getAsBoolean()
+                    ? 0d
+                    : 1d, // slowmode when left shoulder is pressed, otherwise fast
+            driveTrain);
+    driveTrain.setDefaultCommand(swerveJoystickCommand);
 
     // var spinUpShooter = new FunctionalCommand(() -> {}, () -> {
     //   peterSubsystem.spinLeftShooter();
     //   peterSubsystem.spinRightShooter();
     // }, (a) -> {}, () -> {return peterSubsystem.isShooterReady();}, peterSubsystem);
-
 
     // var shoot = new FunctionalCommand(() -> {}, () -> {
     //   peterSubsystem.spinLeftShooter();
@@ -179,45 +183,74 @@ public class RobotContainer {
     //   return false;
     // }, peterSubsystem);
 
-    sjoystick.L2().whileTrue(new SequentialCommandGroup(new RunIntakeUntilDetection(peterSubsystem), backupCommand));
-    sjoystick.R2().whileTrue(new SequentialCommandGroup(new SpinUpShooter(peterSubsystem), new Shoot(peterSubsystem)));
+    // Intake
+    joystick
+        .L2()
+        .whileTrue(
+            new SequentialCommandGroup(
+                new ParallelCommandGroup(
+                    new ArmToPickupCmd(armSubsystem), new RunIntakeUntilDetection(peterSubsystem)),
+                new ParallelCommandGroup(backupCommand)));
 
-    sjoystick.L1().whileTrue(new RunCommand( () -> {
-      peterSubsystem.reverseMechanism();
-    }, peterSubsystem));
+    // Outtake
+    joystick
+        .R2()
+        .whileTrue(
+            new RunCommand(
+                () -> {
+                  peterSubsystem.reverseMechanism();
+                },
+                peterSubsystem));
 
-    //When no Commands are being issued, Peter motors should not be moving
-    peterSubsystem.setDefaultCommand(new RunCommand(() -> {
-      peterSubsystem.stopIntake();
-      peterSubsystem.stopLeftShooter();
-      peterSubsystem.stopRightShooter();
-      peterSubsystem.stopPreShooterMotor();
-    }, peterSubsystem));
+    Command aimCommand =
+        new ParallelCommandGroup(
+            new SpinUpShooter(peterSubsystem),
+            new AimArmCmd(armSubsystem, driveTrain),
+            new SwerveTargetCmd(
+                () -> ((redAlliance) ? joystick.getRawAxis(1) : -joystick.getRawAxis(1)),
+                () -> ((redAlliance) ? joystick.getRawAxis(0) : -joystick.getRawAxis(0)),
+                () -> Constants.FieldDimensions.Speaker.POSE,
+                () ->
+                    leftShoulderTrigger.getAsBoolean()
+                        ? 0d
+                        : 1d, // slowmode when left shoulder is pressed, otherwise fast
+                driveTrain));
 
-      // zero-heading
-      mjoystick
-          .circle()
-          .onTrue(
-              driveTrain.runOnce(
-                  () ->
-                      driveTrain.seedFieldRelative(
-                          new Pose2d(new Translation2d(0, 0), new Rotation2d(0)))));
-      driveTrain.registerTelemetry(logger::telemeterize);
+    Command aimCommand2 =
+        new ParallelCommandGroup(
+            new SpinUpShooter(peterSubsystem),
+            new AimArmCmd(armSubsystem, driveTrain),
+            new SwerveTargetCmd(
+                () -> ((redAlliance) ? joystick.getRawAxis(1) : -joystick.getRawAxis(1)),
+                () -> ((redAlliance) ? joystick.getRawAxis(0) : -joystick.getRawAxis(0)),
+                () -> Constants.FieldDimensions.Speaker.POSE,
+                () ->
+                    leftShoulderTrigger.getAsBoolean()
+                        ? 0d
+                        : 1d, // slowmode when left shoulder is pressed, otherwise fast
+                driveTrain));
+    // Aim
+    joystick.square().and(() -> peterSubsystem.notePresent()).whileTrue(aimCommand);
 
-  
-    sjoystick.circle().whileTrue(new IntakeMotorTest(peterSubsystem));
-    sjoystick.square().whileTrue(new PreShooterTest(peterSubsystem));
-    sjoystick.triangle().whileTrue(new ShooterTest(peterSubsystem));
-    sjoystick.cross().whileTrue(new LeftShooterTest(peterSubsystem));
-    sjoystick.povUp().whileTrue(new RightShooterTest(peterSubsystem));
-    sjoystick.povDown().whileTrue(new PeterTest(peterSubsystem));
-    sjoystick.povRight().whileTrue(new RunIntakeUntilDetection(peterSubsystem));
-    sjoystick.povLeft().whileTrue(new ShootNote(peterSubsystem)); 
-    /* sjoystick
-    .povRight()
-    .whileTrue(new PeterTestersSequential(peterSubsystem, peterSubsystem, peterSubsystem)); */
+    // Fire
+    joystick
+        .cross()
+        .and(() -> peterSubsystem.notePresent())
+        .whileTrue(new SequentialCommandGroup(aimCommand2, new Shoot(peterSubsystem)));
 
-   mjoystick     
+    // When no Commands are being issued, Peter motors should not be moving
+    peterSubsystem.setDefaultCommand(
+        new InstantCommand(
+            () -> {
+              peterSubsystem.stopIntake();
+              peterSubsystem.stopLeftShooter();
+              peterSubsystem.stopRightShooter();
+              peterSubsystem.stopPreShooterMotor();
+            },
+            peterSubsystem));
+
+    // zero-heading
+    joystick
         .circle()
         .onTrue(
             driveTrain.runOnce(
@@ -225,8 +258,5 @@ public class RobotContainer {
                     driveTrain.seedFieldRelative(
                         new Pose2d(new Translation2d(0, 0), new Rotation2d(0)))));
     driveTrain.registerTelemetry(logger::telemeterize);
-
-    sjoystick.R1().whileTrue(new ArmUp(armSubsystem));
-    //sjoystick.L2().whileTrue(new ArmDown(armSubsystem));
   }
 }

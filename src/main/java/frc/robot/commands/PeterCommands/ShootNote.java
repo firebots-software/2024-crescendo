@@ -31,7 +31,6 @@ public class ShootNote extends Command {
   public void execute() {
     shooter.spinUpShooter();
     shooter.spinUpPreShooter();
-    
   }
 
   // Called once the command ends or is interrupted.

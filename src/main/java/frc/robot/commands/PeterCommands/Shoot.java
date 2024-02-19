@@ -3,8 +3,8 @@ package frc.robot.commands.PeterCommands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.PeterSubsystem;
 
-public class Shoot extends Command{
-    private PeterSubsystem peterSubsystem;
+public class Shoot extends Command {
+  private PeterSubsystem peterSubsystem;
 
   /**
    * Creates a new ExampleCommand.
@@ -41,5 +41,5 @@ public class Shoot extends Command{
   @Override
   public boolean isFinished() {
     return false;
-}
+  }
 }
