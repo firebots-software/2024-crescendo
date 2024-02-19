@@ -20,7 +20,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.ArmCommands.AimArmCmd;
 import frc.robot.commands.ArmCommands.ArmToNeutralCmd;
@@ -126,8 +126,8 @@ public class RobotContainer {
 
   /* Setting up bindings for necessary control of the swerve drive platform */
 
-  private final CommandPS4Controller joystick =
-      new CommandPS4Controller(Constants.OI.MOVEMENT_JOYSTICK_PORT);
+  private final CommandXboxController joystick =
+      new CommandXboxController(Constants.OI.MOVEMENT_JOYSTICK_PORT);
   private final SwerveSubsystem driveTrain = SwerveSubsystem.getInstance();
   private final ArmSubsystem armSubsystem = ArmSubsystem.getInstance();
   private final PeterSubsystem peterSubsystem = PeterSubsystem.getInstance();
@@ -156,12 +156,12 @@ public class RobotContainer {
 
   private void configureBindings() {
 
-    Trigger leftShoulderTrigger = joystick.L1();
+    Trigger leftShoulderTrigger = joystick.leftBumper();
     Supplier<Double> frontBackFunction =
-        () -> ((redAlliance) ? joystick.getRawAxis(1) : -joystick.getRawAxis(1));
+        () -> ((redAlliance) ? joystick.getLeftY() : -joystick.getLeftY());
     Supplier<Double> leftRightFunction =
-        () -> ((redAlliance) ? joystick.getRawAxis(0) : -joystick.getRawAxis(0));
-    Supplier<Double> rotationFunction = () -> -joystick.getRawAxis(2);
+        () -> ((redAlliance) ? joystick.getLeftX() : -joystick.getLeftX());
+    Supplier<Double> rotationFunction = () -> -joystick.getRightX();
     Supplier<Double> speedFunction = () -> // slowmode when left shoulder is pressed, otherwise fast
         leftShoulderTrigger.getAsBoolean() ? 0d : 1d;
 
@@ -176,7 +176,7 @@ public class RobotContainer {
 
     // Intake
     joystick
-        .L2()
+        .leftTrigger()
         .whileTrue(
             new SequentialCommandGroup(
                 new ParallelCommandGroup(
@@ -185,7 +185,7 @@ public class RobotContainer {
 
     // Outtake
     joystick
-        .R2()
+        .rightTrigger()
         .whileTrue(
             new RunCommand(
                 () -> {
@@ -218,11 +218,11 @@ public class RobotContainer {
                 .withToleranceEnd(0.02) // need this to end so we know we've finished aiming
             );
     // Aim
-    joystick.square().whileTrue(aimCommand);
+    joystick.x().whileTrue(aimCommand);
 
     // Fire
     joystick
-        .cross()
+        .a()
         .whileTrue(
             new SequentialCommandGroup(
                 aimCommand2,
@@ -240,7 +240,7 @@ public class RobotContainer {
 
     // speaker snap
     joystick
-        .circle()
+        .y()
         .whileTrue(
             new SwerveLockedAngleCmd(
                 frontBackFunction,
@@ -251,7 +251,7 @@ public class RobotContainer {
 
     // amp snap
     joystick
-        .triangle()
+        .b()
         .whileTrue(
             new SwerveLockedAngleCmd(
                 frontBackFunction,
@@ -273,12 +273,12 @@ public class RobotContainer {
 
     // zero-heading
     joystick
-        .PS()
+        .povDown()
         .onTrue(
             driveTrain.runOnce(
                 () ->
                     driveTrain.seedFieldRelative(
-                        new Pose2d(new Translation2d(0, 0), new Rotation2d(0)))));
+                        new Pose2d(new Translation2d(1.25, 5.5), new Rotation2d(0)))));
     driveTrain.registerTelemetry(logger::telemeterize);
   }
 }

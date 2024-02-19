@@ -9,7 +9,7 @@ import java.util.function.Supplier;
 
 public class SwerveLockedAngleCmd extends SwerveJoystickCommand {
 
-  private static final PIDController turningPID = new PIDController(3d, 0d, 0d);
+  private static final PIDController turningPID = new PIDController(1d, 0d, 0d);
   private final Supplier<Double> error;
   private double tolerance = -1d;
 

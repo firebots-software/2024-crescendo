@@ -19,7 +19,7 @@ public class ArmToPickupCmd extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    armSubsystem.setTargetDegrees(1);
+    armSubsystem.setTargetDegrees(4);
   }
 
   // Called once the command ends or is interrupted.

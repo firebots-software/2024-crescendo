@@ -103,7 +103,7 @@ public final class Constants {
     public static final double INTEGRATED_ARM_CONVERSION_FACTOR =
         ABSOLUTE_ARM_CONVERSION_FACTOR
             * INTEGRATED_ABSOLUTE_CONVERSION_FACTOR; // 80.88888888888888888888888888888888888888;
-    public static final double ABSOLUTE_ENCODER_HORIZONTAL = 0.28;
+    public static final double ABSOLUTE_ENCODER_HORIZONTAL = 0.20;
     public static final double ABSOLUTE_HORIZONTAL_OFFSET = 0.05;
   }
 

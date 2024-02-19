@@ -149,7 +149,7 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void setTargetDegrees(double angleDegrees) {
-    targetDegrees = MathUtil.clamp(angleDegrees, 1, 140);
+    targetDegrees = MathUtil.clamp(angleDegrees, 4, 90);
   }
 
   // public double determineAngle(Pose2d a, double fkla) {
