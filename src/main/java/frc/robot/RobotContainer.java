@@ -238,6 +238,28 @@ public class RobotContainer {
                         speedFunction,
                         driveTrain))));
 
+    // speaker snap
+    joystick
+        .circle()
+        .whileTrue(
+            new SwerveLockedAngleCmd(
+                frontBackFunction,
+                leftRightFunction,
+                () -> new Rotation2d(0),
+                speedFunction,
+                driveTrain));
+
+    // amp snap
+    joystick
+        .triangle()
+        .whileTrue(
+            new SwerveLockedAngleCmd(
+                frontBackFunction,
+                leftRightFunction,
+                () -> new Rotation2d(-Math.PI / 2d),
+                speedFunction,
+                driveTrain));
+
     // When no Commands are being issued, Peter motors should not be moving
     peterSubsystem.setDefaultCommand(
         new InstantCommand(
@@ -251,7 +273,7 @@ public class RobotContainer {
 
     // zero-heading
     joystick
-        .circle()
+        .PS()
         .onTrue(
             driveTrain.runOnce(
                 () ->
