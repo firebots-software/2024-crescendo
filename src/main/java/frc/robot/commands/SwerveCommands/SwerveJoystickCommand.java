@@ -2,11 +2,13 @@ package frc.robot.commands.SwerveCommands;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.SwerveSubsystem;
-import frc.robot.util.FieldCentricOptimizedSwerve;
 import java.util.function.Supplier;
 
 public class SwerveJoystickCommand extends Command {
@@ -14,6 +16,8 @@ public class SwerveJoystickCommand extends Command {
       ySpdFunction,
       turningSpdFunction,
       speedControlFunction;
+  
+      private final Supplier<Boolean> automaticTurnFunction;
 
   // Limits rate of change (in this case x, y, and turning movement)
   private final SlewRateLimiter xLimiter, yLimiter, turningLimiter;
@@ -26,12 +30,14 @@ public class SwerveJoystickCommand extends Command {
       Supplier<Double> leftRightFunction,
       Supplier<Double> turningSpdFunction,
       Supplier<Double> speedControlFunction,
+      Supplier<Boolean> automaticTurnFunction,
       SwerveSubsystem swerveSubsystem) {
-
+    
     this.xSpdFunction = frontBackFunction;
     this.ySpdFunction = leftRightFunction;
     this.turningSpdFunction = turningSpdFunction;
     this.speedControlFunction = speedControlFunction;
+    this.automaticTurnFunction = automaticTurnFunction;
     this.xLimiter =
         new SlewRateLimiter(Constants.Swerve.TELE_DRIVE_MAX_ACCELERATION_UNITS_PER_SECOND);
     this.yLimiter =
@@ -42,6 +48,35 @@ public class SwerveJoystickCommand extends Command {
 
     // Adds the subsystem as a requirement (prevents two commands from acting on subsystem at once)
     addRequirements(swerveDrivetrain);
+  }
+
+  public Double rotateToSpeaker() {
+    SmartDashboard.putNumber("turning", turningSpdFunction.get());
+    // if (doSpin.get() > 0) {
+    double robot_x = this.swerveDrivetrain.getState().Pose.getX();
+    double robot_y = this.swerveDrivetrain.getState().Pose.getY();
+    double robot_rotation =
+        (this.swerveDrivetrain.getState().Pose.getRotation().getRadians()) % Math.PI * 2;
+
+    double speaker_x = Constants.Landmarks.SPEAKER_LOCATION.getX();
+    double speaker_y = Constants.Landmarks.SPEAKER_LOCATION.getY();
+
+    SmartDashboard.putNumber("robot_x", robot_x);
+    SmartDashboard.putNumber("robot_y", robot_y);
+    // SmartDashboard.putNumber("robot_rotation", robot_rotation);
+    SmartDashboard.putNumber("speaker_x", speaker_x);
+    SmartDashboard.putNumber("speaker_y", speaker_y);
+
+    double angle;
+    if (speaker_x != robot_x) {
+      angle = (Math.atan2((speaker_y - robot_y), (speaker_x - robot_x)) + Math.PI) % Math.PI * 2;
+    } else {
+      angle = robot_rotation; // do not turn
+    }
+
+    SmartDashboard.putNumber("angle", angle);
+
+    return MathUtil.clamp(Constants.Swerve.AUTONOMOUS_TURNING.calculate(robot_rotation,angle),-1d,1d);
   }
 
   @Override
@@ -68,7 +103,7 @@ public class SwerveJoystickCommand extends Command {
     ySpeed = Math.abs(ySpeed) > Constants.OI.LEFT_JOYSTICK_DEADBAND ? ySpeed : 0.0;
     turningSpeed =
         Math.abs(turningSpeed) > Constants.OI.RIGHT_JOYSTICK_DEADBAND ? turningSpeed : 0.0;
-
+  
     // 4. Make the driving smoother
     // This is a double between TELE_DRIVE_SLOW_MODE_SPEED_PERCENT and
     // TELE_DRIVE_FAST_MODE_SPEED_PERCENT
@@ -89,7 +124,11 @@ public class SwerveJoystickCommand extends Command {
         turningLimiter.calculate(turningSpeed)
             * driveSpeed
             * Constants.Swerve.PHYSICAL_MAX_ANGLUAR_SPEED_RADIANS_PER_SECOND;
-
+    
+    // Turn to Speaker
+    if(automaticTurnFunction.get()) {
+      turningSpeed = rotateToSpeaker();
+    }
     // Final values to apply to drivetrain
     final double x = xSpeed;
     final double y = ySpeed;
@@ -98,11 +137,12 @@ public class SwerveJoystickCommand extends Command {
     // 5. Applying the drive request on the swerve drivetrain
     // Uses SwerveRequestFieldCentric (from java.frc.robot.util to apply module optimization)
     final SwerveRequest.FieldCentric drive =
-        new FieldCentricOptimizedSwerve()
+        new SwerveRequest.FieldCentric()
             .withDriveRequestType(DriveRequestType.Velocity)
             .withVelocityX(x)
             .withVelocityY(y)
-            .withRotationalRate(turn); // OPEN LOOP CONTROL
+            .withRotationalRate(turn);
+            
 
     // Applies request
     this.swerveDrivetrain.setControl(drive);

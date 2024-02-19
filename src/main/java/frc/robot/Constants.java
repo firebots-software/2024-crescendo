@@ -7,6 +7,8 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants.SteerFeedbackType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstantsFactory;
 import com.pathplanner.lib.path.PathConstraints;
+
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
@@ -114,6 +116,7 @@ public final class Constants {
     public static final Pose2d STAGESIDE_NOTE_LOCATION = new Pose2d(2.5, 4.1, new Rotation2d());
     public static final Pose2d MIDDLE_NOTE_LOCATION = new Pose2d(2.5, 5.5, new Rotation2d());
     public static final Pose2d AMPSIDE_NOTE_LOCATION = new Pose2d(2.5, 7, new Rotation2d());
+    public static final Pose2d SPEAKER_LOCATION = new Pose2d(1.0,5.5,new Rotation2d());
     public static final Pose2d SUBWOOFER_LOCATION = new Pose2d(0.6, 5.7, new Rotation2d());
     public static final double CENTER_LINE_LOCATION = 8.27;
   }
@@ -149,7 +152,8 @@ public final class Constants {
             .withKS(-0.023265)
             .withKV(0.12681)
             .withKA(0.058864);
-
+    
+    public static final PIDController AUTONOMOUS_TURNING = new PIDController(0.1, 0, 0);
     // The closed-loop output type to use for the steer motors;
     // This affects the PID/FF gains for the steer motors
     private static final ClosedLoopOutputType STEER_CLOSED_LOOP_OUTPUT =
