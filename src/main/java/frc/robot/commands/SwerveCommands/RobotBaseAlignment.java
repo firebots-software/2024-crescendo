@@ -26,8 +26,9 @@ public class RobotBaseAlignment extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double robotRotation = MiscUtils.getAlignmentBaseRotation(swerve.getState().Pose, Constants.Landmarks.SUBWOOFER_LOCATION_GROUND);
-    mt = MoveToTarget.withAbsolute(swerve, new Pose2d(swerve.getState().Pose.getTranslation(), new Rotation2d(robotRotation)));
+    Rotation2d robotRotation = MiscUtils.getAlignmentBaseRotation(swerve.getState().Pose, Constants.Landmarks.SUBWOOFER_LOCATION_GROUND);
+    mt = MoveToTarget.withAbsolute(swerve, new Pose2d(swerve.getState().Pose.getTranslation(), robotRotation));
+    mt.initialize();
     mt.execute();
   }
 
