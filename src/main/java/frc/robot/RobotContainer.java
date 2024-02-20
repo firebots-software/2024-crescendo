@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commandGroups.AimAtSpeaker;
 import frc.robot.commandGroups.Intake;
+import frc.robot.commands.ArmCommands.ArmToNeutralCmd;
 import frc.robot.commands.Auton.MoveToTarget;
 import frc.robot.commands.PeterCommands.Shoot;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
@@ -96,11 +97,13 @@ public class RobotContainer {
     joystick
         .rightTrigger()
         .whileTrue(
-            new RunCommand(
-                () -> {
-                  peterSubsystem.reverseMechanism();
-                },
-                peterSubsystem));
+            new ParallelCommandGroup(
+                new RunCommand(
+                    () -> {
+                      peterSubsystem.reverseMechanism();
+                    },
+                    peterSubsystem),
+                new ArmToNeutralCmd(armSubsystem)));
 
     // Aim
     joystick
