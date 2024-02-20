@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -168,7 +167,8 @@ public class RobotContainer {
             new SequentialCommandGroup(
                 new ParallelCommandGroup(
                     new ArmToPickupCmd(armSubsystem), new RunIntakeUntilDetection(peterSubsystem)),
-                new ParallelCommandGroup(new ArmToNeutralCmd(armSubsystem), new BackupPeter(peterSubsystem))));
+                new ParallelCommandGroup(
+                    new ArmToNeutralCmd(armSubsystem), new BackupPeter(peterSubsystem))));
 
     // Outtake
     joystick
@@ -185,14 +185,13 @@ public class RobotContainer {
             new SpinUpShooter(peterSubsystem),
             new AimArmCmd(armSubsystem, driveTrain),
             SwerveLockedAngleCmd.fromPose(
-                    frontBackFunction,
-                    leftRightFunction,
-                    () -> Constants.Landmarks.Speaker.POSE.getTranslation(),
-                    speedFunction,
-                    driveTrain)
-                .withToleranceEnd(0.02));
+                frontBackFunction,
+                leftRightFunction,
+                () -> Constants.Landmarks.Speaker.POSE.getTranslation(),
+                speedFunction,
+                driveTrain)); // don't want to end while in aim, so no tolerance
 
-    Command aimCommand2 =
+    Command aimBeforeShootCommand =
         new ParallelCommandGroup(
             new SpinUpShooter(peterSubsystem),
             new AimArmCmd(armSubsystem, driveTrain),
@@ -212,7 +211,7 @@ public class RobotContainer {
         .a()
         .whileTrue(
             new SequentialCommandGroup(
-                aimCommand2,
+                aimBeforeShootCommand,
                 new ParallelCommandGroup(
                     new Shoot(peterSubsystem),
 
