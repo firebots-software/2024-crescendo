@@ -4,6 +4,7 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -98,7 +99,10 @@ public class SwerveSubsystem extends SwerveDrivetrain implements Subsystem {
         this::getCurrentRobotChassisSpeeds,
         (speeds) ->
             this.setControl(
-                autoRequest.withSpeeds(speeds)), // Consumer of ChassisSpeeds to drive the
+                autoRequest
+                    .withSpeeds(speeds)
+                    .withDriveRequestType(
+                        DriveRequestType.Velocity)), // Consumer of ChassisSpeeds to drive the
         // robot
         new HolonomicPathFollowerConfig(
             new PIDConstants(3, 0, 0), // CHANGE FOR NEW ROBOT

@@ -6,16 +6,32 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.ClosedLoopOutputType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants.SteerFeedbackType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstantsFactory;
+import com.pathplanner.lib.path.PathConstraints;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 
 public class Constants {
   public static class OI {
-    public static final double LEFT_JOYSTICK_DEADBAND = 0.1;
-    public static final double RIGHT_JOYSTICK_DEADBAND = 0.1;
+    public static final double LEFT_JOYSTICK_DEADBAND = 0.07;
+    public static final double RIGHT_JOYSTICK_DEADBAND = 0.07;
     public static final int JOYSTICK_PORT = 0;
   }
 
+  public static class Landmarks {
+    // Landmarks on the Blue side can be reflected to show the respective locations on the Blue side
+    public static final Pose2d STAGESIDE_NOTE_LOCATION = new Pose2d(2.5, 4.1, new Rotation2d());
+    public static final Pose2d MIDDLE_NOTE_LOCATION = new Pose2d(2.5, 5.5, new Rotation2d());
+    public static final Pose2d AMPSIDE_NOTE_LOCATION = new Pose2d(2.5, 7, new Rotation2d());
+    public static final Pose2d SUBWOOFER_LOCATION = new Pose2d(0.6, 5.7, new Rotation2d());
+    public static final double CENTER_LINE_LOCATION = 8.27;
+  }
+
   public static class Swerve {
+    public static class PPConstants {
+      public static final PathConstraints PATH_PLANNER_CONSTRAINTS =
+          new PathConstraints(3.0, 3.0, 2 * Math.PI, 4 * Math.PI);
+    }
 
     public static final double PHYSICAL_MAX_SPEED_METERS_PER_SECOND = 4.8768;
     public static final double PHYSICAL_MAX_ANGLUAR_SPEED_RADIANS_PER_SECOND = 2 * 2 * Math.PI;
@@ -35,7 +51,13 @@ public class Constants {
     // When using closed-loop control, the drive motor uses the control
     // output type specified by SwerveModuleConstants.DriveMotorClosedLoopOutput
     private static final Slot0Configs DRIVE_GAINS =
-        new Slot0Configs().withKP(3).withKI(0).withKD(0).withKS(0).withKV(0).withKA(0);
+        new Slot0Configs()
+            .withKP(0.18014)
+            .withKI(0)
+            .withKD(0)
+            .withKS(-0.023265)
+            .withKV(0.12681)
+            .withKA(0.058864);
 
     // The closed-loop output type to use for the steer motors;
     // This affects the PID/FF gains for the steer motors
@@ -57,8 +79,7 @@ public class Constants {
 
     private static final double COUPLE_RATIO = 3.5714285714285716;
 
-    private static final double DRIVE_GEAR_RATIO =
-        6.12; // 6.12 for new robot: CHANGE FOR NEW ROBOT
+    private static final double DRIVE_GEAR_RATIO = 6.12; // 6.12 for new robot: CHANGE FOR NEW ROBOT
     private static final double STEER_GEAR_RATIO = 21.428571428571427;
     private static final double WHEEL_RADIUS_INCHES = 2;
 
@@ -98,42 +119,44 @@ public class Constants {
             .withCouplingGearRatio(COUPLE_RATIO)
             .withSteerMotorInverted(STEER_MOTOR_REVERSED);
 
-    // CHANGE FOR NEW ROBOT:
-    // Front Right
-    private static final int FRONT_LEFT_DRIVE_MOTOR_ID = 7;
-    private static final int FRONT_LEFT_STEER_MOTOR_ID = 8;
+    private static final double moveCOMY = 0.046007;
+    private static final double moveCOMX = 3.36044;
+
+    // Front Left
+    private static final int FRONT_LEFT_STEER_MOTOR_ID = 3;
+    private static final int FRONT_LEFT_DRIVE_MOTOR_ID = 4;
     private static final int FRONT_LEFT_ENCODER_ID = 21;
-    private static final double FRONT_LEFT_ENCODER_OFFSET = -0.048291015625;
+    private static final double FRONT_LEFT_ENCODER_OFFSET = -0.472412109375;
 
-    private static final double FRONT_LEFT_X_POS_INCHES = 7.234;
-    private static final double FRONT_LEFT_Y_POS_INCHES = 12;
+    private static final double FRONT_LEFT_X_POS_INCHES = 11.26 - moveCOMX;
+    private static final double FRONT_LEFT_Y_POS_INCHES = 11.417 - moveCOMY;
 
     // Front Right
-    private static final int FRONT_RIGHT_DRIVE_MOTOR_ID = 1;
-    private static final int FRONT_RIGHT_STEER_MOTOR_ID = 2;
+    private static final int FRONT_RIGHT_STEER_MOTOR_ID = 5;
+    private static final int FRONT_RIGHT_DRIVE_MOTOR_ID = 6;
     private static final int FRONT_RIGHT_ENCODER_ID = 22;
-    private static final double FRONT_RIGHT_ENCODER_OFFSET = -0.433349609375;
+    private static final double FRONT_RIGHT_ENCODER_OFFSET = -0.436767578125;
 
-    private static final double FRONT_RIGHT_X_POS_INCHES = 14;
-    private static final double FRONT_RIGHT_Y_POS_INCHES = -11.16;
+    private static final double FRONT_RIGHT_X_POS_INCHES = 11.26 - moveCOMX;
+    private static final double FRONT_RIGHT_Y_POS_INCHES = -11.417 - moveCOMY;
 
     // Back Left
-    private static final int BACK_LEFT_DRIVE_MOTOR_ID = 5;
-    private static final int BACK_LEFT_STEER_MOTOR_ID = 6;
+    private static final int BACK_LEFT_STEER_MOTOR_ID = 1;
+    private static final int BACK_LEFT_DRIVE_MOTOR_ID = 2;
     private static final int BACK_LEFT_ENCODER_ID = 20;
-    private static final double BACK_LEFT_ENCODER_OFFSET = -0.1650390625;
+    private static final double BACK_LEFT_ENCODER_OFFSET = -0.165283203125;
 
-    private static final double BACK_LEFT_X_POS_INCHES = -7.324;
-    private static final double BACK_LEFT_Y_POS_INCHES = 12;
+    private static final double BACK_LEFT_X_POS_INCHES = -11.26 - moveCOMX;
+    private static final double BACK_LEFT_Y_POS_INCHES = 11.417 - moveCOMY;
 
     // Back Right
-    private static final int BACK_RIGHT_DRIVE_MOTOR_ID = 3;
-    private static final int BACK_RIGHT_STEER_MOTOR_ID = 4;
+    private static final int BACK_RIGHT_STEER_MOTOR_ID = 7;
+    private static final int BACK_RIGHT_DRIVE_MOTOR_ID = 8;
     private static final int BACK_RIGHT_ENCODER_ID = 23;
-    private static final double BACK_RIGHT_ENCODER_OFFSET = -0.352294921875;
+    private static final double BACK_RIGHT_ENCODER_OFFSET = -0.336181640625;
 
-    private static final double BACK_RIGHT_X_POS_INCHES = -14;
-    private static final double BACK_RIGHT_Y_POS_INCHES = -11.16;
+    private static final double BACK_RIGHT_X_POS_INCHES = -11.26 - moveCOMX;
+    private static final double BACK_RIGHT_Y_POS_INCHES = -11.417 - moveCOMY;
 
     public static final SwerveModuleConstants FRONT_LEFT =
         ConstantCreator.createModuleConstants(
