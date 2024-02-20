@@ -200,7 +200,7 @@ public class RobotContainer {
             SwerveLockedAngleCmd.fromPose(
                     frontBackFunction,
                     leftRightFunction,
-                    () -> Constants.FieldDimensions.Speaker.POSE.getTranslation(),
+                    () -> Constants.Landmarks.Speaker.POSE.getTranslation(),
                     speedFunction,
                     driveTrain)
                 .withToleranceEnd(0.02));
@@ -212,7 +212,7 @@ public class RobotContainer {
             SwerveLockedAngleCmd.fromPose(
                     frontBackFunction,
                     leftRightFunction,
-                    () -> Constants.FieldDimensions.Speaker.POSE.getTranslation(),
+                    () -> Constants.Landmarks.Speaker.POSE.getTranslation(),
                     speedFunction,
                     driveTrain)
                 .withToleranceEnd(0.02) // need this to end so we know we've finished aiming
@@ -234,7 +234,7 @@ public class RobotContainer {
                     SwerveLockedAngleCmd.fromPose(
                         frontBackFunction,
                         leftRightFunction,
-                        () -> Constants.FieldDimensions.Speaker.POSE.getTranslation(),
+                        () -> Constants.Landmarks.Speaker.POSE.getTranslation(),
                         speedFunction,
                         driveTrain))));
 
