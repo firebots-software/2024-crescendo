@@ -169,8 +169,8 @@ public class ArmSubsystem extends SubsystemBase {
     // why have these assumptions been made? 一時十七分だから、ねむいんです。
 
     double groundDistFromSpeaker =
-        Constants.FieldDimensions.Speaker.POSE.getTranslation().getDistance(robotPosition);
-    double height = Constants.FieldDimensions.Speaker.HEIGHT_METERS - 2d;
+        Constants.Landmarks.Speaker.POSE.getTranslation().getDistance(robotPosition);
+    double height = Constants.Landmarks.Speaker.HEIGHT_METERS - 2d;
     double angle = MathUtil.clamp(Math.atan2(height, groundDistFromSpeaker), 3, 90);
     SmartDashboard.putNumber("calculated angle", angle); // should be in telemetry but too tired
     return MathUtil.clamp(angle, 3, 90);

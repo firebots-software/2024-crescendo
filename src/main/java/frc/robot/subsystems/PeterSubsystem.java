@@ -143,7 +143,7 @@ public class PeterSubsystem extends SubsystemBase {
   }
 
   public void reversePreshooterRotations(double count) {
-    preShooterMotor.setControl(new PositionVoltage(count * -1 * 4));
+    preShooterMotor.setControl(new PositionVoltage(-count * Constants.Peter.PRESHOOTER_GEAR_RATIO));
   }
 
   public void reverseMechanism() {
