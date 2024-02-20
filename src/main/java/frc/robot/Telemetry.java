@@ -14,8 +14,10 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
+import frc.robot.subsystems.PhotonVision;
 
 public class Telemetry {
+  private PhotonVision vision = PhotonVision.getInstance();
   private final double MaxSpeed;
 
   /**
@@ -32,6 +34,7 @@ public class Telemetry {
   private final NetworkTableInstance inst = NetworkTableInstance.getDefault();
 
   /* Robot pose for field positioning */
+
   private final NetworkTable table = inst.getTable("Pose");
   private final DoubleArrayPublisher fieldPub = table.getDoubleArrayTopic("robotPose").publish();
   private final StringPublisher fieldTypePub = table.getStringTopic(".type").publish();
