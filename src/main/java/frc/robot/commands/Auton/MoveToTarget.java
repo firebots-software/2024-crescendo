@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.Auton;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.GoalEndState;

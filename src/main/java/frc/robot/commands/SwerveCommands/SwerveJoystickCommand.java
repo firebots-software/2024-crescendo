@@ -10,15 +10,15 @@ import frc.robot.util.FieldCentricOptimizedSwerve;
 import java.util.function.Supplier;
 
 public class SwerveJoystickCommand extends Command {
-  private final Supplier<Double> xSpdFunction,
+  protected final Supplier<Double> xSpdFunction,
       ySpdFunction,
       turningSpdFunction,
       speedControlFunction;
 
   // Limits rate of change (in this case x, y, and turning movement)
-  private final SlewRateLimiter xLimiter, yLimiter, turningLimiter;
+  protected final SlewRateLimiter xLimiter, yLimiter, turningLimiter;
 
-  private final SwerveSubsystem swerveDrivetrain;
+  protected final SwerveSubsystem swerveDrivetrain;
 
   // Sets everything
   public SwerveJoystickCommand(

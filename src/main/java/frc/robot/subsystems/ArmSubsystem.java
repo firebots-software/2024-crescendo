@@ -9,7 +9,10 @@ import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -139,6 +142,7 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   private void setPosition(double angleDegrees) {
+    angleDegrees = MathUtil.clamp(angleDegrees, 3, 90);
     if (initialized) {
       master.setControl(
           new MotionMagicVoltage(calculateIntegratedTargetRots(angleDegrees))
@@ -147,20 +151,36 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void setTargetDegrees(double angleDegrees) {
-    targetDegrees = angleDegrees;
+    targetDegrees = MathUtil.clamp(angleDegrees, 4, 90);
   }
 
   // public double determineAngle(Pose2d a, double fkla) {
   //   return -1;
   // }
 
-  public void rotateArmToSpeakerPosition() {
-    setTargetDegrees(calculateAngleToSpeaker());
+  public void rotateArmToSpeakerPosition(Translation2d robotPosition) {
+    setTargetDegrees(calculateAngleToSpeaker(robotPosition));
   }
 
-  private double calculateAngleToSpeaker() {
+  private double calculateAngleToSpeaker(Translation2d robotPosition) {
+    // assumptions made:
+    //    1. robot is facing speaker
+    //    2. note exit point is always 2ft off the ground
+    //    3. note exit point is in the center of the robot
+    // why have these assumptions been made? 一時十七分だから、ねむいんです。
 
-    return 10d;
+    double groundDistFromSpeaker =
+        Constants.Landmarks.Speaker.POSE.getTranslation().getDistance(robotPosition);
+    double height = Constants.Landmarks.Speaker.HEIGHT_METERS - Units.inchesToMeters(24d);
+    double angle =
+        MathUtil.clamp(Units.radiansToDegrees(Math.atan2(height, groundDistFromSpeaker)), 3, 90);
+    angle = MathUtil.clamp(56 - angle, 3, 90);
+    SmartDashboard.putNumber("calculated angle", angle); // should be in telemetry but too tired
+
+    // double angle = Math.atan((groundDistFromSpeaker-0.897)/1.25)/1.7;
+    // angle = MathUtil.clamp(Units.radiansToDegrees(angle), 3, 90);
+
+    return MathUtil.clamp(angle, 3, 90);
   }
 
   public void rotateToAmpPosition() {
@@ -168,8 +188,8 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void rotateToRestPosition() {
-    //setTargetDegrees(Constants.Arm.DEFAULT_ARM_ANGLE);
-    setTargetDegrees(1);
+    // setTargetDegrees(Constants.Arm.DEFAULT_ARM_ANGLE);
+    setTargetDegrees(20);
   }
 
   private double getAbsolutePosition() {
@@ -210,6 +230,10 @@ public class ArmSubsystem extends SubsystemBase {
     // gets the actual degrees of the arm using the raw degrees of motor and subtracting the known
     // offset
     return getRawDegrees() - armHorizontalOffset * 360d;
+  }
+
+  public boolean atTarget(double tolerance) {
+    return Math.abs(targetDegrees - getCorrectedDegrees()) < tolerance;
   }
 
   @Override

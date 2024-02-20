@@ -2,15 +2,15 @@ package frc.robot.commands.ArmCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ArmSubsystem;
-import frc.robot.subsystems.PeterSubsystem;
+import frc.robot.subsystems.SwerveSubsystem;
 
-public class AimArm extends Command {
+public class AimArmCmd extends Command {
   private ArmSubsystem armSubsystem;
-  private PeterSubsystem peterSubsystem;
+  private SwerveSubsystem swerveSubsystem;
 
-  public AimArm(ArmSubsystem armSubsystem, PeterSubsystem peterSubsystem) {
+  public AimArmCmd(ArmSubsystem armSubsystem, SwerveSubsystem swerveSubsystem) {
     this.armSubsystem = armSubsystem;
-    this.peterSubsystem = peterSubsystem;
+    this.swerveSubsystem = swerveSubsystem; // only used to get pose
     addRequirements(armSubsystem);
   }
 
@@ -21,22 +21,16 @@ public class AimArm extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (peterSubsystem.notePresent()) {
-      armSubsystem.rotateToRestPosition();
-    } else {
-      armSubsystem.rotateArmToSpeakerPosition();
-    }
+    armSubsystem.rotateArmToSpeakerPosition(swerveSubsystem.getState().Pose.getTranslation());
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    // armSubsystem.rotateArmToRestPosition();
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return armSubsystem.atTarget(1);
   }
 }

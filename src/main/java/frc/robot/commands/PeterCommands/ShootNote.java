@@ -10,16 +10,14 @@ import frc.robot.subsystems.PeterSubsystem;
 /** An example command that uses an example subsystem. */
 public class ShootNote extends Command {
   private PeterSubsystem shooter;
-  private PeterSubsystem preShooter; 
 
   /**
    * Runs the Preshooter and shooter and shoots the note
    *
    * @param subsystem The subsystem used by this command.
    */
-  public ShootNote(PeterSubsystem shooter, PeterSubsystem preShooter) {
+  public ShootNote(PeterSubsystem shooter) {
     this.shooter = shooter;
-    this.preShooter = preShooter; 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(shooter);
   }
@@ -32,14 +30,13 @@ public class ShootNote extends Command {
   @Override
   public void execute() {
     shooter.spinUpShooter();
-    preShooter.spinUpPreShooter();
-    
+    shooter.spinUpPreShooter();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    preShooter.stopPreShooterMotor();
+    shooter.stopPreShooterMotor();
     shooter.stopShooter();
   }
 

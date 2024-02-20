@@ -4,41 +4,35 @@
 
 package frc.robot;
 
-
-// import frc.robot.subsystems.ArmSubsystem;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
-import frc.robot.commands.DebugCommands.IntakeMotorTest;
-import frc.robot.commands.DebugCommands.LeftShooterTest;
-import frc.robot.commands.DebugCommands.PeterTest;
-import frc.robot.commands.DebugCommands.PreShooterTest;
-import frc.robot.commands.DebugCommands.RightShooterTest;
-import frc.robot.commands.DebugCommands.ShooterTest;
-import frc.robot.commands.MoveToTarget;
-import frc.robot.commands.PeterCommands.RunIntakeUntilDetection;
-import frc.robot.commands.PeterCommands.ShootNote;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commandGroups.AimAtSpeaker;
+import frc.robot.commandGroups.Intake;
+import frc.robot.commands.ArmCommands.ArmToNeutralCmd;
+import frc.robot.commands.Auton.MoveToTarget;
+import frc.robot.commands.PeterCommands.Shoot;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
-import frc.robot.subsystems.PeterSubsystem;
-import frc.robot.commands.TestCommands.ArmDown;
-// import frc.robot.commands.ArmRotateCommand;
-// import frc.robot.commands.SwerveJoystickCommand;
-import frc.robot.commands.TestCommands.ArmUp;
+import frc.robot.commands.SwerveCommands.SwerveLockedAngleCmd;
 import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.PeterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
-// import frc.robot.subsystems.TestEncoderSubsystem;
 import java.util.Optional;
+import java.util.function.Supplier;
+
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -46,7 +40,151 @@ import java.util.Optional;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  /* Setting up bindings for necessary control of the swerve drive platform */
+
+  // OI
+  private final CommandXboxController joystick =
+      new CommandXboxController(Constants.OI.MOVEMENT_JOYSTICK_PORT);
+
+  // Subsystems
+  private final SwerveSubsystem driveTrain = SwerveSubsystem.getInstance();
+  private final ArmSubsystem armSubsystem = ArmSubsystem.getInstance();
+  private final PeterSubsystem peterSubsystem = PeterSubsystem.getInstance();
+
+  // Logging
+  public final Telemetry logger = new Telemetry();
+
+  public RobotContainer() {
+    // Vibrate joysticks when someone interesting happens!
+    // joystick.getHID().setRumble(GenericHID.RumbleType.kRightRumble, 1);
+    // joystick.getHID().setRumble(GenericHID.RumbleType.kLeftRumble, 1);
+
+    configureBindings();
+    setupChooser();
+  }
+
+  // Starts telemetry operations (essentially logging -> look on SmartDashboard, AdvantageScope)
+  public void doTelemetry() {
+    logger.telemeterize(driveTrain.getState());
+  }
+
+  private void configureBindings() {
+
+    // Joystick suppliers,
+    Trigger leftShoulderTrigger = joystick.leftBumper();
+    Supplier<Double>
+        frontBackFunction = () -> ((redAlliance) ? joystick.getLeftY() : -joystick.getLeftY()),
+        leftRightFunction = () -> ((redAlliance) ? joystick.getLeftX() : -joystick.getLeftX()),
+        rotationFunction = () -> -joystick.getRightX(),
+        speedFunction =
+            () ->
+                leftShoulderTrigger.getAsBoolean()
+                    ? 0d
+                    : 1d; // slowmode when left shoulder is pressed, otherwise fast
+
+    SwerveJoystickCommand swerveJoystickCommand =
+        new SwerveJoystickCommand(
+            frontBackFunction,
+            leftRightFunction,
+            rotationFunction,
+            speedFunction, // slowmode when left shoulder is pressed, otherwise fast
+            driveTrain);
+    driveTrain.setDefaultCommand(swerveJoystickCommand);
+
+    // Intake
+    joystick.leftTrigger().whileTrue(new Intake(peterSubsystem, armSubsystem));
+
+    // Outtake
+    joystick
+        .rightTrigger()
+        .whileTrue(
+            new ParallelCommandGroup(
+                new RunCommand(
+                    () -> {
+                      peterSubsystem.reverseMechanism();
+                    },
+                    peterSubsystem),
+                new ArmToNeutralCmd(armSubsystem)));
+
+    // Aim
+    joystick
+        .x()
+        .whileTrue(
+            new AimAtSpeaker(
+                peterSubsystem,
+                armSubsystem,
+                driveTrain,
+                frontBackFunction,
+                leftRightFunction,
+                speedFunction));
+
+    // Fire
+    joystick
+        .a()
+        .whileTrue(
+            new SequentialCommandGroup(
+                new AimAtSpeaker(
+                    peterSubsystem,
+                    armSubsystem,
+                    driveTrain,
+                    frontBackFunction,
+                    leftRightFunction,
+                    speedFunction,
+                    0.02),
+                new ParallelCommandGroup(
+                    new Shoot(peterSubsystem),
+
+                    // we need this a second time because the first one ended in the
+                    // aimBeforeShootCommand, this time without a tolerance end
+                    SwerveLockedAngleCmd.fromPose(
+                        frontBackFunction,
+                        leftRightFunction,
+                        () -> Constants.Landmarks.Speaker.POSE.getTranslation(),
+                        speedFunction,
+                        driveTrain))));
+
+    // speaker snap
+    joystick
+        .y()
+        .whileTrue(
+            new SwerveLockedAngleCmd(
+                frontBackFunction,
+                leftRightFunction,
+                () -> new Rotation2d(0),
+                speedFunction,
+                driveTrain));
+
+    // amp snap
+    joystick
+        .b()
+        .whileTrue(
+            new SwerveLockedAngleCmd(
+                frontBackFunction,
+                leftRightFunction,
+                () -> new Rotation2d(-Math.PI / 2d),
+                speedFunction,
+                driveTrain));
+
+    // When no Commands are being issued, Peter motors should not be moving
+    peterSubsystem.setDefaultCommand(
+        new InstantCommand(
+            () -> {
+              peterSubsystem.stopIntake();
+              peterSubsystem.stopLeftShooter();
+              peterSubsystem.stopRightShooter();
+              peterSubsystem.stopPreShooterMotor();
+            },
+            peterSubsystem));
+
+    // zero-heading
+    joystick
+        .povDown()
+        .onTrue(
+            driveTrain.runOnce(
+                () ->
+                    driveTrain.seedFieldRelative(
+                        new Pose2d(new Translation2d(1.25, 5.5), new Rotation2d(0)))));
+    driveTrain.registerTelemetry(logger::telemeterize);
+  }
 
   // Constructs a Pose2d array of the note locations by a specific indexing so they can be accessed
   // by the eventual autonomous chooser
@@ -81,9 +219,6 @@ public class RobotContainer {
       pickup2choice = new SendableChooser<Optional<NoteLocation>>();
 
   private void setupChooser() {
-    // // Instantiations
-    // pickup1choice = new SendableChooser<Integer>();
-    // pickup2choice = new SendableChooser<Integer>();
 
     pickup1choice.setDefaultOption("SECOND SHOT: DO NOTHING", Optional.empty());
     pickup1choice.addOption("AMPSIDE", Optional.of(NoteLocation.AMPSIDE));
@@ -97,15 +232,6 @@ public class RobotContainer {
 
     SmartDashboard.putData(pickup1choice);
     SmartDashboard.putData(pickup2choice);
-  }
-
-  public RobotContainer() {
-    // Vibrate joysticks when someone interesting happens!
-    // joystick.getHID().setRumble(GenericHID.RumbleType.kRightRumble, 1);
-    // joystick.getHID().setRumble(GenericHID.RumbleType.kLeftRumble, 1);
-
-    configureBindings();
-    setupChooser();
   }
 
   public Command getAutonomousCommand() {
@@ -124,110 +250,5 @@ public class RobotContainer {
                 ? new WaitCommand(2.0)
                 : MoveToTarget.withMirror(
                     driveTrain, pickup2choice.getSelected().get().getNoteLocation(), redAlliance));
-  }
-
-  /* Setting up bindings for necessary control of the swerve drive platform */
-
-  private final CommandPS4Controller mjoystick =
-      new CommandPS4Controller(Constants.OI.MOVEMENT_JOYSTICK_PORT);
-  private final CommandPS4Controller sjoystick =
-      new CommandPS4Controller(Constants.OI.ARM_JOYSTICK_PORT);
-  private final SwerveSubsystem driveTrain = SwerveSubsystem.getInstance();
-  private final ArmSubsystem armSubsystem = ArmSubsystem.getInstance();
-  private final PeterSubsystem peterSubsystem = PeterSubsystem.getInstance();
-
-  private final Command backupCommand = new FunctionalCommand(() -> {
-    peterSubsystem.resetPreshooterPosition();
-  }, () -> {
-    peterSubsystem.reversePreshooterRotations(1);
-  }, (a) -> {
-    peterSubsystem.stopPreShooterMotor();
-  }, () -> false);
-
-  Command runUntilDetection = new RunIntakeUntilDetection(peterSubsystem);
-  public final Telemetry logger = new Telemetry();
-
-  // Starts telemetry operations (essentially logging -> look on SmartDashboard, AdvantageScope)
-  public void doTelemetry() {
-    // logger.telemeterize(driveTrain.getState());
-  }
-
-  private void configureBindings() {
-    var spinUpShooter = new FunctionalCommand(() -> {}, () -> {
-      peterSubsystem.spinLeftShooter();
-      peterSubsystem.spinRightShooter();
-    }, (a) -> {}, () -> {return peterSubsystem.isShooterReady();}, peterSubsystem);
-    SwerveJoystickCommand swerveJoystickCommand =
-        new SwerveJoystickCommand(
-            () -> ((redAlliance) ? mjoystick.getRawAxis(1) : -mjoystick.getRawAxis(1)),
-            () -> ((redAlliance) ? mjoystick.getRawAxis(0) : -mjoystick.getRawAxis(0)),
-            () -> -mjoystick.getRawAxis(2),
-            () -> (mjoystick.getRawAxis(3) - mjoystick.getRawAxis(4)) / 4d + 0.5,
-            driveTrain);
-    driveTrain.setDefaultCommand(swerveJoystickCommand);
-
-    var shoot = new FunctionalCommand(() -> {}, () -> {
-      peterSubsystem.spinLeftShooter();
-      peterSubsystem.spinRightShooter();
-      peterSubsystem.spinUpPreShooter();
-    },  (a) -> {
-      peterSubsystem.stopLeftShooter();
-      peterSubsystem.stopRightShooter();
-      peterSubsystem.stopPreShooterMotor();
-    }, () -> {
-      return false;
-    }, peterSubsystem);
-
-    sjoystick.L2().whileTrue(new SequentialCommandGroup(runUntilDetection, backupCommand));
-    sjoystick.R2().whileTrue(new SequentialCommandGroup(spinUpShooter, shoot));
-
-    sjoystick.L1().whileTrue(new RunCommand( () -> {
-      peterSubsystem.reverseMechanism();
-    }, peterSubsystem));
-
-    peterSubsystem.setDefaultCommand(new RunCommand(() -> {
-      peterSubsystem.stopIntake();
-      peterSubsystem.stopLeftShooter();
-      peterSubsystem.stopRightShooter();
-      peterSubsystem.stopPreShooterMotor();
-    }, peterSubsystem));
-
-        // zero-heading
-        mjoystick
-            .circle()
-            .onTrue(
-                driveTrain.runOnce(
-                    () ->
-                        driveTrain.seedFieldRelative(
-                            new Pose2d(new Translation2d(0, 0), new Rotation2d(0)))));
-        driveTrain.registerTelemetry(logger::telemeterize);
-
-  
-    sjoystick.circle().whileTrue(new IntakeMotorTest(peterSubsystem));
-    sjoystick.square().whileTrue(new PreShooterTest(peterSubsystem));
-    sjoystick.triangle().whileTrue(new ShooterTest(peterSubsystem));
-    sjoystick.cross().whileTrue(new LeftShooterTest(peterSubsystem));
-    sjoystick.povUp().whileTrue(new RightShooterTest(peterSubsystem));
-    sjoystick.povDown().whileTrue(new PeterTest(peterSubsystem));
-    sjoystick.povRight().whileTrue(new RunIntakeUntilDetection(peterSubsystem));
-    sjoystick.povLeft().whileTrue(new ShootNote(peterSubsystem, peterSubsystem)); 
-    /* sjoystick
-    .povRight()
-    .whileTrue(new PeterTestersSequential(peterSubsystem, peterSubsystem, peterSubsystem)); */
-    // peterSubsystem.setDefaultCommand(
-    //    new ArmAndPeterCommand(
-    //        () -> -sjoystick.getRawAxis(3), () -> -sjoystick.getRawAxis(4), peterSubsystem));
-    // zero-heading
-   mjoystick     
-        .circle()
-        .onTrue(
-            driveTrain.runOnce(
-                () ->
-                    driveTrain.seedFieldRelative(
-                        new Pose2d(new Translation2d(0, 0), new Rotation2d(0)))));
-    driveTrain.registerTelemetry(logger::telemeterize);
-
-    sjoystick.R1().whileTrue(new ArmUp(armSubsystem));
-    //sjoystick.L2().whileTrue(new ArmDown(armSubsystem));
   }
 }
