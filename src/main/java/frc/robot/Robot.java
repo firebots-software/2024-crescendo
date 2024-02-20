@@ -7,6 +7,9 @@ package frc.robot;
 import java.io.IOError;
 import java.io.IOException;
 
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
@@ -26,6 +29,7 @@ public class Robot extends TimedRobot {
   SwerveSubsystem ss = SwerveSubsystem.getInstance();
   PhotonVision vision = PhotonVision.getInstance();
   private RobotContainer m_robotContainer;
+  private static Matrix<N3,N1> visionMatrix;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -33,6 +37,10 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    visionMatrix.set(0, 0, 0);
+    visionMatrix.set(0, 0, 1d);
+    visionMatrix.set(0, 0, 0.5d);
+
     // Instantiate our RobotContainer. This will perform all our button bindings,
     // and put our
     // autonomous chooser on the dashboard.
@@ -58,7 +66,7 @@ public class Robot extends TimedRobot {
     // block in order for anything in the Command-based framework to work.
     m_robotContainer.doTelemetry();
     if(vision.hasTarget(vision.getPipeline())){
-      ss.addVisionMeasurement(vision.getRobotPose2d(), Timer.getFPGATimestamp());
+      ss.addVisionMeasurement(vision.getRobotPose2d(), Timer.getFPGATimestamp(),visionMatrix);
     }
     
     CommandScheduler.getInstance().run();
