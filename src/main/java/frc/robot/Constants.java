@@ -66,7 +66,7 @@ public class Constants {
     private static final boolean INVERT_LEFT_SIDE = false;
     private static final boolean INVERT_RIGHT_SIDE = true;
 
-    private static final String CANBUS_NAME = "";
+    private static final String CANBUS_NAME = "Paul the Pumpkin";
     private static final int PIGEON_ID = 13;
 
     // These are only used for simulation
