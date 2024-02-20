@@ -87,8 +87,8 @@ public class Constants {
     private static final boolean INVERT_LEFT_SIDE = false;
     private static final boolean INVERT_RIGHT_SIDE = true;
 
-    private static final String CANBUS_NAME = "Patrice the Pineapple";
-    private static final int PIGEON_ID = 40;
+    private static final String CANBUS_NAME = "Paul the Pumpkin";
+    private static final int PIGEON_ID = 13;
 
     // These are only used for simulation
     // private static final double kSteerInertia = 0.00001;
