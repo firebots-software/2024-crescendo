@@ -141,6 +141,7 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   private void setPosition(double angleDegrees) {
+    angleDegrees = MathUtil.clamp(angleDegrees, 3, 90);
     if (initialized) {
       master.setControl(
           new MotionMagicVoltage(calculateIntegratedTargetRots(angleDegrees))
