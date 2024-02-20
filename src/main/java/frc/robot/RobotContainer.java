@@ -26,6 +26,7 @@ import frc.robot.commands.ArmCommands.AimArmCmd;
 import frc.robot.commands.ArmCommands.ArmToNeutralCmd;
 import frc.robot.commands.ArmCommands.ArmToPickupCmd;
 import frc.robot.commands.Auton.MoveToTarget;
+import frc.robot.commands.PeterCommands.BackupPeter;
 import frc.robot.commands.PeterCommands.RunIntakeUntilDetection;
 import frc.robot.commands.PeterCommands.Shoot;
 import frc.robot.commands.PeterCommands.SpinUpShooter;
@@ -132,20 +133,6 @@ public class RobotContainer {
   private final ArmSubsystem armSubsystem = ArmSubsystem.getInstance();
   private final PeterSubsystem peterSubsystem = PeterSubsystem.getInstance();
 
-  // TODO: Rename backupCommand (Does not tell us what this does)
-  private final Command backupCommand =
-      new FunctionalCommand(
-          () -> {
-            peterSubsystem.resetPreshooterPosition();
-          },
-          () -> {
-            peterSubsystem.reversePreshooterRotations(1);
-          },
-          (a) -> {
-            peterSubsystem.stopPreShooterMotor();
-          },
-          () -> false);
-
   // Command runUntilDetection = new RunIntakeUntilDetection(peterSubsystem);
   public final Telemetry logger = new Telemetry();
 
@@ -181,7 +168,7 @@ public class RobotContainer {
             new SequentialCommandGroup(
                 new ParallelCommandGroup(
                     new ArmToPickupCmd(armSubsystem), new RunIntakeUntilDetection(peterSubsystem)),
-                new ParallelCommandGroup(new ArmToNeutralCmd(armSubsystem), backupCommand)));
+                new ParallelCommandGroup(new ArmToNeutralCmd(armSubsystem), new BackupPeter(peterSubsystem))));
 
     // Outtake
     joystick
