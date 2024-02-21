@@ -171,29 +171,7 @@ public class ArmSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("angle from intermap",  Constants.Arm.INTERMAP.get(groundDistFromSpeaker));
     return Constants.Arm.INTERMAP.get(groundDistFromSpeaker);
   }
-  // private double calculateAngleToSpeaker(Translation2d robotPosition) {
-  //   // assumptions made:
-  //   //    1. robot is facing speaker
-  //   //    2. note exit point is always 2ft off the ground
-  //   //    3. note exit point is in the center of the robot
-  //   // why have these assumptions been made? 一時十七分だから、ねむいんです。
-
-  //   double groundDistFromSpeaker =
-  //       Constants.Landmarks.Speaker.POSE.getTranslation().getDistance(robotPosition);
-  //   double height = Constants.Landmarks.Speaker.HEIGHT_METERS - Units.inchesToMeters(24d);
-  //   double angle =
-  //       MathUtil.clamp(Units.radiansToDegrees(Math.atan2(height, groundDistFromSpeaker)), 3, 90);
-  //   angle = MathUtil.clamp(56 - angle, 3, 90);
-  //   SmartDashboard.putNumber("calculated angle", angle); // should be in telemetry but too tired
-
-  //   // double angle = Math.atan((groundDistFromSpeaker-0.897)/1.25)/1.7;
-  //   // angle = MathUtil.clamp(Units.radiansToDegrees(angle), 3, 90);
-
-  //   return MathUtil.clamp(angle, 3, 90);
-  // }
-
-
-
+  
   public void rotateToAmpPosition() {
     setTargetDegrees(Constants.Arm.AMP_ANGLE);
   }
