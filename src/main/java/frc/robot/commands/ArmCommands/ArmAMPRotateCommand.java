@@ -3,11 +3,10 @@ package frc.robot.commands.ArmCommands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ArmSubsystem;
 
-public class ArmToNeutralCmd extends Command {
-
+public class ArmAMPRotateCommand extends Command {
   private ArmSubsystem armSubsystem;
 
-  public ArmToNeutralCmd(ArmSubsystem armSubsystem) {
+  public ArmAMPRotateCommand(ArmSubsystem armSubsystem) {
     this.armSubsystem = armSubsystem;
     addRequirements(armSubsystem);
   }
@@ -19,9 +18,8 @@ public class ArmToNeutralCmd extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    armSubsystem.rotateToRestPosition();
+    armSubsystem.rotateToAmpPosition();
   }
-
 
   // Called once the command ends or is interrupted.
   @Override

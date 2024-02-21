@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commandGroups.AimAtSpeaker;
 import frc.robot.commandGroups.Intake;
+import frc.robot.commands.ArmCommands.ArmAMPRotateCommand;
 import frc.robot.commands.ArmCommands.ArmToNeutralCmd;
 import frc.robot.commands.Auton.MoveToTarget;
 import frc.robot.commands.PeterCommands.Shoot;
@@ -91,11 +92,11 @@ public class RobotContainer {
     driveTrain.setDefaultCommand(swerveJoystickCommand);
 
     // Intake
-    joystick.rightTrigger().whileTrue(new Intake(peterSubsystem, armSubsystem));
+    joystick.leftTrigger().whileTrue(new Intake(peterSubsystem, armSubsystem));
 
     // Outtake
     joystick
-        .leftTrigger()
+        .rightTrigger()
         .whileTrue(
             new ParallelCommandGroup(
                 new RunCommand(
@@ -163,6 +164,9 @@ public class RobotContainer {
                 () -> new Rotation2d(-Math.PI / 2d),
                 speedFunction,
                 driveTrain));
+
+    //amp shoolt
+    joystick.rightBumper().whileTrue(new SequentialCommandGroup(new ArmAMPRotateCommand(armSubsystem), new Shoot(peterSubsystem)));
 
     // When no Commands are being issued, Peter motors should not be moving
     peterSubsystem.setDefaultCommand(
