@@ -92,11 +92,11 @@ public class RobotContainer {
     driveTrain.setDefaultCommand(swerveJoystickCommand);
 
     // Intake
-    joystick.leftTrigger().whileTrue(new Intake(peterSubsystem, armSubsystem));
+    joystick.rightTrigger().whileTrue(new Intake(peterSubsystem, armSubsystem));
 
     // Outtake
     joystick
-        .rightTrigger()
+        .leftTrigger()
         .whileTrue(
             new ParallelCommandGroup(
                 new RunCommand(
