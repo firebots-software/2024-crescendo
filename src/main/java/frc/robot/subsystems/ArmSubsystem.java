@@ -158,7 +158,7 @@ public class ArmSubsystem extends SubsystemBase {
   //   return -1;
   // }
 
-  public void rotateArmToSpeakerPosition(Translation2d robotPosition) {
+  public void rotateToSpeaker(Translation2d robotPosition) {
     setTargetDegrees(calculateAngleToSpeaker(robotPosition));
   }
 
