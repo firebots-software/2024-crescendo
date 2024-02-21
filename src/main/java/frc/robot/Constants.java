@@ -108,7 +108,8 @@ public final class Constants {
     public static final Pose2d SUBWOOFER_LOCATION = new Pose2d(0.6, 5.7, new Rotation2d());
     public static final double CENTER_LINE_LOCATION = 8.27;
 
-    public static final class Speaker {      public static final double HEIGHT_INCHES = 78.0;
+    public static final class Speaker {
+      public static final double HEIGHT_INCHES = 78.0;
       public static final double HEIGHT_METERS = Units.inchesToMeters(HEIGHT_INCHES);
       public static final Pose2d POSE = new Pose2d(new Translation2d(0.5, 5.5), new Rotation2d(0));
     }
