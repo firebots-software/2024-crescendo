@@ -11,12 +11,16 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.util.MiscUtils;
 
 public class ArmSubsystem extends SubsystemBase {
   private static ArmSubsystem instance;
@@ -168,9 +172,14 @@ public class ArmSubsystem extends SubsystemBase {
     //    2. note exit point is always 2ft off the ground
     //    3. note exit point is in the center of the robot
     // why have these assumptions been made? 一時十七分だから、ねむいんです。
-
-    double groundDistFromSpeaker =
-        Constants.Landmarks.Speaker.POSE.getTranslation().getDistance(robotPosition);
+    boolean redAlliance =
+        (DriverStation.getAlliance().isEmpty())
+            ? false
+            : (DriverStation.getAlliance().get() == Alliance.Red);
+    Pose2d speakerPose = redAlliance ? 
+        Constants.Landmarks.Speaker.POSE : 
+        MiscUtils.reflectAcrossMidline(Constants.Landmarks.Speaker.POSE);
+    double groundDistFromSpeaker = speakerPose.getTranslation().getDistance(robotPosition) - 0.46;
     double height = Constants.Landmarks.Speaker.HEIGHT_METERS - Units.inchesToMeters(22);
     // double angle =
     //     MathUtil.clamp(Units.radiansToDegrees(Math.atan2(height, groundDistFromSpeaker)), 3, 90);
