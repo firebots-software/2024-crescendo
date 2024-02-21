@@ -2,11 +2,9 @@ package frc.robot.commands.ArmCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ArmSubsystem;
-import frc.robot.subsystems.PeterSubsystem;
 
 public class ArmAMPRotateCommand extends Command {
   private ArmSubsystem armSubsystem;
-  private PeterSubsystem peterSubsystem;
 
   public ArmAMPRotateCommand(ArmSubsystem armSubsystem) {
     this.armSubsystem = armSubsystem;
@@ -25,13 +23,11 @@ public class ArmAMPRotateCommand extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    armSubsystem.rotateToRestPosition();
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return armSubsystem.atTarget(1);
   }
 }
