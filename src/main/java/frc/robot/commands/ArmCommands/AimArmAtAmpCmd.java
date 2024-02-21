@@ -7,7 +7,7 @@ import frc.robot.subsystems.SwerveSubsystem;
 public class AimArmAtAmpCmd extends Command {
   private ArmSubsystem armSubsystem;
 
-  public AimArmAtAmpCmd(ArmSubsystem armSubsystem, SwerveSubsystem swerveSubsystem) {
+  public AimArmAtAmpCmd(ArmSubsystem armSubsystem) {
     this.armSubsystem = armSubsystem;
     addRequirements(armSubsystem);
   }

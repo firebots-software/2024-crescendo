@@ -22,11 +22,6 @@ public class ArmToNeutralCmd extends Command {
     armSubsystem.rotateToRestPosition();
   }
 
-  public void executeAMP() {
-    if (peterSubsystem.notePresent()) {
-      armSubsystem.rotateToAmpPosition();
-    }
-  }
 
   // Called once the command ends or is interrupted.
   @Override
