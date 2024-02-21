@@ -28,6 +28,7 @@ import frc.robot.commands.PeterCommands.Shoot;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.commands.SwerveCommands.SwerveLockedAngleCmd;
 import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.PeterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import java.util.Optional;
@@ -49,6 +50,7 @@ public class RobotContainer {
   private final SwerveSubsystem driveTrain = SwerveSubsystem.getInstance();
   private final ArmSubsystem armSubsystem = ArmSubsystem.getInstance();
   private final PeterSubsystem peterSubsystem = PeterSubsystem.getInstance();
+  private final LEDSubsystem ledSubsystem = LEDSubsystem.getInstance();
 
   // Logging
   public final Telemetry logger = new Telemetry();

@@ -292,4 +292,10 @@ public final class Constants {
             Units.inchesToMeters(BACK_RIGHT_Y_POS_INCHES),
             INVERT_RIGHT_SIDE);
   }
+  public static class LIGHTS {
+    public static final int LED_PWM_PORT = 6;
+    public static final int LED_BUFFER_LENGTH = 34;
+    public static final int[] YELLOW_3501 = {255, 234, 5};
+    public static final int[] BLUE_3501 = {70, 105, 225};
+  }
 }

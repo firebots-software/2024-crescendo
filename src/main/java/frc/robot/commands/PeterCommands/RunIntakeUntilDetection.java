@@ -4,6 +4,7 @@
 package frc.robot.commands.PeterCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.PeterSubsystem;
 
 /**
@@ -13,6 +14,7 @@ import frc.robot.subsystems.PeterSubsystem;
  */
 public class RunIntakeUntilDetection extends Command {
   private PeterSubsystem peterSubsystem;
+  private LEDSubsystem ledSubsystem;
 
   public RunIntakeUntilDetection(PeterSubsystem peterSubsystem) {
     this.peterSubsystem = peterSubsystem;
@@ -21,7 +23,9 @@ public class RunIntakeUntilDetection extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    ledSubsystem.noNoteDetected();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
