@@ -24,7 +24,7 @@ public class PhotonVision extends SubsystemBase {
   private PhotonTrackedTarget bestTarget;
   private static PhotonVision pvisioninstance;
   AprilTagFieldLayout aprilTagFieldLayout;
-  Transform3d robotToCam = new Transform3d(new Translation3d(Units.inchesToMeters(-13), 0, 0), new Rotation3d(0, 0, Math.PI));
+  Transform3d robotToCam = new Transform3d(new Translation3d(Units.inchesToMeters(-13), 0, 7.027), new Rotation3d(0, 0.418879, Math.PI));
 
   private PhotonVision() {
     aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
