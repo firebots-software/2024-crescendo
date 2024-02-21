@@ -60,7 +60,7 @@ public final class Constants {
   }
 
   public static final class Arm {
-    public static final double DEFAULT_ARM_ANGLE = 15;
+    public static final double DEFAULT_ARM_ANGLE = 20;
     public final double INTAKE_ANGLE = 0; // subject to change
     public static final double AMP_ANGLE = 100; // subject to change
     public static final double SPEAKER_ANGLE =
@@ -76,13 +76,13 @@ public final class Constants {
     public static final int LB_PORT = 11; // Left Bottom motor
     public static final int ENCODER_PORT = 0; // subject to change
 
-    public static final double CURRENT_LIMIT = 5.0;
-    public static final double S0C_KP = 18.5;
+    public static final double CURRENT_LIMIT = 8.0;
+    public static final double S0C_KP = 1;
     public static final double ARMFF_KS = 0.1;
     public static final double ARMFF_KG = 0.21;
     public static final double ARMFF_KV = 2.49;
     public static final double MOTIONMAGIC_KV = 1; // MotionMagic Cruise Velocity in RPS of the arm
-    public static final double MOTIONMAGIC_KA = 0.5; // MotionMagic Acceleration in RPS^2 of the arm
+    public static final double MOTIONMAGIC_KA = 2.2; // MotionMagic Acceleration in RPS^2 of the arm
 
     public static final double ABSOLUTE_ARM_CONVERSION_FACTOR = 42d / 18d;
     public static final double INTEGRATED_ABSOLUTE_CONVERSION_FACTOR = 55.9867;
@@ -108,8 +108,7 @@ public final class Constants {
     public static final Pose2d SUBWOOFER_LOCATION = new Pose2d(0.6, 5.7, new Rotation2d());
     public static final double CENTER_LINE_LOCATION = 8.27;
 
-    public static final class Speaker {
-      public static final double HEIGHT_INCHES = 78.0;
+    public static final class Speaker {      public static final double HEIGHT_INCHES = 78.0;
       public static final double HEIGHT_METERS = Units.inchesToMeters(HEIGHT_INCHES);
       public static final Pose2d POSE = new Pose2d(new Translation2d(0.5, 5.5), new Rotation2d(0));
     }
