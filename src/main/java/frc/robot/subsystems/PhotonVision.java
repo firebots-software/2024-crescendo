@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.util.Optional;
@@ -18,12 +19,12 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 
 public class PhotonVision extends SubsystemBase {
   Pose3d savedResult = new Pose3d(0.0, 0.0, 0.0, new Rotation3d(0.0, 0.0, 0.0));
-  private PhotonCamera camera = new PhotonCamera("Front Cam");
+  private PhotonCamera camera = new PhotonCamera("FrontCam");
   private PhotonPipelineResult pipeline;
   private PhotonTrackedTarget bestTarget;
   private static PhotonVision pvisioninstance;
   AprilTagFieldLayout aprilTagFieldLayout;
-  Transform3d robotToCam = new Transform3d(new Translation3d(0, 0, 0), new Rotation3d(0, 0, 0));
+  Transform3d robotToCam = new Transform3d(new Translation3d(Units.inchesToMeters(-13), 0, 0), new Rotation3d(0, 0, Math.PI));
 
   private PhotonVision() {
     aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();

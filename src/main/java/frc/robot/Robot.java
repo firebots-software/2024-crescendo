@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DataLogManager;
@@ -26,7 +27,7 @@ public class Robot extends TimedRobot {
   SwerveSubsystem ss = SwerveSubsystem.getInstance();
   PhotonVision vision = PhotonVision.getInstance();
   private RobotContainer m_robotContainer;
-  private static Matrix<N3, N1> visionMatrix;
+  //private static Matrix<N3, N1> visionMatrix = new Matrix<N3, N1>(3,  1);
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -34,9 +35,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    visionMatrix.set(0, 0, 0);
-    visionMatrix.set(1, 0, 1d);
-    visionMatrix.set(2, 0, 0.5d);
+    // visionMatrix.set(0, 0, 0);
+    // visionMatrix.set(1, 0, 1d);
+    // visionMatrix.set(2, 0, 0.5d);
 
     // Instantiate our RobotContainer. This will perform all our button bindings,
     // and put our
@@ -63,7 +64,7 @@ public class Robot extends TimedRobot {
     // block in order for anything in the Command-based framework to work.
     m_robotContainer.doTelemetry();
     if (vision.hasTarget(vision.getPipeline())) {
-      ss.addVisionMeasurement(vision.getRobotPose2d(), Timer.getFPGATimestamp(), visionMatrix);
+      ss.addVisionMeasurement(vision.getRobotPose2d(), Timer.getFPGATimestamp());
     }
 
     CommandScheduler.getInstance().run();
