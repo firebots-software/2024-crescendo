@@ -163,6 +163,7 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   private double calculateAngleToSpeaker(Translation2d robotPosition) {
+    //TODO: This function does not properly set the arm to the right angle. Please update this function
     // assumptions made:
     //    1. robot is facing speaker
     //    2. note exit point is always 2ft off the ground

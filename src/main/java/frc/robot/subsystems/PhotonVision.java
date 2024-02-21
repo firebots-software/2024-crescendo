@@ -84,16 +84,9 @@ public class PhotonVision extends SubsystemBase {
     return new Pose2d(p.getX(), p.getY(), new Rotation2d(p.getRotation().getAngle()));
   }
 
-  private double metersToInches(double meters) {
-    return 39.3701 * meters;
-  }
-
   private void log() {
     if (pipeline.hasTargets()) {
       Optional<Pose3d> tagPose = aprilTagFieldLayout.getTagPose(bestTarget.getFiducialId());
-      double x = getTransformToTarget().getX();
-      double z = getTransformToTarget().getZ();
-      double y = getTransformToTarget().getY();
       double dist = get3dDist();
       Pose3d pose3D = getRobotPose3d();
       Transform3d transformToTarget = getTransformToTarget();
