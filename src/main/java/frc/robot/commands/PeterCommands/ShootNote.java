@@ -5,16 +5,14 @@
 package frc.robot.commands.PeterCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.PeterSubsystem;
 
 /** An example command that uses an example subsystem. */
 public class ShootNote extends Command {
   private PeterSubsystem shooter;
-  private LEDSubsystem ledSubsystem;
 
   /**
-   * Creates a new ExampleCommand.
+   * Runs the Preshooter and shooter and shoots the note
    *
    * @param subsystem The subsystem used by this command.
    */
@@ -31,14 +29,15 @@ public class ShootNote extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    shooter.runShooter(1.0);
+    shooter.spinUpShooter();
+    shooter.spinUpPreShooter();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    shooter.runShooter(0);
-    ledSubsystem.noteShot();
+    shooter.stopPreShooterMotor();
+    shooter.stopShooter();
   }
 
   // Returns true when the command should end.

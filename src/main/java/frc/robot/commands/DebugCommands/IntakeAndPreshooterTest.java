@@ -1,21 +1,24 @@
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
-package frc.robot.commands.PeterCommands;
+
+package frc.robot.commands.DebugCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.PeterSubsystem;
 
-/**
- * Runs the intake and preshooter until IR sensor detects note
- *
- * @param subsystem The subsystem used by this command.
- */
-public class RunIntakeUntilDetection extends Command {
+/** An example command that uses an example subsystem. */
+public class IntakeAndPreshooterTest extends Command {
   private PeterSubsystem peterSubsystem;
 
-  public RunIntakeUntilDetection(PeterSubsystem peterSubsystem) {
+  /**
+   * Creates a new ExampleCommand.
+   *
+   * @param peterSubsystem The subsystem used by this command.
+   */
+  public IntakeAndPreshooterTest(PeterSubsystem peterSubsystem) {
     this.peterSubsystem = peterSubsystem;
+    // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(peterSubsystem);
   }
 
@@ -40,6 +43,6 @@ public class RunIntakeUntilDetection extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return peterSubsystem.notePresent();
+    return false; // wait for x seconds
   }
 }

@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.SwerveCommands;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
@@ -10,15 +10,15 @@ import frc.robot.util.FieldCentricOptimizedSwerve;
 import java.util.function.Supplier;
 
 public class SwerveJoystickCommand extends Command {
-  private final Supplier<Double> xSpdFunction,
+  protected final Supplier<Double> xSpdFunction,
       ySpdFunction,
       turningSpdFunction,
       speedControlFunction;
 
   // Limits rate of change (in this case x, y, and turning movement)
-  private final SlewRateLimiter xLimiter, yLimiter, turningLimiter;
+  protected final SlewRateLimiter xLimiter, yLimiter, turningLimiter;
 
-  private final SwerveSubsystem swerveDrivetrain;
+  protected final SwerveSubsystem swerveDrivetrain;
 
   // Sets everything
   public SwerveJoystickCommand(
@@ -99,7 +99,7 @@ public class SwerveJoystickCommand extends Command {
     // Uses SwerveRequestFieldCentric (from java.frc.robot.util to apply module optimization)
     final SwerveRequest.FieldCentric drive =
         new FieldCentricOptimizedSwerve()
-            .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
+            .withDriveRequestType(DriveRequestType.Velocity)
             .withVelocityX(x)
             .withVelocityY(y)
             .withRotationalRate(turn); // OPEN LOOP CONTROL
