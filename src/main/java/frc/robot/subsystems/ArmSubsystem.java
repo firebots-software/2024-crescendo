@@ -172,22 +172,38 @@ public class ArmSubsystem extends SubsystemBase {
     //    2. note exit point is always 2ft off the ground
     //    3. note exit point is in the center of the robot
     // why have these assumptions been made? 一時十七分だから、ねむいんです。
+
+    // redAlliance: true if we're on the red alliance, false if we're on the blue alliance
     boolean redAlliance =
         (DriverStation.getAlliance().isEmpty())
             ? false
             : (DriverStation.getAlliance().get() == Alliance.Red);
+
+    // If we're on the red alliance, speakerPose is the Pose2d of the Blue Speaker.
+    // If we're on the blue alliance, speakerPose is the Pose2d of the Red Speaker.
     Pose2d speakerPose = redAlliance ? 
         Constants.Landmarks.Speaker.POSE : 
         MiscUtils.reflectAcrossMidline(Constants.Landmarks.Speaker.POSE);
-    double groundDistFromSpeaker = speakerPose.getTranslation().getDistance(robotPosition) - 0.46;
-    double height = Constants.Landmarks.Speaker.HEIGHT_METERS - Units.inchesToMeters(22);
-    // double angle =
-    //     MathUtil.clamp(Units.radiansToDegrees(Math.atan2(height, groundDistFromSpeaker)), 3, 90);
-    // angle = MathUtil.clamp(56 - angle, 3, 90);
 
-    double angle = Math.atan((groundDistFromSpeaker-1.118)/1.4)/1.7;
-    angle = MathUtil.clamp(Units.radiansToDegrees(angle), 3, 90);
-    SmartDashboard.putNumber("calculated angle", angle); // should be in telemetry but too tired
+    // groundDistFromSpeaker: the flat, horizontal distance from the robot Pose to the speaker Pose.
+    // An offset of 46 cm represents taking the distance to the frontmost lip of the speaker goal,
+    // instead of the wall of the speaker.
+    double groundDistFromSpeaker = speakerPose.getTranslation().getDistance(robotPosition) - 0.46;
+
+    // height is the vertical distance from the top of the robot's shooter to the lip of the speaker goal.
+    double height = Constants.Landmarks.Speaker.HEIGHT_METERS - Units.inchesToMeters(22);
+
+    // the final target angle of the arm.
+    // 56 degrees is the arm angle for which the shooter is flat (horizontal, 0 degrees),
+    // and subtracting atan2(height, groundDistFromSpeaker) makes the arm tilt back the correct angle,
+    // which is the angle at the shooter from horizontal to the frontmost lip of the goal.
+    double angle =
+        MathUtil.clamp(56 - Units.radiansToDegrees(Math.atan2(height, groundDistFromSpeaker)), 3, 90);
+
+    //double angle = Math.atan((groundDistFromSpeaker-1.118)/1.4)/1.7; // not sure what this is
+
+    // Logging the final calculated angle
+    SmartDashboard.putNumber("ARM Calculated Angle: ", angle); // should be in telemetry but too tired
 
     return MathUtil.clamp(angle, 3, 90);
   }
