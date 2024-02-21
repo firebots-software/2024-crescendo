@@ -1,10 +1,15 @@
 package frc.robot.commands.PeterCommands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.PeterSubsystem;
+import frc.robot.subsystems.SwerveSubsystem;
 
 public class Shoot extends Command {
   private PeterSubsystem peterSubsystem;
+  private SwerveSubsystem swerve;
+  private ArmSubsystem arm;
 
   /**
    * Creates a new ExampleCommand.
@@ -35,6 +40,10 @@ public class Shoot extends Command {
     peterSubsystem.stopLeftShooter();
     peterSubsystem.stopRightShooter();
     peterSubsystem.stopPreShooterMotor();
+    SmartDashboard.putNumber("Pose X", swerve.getState().Pose.getX());
+    SmartDashboard.putNumber("Pose Y", swerve.getState().Pose.getY());
+    SmartDashboard.putNumber("Pose Heading", swerve.getState().Pose.getRotation().getDegrees());
+    SmartDashboard.putNumber("Arm Angle", arm.getCorrectedDegrees());
   }
 
   // Returns true when the command should end.

@@ -16,12 +16,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commandGroups.AimAtSpeaker;
 import frc.robot.commandGroups.Intake;
+import frc.robot.commands.ArmCommands.ArmToAngleCmd;
 import frc.robot.commands.ArmCommands.ArmToNeutralCmd;
 import frc.robot.commands.Auton.MoveToTarget;
 import frc.robot.commands.PeterCommands.Shoot;
@@ -62,7 +61,8 @@ public class RobotContainer {
     setupChooser();
   }
 
-  // Starts telemetry operations (essentially logging -> look on SmartDashboard, AdvantageScope)
+  // Starts telemetry operations (essentially logging -> look on SmartDashboard,
+  // AdvantageScope)
   public void doTelemetry() {
     logger.telemeterize(driveTrain.getState());
   }
@@ -106,41 +106,46 @@ public class RobotContainer {
                 new ArmToNeutralCmd(armSubsystem)));
 
     // Aim
+    // joystick
+    // .x()
+    // .whileTrue(
+    // new AimAtSpeaker(
+    // peterSubsystem,
+    // armSubsystem,
+    // driveTrain,
+    // frontBackFunction,
+    // leftRightFunction,
+    // speedFunction));
+
     joystick
         .x()
-        .whileTrue(
-            new AimAtSpeaker(
-                peterSubsystem,
-                armSubsystem,
-                driveTrain,
-                frontBackFunction,
-                leftRightFunction,
-                speedFunction));
+        .onTrue(new ArmToAngleCmd(() -> armSubsystem.getCorrectedDegrees() - 1.0, armSubsystem));
 
     // Fire
-    joystick
-        .a()
-        .whileTrue(
-            new SequentialCommandGroup(
-                new AimAtSpeaker(
-                    peterSubsystem,
-                    armSubsystem,
-                    driveTrain,
-                    frontBackFunction,
-                    leftRightFunction,
-                    speedFunction,
-                    0.02),
-                new ParallelCommandGroup(
-                    new Shoot(peterSubsystem),
+    joystick.a().whileTrue(new Shoot(peterSubsystem));
+    // joystick
+    // .a()
+    // .whileTrue(
+    // new SequentialCommandGroup(
+    // new AimAtSpeaker(
+    // peterSubsystem,
+    // armSubsystem,
+    // driveTrain,
+    // frontBackFunction,
+    // leftRightFunction,
+    // speedFunction,
+    // 0.02),
+    // new ParallelCommandGroup(
+    // new Shoot(peterSubsystem),
 
-                    // we need this a second time because the first one ended in the
-                    // aimBeforeShootCommand, this time without a tolerance end
-                    SwerveLockedAngleCmd.fromPose(
-                        frontBackFunction,
-                        leftRightFunction,
-                        () -> Constants.Landmarks.Speaker.POSE.getTranslation(),
-                        speedFunction,
-                        driveTrain))));
+    // // we need this a second time because the first one ended in the
+    // // aimBeforeShootCommand, this time without a tolerance end
+    // SwerveLockedAngleCmd.fromPose(
+    // frontBackFunction,
+    // leftRightFunction,
+    // () -> Constants.Landmarks.Speaker.POSE.getTranslation(),
+    // speedFunction,
+    // driveTrain))));
 
     // speaker snap
     joystick
@@ -154,15 +159,19 @@ public class RobotContainer {
                 driveTrain));
 
     // amp snap
+    // joystick
+    // .b()
+    // .whileTrue(
+    // new SwerveLockedAngleCmd(
+    // frontBackFunction,
+    // leftRightFunction,
+    // () -> new Rotation2d(-Math.PI / 2d),
+    // speedFunction,
+    // driveTrain));
+
     joystick
         .b()
-        .whileTrue(
-            new SwerveLockedAngleCmd(
-                frontBackFunction,
-                leftRightFunction,
-                () -> new Rotation2d(-Math.PI / 2d),
-                speedFunction,
-                driveTrain));
+        .onTrue(new ArmToAngleCmd(() -> armSubsystem.getCorrectedDegrees() + 1.0, armSubsystem));
 
     // When no Commands are being issued, Peter motors should not be moving
     peterSubsystem.setDefaultCommand(
@@ -186,7 +195,8 @@ public class RobotContainer {
     driveTrain.registerTelemetry(logger::telemeterize);
   }
 
-  // Constructs a Pose2d array of the note locations by a specific indexing so they can be accessed
+  // Constructs a Pose2d array of the note locations by a specific indexing so
+  // they can be accessed
   // by the eventual autonomous chooser
   private enum NoteLocation {
     AMPSIDE(Constants.Landmarks.AMPSIDE_NOTE_LOCATION),
@@ -213,7 +223,8 @@ public class RobotContainer {
             : (DriverStation.getAlliance().get() == Alliance.Red);
   }
 
-  // Options on SmartDashboard that return an integer index that refers to a note location
+  // Options on SmartDashboard that return an integer index that refers to a note
+  // location
   private static SendableChooser<Optional<NoteLocation>>
       pickup1choice = new SendableChooser<Optional<NoteLocation>>(),
       pickup2choice = new SendableChooser<Optional<NoteLocation>>();
