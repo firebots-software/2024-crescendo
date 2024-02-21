@@ -186,7 +186,7 @@ public class PeterSubsystem extends SubsystemBase {
   // PRE-SHOOTER FUNCTIONS:
 
   public void spinUpPreShooter() {
-    runPreShooterAtRPS(Constants.Peter.ROTATIONS_TO_SHOOTER);
+    runPreShooterAtRPS(Constants.Peter.PRESHOOTER_WHEEL_SPEED_RPS);
   }
 
   private void runPreShooterAtRPS(double speed) {

@@ -171,14 +171,14 @@ public class ArmSubsystem extends SubsystemBase {
 
     double groundDistFromSpeaker =
         Constants.Landmarks.Speaker.POSE.getTranslation().getDistance(robotPosition);
-    double height = Constants.Landmarks.Speaker.HEIGHT_METERS - Units.inchesToMeters(24d);
-    double angle =
-        MathUtil.clamp(Units.radiansToDegrees(Math.atan2(height, groundDistFromSpeaker)), 3, 90);
-    angle = MathUtil.clamp(56 - angle, 3, 90);
-    SmartDashboard.putNumber("calculated angle", angle); // should be in telemetry but too tired
+    double height = Constants.Landmarks.Speaker.HEIGHT_METERS - Units.inchesToMeters(22);
+    // double angle =
+    //     MathUtil.clamp(Units.radiansToDegrees(Math.atan2(height, groundDistFromSpeaker)), 3, 90);
+    // angle = MathUtil.clamp(56 - angle, 3, 90);
 
-    // double angle = Math.atan((groundDistFromSpeaker-0.897)/1.25)/1.7;
-    // angle = MathUtil.clamp(Units.radiansToDegrees(angle), 3, 90);
+    double angle = Math.atan((groundDistFromSpeaker-1.118)/1.4)/1.7;
+    angle = MathUtil.clamp(Units.radiansToDegrees(angle), 3, 90);
+    SmartDashboard.putNumber("calculated angle", angle); // should be in telemetry but too tired
 
     return MathUtil.clamp(angle, 3, 90);
   }

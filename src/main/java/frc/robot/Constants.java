@@ -48,8 +48,8 @@ public final class Constants {
     public static final int SHOOTER_PORT_RIGHT = 30;
     public static final int SHOOTER_PORT_LEFT = 31;
 
-    public static final double INTAKE_WHEEL_SPEED_RPS = 200; // Intake gear ratio: 2:1
-    public static final double ROTATIONS_TO_SHOOTER = 300; // Preshooter gear ratio: 4:1
+    public static final double INTAKE_WHEEL_SPEED_RPS = 100; // Intake gear ratio: 2:1
+    public static final double PRESHOOTER_WHEEL_SPEED_RPS = 100; // Preshooter gear ratio: 4:1
     public static final double SHOOT_WHEEL_SPEED_RPS = 4500.0 / 60.0;
 
     public static final String CANBUS_NAME = "rio";
@@ -111,7 +111,7 @@ public final class Constants {
     public static final class Speaker {
       public static final double HEIGHT_INCHES = 78.0;
       public static final double HEIGHT_METERS = Units.inchesToMeters(HEIGHT_INCHES);
-      public static final Pose2d POSE = new Pose2d(new Translation2d(0.5, 5.5), new Rotation2d(0));
+      public static final Pose2d POSE = new Pose2d(new Translation2d(0.75, 5.5), new Rotation2d(0));
     }
 
     public static final class Amp {
