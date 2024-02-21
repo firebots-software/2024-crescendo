@@ -8,6 +8,7 @@ import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -96,9 +97,15 @@ public class PeterSubsystem extends SubsystemBase {
   }
 
   // SHOOTER FUNCTIONS:
-  public void spinUpShooter() {
-    runRightShooterAtRPS(Constants.Peter.SHOOT_WHEEL_SPEED_RPS);
-    runLeftShooterAtRPS(Constants.Peter.SHOOT_WHEEL_SPEED_RPS);
+  public void spinUpShooter(Translation2d robotPosition) {
+    if (Constants.Landmarks.Speaker.POSE.getTranslation().getDistance(robotPosition) > 1.0) {
+      runRightShooterAtRPS(
+          Constants.Peter.SHOOT_WHEEL_SPEED_RPS * Constants.Peter.SPIN_WHEEL_RATIO);
+      runLeftShooterAtRPS(Constants.Peter.SHOOT_WHEEL_SPEED_RPS);
+    } else {
+      runRightShooterAtRPS(Constants.Peter.SHOOT_WHEEL_SPEED_RPS);
+      runLeftShooterAtRPS(Constants.Peter.SHOOT_WHEEL_SPEED_RPS);
+    }
     // runShooterAtRPS(Constants.Peter.SHOOT_WHEEL_SPEED_RPS);
   }
 

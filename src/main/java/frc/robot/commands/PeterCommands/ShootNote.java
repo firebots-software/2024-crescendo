@@ -6,18 +6,21 @@ package frc.robot.commands.PeterCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.PeterSubsystem;
+import frc.robot.subsystems.SwerveSubsystem;
 
 /** An example command that uses an example subsystem. */
 public class ShootNote extends Command {
   private PeterSubsystem shooter;
+  private SwerveSubsystem swerveSubsystem;
 
   /**
    * Runs the Preshooter and shooter and shoots the note
    *
    * @param subsystem The subsystem used by this command.
    */
-  public ShootNote(PeterSubsystem shooter) {
+  public ShootNote(PeterSubsystem shooter, SwerveSubsystem swerveSubsystem) {
     this.shooter = shooter;
+    this.swerveSubsystem = swerveSubsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(shooter);
   }
@@ -29,7 +32,7 @@ public class ShootNote extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    shooter.spinUpShooter();
+    shooter.spinUpShooter(swerveSubsystem.getState().Pose.getTranslation());
     shooter.spinUpPreShooter();
   }
 

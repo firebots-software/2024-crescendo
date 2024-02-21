@@ -7,18 +7,21 @@ package frc.robot.commands.DebugCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.PeterSubsystem;
+import frc.robot.subsystems.SwerveSubsystem;
 
 /** An example command that uses an example subsystem. */
 public class PeterTest extends Command {
   private PeterSubsystem peterSubsystem;
+  private SwerveSubsystem swerveSubsystem;
 
   /**
    * Tests the intake by spinning them up and stopping them
    *
    * @param peterSubsystem The subsystem used by this command.
    */
-  public PeterTest(PeterSubsystem peterSubsystem) {
+  public PeterTest(PeterSubsystem peterSubsystem, SwerveSubsystem swerveSubsystem) {
     this.peterSubsystem = peterSubsystem;
+    this.swerveSubsystem = swerveSubsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(peterSubsystem);
   }
@@ -34,7 +37,7 @@ public class PeterTest extends Command {
   public void execute() {
     peterSubsystem.spinUpIntake();
     peterSubsystem.spinUpPreShooter();
-    peterSubsystem.spinUpShooter();
+    peterSubsystem.spinUpShooter(swerveSubsystem.getState().Pose.getTranslation());
   }
 
   // Called once the command ends or is interrupted.

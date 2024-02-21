@@ -6,18 +6,21 @@ package frc.robot.commands.PeterCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.PeterSubsystem;
+import frc.robot.subsystems.SwerveSubsystem;
 
 /** An example command that uses an example subsystem. */
 public class WarmUpShooter extends Command {
   private PeterSubsystem peterSubsystem;
+  private SwerveSubsystem swerveSubsystem;
 
   /**
    * Warm up the shooter
    *
    * @param subsystem The subsystem used by this command.
    */
-  public WarmUpShooter(PeterSubsystem peterSubsystem) {
+  public WarmUpShooter(PeterSubsystem peterSubsystem, SwerveSubsystem swerveSubsystem) {
     this.peterSubsystem = peterSubsystem;
+    this.swerveSubsystem = swerveSubsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(peterSubsystem);
   }
@@ -29,7 +32,7 @@ public class WarmUpShooter extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    peterSubsystem.spinUpShooter();
+    peterSubsystem.spinUpShooter(swerveSubsystem.getState().Pose.getTranslation());
   }
 
   // Called once the command ends or is interrupted.

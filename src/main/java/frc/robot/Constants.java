@@ -52,6 +52,8 @@ public final class Constants {
     public static final double ROTATIONS_TO_SHOOTER = 300; // Preshooter gear ratio: 4:1
     public static final double SHOOT_WHEEL_SPEED_RPS = 4500.0 / 60.0;
 
+    public static final double SPIN_WHEEL_RATIO = 7 / 8;
+
     public static final String CANBUS_NAME = "rio";
 
     public static final double INTAKE_GEAR_RATIO = 2;

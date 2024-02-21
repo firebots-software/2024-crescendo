@@ -2,22 +2,26 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
+// delete in future
 package frc.robot.commands.DebugCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.PeterSubsystem;
+import frc.robot.subsystems.SwerveSubsystem;
 
 /** An example command that uses an example subsystem. */
 public class Shooter extends Command {
   private PeterSubsystem peterSubsystem;
+  private SwerveSubsystem swerveSubsystem;
 
   /**
-   * Creates a new ExampleCommand.
+   * Tests the intake by spinning them up and stopping them
    *
-   * @param subsystem The subsystem used by this command.
+   * @param peterSubsystem The subsystem used by this command.
    */
-  public Shooter(PeterSubsystem peterSubsystem) {
+  public Shooter(PeterSubsystem peterSubsystem, SwerveSubsystem swerveSubsystem) {
     this.peterSubsystem = peterSubsystem;
+    this.swerveSubsystem = swerveSubsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(peterSubsystem);
   }
@@ -29,7 +33,7 @@ public class Shooter extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    peterSubsystem.spinUpShooter();
+    peterSubsystem.spinUpShooter(swerveSubsystem.getState().Pose.getTranslation());
     if (peterSubsystem.isShooterReady()) {
       // peterSubsystem.moveNoteToShooter();
     }
