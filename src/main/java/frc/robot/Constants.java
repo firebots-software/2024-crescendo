@@ -101,6 +101,9 @@ public final class Constants {
     public static final double ABSOLUTE_ENCODER_HORIZONTAL = 0.629;
     public static final double ABSOLUTE_HORIZONTAL_OFFSET = 0.05;
 
+    public static final double ABSOLUTE_ENCODER_START = 0.4366;
+    public static final double ABSOLUTE_ENCODER_START_TOLERANCE = 0.05;
+
     public static final InterpolatingDoubleTreeMap INTERMAP = new InterpolatingDoubleTreeMap();
     static{
       INTERMAP.put(1.25, 6d); //measurements of distance are from front of robot bumper to wall
