@@ -41,13 +41,13 @@ public class PeterSubsystem extends SubsystemBase {
         .apply(
             new CurrentLimitsConfigs()
                 .withStatorCurrentLimitEnable(true)
-                .withStatorCurrentLimit(60.0));
+                .withStatorCurrentLimit(Constants.Peter.SHOOTER_STATOR_CURRENT_LIMIT_AMPS));
     shooterMotorRight
         .getConfigurator()
         .apply(
             new CurrentLimitsConfigs()
                 .withStatorCurrentLimitEnable(true)
-                .withStatorCurrentLimit(60.0));
+                .withStatorCurrentLimit(Constants.Peter.SHOOTER_STATOR_CURRENT_LIMIT_AMPS));
 
     // Preshooter
     preShooterMotor = new TalonFX(Constants.Peter.PRE_SHOOTER_PORT, Constants.Peter.CANBUS_NAME);
@@ -59,13 +59,24 @@ public class PeterSubsystem extends SubsystemBase {
 
     Slot0Configs preshooterPID = new Slot0Configs().withKP(3).withKV(1);
     preShooterMotor.getConfigurator().apply(preshooterPID);
-
+    preShooterMotor
+        .getConfigurator()
+        .apply(
+            new CurrentLimitsConfigs()
+                .withStatorCurrentLimitEnable(true)
+                .withStatorCurrentLimit(Constants.Peter.PRESHOOTER_STATOR_CURRENT_LIMIT_AMPS));
     // Intake
     Slot0Configs intakePid =
         new Slot0Configs().withKP(0.1).withKI(0).withKD(0).withKG(0).withKV(0).withKA(0);
 
     intakeMotor = new TalonFX(Constants.Peter.INTAKE_MOTOR_PORT, Constants.Peter.CANBUS_NAME);
     intakeMotor.getConfigurator().apply(intakePid);
+    intakeMotor
+        .getConfigurator()
+        .apply(
+            new CurrentLimitsConfigs()
+                .withStatorCurrentLimitEnable(true)
+                .withStatorCurrentLimit(Constants.Peter.INTAKE_STATOR_CURRENT_LIMIT_AMPS));
     intakeMotor.setInverted(true);
     noteSensor = new DigitalInput(Constants.Peter.NOTE_DETECTOR_PORT);
 

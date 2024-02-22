@@ -175,7 +175,7 @@ public final class Constants {
     private static final double SLIP_CURRENT_AMPS = 100.0;
     public static final double DRIVE_STATOR_CURRENT_LIMIT_AMPS = 20.0;
     public static final double STEER_STATOR_CURRENT_LIMIT_AMPS = 10.0;
-    
+
     public static final double DRIVE_SUPPLY_CURRENT_LIMIT_AMPS = 60.0;
     public static final double TURNING_SUPPLY_CURRENT_LIMIT_AMPS = 25.0;
     // Theoretical free speed (m/s) at 12v applied output;
