@@ -59,8 +59,8 @@ public final class Constants {
     public static final double SHOOTER_WHEELS_GEAR_RATIOS = 24d / 18d;
 
     public static final double SHOOTER_STATOR_CURRENT_LIMIT_AMPS = 60.0;
-    public static final double PRESHOOTER_STATOR_CURRENT_LIMIT_AMPS = 15.0;
-    public static final double INTAKE_STATOR_CURRENT_LIMIT_AMPS = 8.0;
+    public static final double PRESHOOTER_STATOR_CURRENT_LIMIT_AMPS = 20.0;
+    public static final double INTAKE_STATOR_CURRENT_LIMIT_AMPS = 16.0;
   }
 
   public static final class Arm {
