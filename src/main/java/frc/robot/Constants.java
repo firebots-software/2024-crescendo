@@ -60,12 +60,12 @@ public final class Constants {
 
     public static final double SHOOTER_STATOR_CURRENT_LIMIT_AMPS = 60.0;
     public static final double PRESHOOTER_STATOR_CURRENT_LIMIT_AMPS = 15.0;
-    public static final double INTAKE_STATOR_CURRENT_LIMIT_AMPS = 8.0;
+    public static final double INTAKE_STATOR_CURRENT_LIMIT_AMPS = 16.0;
   }
 
   public static final class Arm {
-    public static final double ARM_STATOR_CURRENT_LIMIT_AMPS = 8.0;
-    public static final double DEFAULT_ARM_ANGLE = 15;
+    public static final double ARM_STATOR_CURRENT_LIMIT_AMPS = 100.0;
+    public static final double DEFAULT_ARM_ANGLE = 78;
     public final double INTAKE_ANGLE = 0; // subject to change
     public static final double AMP_ANGLE = 78; // subject to change
     public static final double SPEAKER_ANGLE =
