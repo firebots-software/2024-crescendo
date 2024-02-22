@@ -2,7 +2,6 @@ package frc.robot.commands.ArmCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ArmSubsystem;
-import frc.robot.subsystems.SwerveSubsystem;
 
 public class AimArmAtAmpCmd extends Command {
   private ArmSubsystem armSubsystem;
