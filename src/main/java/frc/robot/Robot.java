@@ -13,6 +13,8 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.PeterSubsystem;
 import frc.robot.subsystems.PhotonVision;
 import frc.robot.subsystems.SwerveSubsystem;
 
@@ -24,8 +26,10 @@ import frc.robot.subsystems.SwerveSubsystem;
  */
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
-  SwerveSubsystem ss = SwerveSubsystem.getInstance();
   PhotonVision vision = PhotonVision.getInstance();
+  private final SwerveSubsystem driveTrain = SwerveSubsystem.getInstance();
+  private final ArmSubsystem armSubsystem = ArmSubsystem.getInstance();
+  private final PeterSubsystem peterSubsystem = PeterSubsystem.getInstance();
   private RobotContainer m_robotContainer;
   //private static Matrix<N3, N1> visionMatrix = new Matrix<N3, N1>(3,  1);
 
@@ -43,6 +47,7 @@ public class Robot extends TimedRobot {
     // and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+    absoluteInit();
     DataLogManager.start();
   }
 
@@ -64,7 +69,7 @@ public class Robot extends TimedRobot {
     // block in order for anything in the Command-based framework to work.
     m_robotContainer.doTelemetry();
     if (vision.hasTarget(vision.getPipeline())) {
-      ss.addVisionMeasurement(vision.getRobotPose2d(), Timer.getFPGATimestamp());
+      driveTrain.addVisionMeasurement(vision.getRobotPose2d(), Timer.getFPGATimestamp());
     }
 
     CommandScheduler.getInstance().run();
