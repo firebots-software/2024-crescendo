@@ -57,9 +57,14 @@ public final class Constants {
     public static final double INTAKE_GEAR_RATIO = 2;
     public static final double PRESHOOTER_GEAR_RATIO = 4;
     public static final double SHOOTER_WHEELS_GEAR_RATIOS = 24d / 18d;
+
+    public static final double SHOOTER_STATOR_CURRENT_LIMIT_AMPS = 60.0;
+    public static final double PRESHOOTER_STATOR_CURRENT_LIMIT_AMPS = 25.0;
+    public static final double INTAKE_STATOR_CURRENT_LIMIT_AMPS = 16.0;
   }
 
   public static final class Arm {
+    public static final double ARM_STATOR_CURRENT_LIMIT_AMPS = 100.0;
     public static final double DEFAULT_ARM_ANGLE = 20;
     public final double INTAKE_ANGLE = 0; // subject to change
     public static final double AMP_ANGLE = 78; // subject to change
@@ -168,6 +173,9 @@ public final class Constants {
     // The stator current at which the wheels start to slip;
     // This needs to be tuned to your individual robot
     private static final double SLIP_CURRENT_AMPS = 100.0;
+    public static final double DRIVE_STATOR_CURRENT_LIMIT_AMPS = 20.0;
+    public static final double STEER_STATOR_CURRENT_LIMIT_AMPS = 10.0;
+
     public static final double DRIVE_SUPPLY_CURRENT_LIMIT_AMPS = 60.0;
     public static final double TURNING_SUPPLY_CURRENT_LIMIT_AMPS = 25.0;
     // Theoretical free speed (m/s) at 12v applied output;

@@ -37,7 +37,10 @@ public class ArmSubsystem extends SubsystemBase {
   public ArmSubsystem() {
     // Initialize Current Limit, Slot0Configs, and ArmFeedForward
     CurrentLimitsConfigs clc =
-        new CurrentLimitsConfigs().withSupplyCurrentLimit(Constants.Arm.CURRENT_LIMIT);
+        new CurrentLimitsConfigs()
+            .withStatorCurrentLimitEnable(true)
+            .withStatorCurrentLimit(Constants.Arm.ARM_STATOR_CURRENT_LIMIT_AMPS)
+            .withSupplyCurrentLimit(Constants.Arm.CURRENT_LIMIT);
     MotorOutputConfigs moc = new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Brake);
     Slot0Configs s0c = new Slot0Configs().withKP(Constants.Arm.S0C_KP).withKI(0).withKD(0);
     armff =
