@@ -26,6 +26,7 @@ import frc.robot.commandGroups.FireAuton;
 import frc.robot.commandGroups.Intake;
 import frc.robot.commands.ArmCommands.ArmToNeutralCmd;
 import frc.robot.commands.Auton.MoveToTarget;
+import frc.robot.commands.Auton.RatchetteDisengage;
 import frc.robot.commands.PeterCommands.ShootNoWarmup;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.commands.SwerveCommands.SwerveLockedAngleCmd;
@@ -242,22 +243,22 @@ public class RobotContainer {
     SmartDashboard.putString("Auton to be run", autonName);
     SmartDashboard.putBoolean("Red Alliance?", redAlliance);
     return new PathPlannerAuto(autonName)
-        // .andThen(new RatchetteDisengage(armSubsystem), new PrintCommand("finished Rachette"))
+        .andThen(new RatchetteDisengage(armSubsystem), new PrintCommand("finished Rachette"))
         .andThen(
             new FireAuton(peterSubsystem, armSubsystem, driveTrain, 1),
             new PrintCommand("ritvik gun fire1"))
         .andThen(
-            (pickup1choice.getSelected().isEmpty())
+            ((pickup1choice.getSelected().isEmpty())
                 ? new WaitCommand(2.0)
                 : MoveToTarget.withMirror(
                         driveTrain,
                         pickup1choice.getSelected().get().getNoteLocation(),
-                        redAlliance)
+                        redAlliance)).andThen(new PrintCommand("ritvik relocated1"))
                     .alongWith(
                         new Intake(peterSubsystem, armSubsystem),
                         new PrintCommand("ritvik reload 1")))
         .andThen(
-            new FireAuton(peterSubsystem, armSubsystem, driveTrain, 1),
+            new FireAuton(peterSubsystem, armSubsystem, driveTrain, 5),
             new PrintCommand("ritvik shoot2"))
         .andThen(
             (pickup2choice.getSelected().isEmpty())

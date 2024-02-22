@@ -157,6 +157,10 @@ public class PeterSubsystem extends SubsystemBase {
     preShooterMotor.setControl(new PositionVoltage(-count * Constants.Peter.PRESHOOTER_GEAR_RATIO));
   }
 
+  public boolean isBackedUp(double count){
+    return Math.abs(preShooterMotor.getPosition().getValueAsDouble() - (-count * Constants.Peter.PRESHOOTER_GEAR_RATIO)) < 0.1;
+  }
+
   public void reverseMechanism() {
     preShooterMotor.setControl(new DutyCycleOut(-0.5));
     shooterMotorLeft.setControl(new DutyCycleOut(-0.5));
