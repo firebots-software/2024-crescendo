@@ -7,7 +7,6 @@ import frc.robot.subsystems.PeterSubsystem;
 
 public class WarmUpNoteAndShoot extends SequentialCommandGroup {
   public WarmUpNoteAndShoot(PeterSubsystem shooter) {
-    addCommands(
-      new SpinUpShooter(shooter), new ShootNoWarmup(shooter));
+    addCommands(new SpinUpShooter(shooter), new ShootNoWarmup(shooter));
   }
 }

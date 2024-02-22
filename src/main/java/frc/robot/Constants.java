@@ -76,7 +76,6 @@ public final class Constants {
     // position is when the arm is at its resting
     // position.
     public static final String CANBUS_NAME = "Patrice the Pineapple";
-  
 
     public static final int RT_PORT = 14; // Right Top motor
     public static final int RB_PORT = 13; // Right Bottom motor
@@ -102,8 +101,9 @@ public final class Constants {
     public static final double ABSOLUTE_HORIZONTAL_OFFSET = 0.05;
 
     public static final InterpolatingDoubleTreeMap INTERMAP = new InterpolatingDoubleTreeMap();
-    static{
-      INTERMAP.put(1.25, 6d); //measurements of distance are from front of robot bumper to wall
+
+    static {
+      INTERMAP.put(1.25, 6d); // measurements of distance are from front of robot bumper to wall
       INTERMAP.put(2.1, 17d);
       INTERMAP.put(Units.feetToMeters(9) + Units.inchesToMeters(17), 23.5d);
     }
