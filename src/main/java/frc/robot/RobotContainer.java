@@ -21,11 +21,12 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commandGroups.AimAtSpeaker;
+import frc.robot.commandGroups.FireAuton;
 import frc.robot.commandGroups.Intake;
-import frc.robot.commandGroups.WarmUpNoteAndShoot;
 import frc.robot.commands.ArmCommands.ArmToNeutralCmd;
 import frc.robot.commands.Auton.MoveToTarget;
-import frc.robot.commands.PeterCommands.Shoot;
+import frc.robot.commands.Auton.RatchetteDisengage;
+import frc.robot.commands.PeterCommands.ShootNoWarmup;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.commands.SwerveCommands.SwerveLockedAngleCmd;
 import frc.robot.subsystems.ArmSubsystem;
@@ -132,7 +133,7 @@ public class RobotContainer {
                     speedFunction,
                     0.02),
                 new ParallelCommandGroup(
-                    new Shoot(peterSubsystem),
+                    new ShootNoWarmup(peterSubsystem),
 
                     // we need this a second time because the first one ended in the
                     // aimBeforeShootCommand, this time without a tolerance end
@@ -241,15 +242,21 @@ public class RobotContainer {
     SmartDashboard.putString("Auton to be run", autonName);
     SmartDashboard.putBoolean("Red Alliance?", redAlliance);
     return new PathPlannerAuto(autonName)
+        .andThen(new RatchetteDisengage(armSubsystem))
+        .andThen(new FireAuton(peterSubsystem, armSubsystem, driveTrain, 0))
         .andThen(
             (pickup1choice.getSelected().isEmpty())
                 ? new WaitCommand(2.0)
                 : MoveToTarget.withMirror(
                     driveTrain, pickup1choice.getSelected().get().getNoteLocation(), redAlliance))
+        .andThen(new Intake(peterSubsystem, armSubsystem))
+        .andThen(new FireAuton(peterSubsystem, armSubsystem, driveTrain, 1))
+        .andThen(new Intake(peterSubsystem, armSubsystem))
         .andThen(
             (pickup2choice.getSelected().isEmpty())
                 ? new WaitCommand(2.0)
                 : MoveToTarget.withMirror(
-                    driveTrain, pickup2choice.getSelected().get().getNoteLocation(), redAlliance));
+                    driveTrain, pickup2choice.getSelected().get().getNoteLocation(), redAlliance))
+        .andThen(new FireAuton(peterSubsystem, armSubsystem, driveTrain, 1));
   }
 }
