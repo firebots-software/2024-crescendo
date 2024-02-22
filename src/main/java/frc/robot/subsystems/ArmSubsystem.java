@@ -164,6 +164,8 @@ public class ArmSubsystem extends SubsystemBase {
 
   private double calculateAngleToSpeaker(Translation2d robotPosition) {
     double groundDistFromSpeaker = Constants.Landmarks.Speaker.POSE.getTranslation().getDistance(robotPosition);
+    SmartDashboard.putNumber("ground dist from speaker", groundDistFromSpeaker);
+    SmartDashboard.putNumber("angle from intermap",  Constants.Arm.INTERMAP.get(groundDistFromSpeaker));
     return Constants.Arm.INTERMAP.get(groundDistFromSpeaker);
   }
   // private double calculateAngleToSpeaker(Translation2d robotPosition) {

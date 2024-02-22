@@ -98,9 +98,9 @@ public final class Constants {
 
     public static final InterpolatingDoubleTreeMap INTERMAP = new InterpolatingDoubleTreeMap();
     static{
-      INTERMAP.put(Units.feetToMeters(3), 6d); //measurements of distance are from front of robot bumper to wall
-      INTERMAP.put(Units.feetToMeters(6), 17d);
-      INTERMAP.put(Units.feetToMeters(9), 23.5d);
+      INTERMAP.put(1.25, 6d); //measurements of distance are from front of robot bumper to wall
+      INTERMAP.put(2.1, 17d);
+      INTERMAP.put(Units.feetToMeters(9) + Units.inchesToMeters(17), 23.5d);
     }
   }
 
@@ -122,7 +122,7 @@ public final class Constants {
     public static final class Speaker {
       public static final double HEIGHT_INCHES = 78.0;
       public static final double HEIGHT_METERS = Units.inchesToMeters(HEIGHT_INCHES);
-      public static final Pose2d POSE = new Pose2d(new Translation2d(0.5, 5.5), new Rotation2d(0));
+      public static final Pose2d POSE = new Pose2d(new Translation2d(0, 5.5), new Rotation2d(0));
     }
 
     public static final class Amp {
