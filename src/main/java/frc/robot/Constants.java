@@ -65,7 +65,7 @@ public final class Constants {
 
   public static final class Arm {
     public static final double ARM_STATOR_CURRENT_LIMIT_AMPS = 100.0;
-    public static final double DEFAULT_ARM_ANGLE = 78;
+    public static final double DEFAULT_ARM_ANGLE = 20;
     public final double INTAKE_ANGLE = 0; // subject to change
     public static final double AMP_ANGLE = 78; // subject to change
     public static final double SPEAKER_ANGLE =
