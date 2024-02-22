@@ -31,7 +31,7 @@ public class Robot extends TimedRobot {
   private final ArmSubsystem armSubsystem = ArmSubsystem.getInstance();
   private final PeterSubsystem peterSubsystem = PeterSubsystem.getInstance();
   private RobotContainer m_robotContainer;
-  private static Matrix<N3, N1> visionMatrix = new Matrix<N3,N1>(Nat.N3(),Nat.N1());
+  private static Matrix<N3, N1> visionMatrix = new Matrix<N3, N1>(Nat.N3(), Nat.N1());
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -69,7 +69,8 @@ public class Robot extends TimedRobot {
     // block in order for anything in the Command-based framework to work.
     m_robotContainer.doTelemetry();
     if (vision.hasTarget(vision.getPipeline())) {
-      driveTrain.addVisionMeasurement(vision.getRobotPose2d(), Timer.getFPGATimestamp(),visionMatrix);
+      driveTrain.addVisionMeasurement(
+          vision.getRobotPose2d(), Timer.getFPGATimestamp(), visionMatrix);
     }
 
     CommandScheduler.getInstance().run();

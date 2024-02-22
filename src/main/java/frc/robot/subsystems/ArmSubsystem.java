@@ -12,7 +12,6 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -166,12 +165,14 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   private double calculateAngleToSpeaker(Translation2d robotPosition) {
-    double groundDistFromSpeaker = Constants.Landmarks.Speaker.POSE.getTranslation().getDistance(robotPosition);
+    double groundDistFromSpeaker =
+        Constants.Landmarks.Speaker.POSE.getTranslation().getDistance(robotPosition);
     SmartDashboard.putNumber("ground dist from speaker", groundDistFromSpeaker);
-    SmartDashboard.putNumber("angle from intermap",  Constants.Arm.INTERMAP.get(groundDistFromSpeaker));
+    SmartDashboard.putNumber(
+        "angle from intermap", Constants.Arm.INTERMAP.get(groundDistFromSpeaker));
     return Constants.Arm.INTERMAP.get(groundDistFromSpeaker);
   }
-  
+
   public void rotateToAmpPosition() {
     setTargetDegrees(Constants.Arm.AMP_ANGLE);
   }
