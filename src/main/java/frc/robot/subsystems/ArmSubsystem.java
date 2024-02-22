@@ -115,7 +115,7 @@ public class ArmSubsystem extends SubsystemBase {
             () -> {
               try {
                 do {
-                  Thread.sleep(250);
+                  Thread.sleep(50);
                 } while (!revEncoder.isConnected());
                 master.setPosition(
                     (getAbsolutePosition()) * Constants.Arm.INTEGRATED_ABSOLUTE_CONVERSION_FACTOR);
@@ -224,6 +224,14 @@ public class ArmSubsystem extends SubsystemBase {
     return Math.abs(targetDegrees - getCorrectedDegrees()) < tolerance;
   }
 
+  public boolean atStartAngle(double tolerance) {
+    return Math.abs(Constants.Arm.ABSOLUTE_ENCODER_START - getAbsolutePosition()) < tolerance;
+  }
+
+  public boolean atStartAngle() {
+    return Math.abs(Constants.Arm.ABSOLUTE_ENCODER_START - getAbsolutePosition()) < Constants.Arm.ABSOLUTE_ENCODER_START_TOLERANCE;
+  }
+
   @Override
   public void periodic() {
     setPosition(targetDegrees);
@@ -231,7 +239,7 @@ public class ArmSubsystem extends SubsystemBase {
     SmartDashboard.putString(
         "ARM Command:",
         this.getCurrentCommand() == null ? "none" : this.getCurrentCommand().getName());
-    SmartDashboard.putNumber("ARM Abs Enc Raw: ", revEncoder.getAbsolutePosition());
+    //SmartDashboard.putNumber("ARM Abs Enc Raw: ", revEncoder.getAbsolutePosition());
     SmartDashboard.putNumber("ARM Abs Enc Func: ", getAbsolutePosition());
     SmartDashboard.putNumber("ARM Integrated Rotations: ", getMotorPosRotations());
     SmartDashboard.putNumber("ARM Integrated Current: ", master.getSupplyCurrent().getValue());
@@ -245,5 +253,7 @@ public class ArmSubsystem extends SubsystemBase {
     SmartDashboard.putNumber(
         "ARM FeedForward Calculations: ",
         armff.calculate((2 * Math.PI * getRawDegrees()) / 360d, 0));
+
+    SmartDashboard.putBoolean("ARM At Start Angle: ", atStartAngle());
   }
 }
