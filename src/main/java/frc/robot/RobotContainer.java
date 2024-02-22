@@ -132,7 +132,7 @@ public class RobotContainer {
                     speedFunction,
                     0.02),
                 new ParallelCommandGroup(
-                    new WarmUpNoteAndShoot(peterSubsystem),
+                    new Shoot(peterSubsystem),
 
                     // we need this a second time because the first one ended in the
                     // aimBeforeShootCommand, this time without a tolerance end
