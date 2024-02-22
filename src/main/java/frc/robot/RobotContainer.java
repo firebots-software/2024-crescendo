@@ -243,7 +243,7 @@ public class RobotContainer {
     SmartDashboard.putBoolean("Red Alliance?", redAlliance);
     return new PathPlannerAuto(autonName)
         .andThen(new RatchetteDisengage(armSubsystem))
-        .andThen(new FireAuton(peterSubsystem, armSubsystem, driveTrain, 0))
+        .andThen(new FireAuton(peterSubsystem, armSubsystem, driveTrain, 1))
         .andThen(
             (pickup1choice.getSelected().isEmpty())
                 ? new WaitCommand(2.0)
@@ -251,12 +251,12 @@ public class RobotContainer {
                     driveTrain, pickup1choice.getSelected().get().getNoteLocation(), redAlliance))
         .andThen(new Intake(peterSubsystem, armSubsystem))
         .andThen(new FireAuton(peterSubsystem, armSubsystem, driveTrain, 1))
-        .andThen(new Intake(peterSubsystem, armSubsystem))
         .andThen(
             (pickup2choice.getSelected().isEmpty())
                 ? new WaitCommand(2.0)
                 : MoveToTarget.withMirror(
                     driveTrain, pickup2choice.getSelected().get().getNoteLocation(), redAlliance))
+        .andThen(new Intake(peterSubsystem, armSubsystem))
         .andThen(new FireAuton(peterSubsystem, armSubsystem, driveTrain, 1));
   }
 }

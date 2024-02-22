@@ -15,10 +15,10 @@ import frc.robot.subsystems.SwerveSubsystem;
 public class FireAuton extends SequentialCommandGroup {
   public FireAuton(PeterSubsystem peterSubsystem, ArmSubsystem armSubsystem, SwerveSubsystem driveTrain, double tolerance) {
     addCommands(
-      new SpinUpShooter(peterSubsystem), new ShootNoWarmup(peterSubsystem),
+      new SpinUpShooter(peterSubsystem),
       new AimAtSpeaker(
           peterSubsystem,
-          armSubsystem,
+          armSubsystem, 
           driveTrain,
           () -> 0.0,
           () -> 0.0,
