@@ -18,11 +18,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.PhotonVision;
+
 import java.util.ArrayList;
 
 public class Telemetry {
   private final double MaxSpeed;
-
+  private PhotonVision pv;
   /**
    * Construct a telemetry object, with the specified max speed of the robot
    *
@@ -39,6 +41,7 @@ public class Telemetry {
 
     DataLogManager.start();
     MaxSpeed = Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND;
+    pv = PhotonVision.getInstance();
     // SignalLogger.start();
   }
 

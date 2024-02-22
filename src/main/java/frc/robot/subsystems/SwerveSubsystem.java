@@ -12,7 +12,10 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
+
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Constants;
@@ -25,7 +28,7 @@ import java.util.function.Supplier;
 public class SwerveSubsystem extends SwerveDrivetrain implements Subsystem {
   // instance of SwerveSubsystem
   private static SwerveSubsystem instance;
-
+  private static SwerveDrivePoseEstimator nonKalmanOdometry;
   // Constructor allows for custom odometry update frequency
   public SwerveSubsystem(
       SwerveDrivetrainConstants driveTrainConstants,
@@ -130,10 +133,13 @@ public class SwerveSubsystem extends SwerveDrivetrain implements Subsystem {
 
   @Override
   public void periodic() {
-    // Chassis Speeds information
-    // SmartDashboard.putNumber("ChassisSpeedsX", getCurrentRobotChassisSpeeds().vxMetersPerSecond);
-    // SmartDashboard.putNumber("ChassisSpeedsY", getCurrentRobotChassisSpeeds().vyMetersPerSecond);
-    // SmartDashboard.putNumber(
-    //    "ChassisSpeedsRadians", getCurrentRobotChassisSpeeds().omegaRadiansPerSecond);
+    nonKalmanOdometry.update(m_pigeon2.getRotation2d(), m_modulePositions);
+
+    SmartDashboard.putNumber("kalman x", m_odometry.getEstimatedPosition().getX());
+    SmartDashboard.putNumber("kalman y", m_odometry.getEstimatedPosition().getY());
+    SmartDashboard.putNumber("kalman theta", m_odometry.getEstimatedPosition().getRotation().getDegrees());
+    SmartDashboard.putNumber("drive x", nonKalmanOdometry.getEstimatedPosition().getX());
+    SmartDashboard.putNumber("drive y", nonKalmanOdometry.getEstimatedPosition().getY());
+    SmartDashboard.putNumber("drive theta", nonKalmanOdometry.getEstimatedPosition().getRotation().getDegrees());
   }
 }
