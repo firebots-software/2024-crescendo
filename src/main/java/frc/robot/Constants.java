@@ -98,9 +98,9 @@ public final class Constants {
 
     public static final InterpolatingDoubleTreeMap INTERMAP = new InterpolatingDoubleTreeMap();
     static{
-      INTERMAP.put(3 * FEET_TO_METERS_CONVERSION_FACTOR, 6d); //measurements of distance are from front of robot bumper to wall
-      INTERMAP.put(6 * FEET_TO_METERS_CONVERSION_FACTOR, 17d);
-      INTERMAP.put(9 * FEET_TO_METERS_CONVERSION_FACTOR, 23.5d);
+      INTERMAP.put(Units.feetToMeters(3), 6d); //measurements of distance are from front of robot bumper to wall
+      INTERMAP.put(Units.feetToMeters(6), 17d);
+      INTERMAP.put(Units.feetToMeters(9), 23.5d);
     }
   }
 
