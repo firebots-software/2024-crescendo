@@ -133,6 +133,7 @@ public final class Constants {
     public static final class Amp {
       public static final double AMP_HEIGHT_INCHES = 35.0;
       public static final double AMP_HEIGHT_METERS = Units.inchesToMeters(AMP_HEIGHT_INCHES);
+      public static final Pose2d POSE = new Pose2d(new Translation2d(1.6235, 7.7), new Rotation2d(-Math.PI / 2)); // isnt right
     }
 
     public static final double INTAKE_MODE_HEIGHT_INCHES = 4.0;

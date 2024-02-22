@@ -170,7 +170,15 @@ public class RobotContainer {
     joystick
         .rightBumper()
         .whileTrue(
-            new SequentialCommandGroup(new AimArmAtAmpCmd(armSubsystem), new WarmUpShooter(peterSubsystem), new Shoot(peterSubsystem)));
+            new SequentialCommandGroup(
+                new ParallelCommandGroup(
+                    new AimArmAtAmpCmd(armSubsystem),
+                    MoveToTarget.withMirror(
+                        driveTrain,
+                        Constants.Landmarks.Amp.POSE,
+                        redAlliance),
+                        new WarmUpShooter(peterSubsystem)),
+                new Shoot(peterSubsystem)));
 
     // When no Commands are being issued, Peter motors should not be moving
     peterSubsystem.setDefaultCommand(
