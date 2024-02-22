@@ -61,7 +61,7 @@ public class RobotContainer {
             ? false
             : (DriverStation.getAlliance().get() == Alliance.Red);
   }
-
+  
   // Options on SmartDashboard that return an integer index that refers to a note location
   private static SendableChooser<Optional<NoteLocation>>
       pickup1choice = new SendableChooser<Optional<NoteLocation>>(),

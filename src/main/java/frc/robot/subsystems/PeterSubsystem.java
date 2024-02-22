@@ -17,7 +17,6 @@ public class PeterSubsystem extends SubsystemBase {
   private TalonFX shooterMotorRight, shooterMotorLeft;
   private TalonFX preShooterMotor, intakeMotor;
   private StatusSignal<Double> preShooterPosition;
-
   private MotionMagicConfigs mmcPreShooter;
 
   public PeterSubsystem() {
@@ -146,7 +145,7 @@ public class PeterSubsystem extends SubsystemBase {
   }
 
   public boolean notePresent() {
-    return false; // noteSensor.get();
+    return !noteSensor.get();
   }
 
   // PRE-SHOOTER FUNCTIONS:

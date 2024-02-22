@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
 import java.util.ArrayList;
-
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Telemetry {
   private final double MaxSpeed;
 
@@ -142,7 +142,21 @@ public class Telemetry {
     //   }
     // }
   }
+  public void putOnDashboard(SwerveDriveState state){
 
+    Pose2d pose = state.Pose;
+    SmartDashboard.putNumber("Odom period seconds", state.OdometryPeriod);
+    SmartDashboard.putNumber("posegetx", pose.getX());
+    SmartDashboard.putNumber("posegety", pose.getY());
+    SmartDashboard.putNumber("posegetrotation", pose.getRotation().getRotations());
+    for (CommandWithTime c : runningCommands) {
+      if (c.getCommand() == null || c.getCommand().isFinished()) {
+        CommandAsString.append(
+            "ST: " + c.getStartTime() + " |ET: " + this.lastTime + " |C: " +
+    c.getCommandString());
+      }
+    } 
+  }
   public void addCommandToLog(Command c) {
     runningCommands.add(new CommandWithTime(c, lastTime));
   }
@@ -155,6 +169,11 @@ class CommandWithTime {
   public CommandWithTime(Command c, double initTime) {
     this.c = c;
     this.stime = initTime;
+  }
+
+  public double getStartTime() {
+    // TODO Auto-generated method stub
+    return this.stime;
   }
 
   public String getCommandString() {

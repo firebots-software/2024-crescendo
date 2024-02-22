@@ -4,9 +4,18 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.PeterSubsystem;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -17,7 +26,8 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
-
+  private MechanismLigament2d arm;
+  private MechanismLigament2d peter;
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -28,7 +38,23 @@ public class Robot extends TimedRobot {
     // and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+    Mechanism2d mech = new Mechanism2d(3, 3);
+    // the mechanism root node
+    MechanismRoot2d root = mech.getRoot("intake", 2, 0);
+
+    // MechanismLigament2d objects represent each "section"/"stage" of the mechanism, and are based
+    // off the root node or another ligament object
+    arm = root.append(new MechanismLigament2d("arm", 2, 90));
+    peter = arm.append(new MechanismLigament2d("peter", 0.5, 90, 6, new Color8Bit(Color.kPurple)));
+
+    // post the mechanism to the dashboard
+    SmartDashboard.putData("Mech2d", mech);
+
+
     absoluteInit();
+    m_robotContainer = new RobotContainer();
+    absoluteInit();
+    
   }
 
   /**
@@ -44,11 +70,20 @@ public class Robot extends TimedRobot {
     // newly-scheduled
     // commands, running already-scheduled commands, removing finished or
     // interrupted commands,
-    // and running subsystem periodic() methods. This must be called from the
+    // and running subsystem per  iodic() methods. This must be called from the
     // robot's periodic
     // block in order for anything in the Command-based framework to work.
     // m_robotContainer.doTelemetry();
     CommandScheduler.getInstance().run();
+    if(PeterSubsystem.getInstance().notePresent()){
+      peter.setColor(new Color8Bit(Color.kBlanchedAlmond));
+    }
+    else{
+      peter.setColor(new Color8Bit(Color.kPurple));
+    }
+
+    arm.setAngle(ArmSubsystem.getInstance().getRawDegrees());
+    
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
