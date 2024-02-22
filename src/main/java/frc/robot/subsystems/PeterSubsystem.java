@@ -41,13 +41,13 @@ public class PeterSubsystem extends SubsystemBase {
         .apply(
             new CurrentLimitsConfigs()
                 .withStatorCurrentLimitEnable(true)
-                .withStatorCurrentLimit(50));
+                .withStatorCurrentLimit(60.0));
     shooterMotorRight
         .getConfigurator()
         .apply(
             new CurrentLimitsConfigs()
                 .withStatorCurrentLimitEnable(true)
-                .withStatorCurrentLimit(50));
+                .withStatorCurrentLimit(60.0));
 
     // Preshooter
     preShooterMotor = new TalonFX(Constants.Peter.PRE_SHOOTER_PORT, Constants.Peter.CANBUS_NAME);

@@ -40,11 +40,14 @@ public class SwerveSubsystem extends SwerveDrivetrain implements Subsystem {
     // turning)
     CurrentLimitsConfigs driveCurrentLimits =
         new CurrentLimitsConfigs()
+            .withStatorCurrentLimitEnable(true)
+            .withStatorCurrentLimit(Constants.Swerve.DRIVE_STATOR_CURRENT_LIMIT_AMPS)
             .withSupplyCurrentLimit(Constants.Swerve.DRIVE_SUPPLY_CURRENT_LIMIT_AMPS)
             .withSupplyCurrentLimitEnable(true);
 
     CurrentLimitsConfigs steerCurrentLimits =
         new CurrentLimitsConfigs()
+            .withStatorCurrentLimit(Constants.Swerve.STEER_STATOR_CURRENT_LIMIT_AMPS)
             .withSupplyCurrentLimit(Constants.Swerve.TURNING_SUPPLY_CURRENT_LIMIT_AMPS)
             .withSupplyCurrentLimitEnable(true);
 
