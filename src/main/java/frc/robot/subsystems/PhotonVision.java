@@ -82,7 +82,7 @@ public class PhotonVision extends SubsystemBase {
 
   public Pose2d getRobotPose2d() {
     Pose3d p = getRobotPose3d();
-    return new Pose2d(p.getX(), p.getY(), new Rotation2d(p.getRotation().getAngle()));
+    return new Pose2d(p.getX(), p.getY(), new Rotation2d(p.getRotation().getZ()));
   }
 
   private double metersToInches(double meters) {

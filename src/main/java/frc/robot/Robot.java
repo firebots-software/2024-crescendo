@@ -31,7 +31,7 @@ public class Robot extends TimedRobot {
   private final ArmSubsystem armSubsystem = ArmSubsystem.getInstance();
   private final PeterSubsystem peterSubsystem = PeterSubsystem.getInstance();
   private RobotContainer m_robotContainer;
-  //private static Matrix<N3, N1> visionMatrix = new Matrix<N3, N1>(3,  1);
+  private static Matrix<N3, N1> visionMatrix = new Matrix<N3,N1>(Nat.N3(),Nat.N1());
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -39,9 +39,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    // visionMatrix.set(0, 0, 0);
-    // visionMatrix.set(1, 0, 1d);
-    // visionMatrix.set(2, 0, 0.5d);
+    visionMatrix.set(0, 0, 0);
+    visionMatrix.set(1, 0, 0.2d);
+    visionMatrix.set(2, 0, Double.MAX_VALUE);
 
     // Instantiate our RobotContainer. This will perform all our button bindings,
     // and put our
@@ -69,7 +69,7 @@ public class Robot extends TimedRobot {
     // block in order for anything in the Command-based framework to work.
     m_robotContainer.doTelemetry();
     if (vision.hasTarget(vision.getPipeline())) {
-      driveTrain.addVisionMeasurement(vision.getRobotPose2d(), Timer.getFPGATimestamp());
+      driveTrain.addVisionMeasurement(vision.getRobotPose2d(), Timer.getFPGATimestamp(),visionMatrix);
     }
 
     CommandScheduler.getInstance().run();
