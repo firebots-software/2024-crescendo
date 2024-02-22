@@ -10,6 +10,7 @@ import com.pathplanner.lib.path.PathConstraints;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.util.Units;
 
 /**
@@ -66,14 +67,16 @@ public final class Constants {
   public static final class Arm {
     public static final double ARM_STATOR_CURRENT_LIMIT_AMPS = 100.0;
     public static final double DEFAULT_ARM_ANGLE = 20;
-    public final double INTAKE_ANGLE = 0; // subject to change
-    public static final double AMP_ANGLE = 78; // subject to change
+    public static final double INTAKE_ANGLE = 4; // subject to change
+    public static final double AMP_ANGLE = 78.16; // subject to change
+
     public static final double SPEAKER_ANGLE =
         40; // TODO: Replace with the function based on distance
     // public static final double ARM_ENCODER_OFFSET = 0; // TODO: Change the offset so that the 0
     // position is when the arm is at its resting
     // position.
     public static final String CANBUS_NAME = "Patrice the Pineapple";
+  
 
     public static final int RT_PORT = 14; // Right Top motor
     public static final int RB_PORT = 13; // Right Bottom motor
@@ -89,6 +92,7 @@ public final class Constants {
     public static final double MOTIONMAGIC_KV = 1; // MotionMagic Cruise Velocity in RPS of the arm
     public static final double MOTIONMAGIC_KA = 2.2; // MotionMagic Acceleration in RPS^2 of the arm
 
+    public static final double FEET_TO_METERS_CONVERSION_FACTOR = 0.3048;
     public static final double ABSOLUTE_ARM_CONVERSION_FACTOR = 42d / 18d;
     public static final double INTEGRATED_ABSOLUTE_CONVERSION_FACTOR = 55.9867;
     public static final double INTEGRATED_ARM_CONVERSION_FACTOR =
@@ -96,6 +100,13 @@ public final class Constants {
             * INTEGRATED_ABSOLUTE_CONVERSION_FACTOR; // 130.63563333333335;
     public static final double ABSOLUTE_ENCODER_HORIZONTAL = 0.629;
     public static final double ABSOLUTE_HORIZONTAL_OFFSET = 0.05;
+
+    public static final InterpolatingDoubleTreeMap INTERMAP = new InterpolatingDoubleTreeMap();
+    static{
+      INTERMAP.put(1.25, 6d); //measurements of distance are from front of robot bumper to wall
+      INTERMAP.put(2.1, 17d);
+      INTERMAP.put(Units.feetToMeters(9) + Units.inchesToMeters(17), 23.5d);
+    }
   }
 
   public static class OI {
@@ -116,7 +127,7 @@ public final class Constants {
     public static final class Speaker {
       public static final double HEIGHT_INCHES = 78.0;
       public static final double HEIGHT_METERS = Units.inchesToMeters(HEIGHT_INCHES);
-      public static final Pose2d POSE = new Pose2d(new Translation2d(0.5, 5.5), new Rotation2d(0));
+      public static final Pose2d POSE = new Pose2d(new Translation2d(0, 5.5), new Rotation2d(0));
     }
 
     public static final class Amp {
