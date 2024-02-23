@@ -7,7 +7,9 @@ package frc.robot;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -175,10 +177,15 @@ public class RobotContainer {
                     new AimArmAtAmpCmd(armSubsystem),
                     MoveToTarget.withMirror(
                         driveTrain,
-                        Constants.Landmarks.Amp.POSE,
+                        Constants.Landmarks.Amp.POSE.plus(new Transform2d(Units.inchesToMeters(12), 0, new Rotation2d())),
                         redAlliance),
                         new WarmUpShooter(peterSubsystem)),
-                new Shoot(peterSubsystem)));
+                MoveToTarget.withMirror(
+                    driveTrain,
+                    Constants.Landmarks.Amp.POSE,
+                    redAlliance),
+                    new WarmUpShooter(peterSubsystem))
+        );
 
     // When no Commands are being issued, Peter motors should not be moving
     peterSubsystem.setDefaultCommand(
