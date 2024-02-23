@@ -59,16 +59,16 @@ public final class Constants {
     public static final double PRESHOOTER_GEAR_RATIO = 4;
     public static final double SHOOTER_WHEELS_GEAR_RATIOS = 24d / 18d;
 
-    public static final double SHOOTER_STATOR_CURRENT_LIMIT_AMPS = 60.0;
-    public static final double PRESHOOTER_STATOR_CURRENT_LIMIT_AMPS = 45.0;
-    public static final double INTAKE_STATOR_CURRENT_LIMIT_AMPS = 100.0;
+    public static final double SHOOTER_STATOR_CURRENT_LIMIT_AMPS = 40.0;
+    public static final double PRESHOOTER_STATOR_CURRENT_LIMIT_AMPS = 25.0;
+    public static final double INTAKE_STATOR_CURRENT_LIMIT_AMPS = 16.0;
   }
 
   public static final class Arm {
-    public static final double ARM_STATOR_CURRENT_LIMIT_AMPS = 100.0;
-    public static final double DEFAULT_ARM_ANGLE = 20;
+    public static final double ARM_STATOR_CURRENT_LIMIT_AMPS = 40.0;
+    public static final double DEFAULT_ARM_ANGLE = 36;
     public static final double INTAKE_ANGLE = 4; // subject to change
-    public static final double AMP_ANGLE = 95; // subject to change
+    public static final double AMP_ANGLE = 90; // subject to change
 
     public static final double SPEAKER_ANGLE =
         40; // TODO: Replace with the function based on distance
@@ -190,11 +190,11 @@ public final class Constants {
     // The stator current at which the wheels start to slip;
     // This needs to be tuned to your individual robot
     private static final double SLIP_CURRENT_AMPS = 100.0;
-    public static final double DRIVE_STATOR_CURRENT_LIMIT_AMPS = 20.0;
-    public static final double STEER_STATOR_CURRENT_LIMIT_AMPS = 10.0;
+    public static final double DRIVE_STATOR_CURRENT_LIMIT_AMPS = 90.0;
+    public static final double STEER_STATOR_CURRENT_LIMIT_AMPS = 40.0;
 
-    public static final double DRIVE_SUPPLY_CURRENT_LIMIT_AMPS = 60.0;
-    public static final double TURNING_SUPPLY_CURRENT_LIMIT_AMPS = 25.0;
+    public static final double DRIVE_SUPPLY_CURRENT_LIMIT_AMPS = 40.0;
+    public static final double TURNING_SUPPLY_CURRENT_LIMIT_AMPS = 30.0;
     // Theoretical free speed (m/s) at 12v applied output;
     // This needs to be tuned to your individual robot
     public static final double SPEED_AT_12V_METERS_PER_SECOND = 4.73;
