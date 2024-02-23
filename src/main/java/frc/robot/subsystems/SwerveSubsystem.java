@@ -127,5 +127,6 @@ public class SwerveSubsystem extends SwerveDrivetrain implements Subsystem {
 
   @Override
   public void periodic() {
+    System.out.println(1);
   }
 }
