@@ -87,12 +87,13 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     absoluteInit();
-    // m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    armSubsystem.setTargetDegrees(armSubsystem.getCorrectedDegrees() + 5.0);
+    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
-    // // schedule the autonomous command (example)
-    // if (m_autonomousCommand != null) {
-    //   m_autonomousCommand.schedule();
-    // }
+    // schedule the autonomous command (example)
+    if (m_autonomousCommand != null) {
+      m_autonomousCommand.schedule();
+    }
   }
 
   /** This function is called periodically during autonomous. */

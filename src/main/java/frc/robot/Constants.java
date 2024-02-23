@@ -118,9 +118,10 @@ public final class Constants {
 
   public static class Landmarks {
     // Landmarks on the Blue side can be reflected to show the respective locations on the Blue side
-    public static final Pose2d STAGESIDE_NOTE_LOCATION = new Pose2d(2.5, 4.1, new Rotation2d());
-    public static final Pose2d MIDDLE_NOTE_LOCATION = new Pose2d(2.5, 5.5, new Rotation2d());
-    public static final Pose2d AMPSIDE_NOTE_LOCATION = new Pose2d(2.5, 7, new Rotation2d());
+    public static final Pose2d STAGESIDE_NOTE_LOCATION =
+        new Pose2d(2.8956, 4.0522, new Rotation2d());
+    public static final Pose2d MIDDLE_NOTE_LOCATION = new Pose2d(2.8956, 5.5, new Rotation2d());
+    public static final Pose2d AMPSIDE_NOTE_LOCATION = new Pose2d(2.8956, 6.9478, new Rotation2d());
     public static final Pose2d SUBWOOFER_LOCATION = new Pose2d(0.6, 5.7, new Rotation2d());
     public static final double CENTER_LINE_LOCATION = 8.27;
 
@@ -133,7 +134,8 @@ public final class Constants {
     public static final class Amp {
       public static final double AMP_HEIGHT_INCHES = 35.0;
       public static final double AMP_HEIGHT_METERS = Units.inchesToMeters(AMP_HEIGHT_INCHES);
-      public static final Pose2d POSE = new Pose2d(new Translation2d(1.5235, 7.7), new Rotation2d(-Math.PI / 2)); // isnt right
+      public static final Pose2d POSE =
+          new Pose2d(new Translation2d(1.5235, 7.7), new Rotation2d(-Math.PI / 2)); // isnt right
     }
 
     public static final double INTAKE_MODE_HEIGHT_INCHES = 4.0;
@@ -142,6 +144,9 @@ public final class Constants {
   }
 
   public static class Swerve {
+    public static final Pose2d ROBOT_HALF_WIDTH =
+        new Pose2d(Units.inchesToMeters(24), 0, new Rotation2d());
+
     public static class PPConstants {
       public static final PathConstraints PATH_PLANNER_CONSTRAINTS =
           new PathConstraints(3.0, 3.0, 2 * Math.PI, 4 * Math.PI);
