@@ -7,7 +7,9 @@ package frc.robot;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -24,11 +26,11 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commandGroups.AimAtSpeaker;
 import frc.robot.commandGroups.FireAuton;
 import frc.robot.commandGroups.Intake;
+import frc.robot.commands.ArmCommands.AimArmAtAmpCmd;
 import frc.robot.commands.ArmCommands.ArmToNeutralCmd;
 import frc.robot.commands.Auton.MoveToTarget;
 import frc.robot.commands.Auton.RatchetteDisengage;
 import frc.robot.commands.PeterCommands.ShootNoWarmup;
-import frc.robot.commands.ArmCommands.AimArmAtAmpCmd;
 import frc.robot.commands.PeterCommands.WarmUpShooter;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.commands.SwerveCommands.SwerveLockedAngleCmd;
@@ -176,11 +178,8 @@ public class RobotContainer {
             new SequentialCommandGroup(
                 new ParallelCommandGroup(
                     new AimArmAtAmpCmd(armSubsystem),
-                    MoveToTarget.withMirror(
-                        driveTrain,
-                        Constants.Landmarks.Amp.POSE,
-                        redAlliance),
-                        new WarmUpShooter(peterSubsystem)),
+                    MoveToTarget.withMirror(driveTrain, Constants.Landmarks.Amp.POSE, redAlliance),
+                    new WarmUpShooter(peterSubsystem)),
                 new ShootNoWarmup(peterSubsystem)));
 
     // When no Commands are being issued, Peter motors should not be moving
@@ -263,31 +262,28 @@ public class RobotContainer {
         .andThen(
             new FireAuton(peterSubsystem, armSubsystem, driveTrain, 1),
             new PrintCommand("ritvik gun fire1"))
-        .andThen(
-            ((pickup1choice.getSelected().isEmpty())
-                ? new WaitCommand(2.0)
-                : MoveToTarget.withMirror(
-                        driveTrain,
-                        pickup1choice.getSelected().get().getNoteLocation(),
-                        redAlliance)).andThen(new PrintCommand("ritvik relocated1"))
-                    .alongWith(
-                        new Intake(peterSubsystem, armSubsystem),
-                        new PrintCommand("ritvik reload 1")))
-        .andThen(
-            new FireAuton(peterSubsystem, armSubsystem, driveTrain, 1),
-            new PrintCommand("ritvik shoot2"))
-        .andThen(
-            (pickup2choice.getSelected().isEmpty())
-                ? new WaitCommand(2.0)
-                : MoveToTarget.withMirror(
-                        driveTrain,
-                        pickup2choice.getSelected().get().getNoteLocation(),
-                        redAlliance)
-                    .alongWith(
-                        new Intake(peterSubsystem, armSubsystem),
-                        new PrintCommand("ritvik reload 2")))
-        .andThen(
-            new FireAuton(peterSubsystem, armSubsystem, driveTrain, 1),
-            new PrintCommand("ritvik shoots 3rd bullet"));
+        .andThen(getAutonShoot(pickup1choice.getSelected()))
+        .andThen(getAutonShoot(pickup2choice.getSelected()));
+  }
+
+  public Command getAutonShoot(Optional<NoteLocation> note) {
+    return (note.isEmpty())
+        ? new WaitCommand(2.0)
+        : MoveToTarget.withMirror(
+                driveTrain,
+                note.get()
+                    .getNoteLocation()
+                    .plus(new Transform2d(Units.inchesToMeters(-24), 0, new Rotation2d())),
+                redAlliance)
+            .alongWith(new Intake(peterSubsystem, armSubsystem))
+            .andThen(
+                MoveToTarget.withMirror(
+                    driveTrain,
+                    NoteLocation.MIDDLE
+                        .getNoteLocation()
+                        .plus(new Transform2d(Units.inchesToMeters(-30), 0, new Rotation2d())),
+                    redAlliance))
+            .andThen(
+                new FireAuton(peterSubsystem, armSubsystem, driveTrain, 1));
   }
 }

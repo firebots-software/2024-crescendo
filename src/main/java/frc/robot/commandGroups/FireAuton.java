@@ -1,7 +1,6 @@
 package frc.robot.commandGroups;
 
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.commands.PeterCommands.ShootNoWarmup;
@@ -18,7 +17,14 @@ public class FireAuton extends SequentialCommandGroup {
       double tolerance) {
     addCommands(
         new AimAtSpeaker(
-            peterSubsystem, armSubsystem, driveTrain, () -> 0.0, () -> 0.0, () -> 0.0, tolerance).withTimeout(1.0),
+                peterSubsystem,
+                armSubsystem,
+                driveTrain,
+                () -> 0.0,
+                () -> 0.0,
+                () -> 0.0,
+                tolerance)
+            .withTimeout(1.0),
         new ParallelCommandGroup(
             new ShootNoWarmup(peterSubsystem).withTimeout(0.5),
 
