@@ -32,10 +32,7 @@ import frc.robot.commandGroups.WarmUpNoteAndShoot;
 import frc.robot.commands.ArmCommands.ArmToNeutralCmd;
 import frc.robot.commands.Auton.MoveToTarget;
 import frc.robot.commands.DebugCommands.Rumble;
-import frc.robot.commands.PeterCommands.Shoot;
 import frc.robot.commands.ArmCommands.AimArmAtAmpCmd;
-import frc.robot.commands.ArmCommands.ArmToNeutralCmd;
-import frc.robot.commands.Auton.MoveToTarget;
 import frc.robot.commands.Auton.RatchetteDisengage;
 import frc.robot.commands.PeterCommands.ShootNoWarmup;
 import frc.robot.commands.PeterCommands.WarmUpShooter;
@@ -106,8 +103,6 @@ public class RobotContainer {
     // Intake
     joystick.rightTrigger().whileTrue(new Intake(peterSubsystem, armSubsystem, joystick.getHID()));
 
-    joystick.povUp().whileTrue(new InstantCommand(() -> CommandScheduler.getInstance().schedule(new Rumble(joystick.getHID(), 1))));
-
     // Outtake
     joystick
         .leftTrigger()
@@ -147,6 +142,7 @@ public class RobotContainer {
                     Rotation2d.fromDegrees(5).getDegrees()),
                 new ParallelCommandGroup(
                     new ShootNoWarmup(peterSubsystem),
+                    Rumble.withNoBlock(joystick.getHID(), 1, 1, 0.25),
 
                     // we need this a second time because the first one ended in the
                     // aimBeforeShootCommand, this time without a tolerance end
@@ -283,7 +279,7 @@ public class RobotContainer {
                     .getNoteLocation()
                     .plus(new Transform2d(Units.inchesToMeters(-24), 0, new Rotation2d())),
                 redAlliance)
-            .alongWith(new Intake(peterSubsystem, armSubsystem))
+            .alongWith(new Intake(peterSubsystem, armSubsystem, joystick.getHID()))
             .andThen(
                 MoveToTarget.withMirror(
                     driveTrain,
