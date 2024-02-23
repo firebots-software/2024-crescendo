@@ -5,14 +5,13 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Constants;
 import frc.robot.subsystems.SwerveSubsystem;
 import java.util.function.Supplier;
 
 public class SwerveLockedAngleCmd extends SwerveJoystickCommand {
 
-  private final static PIDController turningPID = new PIDController(1d, 0.002, 0.01d);
-  private final static double MAX_RATE = 0.4; // Stick command output
+  private static final PIDController turningPID = new PIDController(1d, 0.002, 0.01d);
+  private static final double MAX_RATE = 0.4; // Stick command output
   private final Supplier<Double> error;
   private double tolerance = -1d;
 
@@ -39,7 +38,8 @@ public class SwerveLockedAngleCmd extends SwerveJoystickCommand {
           SmartDashboard.putNumber("Corrected Target", turnTarget.get().getDegrees());
           SmartDashboard.putNumber("Shooter Angular Error", computedError.getDegrees());
           SmartDashboard.putNumber("Shooter Computed Output", computedRotation);
-          SmartDashboard.putNumber("Swerve Heading", getSwerveRotation(swerveSubsystem).getDegrees());
+          SmartDashboard.putNumber(
+              "Swerve Heading", getSwerveRotation(swerveSubsystem).getDegrees());
 
           return -computedRotation;
         },
@@ -53,8 +53,8 @@ public class SwerveLockedAngleCmd extends SwerveJoystickCommand {
 
   @Override
   public void initialize() {
-      super.initialize();
-      turningPID.reset();
+    super.initialize();
+    turningPID.reset();
   }
 
   private static Rotation2d getSwerveRotation(SwerveSubsystem subsystem) {
@@ -85,7 +85,9 @@ public class SwerveLockedAngleCmd extends SwerveJoystickCommand {
             pointAtFunction
                 .get()
                 .minus(swerveSubsystem.getState().Pose.getTranslation())
-                .rotateBy(Rotation2d.fromRadians( Math.PI)) // so that the scoring side/butt is facing the target
+                .rotateBy(
+                    Rotation2d.fromRadians(
+                        Math.PI)) // so that the scoring side/butt is facing the target
                 .getAngle(),
         speedControlFunction,
         swerveSubsystem);

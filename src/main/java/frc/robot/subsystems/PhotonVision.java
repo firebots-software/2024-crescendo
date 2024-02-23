@@ -24,10 +24,10 @@ public class PhotonVision extends SubsystemBase {
   private PhotonTrackedTarget bestTarget;
   private static PhotonVision pvisioninstance;
   AprilTagFieldLayout aprilTagFieldLayout;
-  Transform3d robotToCam =
+  Transform3d camToRobot = // robot relative to camera
       new Transform3d(
           new Translation3d(Units.inchesToMeters(-13), 0, Units.inchesToMeters(7.027)),
-          new Rotation3d(0, Units.degreesToRadians(24), Math.PI));
+          new Rotation3d(0, -Units.degreesToRadians(24), Math.PI));
 
   private PhotonVision() {
     aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
@@ -67,7 +67,7 @@ public class PhotonVision extends SubsystemBase {
     } else {
       savedResult =
           PhotonUtils.estimateFieldToRobotAprilTag(
-              getTransformToTarget(), tagPose.get(), robotToCam);
+              getTransformToTarget(), tagPose.get(), camToRobot);
     }
     return savedResult;
   }

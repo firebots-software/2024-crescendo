@@ -11,12 +11,10 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
@@ -28,12 +26,12 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commandGroups.AimAtSpeaker;
 import frc.robot.commandGroups.FireAuton;
 import frc.robot.commandGroups.Intake;
-import frc.robot.commandGroups.WarmUpNoteAndShoot;
+import frc.robot.commands.ArmCommands.AimArmAtAmpCmd;
+import frc.robot.commands.ArmCommands.ArmResetOnEndCmd;
 import frc.robot.commands.ArmCommands.ArmToNeutralCmd;
 import frc.robot.commands.Auton.MoveToTarget;
-import frc.robot.commands.DebugCommands.Rumble;
-import frc.robot.commands.ArmCommands.AimArmAtAmpCmd;
 import frc.robot.commands.Auton.RatchetteDisengage;
+import frc.robot.commands.DebugCommands.Rumble;
 import frc.robot.commands.PeterCommands.ShootNoWarmup;
 import frc.robot.commands.PeterCommands.WarmUpShooter;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
@@ -97,6 +95,7 @@ public class RobotContainer {
             leftRightFunction,
             rotationFunction,
             speedFunction, // slowmode when left shoulder is pressed, otherwise fast
+            () -> joystick.leftTrigger().getAsBoolean(),
             driveTrain);
     driveTrain.setDefaultCommand(swerveJoystickCommand);
 
@@ -105,7 +104,7 @@ public class RobotContainer {
 
     // Outtake
     joystick
-        .leftTrigger()
+        .povUp()
         .whileTrue(
             new ParallelCommandGroup(
                 new RunCommand(
@@ -141,11 +140,11 @@ public class RobotContainer {
                     speedFunction,
                     Rotation2d.fromDegrees(5).getDegrees()),
                 new ParallelCommandGroup(
-                    new ShootNoWarmup(peterSubsystem),
+                    new ShootNoWarmup(peterSubsystem).withTimeout(1),
                     Rumble.withNoBlock(joystick.getHID(), 1, 1, 0.25),
-
                     // we need this a second time because the first one ended in the
                     // aimBeforeShootCommand, this time without a tolerance end
+                    new ArmResetOnEndCmd(armSubsystem),
                     SwerveLockedAngleCmd.fromPose(
                         frontBackFunction,
                         leftRightFunction,
@@ -287,7 +286,6 @@ public class RobotContainer {
                         .getNoteLocation()
                         .plus(new Transform2d(Units.inchesToMeters(-30), 0, new Rotation2d())),
                     redAlliance))
-            .andThen(
-                new FireAuton(peterSubsystem, armSubsystem, driveTrain, 1));
+            .andThen(new FireAuton(peterSubsystem, armSubsystem, driveTrain, 1));
   }
 }

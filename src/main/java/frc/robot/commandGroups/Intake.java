@@ -15,6 +15,9 @@ public class Intake extends SequentialCommandGroup {
   public Intake(PeterSubsystem peter, ArmSubsystem arm, GenericHID joystick) {
     addCommands(
         new ParallelCommandGroup(new ArmToPickupCmd(arm), new RunIntakeUntilDetection(peter)),
-        new ParallelCommandGroup(new ArmToNeutralCmd(arm), new BackupPeter(peter), Rumble.withNoBlock(joystick, 0.25, 0.5, 0)));
+        new ParallelCommandGroup(
+            new ArmToNeutralCmd(arm),
+            new BackupPeter(peter),
+            Rumble.withNoBlock(joystick, 0.25, 0.5, 0)));
   }
 }
