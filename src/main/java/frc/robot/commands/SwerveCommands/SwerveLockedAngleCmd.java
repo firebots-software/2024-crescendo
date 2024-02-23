@@ -9,7 +9,7 @@ import java.util.function.Supplier;
 
 public class SwerveLockedAngleCmd extends SwerveJoystickCommand {
 
-  private static final PIDController turningPID = new PIDController(0.6d, 0d, 0.0d);
+  private final static PIDController turningPID = new PIDController(0.03d, .125d, 0.002d);
   private final Supplier<Double> error;
   private double tolerance = -1d;
 
@@ -32,18 +32,19 @@ public class SwerveLockedAngleCmd extends SwerveJoystickCommand {
                               .Pose
                               .getRotation()
                               .rotateBy(new Rotation2d(Math.PI)))
-                      .getRadians())
-              / Constants.Swerve.PHYSICAL_MAX_ANGLUAR_SPEED_RADIANS_PER_SECOND;
+                      .getRadians());
         }, // total bakwas
         speedControlFunction,
         swerveSubsystem);
-
+    turningPID.reset();
+    // turningPID.inte
     turningPID.enableContinuousInput(-Math.PI, Math.PI);
 
     // bro this be really bad coding, aaaa ~java~ OOP is stupid
     error =
         () -> turnTarget.get().minus(swerveSubsystem.getState().Pose.getRotation()).getRadians();
   }
+
 
   /**
    * Creates a swerve locked angle command that locks the angle of the scoring side of the robot
