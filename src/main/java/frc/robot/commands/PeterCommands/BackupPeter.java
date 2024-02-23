@@ -28,6 +28,6 @@ public class BackupPeter extends Command {
 
   @Override
   public boolean isFinished() {
-    return false;
+    return peter.isBackedUp(1);
   }
 }
