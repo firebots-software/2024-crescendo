@@ -107,6 +107,7 @@ public class SwerveLockedAngleCmd extends SwerveJoystickCommand {
   @Override
   public boolean isFinished() {
     SmartDashboard.putNumber("swerve locked angle error", error.get());
+    SmartDashboard.putNumber("swerve locked angle tolerance", tolerance);
     return Math.abs(error.get()) < tolerance;
   }
 }

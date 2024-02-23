@@ -136,7 +136,7 @@ public class RobotContainer {
                     frontBackFunction,
                     leftRightFunction,
                     speedFunction,
-                    Rotation2d.fromDegrees(5).getRadians()),
+                    Rotation2d.fromDegrees(5).getDegrees()),
                 new ParallelCommandGroup(
                     new ShootNoWarmup(peterSubsystem),
 
