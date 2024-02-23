@@ -6,7 +6,6 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.SwerveSubsystem;
-import frc.robot.util.FieldCentricOptimizedSwerve;
 import java.util.function.Supplier;
 
 public class SwerveJoystickCommand extends Command {
@@ -15,23 +14,31 @@ public class SwerveJoystickCommand extends Command {
       turningSpdFunction,
       speedControlFunction;
 
+  protected final Supplier<Boolean> fieldRelativeFunction;
+
   // Limits rate of change (in this case x, y, and turning movement)
   protected final SlewRateLimiter xLimiter, yLimiter, turningLimiter;
 
   protected final SwerveSubsystem swerveDrivetrain;
 
-  // Sets everything
+  private final SwerveRequest.FieldCentric fieldCentricDrive =
+      new SwerveRequest.FieldCentric().withDriveRequestType(DriveRequestType.Velocity);
+  private final SwerveRequest.RobotCentric robotCentricDrive =
+      new SwerveRequest.RobotCentric().withDriveRequestType(DriveRequestType.Velocity);
+
   public SwerveJoystickCommand(
       Supplier<Double> frontBackFunction,
       Supplier<Double> leftRightFunction,
       Supplier<Double> turningSpdFunction,
       Supplier<Double> speedControlFunction,
+      Supplier<Boolean> fieldRelativeFunction,
       SwerveSubsystem swerveSubsystem) {
-
     this.xSpdFunction = frontBackFunction;
     this.ySpdFunction = leftRightFunction;
     this.turningSpdFunction = turningSpdFunction;
     this.speedControlFunction = speedControlFunction;
+    this.fieldRelativeFunction = fieldRelativeFunction;
+
     this.xLimiter =
         new SlewRateLimiter(Constants.Swerve.TELE_DRIVE_MAX_ACCELERATION_UNITS_PER_SECOND);
     this.yLimiter =
@@ -42,6 +49,23 @@ public class SwerveJoystickCommand extends Command {
 
     // Adds the subsystem as a requirement (prevents two commands from acting on subsystem at once)
     addRequirements(swerveDrivetrain);
+  }
+
+  // Sets everything, not field relative
+  public SwerveJoystickCommand(
+      Supplier<Double> frontBackFunction,
+      Supplier<Double> leftRightFunction,
+      Supplier<Double> turningSpdFunction,
+      Supplier<Double> speedControlFunction,
+      SwerveSubsystem swerveSubsystem) {
+
+    this(
+        frontBackFunction,
+        leftRightFunction,
+        turningSpdFunction,
+        speedControlFunction,
+        () -> false,
+        swerveSubsystem);
   }
 
   @Override
@@ -97,12 +121,10 @@ public class SwerveJoystickCommand extends Command {
 
     // 5. Applying the drive request on the swerve drivetrain
     // Uses SwerveRequestFieldCentric (from java.frc.robot.util to apply module optimization)
-    final SwerveRequest.FieldCentric drive =
-        new FieldCentricOptimizedSwerve()
-            .withDriveRequestType(DriveRequestType.Velocity)
-            .withVelocityX(x)
-            .withVelocityY(y)
-            .withRotationalRate(turn); // OPEN LOOP CONTROL
+    SwerveRequest drive =
+        !fieldRelativeFunction.get()
+            ? fieldCentricDrive.withVelocityX(x).withVelocityY(y).withRotationalRate(turn)
+            : robotCentricDrive.withVelocityX(x).withVelocityY(y).withRotationalRate(turn);
 
     // Applies request
     this.swerveDrivetrain.setControl(drive);

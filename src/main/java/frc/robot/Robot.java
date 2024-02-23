@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.numbers.N1;
@@ -39,6 +40,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    CameraServer.startAutomaticCapture(0);
     visionMatrix.set(0, 0, 0);
     visionMatrix.set(1, 0, 0.2d);
     visionMatrix.set(2, 0, Double.MAX_VALUE);
