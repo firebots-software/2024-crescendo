@@ -28,6 +28,8 @@ import frc.robot.commands.ArmCommands.ArmToNeutralCmd;
 import frc.robot.commands.Auton.MoveToTarget;
 import frc.robot.commands.Auton.RatchetteDisengage;
 import frc.robot.commands.PeterCommands.ShootNoWarmup;
+import frc.robot.commands.ArmCommands.AimArmAtAmpCmd;
+import frc.robot.commands.PeterCommands.WarmUpShooter;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.commands.SwerveCommands.SwerveLockedAngleCmd;
 import frc.robot.subsystems.ArmSubsystem;
@@ -166,6 +168,20 @@ public class RobotContainer {
                 () -> new Rotation2d(-Math.PI / 2d),
                 speedFunction,
                 driveTrain));
+
+    // amp shoolt
+    joystick
+        .rightBumper()
+        .whileTrue(
+            new SequentialCommandGroup(
+                new ParallelCommandGroup(
+                    new AimArmAtAmpCmd(armSubsystem),
+                    MoveToTarget.withMirror(
+                        driveTrain,
+                        Constants.Landmarks.Amp.POSE,
+                        redAlliance),
+                        new WarmUpShooter(peterSubsystem)),
+                new ShootNoWarmup(peterSubsystem)));
 
     // When no Commands are being issued, Peter motors should not be moving
     peterSubsystem.setDefaultCommand(

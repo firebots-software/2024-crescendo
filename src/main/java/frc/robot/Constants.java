@@ -68,7 +68,7 @@ public final class Constants {
     public static final double ARM_STATOR_CURRENT_LIMIT_AMPS = 100.0;
     public static final double DEFAULT_ARM_ANGLE = 20;
     public static final double INTAKE_ANGLE = 4; // subject to change
-    public static final double AMP_ANGLE = 78.16; // subject to change
+    public static final double AMP_ANGLE = 95; // subject to change
 
     public static final double SPEAKER_ANGLE =
         40; // TODO: Replace with the function based on distance
@@ -133,6 +133,7 @@ public final class Constants {
     public static final class Amp {
       public static final double AMP_HEIGHT_INCHES = 35.0;
       public static final double AMP_HEIGHT_METERS = Units.inchesToMeters(AMP_HEIGHT_INCHES);
+      public static final Pose2d POSE = new Pose2d(new Translation2d(1.5235, 7.7), new Rotation2d(-Math.PI / 2)); // isnt right
     }
 
     public static final double INTAKE_MODE_HEIGHT_INCHES = 4.0;
