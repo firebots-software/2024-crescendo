@@ -274,7 +274,7 @@ public class RobotContainer {
                         new Intake(peterSubsystem, armSubsystem),
                         new PrintCommand("ritvik reload 1")))
         .andThen(
-            new FireAuton(peterSubsystem, armSubsystem, driveTrain, 5),
+            new FireAuton(peterSubsystem, armSubsystem, driveTrain, 1),
             new PrintCommand("ritvik shoot2"))
         .andThen(
             (pickup2choice.getSelected().isEmpty())
