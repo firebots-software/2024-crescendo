@@ -9,10 +9,12 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -25,6 +27,7 @@ import frc.robot.commandGroups.Intake;
 import frc.robot.commandGroups.WarmUpNoteAndShoot;
 import frc.robot.commands.ArmCommands.ArmToNeutralCmd;
 import frc.robot.commands.Auton.MoveToTarget;
+import frc.robot.commands.DebugCommands.Rumble;
 import frc.robot.commands.PeterCommands.Shoot;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.commands.SwerveCommands.SwerveLockedAngleCmd;
@@ -56,7 +59,6 @@ public class RobotContainer {
 
   public RobotContainer() {
     // Vibrate joysticks when someone interesting happens!
-    // joystick.getHID().setRumble(GenericHID.RumbleType.kRightRumble, 1);
     // joystick.getHID().setRumble(GenericHID.RumbleType.kLeftRumble, 1);
 
     configureBindings();
@@ -92,7 +94,9 @@ public class RobotContainer {
     driveTrain.setDefaultCommand(swerveJoystickCommand);
 
     // Intake
-    joystick.rightTrigger().whileTrue(new Intake(peterSubsystem, armSubsystem));
+    joystick.rightTrigger().whileTrue(new Intake(peterSubsystem, armSubsystem, joystick.getHID()));
+
+    joystick.povUp().whileTrue(new InstantCommand(() -> CommandScheduler.getInstance().schedule(new Rumble(joystick.getHID(), 1))));
 
     // Outtake
     joystick
@@ -133,7 +137,7 @@ public class RobotContainer {
                     0.02),
                 new ParallelCommandGroup(
                     new Shoot(peterSubsystem),
-
+                    Rumble.withNoBlock(joystick.getHID(), 1, 0),
                     // we need this a second time because the first one ended in the
                     // aimBeforeShootCommand, this time without a tolerance end
                     SwerveLockedAngleCmd.fromPose(
