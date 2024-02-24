@@ -4,6 +4,10 @@
 
 package frc.robot;
 
+import java.util.Optional;
+
+import org.photonvision.EstimatedRobotPose;
+
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
@@ -70,9 +74,9 @@ public class Robot extends TimedRobot {
     // robot's periodic
     // block in order for anything in the Command-based framework to work.
     m_robotContainer.doTelemetry();
-    if (vision.hasTarget(vision.getPipeline())) {
-      driveTrain.addVisionMeasurement(
-          vision.getRobotPose2d(), Timer.getFPGATimestamp(), visionMatrix);
+    Optional<EstimatedRobotPose> robotPose = vision.getMultiTagPose3d(driveTrain.getState().Pose);
+    if (robotPose.isPresent()) {
+      driveTrain.addVisionMeasurement(robotPose.get().estimatedPose.toPose2d(), robotPose.get().timestampSeconds, visionMatrix);
     }
 
     CommandScheduler.getInstance().run();

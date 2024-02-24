@@ -12,8 +12,12 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.util.Optional;
+
+import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonUtils;
+import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
@@ -24,6 +28,7 @@ public class PhotonVision extends SubsystemBase {
   private PhotonTrackedTarget bestTarget;
   private static PhotonVision pvisioninstance;
   AprilTagFieldLayout aprilTagFieldLayout;
+  PhotonPoseEstimator photonPoseEstimator;
   Transform3d camToRobot = // robot relative to camera
       new Transform3d(
           new Translation3d(Units.inchesToMeters(-13), 0, Units.inchesToMeters(7.027)),
@@ -31,9 +36,9 @@ public class PhotonVision extends SubsystemBase {
 
   private PhotonVision() {
     aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
-    // photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout,
-    // PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
-    //         camera, robotToCam);
+    photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout,
+    PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
+            camera, camToRobot);
     pipeline = camera.getLatestResult();
     bestTarget = pipeline.getBestTarget();
   }
@@ -70,6 +75,11 @@ public class PhotonVision extends SubsystemBase {
               getTransformToTarget(), tagPose.get(), camToRobot);
     }
     return savedResult;
+  }
+
+  public Optional<EstimatedRobotPose> getMultiTagPose3d(Pose2d previousRobotPose){
+    photonPoseEstimator.setReferencePose(previousRobotPose);
+    return photonPoseEstimator.update();
   }
 
   public Transform3d getTransformToTarget() {
