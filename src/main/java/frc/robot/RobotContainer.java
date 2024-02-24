@@ -203,7 +203,8 @@ public class RobotContainer {
             new SequentialCommandGroup(
                 new ParallelCommandGroup(
                     new AimArmAtAmpCmd(armSubsystem),
-                    MoveToTarget.withMirror(driveTrain, Constants.Landmarks.Amp.POSE, () -> redAlliance),
+                    MoveToTarget.withMirror(driveTrain, 
+                () -> redAlliance, Constants.Landmarks.Amp.POSE),
                     new WarmUpShooter(peterSubsystem)),
                 new ShootNoWarmup(peterSubsystem)).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
 
@@ -286,18 +287,22 @@ public class RobotContainer {
         ? new WaitCommand(2.0)
         : MoveToTarget.withMirror(
                 driveTrain,
+                () -> redAlliance,
                 note.get()
                     .getNoteLocation()
                     .plus(new Transform2d(Units.inchesToMeters(-24), 0, new Rotation2d())),
-                () -> redAlliance)
+                note.get()
+                    .getNoteLocation()
+                    .plus(new Transform2d(Units.inchesToMeters(-18), 0, new Rotation2d())))
             .alongWith(new Intake(peterSubsystem, armSubsystem, joystickA.getHID()))
             .andThen(
                 MoveToTarget.withMirror(
                     driveTrain,
+                () -> redAlliance,
                     NoteLocation.MIDDLE
                         .getNoteLocation()
-                        .plus(new Transform2d(Units.inchesToMeters(-45), 0, new Rotation2d())),
-                    () -> redAlliance))
+                        .plus(new Transform2d(Units.inchesToMeters(-45), 0, new Rotation2d()))
+                    ))
             .andThen(new FireAuton(peterSubsystem, armSubsystem, driveTrain, 1, () -> redAlliance))
             .andThen(new WaitCommand(0.25));
   }
