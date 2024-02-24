@@ -115,6 +115,22 @@ public class PhotonVision extends SubsystemBase {
     }
   }
 
+  private void testLogging() {
+    if (pipeline.hasTargets()) {
+      Optional<Pose3d> tagPose = aprilTagFieldLayout.getTagPose(bestTarget.getFiducialId());
+      Transform3d transform3d = getTransformToTarget();
+      double x = transform3d.getX();
+      double y = transform3d.getY();
+      double z = transform3d.getZ();
+      double dist = get3dDist();
+      SmartDashboard.putNumber("Least amibiguous tag id:", bestTarget.getFiducialId());
+      SmartDashboard.putNumber("Testing vision: Transform X", x);
+      SmartDashboard.putNumber("Testing vision: Transform Y", y);
+      SmartDashboard.putNumber("Testing vision: Transform Z", z);
+      SmartDashboard.putNumber("Testing vision: Distance to least ambigious tag id", dist);
+    }
+  }
+
   public PhotonPipelineResult getPipeline() {
     return pipeline;
   }
@@ -123,6 +139,6 @@ public class PhotonVision extends SubsystemBase {
   public void periodic() {
     pipeline = camera.getLatestResult();
     bestTarget = pipeline.getBestTarget();
-    log();
+    testLogging();
   }
 }
