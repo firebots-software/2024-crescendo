@@ -176,7 +176,7 @@ public class RobotContainer {
                 speedFunction,
                 driveTrain));
 
-    // amp shoolt
+    // amp shoot
     joystick
         .rightBumper()
         .whileTrue(
@@ -207,6 +207,10 @@ public class RobotContainer {
                     driveTrain.seedFieldRelative(
                         new Pose2d(new Translation2d(1.25, 5.5), new Rotation2d(0)))));
     driveTrain.registerTelemetry(logger::telemeterize);
+
+
+    // climber
+    
   }
 
   // Constructs a Pose2d array of the note locations by a specific indexing so they can be accessed
