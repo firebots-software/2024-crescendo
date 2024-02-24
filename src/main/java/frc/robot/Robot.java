@@ -4,12 +4,20 @@
 
 package frc.robot;
 
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.Nat;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.PeterSubsystem;
+import frc.robot.subsystems.PhotonVision;
 import frc.robot.subsystems.SwerveSubsystem;
 
 /**
@@ -20,13 +28,16 @@ import frc.robot.subsystems.SwerveSubsystem;
  */
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
-  private RobotContainer m_robotContainer;
+  // private RobotContainer m_robotContainer;
   private LEDSubsystem lights;
 
   // Subsystems
+  PhotonVision vision = PhotonVision.getInstance();
   private final SwerveSubsystem driveTrain = SwerveSubsystem.getInstance();
   private final ArmSubsystem armSubsystem = ArmSubsystem.getInstance();
   private final PeterSubsystem peterSubsystem = PeterSubsystem.getInstance();
+  private RobotContainer m_robotContainer;
+  private static Matrix<N3, N1> visionMatrix = new Matrix<N3, N1>(Nat.N3(), Nat.N1());
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -34,6 +45,11 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    CameraServer.startAutomaticCapture(0);
+    visionMatrix.set(0, 0, 0);
+    visionMatrix.set(1, 0, 0.2d);
+    visionMatrix.set(2, 0, Double.MAX_VALUE);
+
     // Instantiate our RobotContainer. This will perform all our button bindings,
     // and put our
     // autonomous chooser on the dashboard.
@@ -42,6 +58,7 @@ public class Robot extends TimedRobot {
     absoluteInit();
     m_robotContainer = new RobotContainer();
     absoluteInit();
+    DataLogManager.start();
   }
 
   /**
@@ -60,7 +77,12 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods. This must be called from the
     // robot's periodic
     // block in order for anything in the Command-based framework to work.
-    // m_robotContainer.doTelemetry();
+    m_robotContainer.doTelemetry();
+    if (vision.hasTarget(vision.getPipeline())) {
+      driveTrain.addVisionMeasurement(
+          vision.getRobotPose2d(), Timer.getFPGATimestamp(), visionMatrix);
+    }
+
     CommandScheduler.getInstance().run();
   }
 
@@ -75,12 +97,13 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     absoluteInit();
-    // m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    armSubsystem.setTargetDegrees(armSubsystem.getCorrectedDegrees() + 5.0);
+    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
-    // // schedule the autonomous command (example)
-    // if (m_autonomousCommand != null) {
-    //   m_autonomousCommand.schedule();
-    // }
+    // schedule the autonomous command (example)
+    if (m_autonomousCommand != null) {
+      m_autonomousCommand.schedule();
+    }
   }
 
   /** This function is called periodically during autonomous. */

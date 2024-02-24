@@ -28,7 +28,7 @@ public class AimAtSpeaker extends ParallelCommandGroup {
                 () -> Constants.Landmarks.Speaker.POSE.getTranslation(),
                 speedFunction,
                 swerve)
-            .withToleranceEnd(tolerance)); // don't want to end while in aim, so no tolerance
+            .withToleranceEnd(tolerance));
   }
 
   // Constructs without a end condition

@@ -10,6 +10,7 @@ import com.pathplanner.lib.path.PathConstraints;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.util.Units;
 
 /**
@@ -57,12 +58,18 @@ public final class Constants {
     public static final double INTAKE_GEAR_RATIO = 2;
     public static final double PRESHOOTER_GEAR_RATIO = 4;
     public static final double SHOOTER_WHEELS_GEAR_RATIOS = 24d / 18d;
+
+    public static final double SHOOTER_STATOR_CURRENT_LIMIT_AMPS = 40.0;
+    public static final double PRESHOOTER_STATOR_CURRENT_LIMIT_AMPS = 25.0;
+    public static final double INTAKE_STATOR_CURRENT_LIMIT_AMPS = 16.0;
   }
 
   public static final class Arm {
-    public static final double DEFAULT_ARM_ANGLE = 15;
-    public final double INTAKE_ANGLE = 0; // subject to change
-    public static final double AMP_ANGLE = 100; // subject to change
+    public static final double ARM_STATOR_CURRENT_LIMIT_AMPS = 40.0;
+    public static final double DEFAULT_ARM_ANGLE = 36;
+    public static final double INTAKE_ANGLE = 4; // subject to change
+    public static final double AMP_ANGLE = 90; // subject to change
+
     public static final double SPEAKER_ANGLE =
         40; // TODO: Replace with the function based on distance
     // public static final double ARM_ENCODER_OFFSET = 0; // TODO: Change the offset so that the 0
@@ -76,14 +83,15 @@ public final class Constants {
     public static final int LB_PORT = 11; // Left Bottom motor
     public static final int ENCODER_PORT = 0; // subject to change
 
-    public static final double CURRENT_LIMIT = 5.0;
-    public static final double S0C_KP = 18.5;
+    public static final double CURRENT_LIMIT = 8.0;
+    public static final double S0C_KP = 1;
     public static final double ARMFF_KS = 0.1;
     public static final double ARMFF_KG = 0.21;
     public static final double ARMFF_KV = 2.49;
     public static final double MOTIONMAGIC_KV = 1; // MotionMagic Cruise Velocity in RPS of the arm
-    public static final double MOTIONMAGIC_KA = 0.5; // MotionMagic Acceleration in RPS^2 of the arm
+    public static final double MOTIONMAGIC_KA = 2.2; // MotionMagic Acceleration in RPS^2 of the arm
 
+    public static final double FEET_TO_METERS_CONVERSION_FACTOR = 0.3048;
     public static final double ABSOLUTE_ARM_CONVERSION_FACTOR = 42d / 18d;
     public static final double INTEGRATED_ABSOLUTE_CONVERSION_FACTOR = 55.9867;
     public static final double INTEGRATED_ARM_CONVERSION_FACTOR =
@@ -91,6 +99,14 @@ public final class Constants {
             * INTEGRATED_ABSOLUTE_CONVERSION_FACTOR; // 130.63563333333335;
     public static final double ABSOLUTE_ENCODER_HORIZONTAL = 0.629;
     public static final double ABSOLUTE_HORIZONTAL_OFFSET = 0.05;
+
+    public static final InterpolatingDoubleTreeMap INTERMAP = new InterpolatingDoubleTreeMap();
+
+    static {
+      INTERMAP.put(1.25, 6d); // measurements of distance are from front of robot bumper to wall
+      INTERMAP.put(2.1, 17d);
+      INTERMAP.put(Units.feetToMeters(9) + Units.inchesToMeters(17), 23.5d);
+    }
   }
 
   public static class OI {
@@ -102,21 +118,24 @@ public final class Constants {
 
   public static class Landmarks {
     // Landmarks on the Blue side can be reflected to show the respective locations on the Blue side
-    public static final Pose2d STAGESIDE_NOTE_LOCATION = new Pose2d(2.5, 4.1, new Rotation2d());
-    public static final Pose2d MIDDLE_NOTE_LOCATION = new Pose2d(2.5, 5.5, new Rotation2d());
-    public static final Pose2d AMPSIDE_NOTE_LOCATION = new Pose2d(2.5, 7, new Rotation2d());
+    public static final Pose2d STAGESIDE_NOTE_LOCATION =
+        new Pose2d(2.8956, 4.0522, new Rotation2d());
+    public static final Pose2d MIDDLE_NOTE_LOCATION = new Pose2d(2.8956, 5.5, new Rotation2d());
+    public static final Pose2d AMPSIDE_NOTE_LOCATION = new Pose2d(2.8956, 6.9478, new Rotation2d());
     public static final Pose2d SUBWOOFER_LOCATION = new Pose2d(0.6, 5.7, new Rotation2d());
     public static final double CENTER_LINE_LOCATION = 8.27;
 
     public static final class Speaker {
       public static final double HEIGHT_INCHES = 78.0;
       public static final double HEIGHT_METERS = Units.inchesToMeters(HEIGHT_INCHES);
-      public static final Pose2d POSE = new Pose2d(new Translation2d(0.5, 5.5), new Rotation2d(0));
+      public static final Pose2d POSE = new Pose2d(new Translation2d(0, 5.5), new Rotation2d(0));
     }
 
     public static final class Amp {
       public static final double AMP_HEIGHT_INCHES = 35.0;
       public static final double AMP_HEIGHT_METERS = Units.inchesToMeters(AMP_HEIGHT_INCHES);
+      public static final Pose2d POSE =
+          new Pose2d(new Translation2d(1.5235, 7.7), new Rotation2d(-Math.PI / 2)); // isnt right
     }
 
     public static final double INTAKE_MODE_HEIGHT_INCHES = 4.0;
@@ -125,6 +144,9 @@ public final class Constants {
   }
 
   public static class Swerve {
+    public static final Pose2d ROBOT_HALF_WIDTH =
+        new Pose2d(Units.inchesToMeters(24), 0, new Rotation2d());
+
     public static class PPConstants {
       public static final PathConstraints PATH_PLANNER_CONSTRAINTS =
           new PathConstraints(3.0, 3.0, 2 * Math.PI, 4 * Math.PI);
@@ -133,7 +155,7 @@ public final class Constants {
     public static final double PHYSICAL_MAX_SPEED_METERS_PER_SECOND = 4.8768;
     public static final double PHYSICAL_MAX_ANGLUAR_SPEED_RADIANS_PER_SECOND = 2 * 2 * Math.PI;
 
-    public static final double TELE_DRIVE_FAST_MODE_SPEED_PERCENT = 0.5;
+    public static final double TELE_DRIVE_FAST_MODE_SPEED_PERCENT = 0.7;
     public static final double TELE_DRIVE_SLOW_MODE_SPEED_PERCENT = 0.3;
     public static final double TELE_DRIVE_PERCENT_SPEED_RANGE =
         (TELE_DRIVE_FAST_MODE_SPEED_PERCENT - TELE_DRIVE_SLOW_MODE_SPEED_PERCENT);
@@ -168,8 +190,11 @@ public final class Constants {
     // The stator current at which the wheels start to slip;
     // This needs to be tuned to your individual robot
     private static final double SLIP_CURRENT_AMPS = 100.0;
-    public static final double DRIVE_SUPPLY_CURRENT_LIMIT_AMPS = 60.0;
-    public static final double TURNING_SUPPLY_CURRENT_LIMIT_AMPS = 25.0;
+    public static final double DRIVE_STATOR_CURRENT_LIMIT_AMPS = 90.0;
+    public static final double STEER_STATOR_CURRENT_LIMIT_AMPS = 40.0;
+
+    public static final double DRIVE_SUPPLY_CURRENT_LIMIT_AMPS = 40.0;
+    public static final double TURNING_SUPPLY_CURRENT_LIMIT_AMPS = 30.0;
     // Theoretical free speed (m/s) at 12v applied output;
     // This needs to be tuned to your individual robot
     public static final double SPEED_AT_12V_METERS_PER_SECOND = 4.73;

@@ -1,15 +1,17 @@
 package frc.robot.commands.SwerveCommands;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import frc.robot.Constants;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.SwerveSubsystem;
 import java.util.function.Supplier;
 
 public class SwerveLockedAngleCmd extends SwerveJoystickCommand {
 
-  private static final PIDController turningPID = new PIDController(0.6d, 0d, 0d);
+  private static final PIDController turningPID = new PIDController(1d, 0.002, 0.01d);
+  private static final double MAX_RATE = 0.4; // Stick command output
   private final Supplier<Double> error;
   private double tolerance = -1d;
 
@@ -23,26 +25,40 @@ public class SwerveLockedAngleCmd extends SwerveJoystickCommand {
         frontBackFunction,
         leftRightFunction,
         () -> {
-          return turningPID.calculate(
-                  turnTarget
-                      .get()
-                      .minus(
-                          swerveSubsystem
-                              .getState()
-                              .Pose
-                              .getRotation()
-                              .rotateBy(new Rotation2d(Math.PI)))
-                      .getRadians())
-              / Constants.Swerve.PHYSICAL_MAX_ANGLUAR_SPEED_RADIANS_PER_SECOND;
-        }, // total bakwas
+          // Rotate 90 degrees so we avoid all wrap regions
+          Rotation2d actualTarget = turnTarget.get().rotateBy(Rotation2d.fromDegrees(90));
+          Rotation2d computedError = actualTarget.minus(getSwerveRotation(swerveSubsystem));
+          double computedRotation = turningPID.calculate(computedError.getRadians());
+          computedRotation = MathUtil.clamp(computedRotation, -MAX_RATE, MAX_RATE);
+          if (Math.abs(computedError.getDegrees()) < 1) {
+            computedRotation = 0;
+          }
+
+          // Logging
+          SmartDashboard.putNumber("Corrected Target", turnTarget.get().getDegrees());
+          SmartDashboard.putNumber("Shooter Angular Error", computedError.getDegrees());
+          SmartDashboard.putNumber("Shooter Computed Output", computedRotation);
+          SmartDashboard.putNumber(
+              "Swerve Heading", getSwerveRotation(swerveSubsystem).getDegrees());
+
+          return -computedRotation;
+        },
         speedControlFunction,
         swerveSubsystem);
 
-    turningPID.enableContinuousInput(-Math.PI, Math.PI);
-
     // bro this be really bad coding, aaaa ~java~ OOP is stupid
     error =
-        () -> turnTarget.get().minus(swerveSubsystem.getState().Pose.getRotation()).getRadians();
+        () -> turnTarget.get().minus(swerveSubsystem.getState().Pose.getRotation()).getDegrees();
+  }
+
+  @Override
+  public void initialize() {
+    super.initialize();
+    turningPID.reset();
+  }
+
+  private static Rotation2d getSwerveRotation(SwerveSubsystem subsystem) {
+    return subsystem.getState().Pose.getRotation().rotateBy(Rotation2d.fromDegrees(90));
   }
 
   /**
@@ -70,7 +86,8 @@ public class SwerveLockedAngleCmd extends SwerveJoystickCommand {
                 .get()
                 .minus(swerveSubsystem.getState().Pose.getTranslation())
                 .rotateBy(
-                    new Rotation2d(Math.PI)) // so that the scoring side/butt is facing the target
+                    Rotation2d.fromRadians(
+                        Math.PI)) // so that the scoring side/butt is facing the target
                 .getAngle(),
         speedControlFunction,
         swerveSubsystem);
@@ -91,6 +108,8 @@ public class SwerveLockedAngleCmd extends SwerveJoystickCommand {
 
   @Override
   public boolean isFinished() {
+    SmartDashboard.putNumber("swerve locked angle error", error.get());
+    SmartDashboard.putNumber("swerve locked angle tolerance", tolerance);
     return Math.abs(error.get()) < tolerance;
   }
 }

@@ -7,7 +7,9 @@ package frc.robot;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -15,16 +17,23 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commandGroups.AimAtSpeaker;
+import frc.robot.commandGroups.FireAuton;
 import frc.robot.commandGroups.Intake;
+import frc.robot.commands.ArmCommands.AimArmAtAmpCmd;
+import frc.robot.commands.ArmCommands.ArmResetOnEndCmd;
 import frc.robot.commands.ArmCommands.ArmToNeutralCmd;
 import frc.robot.commands.Auton.MoveToTarget;
-import frc.robot.commands.PeterCommands.Shoot;
+import frc.robot.commands.Auton.RatchetteDisengage;
+import frc.robot.commands.DebugCommands.Rumble;
+import frc.robot.commands.PeterCommands.ShootNoWarmup;
+import frc.robot.commands.PeterCommands.WarmUpShooter;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.commands.SwerveCommands.SwerveLockedAngleCmd;
 import frc.robot.subsystems.ArmSubsystem;
@@ -57,7 +66,6 @@ public class RobotContainer {
 
   public RobotContainer() {
     // Vibrate joysticks when someone interesting happens!
-    // joystick.getHID().setRumble(GenericHID.RumbleType.kRightRumble, 1);
     // joystick.getHID().setRumble(GenericHID.RumbleType.kLeftRumble, 1);
 
     configureBindings();
@@ -89,15 +97,16 @@ public class RobotContainer {
             leftRightFunction,
             rotationFunction,
             speedFunction, // slowmode when left shoulder is pressed, otherwise fast
+            () -> joystick.leftTrigger().getAsBoolean(),
             driveTrain);
     driveTrain.setDefaultCommand(swerveJoystickCommand);
 
     // Intake
-    joystick.leftTrigger().whileTrue(new Intake(peterSubsystem, armSubsystem));
+    joystick.rightTrigger().whileTrue(new Intake(peterSubsystem, armSubsystem, joystick.getHID()));
 
     // Outtake
     joystick
-        .rightTrigger()
+        .povUp()
         .whileTrue(
             new ParallelCommandGroup(
                 new RunCommand(
@@ -131,12 +140,13 @@ public class RobotContainer {
                     frontBackFunction,
                     leftRightFunction,
                     speedFunction,
-                    0.02),
+                    Rotation2d.fromDegrees(5).getDegrees()),
                 new ParallelCommandGroup(
-                    new Shoot(peterSubsystem),
-
+                    new ShootNoWarmup(peterSubsystem).withTimeout(1),
+                    Rumble.withNoBlock(joystick.getHID(), 1, 1, 0.25),
                     // we need this a second time because the first one ended in the
                     // aimBeforeShootCommand, this time without a tolerance end
+                    new ArmResetOnEndCmd(armSubsystem),
                     SwerveLockedAngleCmd.fromPose(
                         frontBackFunction,
                         leftRightFunction,
@@ -165,6 +175,17 @@ public class RobotContainer {
                 () -> new Rotation2d(-Math.PI / 2d),
                 speedFunction,
                 driveTrain));
+
+    // amp shoolt
+    joystick
+        .rightBumper()
+        .whileTrue(
+            new SequentialCommandGroup(
+                new ParallelCommandGroup(
+                    new AimArmAtAmpCmd(armSubsystem),
+                    MoveToTarget.withMirror(driveTrain, Constants.Landmarks.Amp.POSE, redAlliance),
+                    new WarmUpShooter(peterSubsystem)),
+                new ShootNoWarmup(peterSubsystem)));
 
     // When no Commands are being issued, Peter motors should not be moving
     peterSubsystem.setDefaultCommand(
@@ -242,15 +263,31 @@ public class RobotContainer {
     SmartDashboard.putString("Auton to be run", autonName);
     SmartDashboard.putBoolean("Red Alliance?", redAlliance);
     return new PathPlannerAuto(autonName)
+        .andThen(new RatchetteDisengage(armSubsystem), new PrintCommand("finished Rachette"))
         .andThen(
-            (pickup1choice.getSelected().isEmpty())
-                ? new WaitCommand(2.0)
-                : MoveToTarget.withMirror(
-                    driveTrain, pickup1choice.getSelected().get().getNoteLocation(), redAlliance))
-        .andThen(
-            (pickup2choice.getSelected().isEmpty())
-                ? new WaitCommand(2.0)
-                : MoveToTarget.withMirror(
-                    driveTrain, pickup2choice.getSelected().get().getNoteLocation(), redAlliance));
+            new FireAuton(peterSubsystem, armSubsystem, driveTrain, 1),
+            new PrintCommand("ritvik gun fire1"))
+        .andThen(getAutonShoot(pickup1choice.getSelected()))
+        .andThen(getAutonShoot(pickup2choice.getSelected()));
+  }
+
+  public Command getAutonShoot(Optional<NoteLocation> note) {
+    return (note.isEmpty())
+        ? new WaitCommand(2.0)
+        : MoveToTarget.withMirror(
+                driveTrain,
+                note.get()
+                    .getNoteLocation()
+                    .plus(new Transform2d(Units.inchesToMeters(-24), 0, new Rotation2d())),
+                redAlliance)
+            .alongWith(new Intake(peterSubsystem, armSubsystem, joystick.getHID()))
+            .andThen(
+                MoveToTarget.withMirror(
+                    driveTrain,
+                    NoteLocation.MIDDLE
+                        .getNoteLocation()
+                        .plus(new Transform2d(Units.inchesToMeters(-30), 0, new Rotation2d())),
+                    redAlliance))
+            .andThen(new FireAuton(peterSubsystem, armSubsystem, driveTrain, 1));
   }
 }
