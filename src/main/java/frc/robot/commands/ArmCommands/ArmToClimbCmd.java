@@ -7,10 +7,8 @@ import java.util.function.Supplier;
 public class ArmToClimbCmd extends Command {
 
   private final ArmSubsystem arm;
-  private final Supplier<Double> angle;
 
-  public ArmToClimbCmd(Supplier<Double> angle, ArmSubsystem arm) {
-    this.angle = angle;
+  public ArmToClimbCmd(ArmSubsystem arm) {
     this.arm = arm;
 
     addRequirements(arm);

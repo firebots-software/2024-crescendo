@@ -8,10 +8,8 @@ import frc.robot.subsystems.ArmSubsystem;
 public class ArmToFinishClimbCmd extends Command {
 
 private final ArmSubsystem arm;
-private final Supplier<Double> angle;
 
-  public ArmToFinishClimbCmd(Supplier<Double> angle, ArmSubsystem arm) {
-    this.angle = angle;
+  public ArmToFinishClimbCmd(ArmSubsystem arm) {
     this.arm = arm;
 
     addRequirements(arm);
