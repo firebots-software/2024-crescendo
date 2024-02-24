@@ -34,7 +34,7 @@ public class PhotonVision extends SubsystemBase {
 
   private PhotonVision() throws IOException {
     // aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
-    aprilTagFieldLayout = AprilTagFieldLayout.loadFromResource(Filesystem.getDeployDirectory().getPath() + "/scookies.json");
+    aprilTagFieldLayout = AprilTagFieldLayout.loadFromResource(Filesystem.getDeployDirectory().getPath() + "/spookies.json");
     // photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout,
     // PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
     //         camera, robotToCam);
