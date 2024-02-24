@@ -9,8 +9,11 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import java.io.IOException;
 import java.util.Optional;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonUtils;
@@ -29,8 +32,9 @@ public class PhotonVision extends SubsystemBase {
           new Translation3d(Units.inchesToMeters(-13), 0, Units.inchesToMeters(7.027)),
           new Rotation3d(0, -Units.degreesToRadians(24), Math.PI));
 
-  private PhotonVision() {
-    aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
+  private PhotonVision() throws IOException {
+    // aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
+    aprilTagFieldLayout = AprilTagFieldLayout.loadFromResource(Filesystem.getDeployDirectory().getPath() + "/scookies.json");
     // photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout,
     // PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
     //         camera, robotToCam);
