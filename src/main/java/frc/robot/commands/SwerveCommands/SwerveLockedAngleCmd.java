@@ -2,10 +2,13 @@ package frc.robot.commands.SwerveCommands;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.util.MiscUtils;
+
 import java.util.function.Supplier;
 
 public class SwerveLockedAngleCmd extends SwerveJoystickCommand {
@@ -72,27 +75,45 @@ public class SwerveLockedAngleCmd extends SwerveJoystickCommand {
    * @param swerveSubsystem
    * @return
    */
-  public static SwerveLockedAngleCmd fromPose(
+  private static SwerveLockedAngleCmd fromPose(
       Supplier<Double> frontBackFunction,
       Supplier<Double> leftRightFunction,
       Supplier<Translation2d> pointAtFunction,
       Supplier<Double> speedControlFunction,
-      SwerveSubsystem swerveSubsystem) {
+      SwerveSubsystem swerveSubsystem, Supplier<Boolean> reflected) {
     return new SwerveLockedAngleCmd(
         frontBackFunction,
         leftRightFunction,
-        () ->
-            pointAtFunction
-                .get()
+        () -> {
+            Translation2d pose = reflected.get() ? MiscUtils.reflectAcrossMidline(pointAtFunction.get()) : pointAtFunction.get();
+            return pose
                 .minus(swerveSubsystem.getState().Pose.getTranslation())
                 .rotateBy(
                     Rotation2d.fromRadians(
                         Math.PI)) // so that the scoring side/butt is facing the target
-                .getAngle(),
+                .getAngle();
+        },
         speedControlFunction,
         swerveSubsystem);
   }
 
+  public static SwerveLockedAngleCmd fromPoseAbsolute (
+    Supplier<Double> frontBackFunction,
+    Supplier<Double> leftRightFunction,
+    Supplier<Translation2d> pointAtFunction,
+    Supplier<Double> speedControlFunction,
+    SwerveSubsystem swerveSubsystem) {
+      return fromPose(frontBackFunction, leftRightFunction, pointAtFunction, speedControlFunction, swerveSubsystem, () -> false);
+  }
+
+  public static SwerveLockedAngleCmd fromPoseMirrored (
+    Supplier<Double> frontBackFunction,
+    Supplier<Double> leftRightFunction,
+    Supplier<Translation2d> pointAtFunction,
+    Supplier<Double> speedControlFunction,
+    SwerveSubsystem swerveSubsystem, Supplier<Boolean> reflection) {
+      return fromPose(frontBackFunction, leftRightFunction, pointAtFunction, speedControlFunction, swerveSubsystem, reflection);
+  }
   /**
    * Adds a rotation tolerance so that this command can end. Note the command will never finish by
    * itself if this is not set.

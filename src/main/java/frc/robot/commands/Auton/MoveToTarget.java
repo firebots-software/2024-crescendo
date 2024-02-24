@@ -10,6 +10,7 @@ import frc.robot.Constants;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.util.MiscUtils;
 import java.util.List;
+import java.util.function.Supplier;
 
 public class MoveToTarget extends Command {
   private Pose2d absolutePose;
@@ -76,7 +77,7 @@ public class MoveToTarget extends Command {
     return new MoveToTarget(swerve, absolutePose, false);
   }
 
-  public static Command withMirror(SwerveSubsystem swerve, Pose2d absolutePose, boolean mirror) {
-    return new MoveToTarget(swerve, absolutePose, mirror);
+  public static Command withMirror(SwerveSubsystem swerve, Pose2d absolutePose, Supplier<Boolean> mirror) {
+    return new MoveToTarget(swerve, absolutePose, mirror.get());
   }
 }

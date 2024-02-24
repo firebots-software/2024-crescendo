@@ -124,7 +124,8 @@ public class RobotContainer {
                 driveTrain,
                 frontBackFunction,
                 leftRightFunction,
-                speedFunction));
+                speedFunction,
+                () -> redAlliance));
 
     // Fire
     joystick
@@ -138,19 +139,20 @@ public class RobotContainer {
                     frontBackFunction,
                     leftRightFunction,
                     speedFunction,
-                    Rotation2d.fromDegrees(5).getDegrees()),
+                    Rotation2d.fromDegrees(5).getDegrees(),
+                    () -> redAlliance),
                 new ParallelCommandGroup(
                     new ShootNoWarmup(peterSubsystem).withTimeout(1),
                     Rumble.withNoBlock(joystick.getHID(), 1, 1, 0.25),
                     // we need this a second time because the first one ended in the
                     // aimBeforeShootCommand, this time without a tolerance end
                     new ArmResetOnEndCmd(armSubsystem),
-                    SwerveLockedAngleCmd.fromPose(
+                    SwerveLockedAngleCmd.fromPoseMirrored(
                         frontBackFunction,
                         leftRightFunction,
                         () -> Constants.Landmarks.Speaker.POSE.getTranslation(),
                         speedFunction,
-                        driveTrain))));
+                        driveTrain, () -> redAlliance))));
 
     // speaker snap
     joystick
@@ -159,11 +161,12 @@ public class RobotContainer {
             new SwerveLockedAngleCmd(
                 frontBackFunction,
                 leftRightFunction,
-                () -> new Rotation2d(0),
+                (redAlliance) ? () -> Rotation2d.fromDegrees(180) :
+                () -> Rotation2d.fromDegrees(0),
                 speedFunction,
                 driveTrain));
 
-    // amp snap
+    // amp snp
     joystick
         .b()
         .whileTrue(
@@ -181,7 +184,7 @@ public class RobotContainer {
             new SequentialCommandGroup(
                 new ParallelCommandGroup(
                     new AimArmAtAmpCmd(armSubsystem),
-                    MoveToTarget.withMirror(driveTrain, Constants.Landmarks.Amp.POSE, redAlliance),
+                    MoveToTarget.withMirror(driveTrain, Constants.Landmarks.Amp.POSE, () -> redAlliance),
                     new WarmUpShooter(peterSubsystem)),
                 new ShootNoWarmup(peterSubsystem)));
 
@@ -263,10 +266,12 @@ public class RobotContainer {
     return new PathPlannerAuto(autonName)
         .andThen(new RatchetteDisengage(armSubsystem), new PrintCommand("finished Rachette"))
         .andThen(
-            new FireAuton(peterSubsystem, armSubsystem, driveTrain, 1),
+            new FireAuton(peterSubsystem, armSubsystem, driveTrain, 1, () -> redAlliance),
             new PrintCommand("ritvik gun fire1"))
         .andThen(getAutonShoot(pickup1choice.getSelected()))
-        .andThen(getAutonShoot(pickup2choice.getSelected()));
+        .andThen(new PrintCommand("pickup1 ended"))
+        .andThen(getAutonShoot(pickup2choice.getSelected()))
+        .andThen(new PrintCommand("pickup2 ended"));
   }
 
   public Command getAutonShoot(Optional<NoteLocation> note) {
@@ -277,15 +282,16 @@ public class RobotContainer {
                 note.get()
                     .getNoteLocation()
                     .plus(new Transform2d(Units.inchesToMeters(-24), 0, new Rotation2d())),
-                redAlliance)
+                () -> redAlliance)
             .alongWith(new Intake(peterSubsystem, armSubsystem, joystick.getHID()))
             .andThen(
                 MoveToTarget.withMirror(
                     driveTrain,
                     NoteLocation.MIDDLE
                         .getNoteLocation()
-                        .plus(new Transform2d(Units.inchesToMeters(-30), 0, new Rotation2d())),
-                    redAlliance))
-            .andThen(new FireAuton(peterSubsystem, armSubsystem, driveTrain, 1));
+                        .plus(new Transform2d(Units.inchesToMeters(-45), 0, new Rotation2d())),
+                    () -> redAlliance))
+            .andThen(new FireAuton(peterSubsystem, armSubsystem, driveTrain, 1, () -> redAlliance))
+            .andThen(new WaitCommand(0.25));
   }
 }

@@ -2,6 +2,7 @@ package frc.robot.util;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.Constants;
 
 public class MiscUtils {
@@ -14,5 +15,11 @@ public class MiscUtils {
         point.getX() - (2.0 * (point.getX() - Constants.Landmarks.CENTER_LINE_LOCATION)),
         point.getY(),
         new Rotation2d(Math.PI - point.getRotation().getRadians()));
+  }
+
+  public static Translation2d reflectAcrossMidline(Translation2d point) {
+    return new Translation2d(
+        point.getX() - (2.0 * (point.getX() - Constants.Landmarks.CENTER_LINE_LOCATION)),
+        point.getY());
   }
 }
