@@ -18,11 +18,12 @@ public class AimAtSpeaker extends ParallelCommandGroup {
       Supplier<Double> frontBackFunction,
       Supplier<Double> leftRightFunction,
       Supplier<Double> speedFunction,
-      double tolerance,
+      double headingToleranceDegrees,
+      double armToleranceDegrees,
       Supplier<Boolean> redSide) {
     addCommands(
         new SpinUpShooter(peter),
-        new AimArmCmd(arm, swerve, redSide),
+        new AimArmCmd(arm, swerve, redSide).withEndTolerance(armToleranceDegrees),
         SwerveLockedAngleCmd.fromPoseMirrored(
                 frontBackFunction,
                 leftRightFunction,
@@ -30,7 +31,7 @@ public class AimAtSpeaker extends ParallelCommandGroup {
                 speedFunction,
                 swerve,
                 redSide)
-            .withToleranceEnd(tolerance));
+            .withToleranceEnd(headingToleranceDegrees));
   }
 
   // Constructs without a end condition
@@ -42,6 +43,6 @@ public class AimAtSpeaker extends ParallelCommandGroup {
       Supplier<Double> leftRightFunction,
       Supplier<Double> speedFunction,
       Supplier<Boolean> redSide) {
-    this(peter, arm, swerve, frontBackFunction, leftRightFunction, speedFunction, -1, redSide);
+    this(peter, arm, swerve, frontBackFunction, leftRightFunction, speedFunction, -1, -1, redSide);
   }
 }

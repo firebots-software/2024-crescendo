@@ -9,6 +9,7 @@ public class AimArmCmd extends Command {
   private ArmSubsystem armSubsystem;
   private SwerveSubsystem swerveSubsystem;
   private Supplier<Boolean> redside;
+  private double tolerance = -1d;
 
   public AimArmCmd(
       ArmSubsystem armSubsystem, SwerveSubsystem swerveSubsystem, Supplier<Boolean> redside) {
@@ -35,6 +36,11 @@ public class AimArmCmd extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return armSubsystem.atTarget(1);
+    return armSubsystem.atTarget(tolerance);
   }
+
+  public AimArmCmd withEndTolerance(double tolerance) {
+    this.tolerance = tolerance;
+    return this;
+  } 
 }

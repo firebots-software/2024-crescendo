@@ -132,7 +132,8 @@ public class RobotContainer {
                     frontBackFunction,
                     leftRightFunction,
                     speedFunction,
-                    Rotation2d.fromDegrees(5).getDegrees(),
+                    5,
+                    1,
                     () -> redAlliance),
                 new ParallelCommandGroup(
                     new ShootNoWarmup(peterSubsystem).withTimeout(1),
