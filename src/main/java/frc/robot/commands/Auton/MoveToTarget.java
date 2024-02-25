@@ -55,7 +55,7 @@ public class MoveToTarget extends Command {
             Constants.Swerve.PPConstants.PATH_PLANNER_CONSTRAINTS,
             new GoalEndState(
                 0.0,
-                absolutePoses[absolutePoses.length - 1]
+                poseArray[poseArray.length - 1]
                     .getRotation()) // goal end velocity and heading
             );
 
