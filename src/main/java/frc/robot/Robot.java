@@ -43,7 +43,7 @@ public class Robot extends TimedRobot {
     CameraServer.startAutomaticCapture(0);
     visionMatrix.set(0, 0, 0);
     visionMatrix.set(1, 0, 0.2d);
-    visionMatrix.set(2, 0, Double.MAX_VALUE);
+    visionMatrix.set(2, 0, 10);
 
     // Instantiate our RobotContainer. This will perform all our button bindings,
     // and put our
