@@ -54,9 +54,7 @@ public class MoveToTarget extends Command {
             bezierPoints,
             Constants.Swerve.PPConstants.PATH_PLANNER_CONSTRAINTS,
             new GoalEndState(
-                0.0,
-                poseArray[poseArray.length - 1]
-                    .getRotation()) // goal end velocity and heading
+                0.0, poseArray[poseArray.length - 1].getRotation()) // goal end velocity and heading
             );
 
     // prevent automatic path flipping by AutoBuilder (we want to execute absolute path)

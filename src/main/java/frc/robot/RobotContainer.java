@@ -206,10 +206,24 @@ public class RobotContainer {
                     new ParallelCommandGroup(
                         new AimArmAtAmpCmd(armSubsystem),
                         MoveToTarget.withMirror(
-                            driveTrain,
-                            () -> redAlliance,
-                            Constants.Landmarks.Amp.POSE.plus(new Transform2d(0d, -(Units.inchesToMeters(24) + Constants.Swerve.ROBOT_HALF_WIDTH_METERS), new Rotation2d())),
-                            Constants.Landmarks.Amp.POSE.plus(new Transform2d(0d, -(Units.inchesToMeters(12) + Constants.Swerve.ROBOT_HALF_WIDTH_METERS), new Rotation2d()))),
+                                driveTrain,
+                                () -> redAlliance,
+                                Constants.Landmarks.Amp.POSE.plus(
+                                    new Transform2d(
+                                        0d,
+                                        -(Units.inchesToMeters(24)
+                                            + Constants.Swerve.ROBOT_HALF_WIDTH_METERS),
+                                        new Rotation2d())))
+                            .andThen(
+                                MoveToTarget.withMirror(
+                                    driveTrain,
+                                    () -> redAlliance,
+                                    Constants.Landmarks.Amp.POSE.plus(
+                                        new Transform2d(
+                                            0d,
+                                            -(Units.inchesToMeters(12)
+                                                + Constants.Swerve.ROBOT_HALF_WIDTH_METERS),
+                                            new Rotation2d())))),
                         new WarmUpShooter(peterSubsystem)),
                     new ShootNoWarmup(peterSubsystem))
                 .withInterruptBehavior(InterruptionBehavior.kCancelSelf));
@@ -298,10 +312,14 @@ public class RobotContainer {
                 () -> redAlliance,
                 note.get()
                     .getNoteLocation()
-                    .plus(new Transform2d(Units.inchesToMeters(-24), 0, new Rotation2d())),
-                note.get()
-                    .getNoteLocation()
-                    .plus(new Transform2d(Units.inchesToMeters(-18), 0, new Rotation2d())))
+                    .plus(new Transform2d(Units.inchesToMeters(-24), 0, new Rotation2d())))
+            .andThen(
+                MoveToTarget.withMirror(
+                    driveTrain,
+                    () -> redAlliance,
+                    note.get()
+                        .getNoteLocation()
+                        .plus(new Transform2d(Units.inchesToMeters(-18), 0, new Rotation2d()))))
             .alongWith(new Intake(peterSubsystem, armSubsystem, joystickA.getHID()))
             .andThen(
                 MoveToTarget.withMirror(
