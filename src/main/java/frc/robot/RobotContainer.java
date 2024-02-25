@@ -237,7 +237,7 @@ public class RobotContainer {
                 () ->
                     driveTrain.seedFieldRelative(
                         new Pose2d(
-                            new Translation2d(!redAlliance ? 1.25 : (12.73 - 1.25), 5.5),
+                            new Translation2d(!redAlliance ? 1.25 : (Constants.Landmarks.CENTER_LINE_LOCATION*2 - 1.25), 5.5),
                             Rotation2d.fromDegrees(!redAlliance ? 0 : 180)))));
   }
 
