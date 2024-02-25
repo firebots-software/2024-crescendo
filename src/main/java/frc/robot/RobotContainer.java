@@ -271,7 +271,8 @@ public class RobotContainer {
   // Options on SmartDashboard that return an integer index that refers to a note location
   private static SendableChooser<Optional<NoteLocation>>
       pickup1choice = new SendableChooser<Optional<NoteLocation>>(),
-      pickup2choice = new SendableChooser<Optional<NoteLocation>>();
+      pickup2choice = new SendableChooser<Optional<NoteLocation>>(),
+      pickup3choice = new SendableChooser<Optional<NoteLocation>>();
 
   private void setupChooser() {
 
@@ -285,8 +286,14 @@ public class RobotContainer {
     pickup2choice.addOption("MIDDLE NOTE", Optional.of(NoteLocation.MIDDLE));
     pickup2choice.addOption("STAGESIDE NOTE", Optional.of(NoteLocation.STAGESIDE));
 
+    pickup3choice.setDefaultOption("FOURTH SHOT: DO NOTHING", Optional.empty());
+    pickup3choice.addOption("AMPSIDE", Optional.of(NoteLocation.AMPSIDE));
+    pickup3choice.addOption("MIDDLE", Optional.of(NoteLocation.MIDDLE));
+    pickup3choice.addOption("STAGESIDE NOTE", Optional.of(NoteLocation.STAGESIDE));
+
     SmartDashboard.putData(pickup1choice);
     SmartDashboard.putData(pickup2choice);
+    SmartDashboard.putData(pickup3choice);
   }
 
   public Command getAutonomousCommand() {
@@ -302,7 +309,8 @@ public class RobotContainer {
         .andThen(getAutonShoot(pickup1choice.getSelected()))
         .andThen(new PrintCommand("pickup1 ended"))
         .andThen(getAutonShoot(pickup2choice.getSelected()))
-        .andThen(new PrintCommand("pickup2 ended"));
+        .andThen(new PrintCommand("pickup2 ended"))
+        .andThen(getAutonShoot(pickup3choice.getSelected()));
   }
 
   public Command getAutonShoot(Optional<NoteLocation> note) {
@@ -329,7 +337,7 @@ public class RobotContainer {
                     NoteLocation.MIDDLE
                         .getNoteLocation()
                         .plus(new Transform2d(Units.inchesToMeters(-45), 0, new Rotation2d()))))
-            .andThen(new FireAuton(peterSubsystem, armSubsystem, driveTrain, 1, () -> redAlliance))
-            .andThen(new WaitCommand(0.25));
+            .andThen(new FireAuton(peterSubsystem, armSubsystem, driveTrain, 1, () -> redAlliance));
+            //.andThen(new WaitCommand(0.25));
   }
 }

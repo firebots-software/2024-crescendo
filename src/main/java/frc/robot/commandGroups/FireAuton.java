@@ -26,7 +26,7 @@ public class FireAuton extends SequentialCommandGroup {
                 () -> 0.0,
                 () -> 0.0,
                 tolerance,
-                1,
+                2,
                 redside)
             .withTimeout(1.0),
         new ParallelCommandGroup(
