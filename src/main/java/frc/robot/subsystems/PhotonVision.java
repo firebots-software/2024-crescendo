@@ -23,7 +23,7 @@ public class PhotonVision extends SubsystemBase {
   private PhotonPipelineResult pipeline;
   private PhotonTrackedTarget bestTarget;
   private static PhotonVision pvisioninstance;
-  AprilTagFieldLayout aprilTagFieldLayout;
+  public static AprilTagFieldLayout aprilTagFieldLayout;
   Transform3d camToRobot = // robot relative to camera
       new Transform3d(
           new Translation3d(Units.inchesToMeters(-13), 0, Units.inchesToMeters(7.027)),
