@@ -93,6 +93,7 @@ public class PhotonVision extends SubsystemBase {
   }
 
   private void log() {
+    SmartDashboard.putBoolean("Tag", pipeline.hasTargets());
     if (pipeline.hasTargets()) {
       Optional<Pose3d> tagPose = aprilTagFieldLayout.getTagPose(bestTarget.getFiducialId());
       double x = getTransformToTarget().getX();
