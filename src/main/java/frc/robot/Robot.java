@@ -4,9 +4,11 @@
 
 package frc.robot;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DataLogManager;
@@ -43,7 +45,7 @@ public class Robot extends TimedRobot {
     CameraServer.startAutomaticCapture(0);
     visionMatrix.set(0, 0, 0);
     visionMatrix.set(1, 0, 0.2d);
-    visionMatrix.set(2, 0, Double.MAX_VALUE);
+    visionMatrix.set(2, 0, 100d);
 
     // Instantiate our RobotContainer. This will perform all our button bindings,
     // and put our
@@ -54,7 +56,7 @@ public class Robot extends TimedRobot {
   }
 
   /**
-   * This function is called every 20 ms, no matter the mode. Use this for items like diagnostics
+   * 2 This function is called every 20 ms, no matter the mode. Use this for items like diagnostics
    * that you want ran during disabled, autonomous, teleoperated and test.
    *
    * <p>This runs after the mode specific periodic functions, but before LiveWindow and
@@ -71,11 +73,27 @@ public class Robot extends TimedRobot {
     // block in order for anything in the Command-based framework to work.
     m_robotContainer.doTelemetry();
     if (vision.hasTarget(vision.getPipeline())) {
+      AprilTagFieldLayout apr = PhotonVision.aprilTagFieldLayout;
+      double distToAprilTag = apr.getTagPose(vision.getPipeline().getBestTarget().getFiducialId()).get().getTranslation().getDistance(new Translation3d(driveTrain.getState().Pose.getX(), driveTrain.getState().Pose.getY(), 0.0));
+      
+      double xKalman = 0.0594966 * Math.pow(1.40936, distToAprilTag);
+      double yKalman = 0.0795021 * Math.pow(1.36084, distToAprilTag);
+
+      visionMatrix.set(0, 0, xKalman);
+      visionMatrix.set(1, 0, yKalman);
+
       driveTrain.addVisionMeasurement(
           vision.getRobotPose2d(), Timer.getFPGATimestamp(), visionMatrix);
     }
 
     CommandScheduler.getInstance().run();
+    // m_robotContainer.doTelemetry();
+    // if (vision.hasTarget(vision.getPipeline())) {
+    //   driveTrain.addVisionMeasurement(
+    //       vision.getRobotPose2d(), Timer.getFPGATimestamp(), visionMatrix);
+    // }
+
+    // CommandScheduler.getInstance().run();
   }
 
   /** This function is called once each time the robot enters Disabled mode. */

@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.util.MiscUtils;
 
 public class ArmSubsystem extends SubsystemBase {
   private static ArmSubsystem instance;
@@ -159,13 +160,18 @@ public class ArmSubsystem extends SubsystemBase {
   //   return -1;
   // }
 
-  public void rotateToSpeaker(Translation2d robotPosition) {
-    setTargetDegrees(calculateAngleToSpeaker(robotPosition));
+  public void rotateToSpeaker(Translation2d robotPosition, boolean redside) {
+    setTargetDegrees(calculateAngleToSpeaker(robotPosition, redside));
   }
 
-  private double calculateAngleToSpeaker(Translation2d robotPosition) {
+  private double calculateAngleToSpeaker(Translation2d robotPosition, boolean redside) {
+    SmartDashboard.putBoolean("Redside Calculate angle To Speaker", redside);
     double groundDistFromSpeaker =
-        Constants.Landmarks.Speaker.POSE.getTranslation().getDistance(robotPosition);
+        ((redside)
+                ? MiscUtils.reflectAcrossMidline(Constants.Landmarks.Speaker.POSE)
+                : Constants.Landmarks.Speaker.POSE)
+            .getTranslation()
+            .getDistance(robotPosition);
     SmartDashboard.putNumber("ground dist from speaker", groundDistFromSpeaker);
     SmartDashboard.putNumber(
         "angle from intermap", Constants.Arm.INTERMAP.get(groundDistFromSpeaker));

@@ -112,8 +112,8 @@ public final class Constants {
   public static class OI {
     public static final double LEFT_JOYSTICK_DEADBAND = 0.07;
     public static final double RIGHT_JOYSTICK_DEADBAND = 0.07;
-    public static final int MOVEMENT_JOYSTICK_PORT = 0;
-    public static final int ARM_JOYSTICK_PORT = 1;
+    public static final int JOYSTICK_A_PORT = 0;
+    public static final int JOYSTICK_B_PORT = 1;
   }
 
   public static class Landmarks {
@@ -135,7 +135,7 @@ public final class Constants {
       public static final double AMP_HEIGHT_INCHES = 35.0;
       public static final double AMP_HEIGHT_METERS = Units.inchesToMeters(AMP_HEIGHT_INCHES);
       public static final Pose2d POSE =
-          new Pose2d(new Translation2d(1.5235, 7.7), new Rotation2d(-Math.PI / 2)); // isnt right
+          new Pose2d(new Translation2d(1.81, 8.11), new Rotation2d(-Math.PI / 2)); // isnt right
     }
 
     public static final double INTAKE_MODE_HEIGHT_INCHES = 4.0;
@@ -146,6 +146,7 @@ public final class Constants {
   public static class Swerve {
     public static final Pose2d ROBOT_HALF_WIDTH =
         new Pose2d(Units.inchesToMeters(24), 0, new Rotation2d());
+    public static final double ROBOT_HALF_WIDTH_METERS = 0.408;
 
     public static class PPConstants {
       public static final PathConstraints PATH_PLANNER_CONSTRAINTS =
