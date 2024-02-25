@@ -15,13 +15,13 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commandGroups.AimAtSpeaker;
@@ -145,7 +145,8 @@ public class RobotContainer {
                         leftRightFunction,
                         () -> Constants.Landmarks.Speaker.POSE.getTranslation(),
                         speedFunction,
-                        driveTrain, () -> redAlliance))));
+                        driveTrain,
+                        () -> redAlliance))));
 
     // speaker snap
     joystickA
@@ -154,8 +155,7 @@ public class RobotContainer {
             new SwerveLockedAngleCmd(
                 frontBackFunction,
                 leftRightFunction,
-                (redAlliance) ? () -> Rotation2d.fromDegrees(180) :
-                () -> Rotation2d.fromDegrees(0),
+                (redAlliance) ? () -> Rotation2d.fromDegrees(180) : () -> Rotation2d.fromDegrees(0),
                 speedFunction,
                 driveTrain));
 
@@ -189,24 +189,30 @@ public class RobotContainer {
         .leftTrigger()
         .whileTrue(
             new ParallelCommandGroup(
-                new RunCommand(
-                    () -> {
-                      peterSubsystem.reverseMechanism();
-                    },
-                    peterSubsystem),
-                new ArmToNeutralCmd(armSubsystem)).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+                    new RunCommand(
+                        () -> {
+                          peterSubsystem.reverseMechanism();
+                        },
+                        peterSubsystem),
+                    new ArmToNeutralCmd(armSubsystem))
+                .withInterruptBehavior(InterruptionBehavior.kCancelSelf));
 
     // amp shoot
     joystickB
-        .rightBumper().and(joystickB.leftBumper())
+        .rightBumper()
+        .and(joystickB.leftBumper())
         .whileTrue(
             new SequentialCommandGroup(
-                new ParallelCommandGroup(
-                    new AimArmAtAmpCmd(armSubsystem),
-                    MoveToTarget.withMirror(driveTrain, 
-                () -> redAlliance, Constants.Landmarks.Amp.POSE),
-                    new WarmUpShooter(peterSubsystem)),
-                new ShootNoWarmup(peterSubsystem)).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+                    new ParallelCommandGroup(
+                        new AimArmAtAmpCmd(armSubsystem),
+                        MoveToTarget.withMirror(
+                            driveTrain,
+                            () -> redAlliance,
+                            Constants.Landmarks.Amp.POSE.plus(new Transform2d(0d, -(Units.inchesToMeters(24) + Constants.Swerve.ROBOT_HALF_WIDTH_METERS), new Rotation2d())),
+                            Constants.Landmarks.Amp.POSE.plus(new Transform2d(0d, -(Units.inchesToMeters(12) + Constants.Swerve.ROBOT_HALF_WIDTH_METERS), new Rotation2d()))),
+                        new WarmUpShooter(peterSubsystem)),
+                    new ShootNoWarmup(peterSubsystem))
+                .withInterruptBehavior(InterruptionBehavior.kCancelSelf));
 
     // zero-heading
     joystickB
@@ -215,7 +221,9 @@ public class RobotContainer {
             driveTrain.runOnce(
                 () ->
                     driveTrain.seedFieldRelative(
-                        new Pose2d(new Translation2d(!redAlliance ? 1.25 : (12.73 - 1.25), 5.5), Rotation2d.fromDegrees(!redAlliance ? 0 : 180)))));
+                        new Pose2d(
+                            new Translation2d(!redAlliance ? 1.25 : (12.73 - 1.25), 5.5),
+                            Rotation2d.fromDegrees(!redAlliance ? 0 : 180)))));
   }
 
   // Constructs a Pose2d array of the note locations by a specific indexing so they can be accessed
@@ -298,11 +306,10 @@ public class RobotContainer {
             .andThen(
                 MoveToTarget.withMirror(
                     driveTrain,
-                () -> redAlliance,
+                    () -> redAlliance,
                     NoteLocation.MIDDLE
                         .getNoteLocation()
-                        .plus(new Transform2d(Units.inchesToMeters(-45), 0, new Rotation2d()))
-                    ))
+                        .plus(new Transform2d(Units.inchesToMeters(-45), 0, new Rotation2d()))))
             .andThen(new FireAuton(peterSubsystem, armSubsystem, driveTrain, 1, () -> redAlliance))
             .andThen(new WaitCommand(0.25));
   }

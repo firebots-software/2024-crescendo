@@ -28,7 +28,8 @@ public class AimAtSpeaker extends ParallelCommandGroup {
                 leftRightFunction,
                 () -> Constants.Landmarks.Speaker.POSE.getTranslation(),
                 speedFunction,
-                swerve, redSide)
+                swerve,
+                redSide)
             .withToleranceEnd(tolerance));
   }
 

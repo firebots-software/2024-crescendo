@@ -167,8 +167,11 @@ public class ArmSubsystem extends SubsystemBase {
   private double calculateAngleToSpeaker(Translation2d robotPosition, boolean redside) {
     SmartDashboard.putBoolean("Redside Calculate angle To Speaker", redside);
     double groundDistFromSpeaker =
-    ((redside) ? MiscUtils.reflectAcrossMidline(Constants.Landmarks.Speaker.POSE) :
-    Constants.Landmarks.Speaker.POSE).getTranslation().getDistance(robotPosition);
+        ((redside)
+                ? MiscUtils.reflectAcrossMidline(Constants.Landmarks.Speaker.POSE)
+                : Constants.Landmarks.Speaker.POSE)
+            .getTranslation()
+            .getDistance(robotPosition);
     SmartDashboard.putNumber("ground dist from speaker", groundDistFromSpeaker);
     SmartDashboard.putNumber(
         "angle from intermap", Constants.Arm.INTERMAP.get(groundDistFromSpeaker));

@@ -15,33 +15,35 @@ import java.util.function.Supplier;
 public class MoveToTarget extends Command {
   private Pose2d[] absolutePoses;
   private SwerveSubsystem swerve;
+  private Supplier<Boolean> reflected;
 
   PathPlannerPath constructedPath;
   Command pathCommand;
 
-  private MoveToTarget(SwerveSubsystem swerve, Pose2d[] absolutePoses, boolean reflected) {
+  private MoveToTarget(
+      SwerveSubsystem swerve, Pose2d[] absolutePoses, Supplier<Boolean> reflected) {
     this.absolutePoses = absolutePoses;
     this.swerve = SwerveSubsystem.getInstance();
-    for (int i = 0; i < this.absolutePoses.length; i++) {
-      this.absolutePoses[i] = (reflected) ? MiscUtils.reflectAcrossMidline(this.absolutePoses[i]) : this.absolutePoses[i];
-    }
+    this.reflected = reflected;
+    addRequirements(swerve);
   }
 
-  private MoveToTarget(SwerveSubsystem swerve, Pose2d absolutePose, boolean reflected) {
-    this.absolutePoses = new Pose2d[1];
-    this.swerve = SwerveSubsystem.getInstance();
-    this.absolutePoses[0] = (reflected) ? MiscUtils.reflectAcrossMidline(absolutePose) : absolutePose;
-    addRequirements(swerve);
+  private MoveToTarget(SwerveSubsystem swerve, Pose2d absolutePose, Supplier<Boolean> reflected) {
+    this(swerve, new Pose2d[] {absolutePose}, reflected);
   }
 
   @Override
   public void initialize() {
     // constructing the list of path points using absolute coordinates on the field
+
     Pose2d currentPose = swerve.getState().Pose;
     Pose2d[] poseArray = new Pose2d[absolutePoses.length + 1];
     poseArray[0] = currentPose;
     for (int i = 1; i < poseArray.length; i++) {
-      poseArray[i] = absolutePoses[i-1];
+      poseArray[i] =
+          (reflected.get()
+              ? MiscUtils.reflectAcrossMidline(this.absolutePoses[i - 1])
+              : this.absolutePoses[i - 1]);
     }
     List<Translation2d> bezierPoints = PathPlannerPath.bezierFromPoses(poseArray);
 
@@ -51,7 +53,10 @@ public class MoveToTarget extends Command {
         new PathPlannerPath(
             bezierPoints,
             Constants.Swerve.PPConstants.PATH_PLANNER_CONSTRAINTS,
-            new GoalEndState(0.0, absolutePoses[absolutePoses.length-1].getRotation()) // goal end velocity and heading
+            new GoalEndState(
+                0.0,
+                absolutePoses[absolutePoses.length - 1]
+                    .getRotation()) // goal end velocity and heading
             );
 
     // prevent automatic path flipping by AutoBuilder (we want to execute absolute path)
@@ -88,10 +93,11 @@ public class MoveToTarget extends Command {
 
   // Factory pattern (two separate constructors that invoke the mirror / non mirror)
   public static Command withAbsolute(SwerveSubsystem swerve, Pose2d... absolutePose) {
-    return new MoveToTarget(swerve, absolutePose, false);
+    return new MoveToTarget(swerve, absolutePose, () -> false);
   }
 
-  public static Command withMirror(SwerveSubsystem swerve, Supplier<Boolean> mirror, Pose2d... absolutePose) {
-    return new MoveToTarget(swerve, absolutePose, mirror.get());
+  public static Command withMirror(
+      SwerveSubsystem swerve, Supplier<Boolean> mirror, Pose2d... absolutePose) {
+    return new MoveToTarget(swerve, absolutePose, mirror);
   }
 }
