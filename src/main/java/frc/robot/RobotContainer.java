@@ -237,7 +237,11 @@ public class RobotContainer {
                 () ->
                     driveTrain.seedFieldRelative(
                         new Pose2d(
-                            new Translation2d(!redAlliance ? 1.25 : (Constants.Landmarks.CENTER_LINE_LOCATION*2 - 1.25), 5.5),
+                            new Translation2d(
+                                !redAlliance
+                                    ? 1.25
+                                    : (Constants.Landmarks.CENTER_LINE_LOCATION * 2 - 1.25),
+                                5.5),
                             Rotation2d.fromDegrees(!redAlliance ? 0 : 180)))));
   }
 
@@ -338,6 +342,6 @@ public class RobotContainer {
                         .getNoteLocation()
                         .plus(new Transform2d(Units.inchesToMeters(-45), 0, new Rotation2d()))))
             .andThen(new FireAuton(peterSubsystem, armSubsystem, driveTrain, 1, () -> redAlliance));
-            //.andThen(new WaitCommand(0.25));
+    // .andThen(new WaitCommand(0.25));
   }
 }

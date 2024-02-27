@@ -74,8 +74,14 @@ public class Robot extends TimedRobot {
     m_robotContainer.doTelemetry();
     if (vision.hasTarget(vision.getPipeline())) {
       AprilTagFieldLayout apr = PhotonVision.aprilTagFieldLayout;
-      double distToAprilTag = apr.getTagPose(vision.getPipeline().getBestTarget().getFiducialId()).get().getTranslation().getDistance(new Translation3d(driveTrain.getState().Pose.getX(), driveTrain.getState().Pose.getY(), 0.0));
-      
+      double distToAprilTag =
+          apr.getTagPose(vision.getPipeline().getBestTarget().getFiducialId())
+              .get()
+              .getTranslation()
+              .getDistance(
+                  new Translation3d(
+                      driveTrain.getState().Pose.getX(), driveTrain.getState().Pose.getY(), 0.0));
+
       double xKalman = 0.0594966 * Math.pow(1.40936, distToAprilTag);
       double yKalman = 0.0795021 * Math.pow(1.36084, distToAprilTag);
 

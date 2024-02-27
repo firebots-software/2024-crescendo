@@ -42,5 +42,5 @@ public class AimArmCmd extends Command {
   public AimArmCmd withEndTolerance(double tolerance) {
     this.tolerance = tolerance;
     return this;
-  } 
+  }
 }
