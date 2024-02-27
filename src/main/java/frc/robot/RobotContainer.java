@@ -341,7 +341,7 @@ public class RobotContainer {
                     NoteLocation.MIDDLE
                         .getNoteLocation()
                         .plus(new Transform2d(Units.inchesToMeters(-45), 0, new Rotation2d()))))
-            .andThen(new FireAuton(peterSubsystem, armSubsystem, driveTrain, 1, () -> redAlliance));
-    // .andThen(new WaitCommand(0.25));
+            .andThen(new FireAuton(peterSubsystem, armSubsystem, driveTrain, 1, () -> redAlliance))
+            .andThen(new WaitCommand(0.25));
   }
 }
