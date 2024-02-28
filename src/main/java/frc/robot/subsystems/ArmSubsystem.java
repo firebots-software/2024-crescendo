@@ -164,7 +164,7 @@ public class ArmSubsystem extends SubsystemBase {
     setTargetDegrees(calculateAngleToSpeaker(robotPosition, redside));
   }
 
-  private double calculateAngleToSpeaker(Translation2d robotPosition, boolean redside) {
+  public double calculateAngleToSpeaker(Translation2d robotPosition, boolean redside) {
     SmartDashboard.putBoolean("Redside Calculate angle To Speaker", redside);
     double groundDistFromSpeaker =
         ((redside)

@@ -1,13 +1,16 @@
 package frc.robot.commands.ArmCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.SwerveSubsystem;
 import java.util.function.Supplier;
 
 public class ArmToAngleCmd extends Command {
 
   private final ArmSubsystem arm;
   private final Supplier<Double> angle;
+  private boolean returnToRest = false;
 
   public ArmToAngleCmd(Supplier<Double> angle, ArmSubsystem arm) {
     this.angle = angle;
@@ -26,11 +29,41 @@ public class ArmToAngleCmd extends Command {
 
   @Override
   public boolean isFinished() {
-    return false;
+    return arm.atTarget(1);
   }
 
   @Override
   public void end(boolean interrupted) {
-    arm.rotateToRestPosition();
+    if (returnToRest) arm.rotateToRestPosition();
+  }
+
+  public ArmToAngleCmd withReturnToRest(boolean v) {
+    this.returnToRest = v;
+    return this;
+  }
+
+  public static ArmToAngleCmd toAmp(ArmSubsystem arm) {
+    return new ArmToAngleCmd(() -> Constants.Arm.AMP_ANGLE, arm);
+  }
+
+  public static ArmToAngleCmd aimAtSpeaker(
+      ArmSubsystem arm, SwerveSubsystem swerveSubsystem, Supplier<Boolean> redside) {
+    return new ArmToAngleCmd(
+        () ->
+            arm.calculateAngleToSpeaker(
+                swerveSubsystem.getState().Pose.getTranslation(), redside.get()),
+        arm);
+  }
+
+  public static ArmToAngleCmd toNeutral(ArmSubsystem arm) {
+    return new ArmToAngleCmd(() -> Constants.Arm.DEFAULT_ARM_ANGLE, arm);
+  }
+
+  public static ArmToAngleCmd toIntake(ArmSubsystem arm) {
+    return new ArmToAngleCmd(() -> Constants.Arm.INTAKE_ANGLE, arm);
+  }
+
+  public static ArmToAngleCmd toBundt(ArmSubsystem arm) {
+    return new ArmToAngleCmd(() -> 6.5, arm);
   }
 }
