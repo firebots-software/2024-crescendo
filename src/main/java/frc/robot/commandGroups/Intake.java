@@ -3,6 +3,7 @@ package frc.robot.commandGroups;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.ArmCommands.ArmToAngleCmd;
+import frc.robot.commands.ArmCommands.ArmToAngleCmd.EndBehavior;
 import frc.robot.commands.DebugCommands.Rumble;
 import frc.robot.commands.PeterCommands.BackupPeter;
 import frc.robot.commands.PeterCommands.RunIntakeUntilDetection;
@@ -13,8 +14,7 @@ import frc.robot.subsystems.PeterSubsystem;
 public class Intake extends SequentialCommandGroup {
   public Intake(PeterSubsystem peter, ArmSubsystem arm, JoystickSubsystem joystick) {
     addCommands(
-        new ParallelCommandGroup(
-            ArmToAngleCmd.toIntake(arm).withTolerance(1), new RunIntakeUntilDetection(peter)),
+        new RunIntakeUntilDetection(peter).deadlineWith(ArmToAngleCmd.toIntake(arm).withTolerance(1).withReturnToRest(EndBehavior.RETURN_ALWAYS)),
         new ParallelCommandGroup(
             ArmToAngleCmd.toNeutral(arm).withTolerance(1),
             new BackupPeter(peter),

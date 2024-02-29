@@ -168,6 +168,7 @@ public class RobotContainer {
                 speedFunction,
                 driveTrain));
 
+                joystickA.rightBumper().whileTrue(ArmToAngleCmd.toDuck(armSubsystem));
     // When no Commands are being issued, Peter motors should not be moving
     peterSubsystem.setDefaultCommand(
         new InstantCommand(
@@ -298,7 +299,9 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // NamedCommands.registerCommand("Fire", new FireAuton(peterSubsystem, armSubsystem, driveTrain, 1, redside));
     // NamedCommands.registerCommand("Intake", new Intake(peterSubsystem, armSubsystem, joystickSubsystem));
-    // NamedCommands.registerCommand("", getAutonomousCommand());
+    // NamedCommands.registerCommand("Ratchette", new RatchetteDisengage(armSubsystem));
+
+    // return new PathPlannerAuto("SamplePath");
 
     String autonName = (redAlliance) ? "ThreeNoteAutonRed" : "ThreeNoteAutonBlue";
     SmartDashboard.putString("Auton to be run", autonName);

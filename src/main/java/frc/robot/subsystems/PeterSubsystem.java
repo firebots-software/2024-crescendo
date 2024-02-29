@@ -238,6 +238,7 @@ public class PeterSubsystem extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     SmartDashboard.putBoolean("Note Detected", notePresent()); // false = note detected!!
+    SmartDashboard.putBoolean("Shooter Ready", isShooterReady());
     SmartDashboard.putNumber(
         "Shooter left speed", shooterMotorLeft.getVelocity().getValueAsDouble());
     SmartDashboard.putNumber(
@@ -255,6 +256,8 @@ public class PeterSubsystem extends SubsystemBase {
         (this.getCurrentCommand() == null
             ? "none"
             : this.getCurrentCommand().getName())); // false = note detected!!
+    SmartDashboard.putString("Current commannd PETER:", (getCurrentCommand() == null) ? "NULL" : getCurrentCommand().getName());
+
   }
 
   public void runShooter(int i) {
