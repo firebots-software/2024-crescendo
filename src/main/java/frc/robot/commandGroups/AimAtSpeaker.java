@@ -2,7 +2,7 @@ package frc.robot.commandGroups;
 
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.Constants;
-import frc.robot.commands.ArmCommands.AimArmCmd;
+import frc.robot.commands.ArmCommands.ArmToAngleCmd;
 import frc.robot.commands.PeterCommands.SpinUpShooter;
 import frc.robot.commands.SwerveCommands.SwerveLockedAngleCmd;
 import frc.robot.subsystems.ArmSubsystem;
@@ -23,7 +23,7 @@ public class AimAtSpeaker extends ParallelCommandGroup {
       Supplier<Boolean> redSide) {
     addCommands(
         new SpinUpShooter(peter),
-        new AimArmCmd(arm, swerve, redSide).withEndTolerance(armToleranceDegrees),
+        ArmToAngleCmd.aimAtSpeaker(arm, swerve, redSide).withTolerance(armToleranceDegrees),
         SwerveLockedAngleCmd.fromPoseMirrored(
                 frontBackFunction,
                 leftRightFunction,

@@ -10,6 +10,7 @@ public class ArmToAngleCmd extends Command {
 
   private final ArmSubsystem arm;
   private final Supplier<Double> angle;
+  private double endToleranceDegrees = -1;
   private boolean returnToRest = false;
 
   public ArmToAngleCmd(Supplier<Double> angle, ArmSubsystem arm) {
@@ -29,7 +30,7 @@ public class ArmToAngleCmd extends Command {
 
   @Override
   public boolean isFinished() {
-    return arm.atTarget(1);
+    return arm.atTarget(endToleranceDegrees);
   }
 
   @Override
@@ -42,6 +43,11 @@ public class ArmToAngleCmd extends Command {
     return this;
   }
 
+  public ArmToAngleCmd withTolerance(double degrees) {
+    this.endToleranceDegrees = degrees;
+    return this;
+  }
+
   public static ArmToAngleCmd toAmp(ArmSubsystem arm) {
     return new ArmToAngleCmd(() -> Constants.Arm.AMP_ANGLE, arm);
   }
@@ -50,7 +56,7 @@ public class ArmToAngleCmd extends Command {
       ArmSubsystem arm, SwerveSubsystem swerveSubsystem, Supplier<Boolean> redside) {
     return new ArmToAngleCmd(
         () ->
-            arm.calculateAngleToSpeaker(
+            ArmSubsystem.calculateAngleToSpeaker(
                 swerveSubsystem.getState().Pose.getTranslation(), redside.get()),
         arm);
   }
