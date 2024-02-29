@@ -6,6 +6,7 @@ import frc.robot.subsystems.PeterSubsystem;
 public class ShootNoWarmup extends Command {
   private PeterSubsystem peterSubsystem;
   private boolean auton;
+
   /**
    * Creates a new ExampleCommand.
    *
@@ -13,8 +14,8 @@ public class ShootNoWarmup extends Command {
    */
   public ShootNoWarmup(PeterSubsystem peterSubsystem, boolean auton) {
     this.peterSubsystem = peterSubsystem;
-    this.auton=auton;
-    
+    this.auton = auton;
+
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(peterSubsystem);
   }

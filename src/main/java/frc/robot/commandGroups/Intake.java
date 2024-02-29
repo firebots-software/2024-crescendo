@@ -14,7 +14,8 @@ import frc.robot.subsystems.PeterSubsystem;
 public class Intake extends SequentialCommandGroup {
   public Intake(PeterSubsystem peter, ArmSubsystem arm, JoystickSubsystem joystick) {
     addCommands(
-        new RunIntakeUntilDetection(peter).deadlineWith(ArmToAngleCmd.toIntake(arm).withTolerance(1).withReturnToRest(EndBehavior.RETURN_ALWAYS)),
+        new RunIntakeUntilDetection(peter)
+            .deadlineWith(ArmToAngleCmd.toIntake(arm).withReturnToRest(EndBehavior.RETURN_ALWAYS)),
         new ParallelCommandGroup(
             ArmToAngleCmd.toNeutral(arm).withTolerance(1),
             new BackupPeter(peter),

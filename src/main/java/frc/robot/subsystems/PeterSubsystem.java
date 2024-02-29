@@ -123,12 +123,12 @@ public class PeterSubsystem extends SubsystemBase {
   }
 
   public void stopShooter(boolean forceStop) {
-    if(forceStop){
+    if (forceStop) {
       runRightShooterAtRPS(0);
       runLeftShooterAtRPS(0);
     } else {
-    shooterMotorLeft.stopMotor();
-    shooterMotorRight.stopMotor();
+      shooterMotorLeft.stopMotor();
+      shooterMotorRight.stopMotor();
     }
   }
 
@@ -256,8 +256,9 @@ public class PeterSubsystem extends SubsystemBase {
         (this.getCurrentCommand() == null
             ? "none"
             : this.getCurrentCommand().getName())); // false = note detected!!
-    SmartDashboard.putString("Current commannd PETER:", (getCurrentCommand() == null) ? "NULL" : getCurrentCommand().getName());
-
+    SmartDashboard.putString(
+        "Current commannd PETER:",
+        (getCurrentCommand() == null) ? "NULL" : getCurrentCommand().getName());
   }
 
   public void runShooter(int i) {

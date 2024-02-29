@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -139,9 +138,9 @@ public class RobotContainer {
                 redside));
 
     joystickA
-    .a()
-    .and(joystickB.rightTrigger(0.5))
-    .whileTrue(new BundtShot(peterSubsystem, armSubsystem, joystickSubsystem));               
+        .a()
+        .and(joystickB.rightTrigger(0.5))
+        .whileTrue(new BundtShot(peterSubsystem, armSubsystem, joystickSubsystem));
     // joystickB
     //     .rightTrigger()
     //     .and(joystickA.a())
@@ -168,7 +167,7 @@ public class RobotContainer {
                 speedFunction,
                 driveTrain));
 
-                joystickA.rightBumper().whileTrue(ArmToAngleCmd.toDuck(armSubsystem));
+    joystickA.rightBumper().whileTrue(ArmToAngleCmd.toDuck(armSubsystem));
     // When no Commands are being issued, Peter motors should not be moving
     peterSubsystem.setDefaultCommand(
         new InstantCommand(
@@ -273,6 +272,7 @@ public class RobotContainer {
       pickup1choice = new SendableChooser<Optional<NoteLocation>>(),
       pickup2choice = new SendableChooser<Optional<NoteLocation>>(),
       pickup3choice = new SendableChooser<Optional<NoteLocation>>();
+  SendableChooser<String> startchoice = new SendableChooser<String>();
 
   private void setupChooser() {
 
@@ -291,22 +291,34 @@ public class RobotContainer {
     pickup3choice.addOption("MIDDLE", Optional.of(NoteLocation.MIDDLE));
     pickup3choice.addOption("STAGESIDE NOTE", Optional.of(NoteLocation.STAGESIDE));
 
+    startchoice.setDefaultOption("STARTING POSITION: MIDDLE START", "Mid");
+    startchoice.addOption("AMPSIDE START", "Amp");
+    startchoice.addOption("STAGESIDE START", "Stage");
+
     SmartDashboard.putData(pickup1choice);
     SmartDashboard.putData(pickup2choice);
     SmartDashboard.putData(pickup3choice);
+    SmartDashboard.putData(startchoice);
   }
 
   public Command getAutonomousCommand() {
-    // NamedCommands.registerCommand("Fire", new FireAuton(peterSubsystem, armSubsystem, driveTrain, 1, redside));
-    // NamedCommands.registerCommand("Intake", new Intake(peterSubsystem, armSubsystem, joystickSubsystem));
+    // NamedCommands.registerCommand("Fire", new FireAuton(peterSubsystem, armSubsystem, driveTrain,
+    // 1, redside));
+    // NamedCommands.registerCommand("Intake", new Intake(peterSubsystem, armSubsystem,
+    // joystickSubsystem));
     // NamedCommands.registerCommand("Ratchette", new RatchetteDisengage(armSubsystem));
 
     // return new PathPlannerAuto("SamplePath");
 
-    String autonName = (redAlliance) ? "ThreeNoteAutonRed" : "ThreeNoteAutonBlue";
-    SmartDashboard.putString("Auton to be run", autonName);
-    SmartDashboard.putBoolean("Red Alliance?", redAlliance);
-    return new PathPlannerAuto(autonName)
+    // String autonName = (redAlliance) ? "ThreeNoteAutonRed" : "ThreeNoteAutonBlue";
+    // SmartDashboard.putString("Auton to be run", autonName);
+    // SmartDashboard.putBoolean("Red Alliance?", redAlliance);
+    PathPlannerAuto start =
+        new PathPlannerAuto(
+            (redAlliance ? "Red" : "Blue")
+                .concat(startchoice.getSelected().trim())
+                .concat("Start"));
+    return start
         .andThen(new RatchetteDisengage(armSubsystem), new PrintCommand("finished Rachette"))
         .andThen(
             new FireAuton(peterSubsystem, armSubsystem, driveTrain, 1, redside),
