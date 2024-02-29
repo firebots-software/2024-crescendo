@@ -22,6 +22,6 @@ public class BundtShot extends SequentialCommandGroup {
         new ParallelCommandGroup(
             new ShootNoWarmup(peterSubsystem).withTimeout(1),
             Rumble.withNoBlock(joystickSubsystem, 1, 1, 0.25),
-            ArmToAngleCmd.toBundt(armSubsystem).withReturnToRest(true)));
+            ArmToAngleCmd.toBundt(armSubsystem)));
   }
 }

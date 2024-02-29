@@ -37,7 +37,7 @@ public class FireTeleop extends SequentialCommandGroup {
         new ParallelCommandGroup(
             new ShootNoWarmup(peterSubsystem).withTimeout(1),
             Rumble.withNoBlock(joystickSubsystem, 1, 1, 0.25),
-            ArmToAngleCmd.aimAtSpeaker(armSubsystem, driveTrain, redside).withReturnToRest(true),
+            ArmToAngleCmd.aimAtSpeaker(armSubsystem, driveTrain, redside),
             SwerveLockedAngleCmd.fromPoseMirrored(
                 frontBackFunction,
                 leftRightFunction,
