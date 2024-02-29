@@ -134,7 +134,7 @@ public class ArmSubsystem extends SubsystemBase {
      */
 
     // targetDegrees = Constants.Arm.DEFAULT_ARM_ANGLE;
-    targetDegrees = getCorrectedDegrees()+15.0;
+    targetDegrees = getCorrectedDegrees();
   }
 
   public static ArmSubsystem getInstance() {
