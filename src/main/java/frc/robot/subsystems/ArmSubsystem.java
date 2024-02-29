@@ -133,7 +133,8 @@ public class ArmSubsystem extends SubsystemBase {
     /* The way we take the Absolute Encoder's offsets.
      */
 
-    targetDegrees = Constants.Arm.DEFAULT_ARM_ANGLE;
+    // targetDegrees = Constants.Arm.DEFAULT_ARM_ANGLE;
+    targetDegrees = getCorrectedDegrees()+15.0;
   }
 
   public static ArmSubsystem getInstance() {
