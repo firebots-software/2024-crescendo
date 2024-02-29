@@ -28,8 +28,7 @@ import frc.robot.commandGroups.AimAtSpeaker;
 import frc.robot.commandGroups.FireAuton;
 import frc.robot.commandGroups.FireTeleop;
 import frc.robot.commandGroups.Intake;
-import frc.robot.commands.ArmCommands.AimArmAtAmpCmd;
-import frc.robot.commands.ArmCommands.ArmToNeutralCmd;
+import frc.robot.commands.ArmCommands.ArmToAngleCmd;
 import frc.robot.commands.Auton.MoveToTarget;
 import frc.robot.commands.Auton.RatchetteDisengage;
 import frc.robot.commands.PeterCommands.ShootNoWarmup;
@@ -183,7 +182,7 @@ public class RobotContainer {
                           peterSubsystem.reverseMechanism();
                         },
                         peterSubsystem),
-                    new ArmToNeutralCmd(armSubsystem))
+                    ArmToAngleCmd.toNeutral(armSubsystem).withTolerance(1))
                 .withInterruptBehavior(InterruptionBehavior.kCancelSelf));
 
     // amp shoot
@@ -193,7 +192,7 @@ public class RobotContainer {
         .whileTrue(
             new SequentialCommandGroup(
                     new ParallelCommandGroup(
-                        new AimArmAtAmpCmd(armSubsystem),
+                        ArmToAngleCmd.toAmp(armSubsystem).withTolerance(1),
                         MoveToTarget.withMirror(
                                 driveTrain,
                                 redside,
