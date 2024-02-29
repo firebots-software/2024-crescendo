@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -54,7 +55,7 @@ public class RobotContainer {
   // OI
   private final CommandXboxController joystickA =
       new CommandXboxController(Constants.OI.JOYSTICK_A_PORT);
-  private final CommandXboxController joystickB =
+  public final CommandXboxController joystickB =
       new CommandXboxController(Constants.OI.JOYSTICK_B_PORT);
 
   // Subsystems
@@ -123,10 +124,9 @@ public class RobotContainer {
                 speedFunction,
                 redside));
 
-    // Fire
     joystickA
         .a()
-        .and(joystickB.rightTrigger().negate())
+        .and(joystickB.rightTrigger(0.5).negate())
         .whileTrue(
             new FireTeleop(
                 peterSubsystem,
@@ -138,10 +138,14 @@ public class RobotContainer {
                 speedFunction,
                 redside));
 
-    joystickB
-        .rightTrigger()
-        .and(joystickA.a())
-        .whileTrue(new BundtShot(peterSubsystem, armSubsystem, joystickSubsystem));
+    joystickA
+    .a()
+    .and(joystickB.rightTrigger(0.5))
+    .whileTrue(new BundtShot(peterSubsystem, armSubsystem, joystickSubsystem));               
+    // joystickB
+    //     .rightTrigger()
+    //     .and(joystickA.a())
+    //     .whileTrue(new BundtShot(peterSubsystem, armSubsystem, joystickSubsystem));
     // speaker snap
     joystickA
         .y()
@@ -219,7 +223,7 @@ public class RobotContainer {
                                                 + Constants.Swerve.ROBOT_HALF_WIDTH_METERS),
                                             new Rotation2d())))),
                         new SpinUpShooter(peterSubsystem)),
-                    new ShootNoWarmup(peterSubsystem))
+                    new ShootNoWarmup(peterSubsystem, false))
                 .withInterruptBehavior(InterruptionBehavior.kCancelSelf));
 
     // zero-heading
@@ -292,6 +296,9 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
+    // NamedCommands.registerCommand("Fire", new FireAuton(peterSubsystem, armSubsystem, driveTrain, 1, redside));
+    // NamedCommands.registerCommand("Intake", new Intake(peterSubsystem, armSubsystem, joystickSubsystem));
+    // NamedCommands.registerCommand("", getAutonomousCommand());
 
     String autonName = (redAlliance) ? "ThreeNoteAutonRed" : "ThreeNoteAutonBlue";
     SmartDashboard.putString("Auton to be run", autonName);
@@ -332,7 +339,6 @@ public class RobotContainer {
                     NoteLocation.MIDDLE
                         .getNoteLocation()
                         .plus(new Transform2d(Units.inchesToMeters(-45), 0, new Rotation2d()))))
-            .andThen(new FireAuton(peterSubsystem, armSubsystem, driveTrain, 1, redside))
-            .andThen(new WaitCommand(0.25));
+            .andThen(new FireAuton(peterSubsystem, armSubsystem, driveTrain, 1, redside));
   }
 }
