@@ -32,7 +32,7 @@ import frc.robot.commands.ArmCommands.ArmToAngleCmd;
 import frc.robot.commands.Auton.MoveToTarget;
 import frc.robot.commands.Auton.RatchetteDisengage;
 import frc.robot.commands.PeterCommands.ShootNoWarmup;
-import frc.robot.commands.PeterCommands.WarmUpShooter;
+import frc.robot.commands.PeterCommands.SpinUpShooter;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.commands.SwerveCommands.SwerveLockedAngleCmd;
 import frc.robot.subsystems.ArmSubsystem;
@@ -212,7 +212,7 @@ public class RobotContainer {
                                             -(Units.inchesToMeters(12)
                                                 + Constants.Swerve.ROBOT_HALF_WIDTH_METERS),
                                             new Rotation2d())))),
-                        new WarmUpShooter(peterSubsystem)),
+                        new SpinUpShooter(peterSubsystem)),
                     new ShootNoWarmup(peterSubsystem))
                 .withInterruptBehavior(InterruptionBehavior.kCancelSelf));
 
