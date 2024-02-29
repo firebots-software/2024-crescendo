@@ -62,7 +62,7 @@ public class RobotContainer {
   private final ArmSubsystem armSubsystem = ArmSubsystem.getInstance();
   private final PeterSubsystem peterSubsystem = PeterSubsystem.getInstance();
   private final JoystickSubsystem joystickSubsystem = new JoystickSubsystem(joystickA.getHID());
-
+  
   // Logging
   public final Telemetry logger = new Telemetry();
 
@@ -318,8 +318,8 @@ public class RobotContainer {
             (redAlliance ? "Red" : "Blue")
                 .concat(startchoice.getSelected().trim())
                 .concat("Start"));
-    return start
-        .andThen(new RatchetteDisengage(armSubsystem), new PrintCommand("finished Rachette"))
+    return new RatchetteDisengage(armSubsystem).andThen(start)
+        // .andThen(new RatchetteDisengage(armSubsystem), new PrintCommand("finished Rachette"))
         .andThen(
             new FireAuton(peterSubsystem, armSubsystem, driveTrain, 1, redside),
             new PrintCommand("ritvik gun fire1"))
