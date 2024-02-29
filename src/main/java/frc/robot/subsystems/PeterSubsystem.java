@@ -122,9 +122,14 @@ public class PeterSubsystem extends SubsystemBase {
     shooterMotorLeft.setControl(m_velocityControl);
   }
 
-  public void stopShooter() {
+  public void stopShooter(boolean forceStop) {
+    if(forceStop){
+      runRightShooterAtRPS(0);
+      runLeftShooterAtRPS(0);
+    } else {
     shooterMotorLeft.stopMotor();
     shooterMotorRight.stopMotor();
+    }
   }
 
   public void spinRightShooter() {
