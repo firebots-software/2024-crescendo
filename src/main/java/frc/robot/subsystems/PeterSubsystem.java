@@ -107,12 +107,6 @@ public class PeterSubsystem extends SubsystemBase {
   }
 
   // SHOOTER FUNCTIONS:
-  public void spinUpShooter() {
-    runRightShooterAtRPS(Constants.Peter.SHOOT_WHEEL_SPEED_RPS);
-    runLeftShooterAtRPS(Constants.Peter.SHOOT_WHEEL_SPEED_RPS);
-    // runShooterAtRPS(Constants.Peter.SHOOT_WHEEL_SPEED_RPS);
-  }
-
   private void runRightShooterAtRPS(double speed) {
     VelocityVoltage m_velocityControl =
         new VelocityVoltage(speed * Constants.Peter.SHOOTER_WHEELS_GEAR_RATIOS);
