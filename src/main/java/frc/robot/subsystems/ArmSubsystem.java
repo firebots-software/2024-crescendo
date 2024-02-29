@@ -239,7 +239,9 @@ public class ArmSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("ARM Arm Degrees: ", getRawDegrees());
     SmartDashboard.putNumber("ARM Arm Degrees Corrected: ", getCorrectedDegrees());
     SmartDashboard.putNumber("ARM Target Degrees: ", targetDegrees);
-    SmartDashboard.putString("Current commannd ARM:", (getCurrentCommand() == null) ? "NULL" : getCurrentCommand().getName());
+    SmartDashboard.putString(
+        "Current commannd ARM:",
+        (getCurrentCommand() == null) ? "NULL" : getCurrentCommand().getName());
     SmartDashboard.putNumber(
         "ARM Target Integrated Rots: ", calculateIntegratedTargetRots(targetDegrees));
     SmartDashboard.putNumber(

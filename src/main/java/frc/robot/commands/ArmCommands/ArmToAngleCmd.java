@@ -87,8 +87,7 @@ public class ArmToAngleCmd extends Command {
     return new ArmToAngleCmd(() -> 6.5, arm);
   }
 
-  public static ArmToAngleCmd toDuck(ArmSubsystem arm){
+  public static ArmToAngleCmd toDuck(ArmSubsystem arm) {
     return new ArmToAngleCmd(() -> 12d, arm);
-
   }
 }

@@ -1,7 +1,6 @@
 package frc.robot.commandGroups;
 
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.ArmCommands.ArmToAngleCmd;
 import frc.robot.commands.DebugCommands.Rumble;
@@ -21,7 +20,7 @@ public class BundtShot extends SequentialCommandGroup {
             new SpinUpShooter(peterSubsystem),
             ArmToAngleCmd.toBundt(armSubsystem).withTolerance(1)),
         new ParallelCommandGroup(
-            new ShootNoWarmup(peterSubsystem,false).withTimeout(1),
+            new ShootNoWarmup(peterSubsystem, false).withTimeout(1),
             Rumble.withNoBlock(joystickSubsystem, 1, 1, 0.25),
             ArmToAngleCmd.toBundt(armSubsystem)));
   }

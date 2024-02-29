@@ -142,8 +142,10 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    SmartDashboard.putBoolean("joystickB right trigger", m_robotContainer.joystickB.rightTrigger(0.5).getAsBoolean());
-    // SmartDashboard.putNumber("joystickB right trigger value", m_robotContainer.joystickB.rightTrigger());
+    SmartDashboard.putBoolean(
+        "joystickB right trigger", m_robotContainer.joystickB.rightTrigger(0.5).getAsBoolean());
+    // SmartDashboard.putNumber("joystickB right trigger value",
+    // m_robotContainer.joystickB.rightTrigger());
   }
 
   @Override
