@@ -11,7 +11,13 @@ public class ArmToAngleCmd extends Command {
   private final ArmSubsystem arm;
   private final Supplier<Double> angle;
   private double endToleranceDegrees = -1;
-  private boolean returnToRest = false;
+  private EndBehavior returnToRest = EndBehavior.RETURN_IF_INTERRUPTED;
+
+  public enum EndBehavior {
+    STAY,
+    RETURN_ALWAYS,
+    RETURN_IF_INTERRUPTED
+  }
 
   public ArmToAngleCmd(Supplier<Double> angle, ArmSubsystem arm) {
     this.angle = angle;
@@ -35,10 +41,13 @@ public class ArmToAngleCmd extends Command {
 
   @Override
   public void end(boolean interrupted) {
-    if (returnToRest) arm.rotateToRestPosition();
+    if (returnToRest == EndBehavior.RETURN_ALWAYS
+        || (returnToRest == EndBehavior.RETURN_IF_INTERRUPTED && interrupted)) {
+      arm.rotateToRestPosition();
+    }
   }
 
-  public ArmToAngleCmd withReturnToRest(boolean v) {
+  public ArmToAngleCmd withReturnToRest(EndBehavior v) {
     this.returnToRest = v;
     return this;
   }
