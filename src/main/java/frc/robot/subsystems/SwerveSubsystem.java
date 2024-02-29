@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
@@ -13,6 +14,8 @@ import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.Notifier;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Constants;
@@ -26,6 +29,11 @@ public class SwerveSubsystem extends SwerveDrivetrain implements Subsystem {
   // instance of SwerveSubsystem
   private static SwerveSubsystem instance;
 
+  // simulator things
+  private static final double kSimLoopPeriod = 0.005; // 5 ms
+  private Notifier m_simNotifier = null;
+  private double m_lastSimTime;
+
   // Constructor allows for custom odometry update frequency
   public SwerveSubsystem(
       SwerveDrivetrainConstants driveTrainConstants,
@@ -35,7 +43,9 @@ public class SwerveSubsystem extends SwerveDrivetrain implements Subsystem {
     // Sets the drivetrain constants, odometry update frequency and constants for
     // the swerve modules
     super(driveTrainConstants, OdometryUpdateFrequency, modules);
-
+    if (Utils.isSimulation()) {
+      startSimThread();
+    }
     // Sets the supply current limits for the swerve modules (for driving and
     // turning)
     CurrentLimitsConfigs driveCurrentLimits =
@@ -77,6 +87,22 @@ public class SwerveSubsystem extends SwerveDrivetrain implements Subsystem {
               Constants.Swerve.BACK_RIGHT);
     }
     return instance;
+  }
+
+  // sim thread
+  private void startSimThread() {
+        m_lastSimTime = Utils.getCurrentTimeSeconds();
+
+        /* Run simulation at a faster rate so PID gains behave more reasonably */
+        m_simNotifier = new Notifier(() -> {
+            final double currentTime = Utils.getCurrentTimeSeconds();
+            double deltaTime = currentTime - m_lastSimTime;
+            m_lastSimTime = currentTime;
+
+            /* use the measured time delta, get battery voltage from WPILib */
+            updateSimState(deltaTime, RobotController.getBatteryVoltage());
+        });
+        m_simNotifier.startPeriodic(kSimLoopPeriod);
   }
 
   // Applies swerve request to drivetrain
