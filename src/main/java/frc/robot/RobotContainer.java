@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commandGroups.AimAtSpeaker;
+import frc.robot.commandGroups.BundtShot;
 import frc.robot.commandGroups.FireAuton;
 import frc.robot.commandGroups.FireTeleop;
 import frc.robot.commandGroups.Intake;
@@ -125,6 +126,7 @@ public class RobotContainer {
     // Fire
     joystickA
         .a()
+        .and(joystickB.rightTrigger().negate())
         .whileTrue(
             new FireTeleop(
                 peterSubsystem,
@@ -136,6 +138,10 @@ public class RobotContainer {
                 speedFunction,
                 redside));
 
+    joystickB
+        .rightTrigger()
+        .and(joystickA.a())
+        .whileTrue(new BundtShot(peterSubsystem, armSubsystem, joystickSubsystem));
     // speaker snap
     joystickA
         .y()
