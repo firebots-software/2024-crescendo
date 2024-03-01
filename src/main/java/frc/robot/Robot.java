@@ -114,7 +114,7 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    armSubsystem.setTargetDegrees(armSubsystem.getCorrectedDegrees());
+    armSubsystem.setTargetDegrees(armSubsystem.getCorrectedDegrees()+15d);
     absoluteInit();
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 

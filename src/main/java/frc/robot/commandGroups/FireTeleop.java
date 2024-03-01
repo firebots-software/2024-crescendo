@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.commands.ArmCommands.ArmToAngleCmd;
-// import frc.robot.commands.DebugCommands.Rumble;
+import frc.robot.commands.DebugCommands.Rumble;
 import frc.robot.commands.PeterCommands.ShootNoWarmup;
 import frc.robot.commands.SwerveCommands.SwerveLockedAngleCmd;
 import frc.robot.subsystems.ArmSubsystem;
@@ -37,7 +37,7 @@ public class FireTeleop extends SequentialCommandGroup {
             redside),
         new ParallelCommandGroup(
             new ShootNoWarmup(peterSubsystem, false).withTimeout(1),
-            // Rumble.withNoBlock(joystickSubsystem, 1, 1, 0.25),
+            Rumble.withNoBlock(joystickSubsystem, 1, 1, 0.25),
             ArmToAngleCmd.aimAtSpeaker(armSubsystem, driveTrain, redside),
             SwerveLockedAngleCmd.fromPoseMirrored(
                 frontBackFunction,
