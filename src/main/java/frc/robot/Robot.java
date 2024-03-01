@@ -106,7 +106,9 @@ public class Robot extends TimedRobot {
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    armSubsystem.setEnable(false);
+  }
 
   @Override
   public void disabledPeriodic() {}
@@ -115,6 +117,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     armSubsystem.setTargetDegrees(armSubsystem.getCorrectedDegrees()+15d);
+    armSubsystem.setEnable(true);
     absoluteInit();
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
@@ -138,6 +141,7 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+    armSubsystem.setEnable(true);
   }
 
   /** This function is called periodically during operator control. */
@@ -154,6 +158,7 @@ public class Robot extends TimedRobot {
     // Cancels all running commands at the start of test mode.
     absoluteInit();
     CommandScheduler.getInstance().cancelAll();
+    armSubsystem.setEnable(true);
   }
 
   /** This function is called periodically during test mode. */

@@ -349,7 +349,7 @@ public class RobotContainer {
                     note.get()
                         .getNoteLocation()
                         .plus(new Transform2d(Units.inchesToMeters(-18), 0, new Rotation2d()))))
-            .alongWith(new Intake(peterSubsystem, armSubsystem, joystickSubsystem))
+            .alongWith(new Intake(peterSubsystem, armSubsystem, joystickSubsystem).withTimeout(1.0))
             .andThen(
                 MoveToTarget.withMirror(
                     driveTrain,

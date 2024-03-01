@@ -24,7 +24,7 @@ public class ArmSubsystem extends SubsystemBase {
   private TalonFX rt, rb, lt, lb;
   private TalonFX master;
   private DutyCycleEncoder revEncoder;
-
+  private boolean enableArm;
   private ArmFeedforward armff;
   private MotionMagicConfigs mmc;
 
@@ -136,7 +136,9 @@ public class ArmSubsystem extends SubsystemBase {
      */
 
     // targetDegrees = Constants.Arm.DEFAULT_ARM_ANGLE;
-    targetDegrees = getCorrectedDegrees();
+    targetDegrees = getCorrectedDegrees() + 10d;
+    // targetDegrees = 70d;
+    enableArm = false;
   }
 
   public static ArmSubsystem getInstance() {
@@ -149,7 +151,7 @@ public class ArmSubsystem extends SubsystemBase {
   private void setPosition(double angleDegrees) {
     // TODO: Why is the min angle here 4 degrees, but the min angle in `setTargetDegrees` 1 degree?
     angleDegrees = MathUtil.clamp(angleDegrees, 4, 90);
-    if (initialized) {
+    if (initialized && enableArm) {
       master.setControl(
           new MotionMagicVoltage(calculateIntegratedTargetRots(angleDegrees))
               .withFeedForward(armff.calculate((2 * Math.PI * getRawDegrees()) / 360d, 0)));
@@ -220,6 +222,10 @@ public class ArmSubsystem extends SubsystemBase {
 
   public boolean atTarget(double tolerance) {
     return Math.abs(targetDegrees - getCorrectedDegrees()) < tolerance;
+  }
+
+  public void setEnable(boolean toset){
+    this.enableArm = toset;
   }
 
   @Override
