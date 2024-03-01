@@ -114,7 +114,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     absoluteInit();
-    armSubsystem.setTargetDegrees(armSubsystem.getCorrectedDegrees() + 5.0);
+    // armSubsystem.setTargetDegrees(armSubsystem.getCorrectedDegrees() + 5.0);
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     // schedule the autonomous command (example)
