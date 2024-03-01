@@ -61,7 +61,7 @@ public final class Constants {
 
     public static final double SHOOTER_STATOR_CURRENT_LIMIT_AMPS = 40.0;
     public static final double PRESHOOTER_STATOR_CURRENT_LIMIT_AMPS = 25.0;
-    public static final double INTAKE_STATOR_CURRENT_LIMIT_AMPS = 25.0;
+    public static final double INTAKE_STATOR_CURRENT_LIMIT_AMPS = 50.0;
   }
 
   public static final class Arm {
