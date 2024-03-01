@@ -40,6 +40,8 @@ import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.JoystickSubsystem;
 import frc.robot.subsystems.PeterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.util.OtherXBoxController;
+
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -52,10 +54,10 @@ import java.util.function.Supplier;
 public class RobotContainer {
 
   // OI
-  private final CommandXboxController joystickA =
-      new CommandXboxController(Constants.OI.JOYSTICK_A_PORT);
-  public final CommandXboxController joystickB =
-      new CommandXboxController(Constants.OI.JOYSTICK_B_PORT);
+  private final OtherXBoxController joystickA =
+      new OtherXBoxController(Constants.OI.JOYSTICK_A_PORT);
+  public final OtherXBoxController joystickB =
+      new OtherXBoxController(Constants.OI.JOYSTICK_B_PORT);
 
   // Subsystems
   private final SwerveSubsystem driveTrain = SwerveSubsystem.getInstance();
