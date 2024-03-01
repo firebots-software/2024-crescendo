@@ -31,7 +31,6 @@ public class FireAuton extends SequentialCommandGroup {
             .withTimeout(1.0),
         new ParallelCommandGroup(
             new ShootNoWarmup(peterSubsystem, true).withTimeout(0.5),
-
             SwerveLockedAngleCmd.fromPoseMirrored(
                     () -> 0.0,
                     () -> 0.0,

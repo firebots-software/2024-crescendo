@@ -124,9 +124,17 @@ public final class Constants {
       /** Left bumper. */
       LeftBumper(5),
       /** Right bumper. */
-      RightBumper(6);
+      RightBumper(6),
+      /** Left stick. */
+      LeftStick(9),
+      /** Right stick. */
+      RightStick(10),
+      /** Back. */
+      Back(7),
+      /** Start. */
+      Start(8);
       public final int value;
-  
+
       XBoxButtonID(int value) {
         this.value = value;
       }
@@ -145,10 +153,10 @@ public final class Constants {
       LeftTrigger(2),
       /** Right trigger. */
       RightTrigger(3);
-  
+
       /** Axis value. */
       public final int value;
-  
+
       AxisID(int value) {
         this.value = value;
       }
@@ -175,7 +183,7 @@ public final class Constants {
       public static final double AMP_HEIGHT_METERS = Units.inchesToMeters(AMP_HEIGHT_INCHES);
       public static final Pose2d POSE =
           new Pose2d(new Translation2d(1.81, 8.11), new Rotation2d(-Math.PI / 2)); // isnt right
-          // new Pose2d(new Translation2d(1.84 ,8.2), new Rotation2D(-Math.PI/2));
+      // new Pose2d(new Translation2d(1.84 ,8.2), new Rotation2D(-Math.PI/2));
     }
 
     public static final double INTAKE_MODE_HEIGHT_INCHES = 4.0;

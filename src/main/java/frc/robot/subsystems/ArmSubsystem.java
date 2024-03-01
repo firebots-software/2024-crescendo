@@ -68,7 +68,8 @@ public class ArmSubsystem extends SubsystemBase {
     ltConfig.apply(moc);
     lbConfig.apply(moc);
 
-    //TODO: Why do we apply Current Limit Configs to each motor, but then only do s0c on the master?
+    // TODO: Why do we apply Current Limit Configs to each motor, but then only do s0c on the
+    // master?
     // Apply Current Limit to all motors
     rtConfig.apply(clc);
     rbConfig.apply(clc);
@@ -146,7 +147,7 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   private void setPosition(double angleDegrees) {
-    //TODO: Why is the min angle here 4 degrees, but the min angle in `setTargetDegrees` 1 degree?
+    // TODO: Why is the min angle here 4 degrees, but the min angle in `setTargetDegrees` 1 degree?
     angleDegrees = MathUtil.clamp(angleDegrees, 4, 90);
     if (initialized) {
       master.setControl(

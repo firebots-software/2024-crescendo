@@ -22,7 +22,6 @@ import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commandGroups.AimAtSpeaker;
 import frc.robot.commandGroups.BundtShot;
@@ -41,7 +40,6 @@ import frc.robot.subsystems.JoystickSubsystem;
 import frc.robot.subsystems.PeterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.util.OtherXBoxController;
-
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -64,7 +62,7 @@ public class RobotContainer {
   private final ArmSubsystem armSubsystem = ArmSubsystem.getInstance();
   private final PeterSubsystem peterSubsystem = PeterSubsystem.getInstance();
   private final JoystickSubsystem joystickSubsystem = new JoystickSubsystem(joystickA.getHID());
-  
+
   // Logging
   public final Telemetry logger = new Telemetry();
 
@@ -232,16 +230,18 @@ public class RobotContainer {
     joystickB
         .povDown()
         .onTrue(
-            driveTrain.runOnce(
-                () ->
-                    driveTrain.seedFieldRelative(
-                        new Pose2d(
-                            new Translation2d(
-                                !redAlliance
-                                    ? 1.25
-                                    : (Constants.Landmarks.CENTER_LINE_LOCATION * 2 - 1.25),
-                                5.5),
-                            Rotation2d.fromDegrees(!redAlliance ? 0 : 180)))));
+            driveTrain
+                .runOnce(
+                    () ->
+                        driveTrain.seedFieldRelative(
+                            new Pose2d(
+                                new Translation2d(
+                                    !redAlliance
+                                        ? 1.25
+                                        : (Constants.Landmarks.CENTER_LINE_LOCATION * 2 - 1.25),
+                                    5.5),
+                                Rotation2d.fromDegrees(!redAlliance ? 0 : 180))))
+                .andThen(new PrintCommand("pov worked")));
   }
 
   // Constructs a Pose2d array of the note locations by a specific indexing so they can be accessed
@@ -320,7 +320,8 @@ public class RobotContainer {
             (redAlliance ? "Red" : "Blue")
                 .concat(startchoice.getSelected().trim())
                 .concat("Start"));
-    return new RatchetteDisengage(armSubsystem).andThen(start)
+    return new RatchetteDisengage(armSubsystem)
+        .andThen(start)
         // .andThen(new RatchetteDisengage(armSubsystem), new PrintCommand("finished Rachette"))
         .andThen(
             new FireAuton(peterSubsystem, armSubsystem, driveTrain, 1, redside),
