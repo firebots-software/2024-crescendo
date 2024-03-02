@@ -21,6 +21,7 @@ import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.PeterSubsystem;
 import frc.robot.subsystems.PhotonVision;
 import frc.robot.subsystems.SwerveSubsystem;
+import com.ctre.phoenix6.SignalLogger;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -43,6 +44,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    SignalLogger.start();
     CameraServer.startAutomaticCapture(0);
     visionMatrix.set(0, 0, 0);
     visionMatrix.set(1, 0, 0.2d);
@@ -107,6 +109,7 @@ public class Robot extends TimedRobot {
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
   public void disabledInit() {
+    SignalLogger.stop();
     armSubsystem.setEnable(false);
   }
 

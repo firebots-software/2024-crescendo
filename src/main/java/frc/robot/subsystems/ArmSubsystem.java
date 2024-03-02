@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
@@ -242,6 +243,8 @@ public class ArmSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("ARM Integrated Error: ", master.getClosedLoopError().getValue());
     SmartDashboard.putNumber("ARM Arm Rotations: ", getArmPosRotations());
     SmartDashboard.putNumber("ARM Arm Degrees: ", getRawDegrees());
+    SignalLogger.writeDouble("Arm Corrected Degrees", getCorrectedDegrees());
+    SignalLogger.writeDouble("Target Arm Degrees", targetDegrees);
     SmartDashboard.putNumber("ARM Arm Degrees Corrected: ", getCorrectedDegrees());
     SmartDashboard.putNumber("ARM Target Degrees: ", targetDegrees);
     SmartDashboard.putString(
