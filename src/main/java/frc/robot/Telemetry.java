@@ -1,5 +1,6 @@
 package frc.robot;
 
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain.SwerveDriveState;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -12,12 +13,17 @@ import edu.wpi.first.networktables.StringPublisher;
 import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.util.datalog.StringLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
+// import frc.robot.Constants.Arm;
+import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.PeterSubsystem;
+
 import java.util.ArrayList;
 
 public class Telemetry {
@@ -31,7 +37,8 @@ public class Telemetry {
   StringLogEntry CommandAsString;
 
   ArrayList<CommandWithTime> runningCommands;
-
+  ArmSubsystem armSubsystem;
+  PeterSubsystem peterSubsystem;
   public Telemetry() {
     DataLog log = DataLogManager.getLog();
     CommandAsString = new StringLogEntry(log, "commands_run");
@@ -39,7 +46,14 @@ public class Telemetry {
 
     DataLogManager.start();
     MaxSpeed = Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND;
-    // SignalLogger.start();
+    this.armSubsystem = ArmSubsystem.getInstance();
+    this.peterSubsystem = PeterSubsystem.getInstance();
+
+    // Record both DS control and joystick data
+    DriverStation.startDataLog(DataLogManager.getLog());
+
+    SignalLogger.start();
+    SignalLogger.setPath("/logs/matches");
   }
 
   /* What to publish over networktables for telemetry */
@@ -134,16 +148,32 @@ public class Telemetry {
     SmartDashboard.putNumber("posegetx", pose.getX());
     SmartDashboard.putNumber("posegety", pose.getY());
     SmartDashboard.putNumber("posegetrotation", pose.getRotation().getRotations());
+
+    SignalLogger.writeDouble("PoseX", pose.getX());
+    SignalLogger.writeDouble("PoseY", pose.getY());
+    SignalLogger.writeDouble("PoseRot", pose.getRotation().getRotations());
+    
     for (CommandWithTime c : runningCommands) {
       if (c.getCommand() == null || c.getCommand().isFinished()) {
         CommandAsString.append(
             "ST: " + c.getStartTime() + " |ET: " + this.lastTime + " |C: " + c.getCommandString());
       }
     }
+    logArm();
+    logPeter();
   }
 
   public void addCommandToLog(Command c) {
     runningCommands.add(new CommandWithTime(c, lastTime));
+  }
+
+  public void logArm(){
+    SignalLogger.writeDouble("Arm Target", armSubsystem.getTarget());
+    SignalLogger.writeDouble("Arm Position", armSubsystem.getCorrectedDegrees());
+  }
+
+  public static void logPeter(){
+
   }
 }
 
