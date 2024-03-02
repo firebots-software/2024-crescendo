@@ -237,11 +237,12 @@ public class RobotContainer {
                             new Pose2d(
                                 new Translation2d(
                                     !redAlliance
-                                        ? 1.25
+                                        ? 1.34//1.34
                                         : (Constants.Landmarks.CENTER_LINE_LOCATION * 2 - 1.25),
                                     5.5),
                                 Rotation2d.fromDegrees(!redAlliance ? 0 : 180))))
                 .andThen(new PrintCommand("pov worked")));
+
   }
 
   // Constructs a Pose2d array of the note locations by a specific indexing so they can be accessed
