@@ -294,7 +294,7 @@ public class RobotContainer {
     startchoice.setDefaultOption("STARTING POSITION: MIDDLE START", "Mid");
     startchoice.addOption("AMPSIDE START", "Amp");
     startchoice.addOption("STAGESIDE START", "Stage");
-
+    
     SmartDashboard.putData(pickup1choice);
     SmartDashboard.putData(pickup2choice);
     SmartDashboard.putData(pickup3choice);

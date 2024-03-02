@@ -99,16 +99,16 @@ public final class Constants {
 
     public static final InterpolatingDoubleTreeMap INTERMAP1 = new InterpolatingDoubleTreeMap();
     static {
-      INTERMAP1.put(1.34, 6d + 2); // measurements of distance are from front of robot bumper to wall
-      INTERMAP1.put(2.1, 17d + 2);
-      INTERMAP1.put(Units.feetToMeters(9) + Units.inchesToMeters(17), 23.5d + 2);
+      INTERMAP1.put(1.34, 6d + 3); // measurements of distance are from front of robot bumper to wall
+      INTERMAP1.put(2.1, 17d + 3);
+      INTERMAP1.put(Units.feetToMeters(9) + Units.inchesToMeters(17), 23.5d + 3.5);
     }
     
     public static final InterpolatingDoubleTreeMap INTERMAP2 = new InterpolatingDoubleTreeMap();
     static {
-      INTERMAP2.put(1.34, 6d + 3); // measurements of distance are from front of robot bumper to wall
-      INTERMAP2.put(2.1, 17d + 3);
-      INTERMAP2.put(Units.feetToMeters(9) + Units.inchesToMeters(17), 23.5d + 3);
+      INTERMAP2.put(1.34, 6d + 4); // measurements of distance are from front of robot bumper to wall
+      INTERMAP2.put(2.1, 17d + 4);
+      INTERMAP2.put(Units.feetToMeters(9) + Units.inchesToMeters(17), 23.5d + 4);
     }
   }
 
