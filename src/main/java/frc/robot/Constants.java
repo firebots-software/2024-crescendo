@@ -97,12 +97,18 @@ public final class Constants {
     public static final double ABSOLUTE_ENCODER_HORIZONTAL = 0.08;
     public static final double ABSOLUTE_HORIZONTAL_OFFSET = 0.05;
 
-    public static final InterpolatingDoubleTreeMap INTERMAP = new InterpolatingDoubleTreeMap();
-
+    public static final InterpolatingDoubleTreeMap INTERMAP1 = new InterpolatingDoubleTreeMap();
     static {
-      INTERMAP.put(1.34, 6d + 1.5); // measurements of distance are from front of robot bumper to wall
-      INTERMAP.put(2.1, 17d + 1.5);
-      INTERMAP.put(Units.feetToMeters(9) + Units.inchesToMeters(17), 23.5d + 1.5);
+      INTERMAP1.put(1.34, 6d + 2); // measurements of distance are from front of robot bumper to wall
+      INTERMAP1.put(2.1, 17d + 2);
+      INTERMAP1.put(Units.feetToMeters(9) + Units.inchesToMeters(17), 23.5d + 2);
+    }
+    
+    public static final InterpolatingDoubleTreeMap INTERMAP2 = new InterpolatingDoubleTreeMap();
+    static {
+      INTERMAP2.put(1.34, 6d + 3); // measurements of distance are from front of robot bumper to wall
+      INTERMAP2.put(2.1, 17d + 3);
+      INTERMAP2.put(Units.feetToMeters(9) + Units.inchesToMeters(17), 23.5d + 3);
     }
   }
 

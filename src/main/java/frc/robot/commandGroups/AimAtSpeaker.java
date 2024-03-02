@@ -20,10 +20,11 @@ public class AimAtSpeaker extends ParallelCommandGroup {
       Supplier<Double> speedFunction,
       double headingToleranceDegrees,
       double armToleranceDegrees,
-      Supplier<Boolean> redSide) {
+      Supplier<Boolean> redSide,
+      Supplier<Boolean> increaseAngle) {
     addCommands(
         new SpinUpShooter(peter),
-        ArmToAngleCmd.aimAtSpeaker(arm, swerve, redSide).withTolerance(armToleranceDegrees),
+        ArmToAngleCmd.aimAtSpeaker(arm, swerve, redSide, increaseAngle).withTolerance(armToleranceDegrees),
         SwerveLockedAngleCmd.fromPoseMirrored(
                 frontBackFunction,
                 leftRightFunction,
@@ -42,7 +43,8 @@ public class AimAtSpeaker extends ParallelCommandGroup {
       Supplier<Double> frontBackFunction,
       Supplier<Double> leftRightFunction,
       Supplier<Double> speedFunction,
-      Supplier<Boolean> redSide) {
-    this(peter, arm, swerve, frontBackFunction, leftRightFunction, speedFunction, -1, -1, redSide);
+      Supplier<Boolean> redSide,
+      Supplier<Boolean> increaseAngle) {
+    this(peter, arm, swerve, frontBackFunction, leftRightFunction, speedFunction, -1, -1, redSide, increaseAngle);
   }
 }

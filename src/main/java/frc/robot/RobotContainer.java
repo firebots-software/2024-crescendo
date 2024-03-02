@@ -121,7 +121,7 @@ public class RobotContainer {
                 frontBackFunction,
                 leftRightFunction,
                 speedFunction,
-                redside));
+                redside, () -> joystickB.getLeftX() >= 0.05));
 
     joystickA
         .a()
@@ -135,7 +135,7 @@ public class RobotContainer {
                 frontBackFunction,
                 leftRightFunction,
                 speedFunction,
-                redside));
+                redside,() -> joystickB.getLeftX() >= 0.05));
 
     joystickA
         .a()

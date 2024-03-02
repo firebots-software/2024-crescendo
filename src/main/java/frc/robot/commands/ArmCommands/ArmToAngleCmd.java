@@ -67,11 +67,11 @@ public class ArmToAngleCmd extends Command {
   }
 
   public static ArmToAngleCmd aimAtSpeaker(
-      ArmSubsystem arm, SwerveSubsystem swerveSubsystem, Supplier<Boolean> redside) {
+      ArmSubsystem arm, SwerveSubsystem swerveSubsystem, Supplier<Boolean> redside, Supplier<Boolean> increaseAngle) {
     return new ArmToAngleCmd(
         () ->
             ArmSubsystem.calculateAngleToSpeaker(
-                swerveSubsystem.getState().Pose.getTranslation(), redside.get()),
+                swerveSubsystem.getState().Pose.getTranslation(), redside.get(), increaseAngle.get()),
         arm);
   }
 
@@ -84,7 +84,7 @@ public class ArmToAngleCmd extends Command {
   }
 
   public static ArmToAngleCmd toBundt(ArmSubsystem arm) {
-    return new ArmToAngleCmd(() -> 7.5d, arm);
+    return new ArmToAngleCmd(() -> 8.5d, arm);
   }
 
   public static ArmToAngleCmd toDuck(ArmSubsystem arm) {
