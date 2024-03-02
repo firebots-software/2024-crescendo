@@ -141,11 +141,7 @@ public class RobotContainer {
         .a()
         .and(joystickB.rightTrigger(0.5))
         .whileTrue(new BundtShot(peterSubsystem, armSubsystem, joystickSubsystem));
-    // joystickB
-    //     .rightTrigger()
-    //     .and(joystickA.a())
-    //     .whileTrue(new BundtShot(peterSubsystem, armSubsystem, joystickSubsystem));
-    // speaker snap
+
     joystickA
         .y()
         .whileTrue(
@@ -242,7 +238,8 @@ public class RobotContainer {
                                     5.5),
                                 Rotation2d.fromDegrees(!redAlliance ? 0 : 180))))
                 .andThen(new PrintCommand("pov worked")));
-
+    
+    
   }
 
   // Constructs a Pose2d array of the note locations by a specific indexing so they can be accessed

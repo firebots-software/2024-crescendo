@@ -17,6 +17,8 @@ import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
+import com.ctre.phoenix6.SignalLogger;
+
 public class PhotonVision extends SubsystemBase {
   Pose3d savedResult = new Pose3d(0.0, 0.0, 0.0, new Rotation3d(0.0, 0.0, 0.0));
   private PhotonCamera camera = new PhotonCamera("FrontCam");
@@ -113,6 +115,10 @@ public class PhotonVision extends SubsystemBase {
       SmartDashboard.putNumber("TranslationY", transformToTarget.getY());
       SmartDashboard.putNumber("TranslationZ", transformToTarget.getZ());
       SmartDashboard.putNumber("StraightLineDist", dist);
+      
+      SignalLogger.writeBoolean("Found tag", true);
+    } else {
+        SignalLogger.writeBoolean("Found tag", false);
     }
   }
 

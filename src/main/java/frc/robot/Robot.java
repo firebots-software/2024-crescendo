@@ -44,6 +44,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    SignalLogger.setPath("/home/lvuser/logs/");
     SignalLogger.start();
     CameraServer.startAutomaticCapture(0);
     visionMatrix.set(0, 0, 0);
@@ -144,6 +145,7 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+    armSubsystem.setTargetDegrees(Constants.Arm.DEFAULT_ARM_ANGLE);
     armSubsystem.setEnable(true);
   }
 
