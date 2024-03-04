@@ -7,6 +7,7 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -207,6 +208,9 @@ public class PeterSubsystem extends SubsystemBase {
   }
 
   private void runPreShooterAtRPS(double speed) {
+    // VoltageOut velocityControl = new VoltageOut(0);
+    // preShooterMotor.setControl(velocityControl);
+
     VelocityVoltage m_velocityControl =
         new VelocityVoltage(speed * Constants.Peter.PRESHOOTER_GEAR_RATIO);
     m_velocityControl.withFeedForward(0.1);
