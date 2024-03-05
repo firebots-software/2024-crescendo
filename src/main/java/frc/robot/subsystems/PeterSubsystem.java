@@ -185,17 +185,6 @@ public class PeterSubsystem extends SubsystemBase {
     }
     return false;
   }
-
-  /* private void runShooterAtRPS(double speed) {
-    runRightShooterAtRPS(speed);
-    runLeftShooterAtRPS(speed);
-    // VelocityVoltage m_velocityControl = new VelocityVoltage(speed);
-    // m_velocityControl.withFeedForward(0.1);
-    // shooterMotorRight.setControl(m_velocityControl);
-    // shooterMotorLeft.setControl(m_velocityControl);
-
-  } */
-
   // SENSOR FUNCTIONS:
   public boolean notePresent() {
     return !noteSensor.get();
@@ -208,35 +197,18 @@ public class PeterSubsystem extends SubsystemBase {
   }
 
   private void runPreShooterAtRPS(double speed) {
-    // VoltageOut velocityControl = new VoltageOut(0);
-    // preShooterMotor.setControl(velocityControl);
+    VoltageOut velocityControl = new VoltageOut(Constants.Peter.PRESHOOTER_WHEEL_VOLTAGE);
+    preShooterMotor.setControl(velocityControl);
 
-    VelocityVoltage m_velocityControl =
-        new VelocityVoltage(speed * Constants.Peter.PRESHOOTER_GEAR_RATIO);
-    m_velocityControl.withFeedForward(0.1);
-    preShooterMotor.setControl(m_velocityControl);
+    // VelocityVoltage m_velocityControl =
+    //     new VelocityVoltage(speed * Constants.Peter.PRESHOOTER_GEAR_RATIO);
+    // m_velocityControl.withFeedForward(0.1);
+    // preShooterMotor.setControl(m_velocityControl);
   }
 
   public void stopPreShooterMotor() {
     preShooterMotor.stopMotor();
   }
-
-  /* public void moveNoteToShooter() {
-    movePreShooterMotorPosition(
-        Constants.Peter.ROTATIONS_TO_SHOOTER
-            * Constants.Peter.PRESHOOTER_GEAR_RATIO); // 5 rotations
-  }*/
-
-  /* public void movePreShooterMotorPosition(double position) { // rotates by `position` more rotations
-    MotionMagicVoltage m_request = new MotionMagicVoltage(preShooterMotor.getPosition().getValue());
-    preShooterMotor.setControl(
-        m_request.withPosition(
-            preShooterMotor.getPosition().getValue() + position)); // rotate 5 more rotations
-  } */
-
-  /* public double getPreShooterPosition() {
-    return preShooterPosition.getValue();
-  } */
 
   @Override
   public void periodic() {
