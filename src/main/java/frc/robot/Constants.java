@@ -61,17 +61,14 @@ public final class Constants {
 
     public static final double SHOOTER_STATOR_CURRENT_LIMIT_AMPS = 40.0;
     public static final double PRESHOOTER_STATOR_CURRENT_LIMIT_AMPS = 25.0;
-    public static final double INTAKE_STATOR_CURRENT_LIMIT_AMPS = 16.0;
+    public static final double INTAKE_STATOR_CURRENT_LIMIT_AMPS = 50.0;
   }
 
   public static final class Arm {
     public static final double ARM_STATOR_CURRENT_LIMIT_AMPS = 40.0;
-    public static final double DEFAULT_ARM_ANGLE = 36;
+    public static final double DEFAULT_ARM_ANGLE = 56.12;
     public static final double INTAKE_ANGLE = 4; // subject to change
     public static final double AMP_ANGLE = 90; // subject to change
-
-    public static final double SPEAKER_ANGLE =
-        40; // TODO: Replace with the function based on distance
     // public static final double ARM_ENCODER_OFFSET = 0; // TODO: Change the offset so that the 0
     // position is when the arm is at its resting
     // position.
@@ -84,9 +81,9 @@ public final class Constants {
     public static final int ENCODER_PORT = 0; // subject to change
 
     public static final double CURRENT_LIMIT = 8.0;
-    public static final double S0C_KP = 1;
+    public static final double S0C_KP = 1.2;
     public static final double ARMFF_KS = 0.1;
-    public static final double ARMFF_KG = 0.21;
+    public static final double ARMFF_KG = 0.3;
     public static final double ARMFF_KV = 2.49;
     public static final double MOTIONMAGIC_KV = 1; // MotionMagic Cruise Velocity in RPS of the arm
     public static final double MOTIONMAGIC_KA = 2.2; // MotionMagic Acceleration in RPS^2 of the arm
@@ -100,12 +97,18 @@ public final class Constants {
     public static final double ABSOLUTE_ENCODER_HORIZONTAL = 0.08;
     public static final double ABSOLUTE_HORIZONTAL_OFFSET = 0.05;
 
-    public static final InterpolatingDoubleTreeMap INTERMAP = new InterpolatingDoubleTreeMap();
-
+    public static final InterpolatingDoubleTreeMap INTERMAP1 = new InterpolatingDoubleTreeMap();
     static {
-      INTERMAP.put(1.25, 6d); // measurements of distance are from front of robot bumper to wall
-      INTERMAP.put(2.1, 17d);
-      INTERMAP.put(Units.feetToMeters(9) + Units.inchesToMeters(17), 23.5d);
+      INTERMAP1.put(1.34, 6d + 4); // measurements of distance are from front of robot bumper to wall
+      INTERMAP1.put(2.1, 17d + 4);
+      INTERMAP1.put(Units.feetToMeters(9) + Units.inchesToMeters(17), 23.5d + 4.5);
+    }
+    
+    public static final InterpolatingDoubleTreeMap INTERMAP2 = new InterpolatingDoubleTreeMap();
+    static {
+      INTERMAP2.put(1.34, 6d + 5); // measurements of distance are from front of robot bumper to wall
+      INTERMAP2.put(2.1, 17d + 5);
+      INTERMAP2.put(Units.feetToMeters(9) + Units.inchesToMeters(17), 23.5d + 5);
     }
   }
 
@@ -114,6 +117,56 @@ public final class Constants {
     public static final double RIGHT_JOYSTICK_DEADBAND = 0.07;
     public static final int JOYSTICK_A_PORT = 0;
     public static final int JOYSTICK_B_PORT = 1;
+
+    public enum XBoxButtonID {
+      /** A. */
+      A(1),
+      /** B. */
+      B(2),
+      /** X. */
+      X(3),
+      /** Y. */
+      Y(4),
+      /** Left bumper. */
+      LeftBumper(5),
+      /** Right bumper. */
+      RightBumper(6),
+      /** Left stick. */
+      LeftStick(9),
+      /** Right stick. */
+      RightStick(10),
+      /** Back. */
+      Back(7),
+      /** Start. */
+      Start(8);
+      public final int value;
+
+      XBoxButtonID(int value) {
+        this.value = value;
+      }
+    }
+
+    public enum AxisID {
+      /** Left X. */
+      LeftX(0),
+      /** Right X. */
+      RightX(4),
+      /** Left Y. */
+      LeftY(1),
+      /** Right Y. */
+      RightY(5),
+      /** Left trigger. */
+      LeftTrigger(2),
+      /** Right trigger. */
+      RightTrigger(3);
+
+      /** Axis value. */
+      public final int value;
+
+      AxisID(int value) {
+        this.value = value;
+      }
+    }
   }
 
   public static class Landmarks {
@@ -136,6 +189,7 @@ public final class Constants {
       public static final double AMP_HEIGHT_METERS = Units.inchesToMeters(AMP_HEIGHT_INCHES);
       public static final Pose2d POSE =
           new Pose2d(new Translation2d(1.81, 8.11), new Rotation2d(-Math.PI / 2)); // isnt right
+      // new Pose2d(new Translation2d(1.84 ,8.2), new Rotation2D(-Math.PI/2));
     }
 
     public static final double INTAKE_MODE_HEIGHT_INCHES = 4.0;
@@ -156,7 +210,7 @@ public final class Constants {
     public static final double PHYSICAL_MAX_SPEED_METERS_PER_SECOND = 4.8768;
     public static final double PHYSICAL_MAX_ANGLUAR_SPEED_RADIANS_PER_SECOND = 2 * 2 * Math.PI;
 
-    public static final double TELE_DRIVE_FAST_MODE_SPEED_PERCENT = 0.7;
+    public static final double TELE_DRIVE_FAST_MODE_SPEED_PERCENT = 1.0;
     public static final double TELE_DRIVE_SLOW_MODE_SPEED_PERCENT = 0.3;
     public static final double TELE_DRIVE_PERCENT_SPEED_RANGE =
         (TELE_DRIVE_FAST_MODE_SPEED_PERCENT - TELE_DRIVE_SLOW_MODE_SPEED_PERCENT);

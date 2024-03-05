@@ -1,5 +1,6 @@
 package frc.robot;
 
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain.SwerveDriveState;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -39,6 +40,7 @@ public class Telemetry {
 
     DataLogManager.start();
     MaxSpeed = Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND;
+    // SignalLogger.setPath("");
     // SignalLogger.start();
   }
 
@@ -134,6 +136,11 @@ public class Telemetry {
     SmartDashboard.putNumber("posegetx", pose.getX());
     SmartDashboard.putNumber("posegety", pose.getY());
     SmartDashboard.putNumber("posegetrotation", pose.getRotation().getRotations());
+
+    SignalLogger.writeDouble("Pose X", pose.getX());
+    SignalLogger.writeDouble("Pose Y", pose.getY());
+    SignalLogger.writeDouble("Pose Rot", pose.getRotation().getRotations());
+
     for (CommandWithTime c : runningCommands) {
       if (c.getCommand() == null || c.getCommand().isFinished()) {
         CommandAsString.append(

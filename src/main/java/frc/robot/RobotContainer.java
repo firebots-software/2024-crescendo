@@ -22,24 +22,24 @@ import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commandGroups.AimAtSpeaker;
+import frc.robot.commandGroups.BundtShot;
 import frc.robot.commandGroups.FireAuton;
+import frc.robot.commandGroups.FireTeleop;
 import frc.robot.commandGroups.Intake;
-import frc.robot.commands.ArmCommands.AimArmAtAmpCmd;
-import frc.robot.commands.ArmCommands.ArmResetOnEndCmd;
-import frc.robot.commands.ArmCommands.ArmToNeutralCmd;
+import frc.robot.commands.ArmCommands.ArmToAngleCmd;
 import frc.robot.commands.Auton.MoveToTarget;
 import frc.robot.commands.Auton.RatchetteDisengage;
-import frc.robot.commands.DebugCommands.Rumble;
 import frc.robot.commands.PeterCommands.ShootNoWarmup;
-import frc.robot.commands.PeterCommands.WarmUpShooter;
+import frc.robot.commands.PeterCommands.SpinUpShooter;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.commands.SwerveCommands.SwerveLockedAngleCmd;
 import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.JoystickSubsystem;
 import frc.robot.subsystems.PeterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.util.OtherXBoxController;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -52,18 +52,23 @@ import java.util.function.Supplier;
 public class RobotContainer {
 
   // OI
-  private final CommandXboxController joystickA =
-      new CommandXboxController(Constants.OI.JOYSTICK_A_PORT);
-  private final CommandXboxController joystickB =
-      new CommandXboxController(Constants.OI.JOYSTICK_B_PORT);
+  private final OtherXBoxController joystickA =
+      new OtherXBoxController(Constants.OI.JOYSTICK_A_PORT);
+  public final OtherXBoxController joystickB =
+      new OtherXBoxController(Constants.OI.JOYSTICK_B_PORT);
 
   // Subsystems
   private final SwerveSubsystem driveTrain = SwerveSubsystem.getInstance();
   private final ArmSubsystem armSubsystem = ArmSubsystem.getInstance();
   private final PeterSubsystem peterSubsystem = PeterSubsystem.getInstance();
+  private final JoystickSubsystem joystickSubsystem = new JoystickSubsystem(joystickA.getHID());
 
   // Logging
   public final Telemetry logger = new Telemetry();
+
+  // Alliance color
+  private Supplier<Boolean> redside = () -> redAlliance;
+  private static boolean redAlliance;
 
   public RobotContainer() {
     // Vibrate joysticks when someone interesting happens!
@@ -103,9 +108,7 @@ public class RobotContainer {
     driveTrain.setDefaultCommand(swerveJoystickCommand);
 
     // Intake
-    joystickA
-        .rightTrigger()
-        .whileTrue(new Intake(peterSubsystem, armSubsystem, joystickA.getHID()));
+    joystickA.rightTrigger().whileTrue(new Intake(peterSubsystem, armSubsystem, joystickSubsystem));
 
     // Aim
     joystickA
@@ -118,38 +121,27 @@ public class RobotContainer {
                 frontBackFunction,
                 leftRightFunction,
                 speedFunction,
-                () -> redAlliance));
+                redside, () -> joystickB.getLeftX() >= 0.05));
 
-    // Fire
     joystickA
         .a()
+        .and(joystickB.rightTrigger(0.5).negate())
         .whileTrue(
-            new SequentialCommandGroup(
-                new AimAtSpeaker(
-                    peterSubsystem,
-                    armSubsystem,
-                    driveTrain,
-                    frontBackFunction,
-                    leftRightFunction,
-                    speedFunction,
-                    5,
-                    1,
-                    () -> redAlliance),
-                new ParallelCommandGroup(
-                    new ShootNoWarmup(peterSubsystem).withTimeout(1),
-                    Rumble.withNoBlock(joystickA.getHID(), 1, 1, 0.25),
-                    // we need this a second time because the first one ended in the
-                    // aimBeforeShootCommand, this time without a tolerance end
-                    new ArmResetOnEndCmd(armSubsystem),
-                    SwerveLockedAngleCmd.fromPoseMirrored(
-                        frontBackFunction,
-                        leftRightFunction,
-                        () -> Constants.Landmarks.Speaker.POSE.getTranslation(),
-                        speedFunction,
-                        driveTrain,
-                        () -> redAlliance))));
+            new FireTeleop(
+                peterSubsystem,
+                armSubsystem,
+                driveTrain,
+                joystickSubsystem,
+                frontBackFunction,
+                leftRightFunction,
+                speedFunction,
+                redside,() -> joystickB.getLeftX() >= 0.05));
 
-    // speaker snap
+    joystickA
+        .a()
+        .and(joystickB.rightTrigger(0.5))
+        .whileTrue(new BundtShot(peterSubsystem, armSubsystem, joystickSubsystem));
+
     joystickA
         .y()
         .whileTrue(
@@ -171,6 +163,7 @@ public class RobotContainer {
                 speedFunction,
                 driveTrain));
 
+    joystickA.rightBumper().whileTrue(ArmToAngleCmd.toDuck(armSubsystem));
     // When no Commands are being issued, Peter motors should not be moving
     peterSubsystem.setDefaultCommand(
         new InstantCommand(
@@ -195,7 +188,7 @@ public class RobotContainer {
                           peterSubsystem.reverseMechanism();
                         },
                         peterSubsystem),
-                    new ArmToNeutralCmd(armSubsystem))
+                    ArmToAngleCmd.toNeutral(armSubsystem).withTolerance(1))
                 .withInterruptBehavior(InterruptionBehavior.kCancelSelf));
 
     // amp shoot
@@ -205,10 +198,10 @@ public class RobotContainer {
         .whileTrue(
             new SequentialCommandGroup(
                     new ParallelCommandGroup(
-                        new AimArmAtAmpCmd(armSubsystem),
+                        ArmToAngleCmd.toAmp(armSubsystem).withTolerance(1),
                         MoveToTarget.withMirror(
                                 driveTrain,
-                                () -> redAlliance,
+                                redside,
                                 Constants.Landmarks.Amp.POSE.plus(
                                     new Transform2d(
                                         0d,
@@ -218,31 +211,35 @@ public class RobotContainer {
                             .andThen(
                                 MoveToTarget.withMirror(
                                     driveTrain,
-                                    () -> redAlliance,
+                                    redside,
                                     Constants.Landmarks.Amp.POSE.plus(
                                         new Transform2d(
                                             0d,
                                             -(Units.inchesToMeters(12)
                                                 + Constants.Swerve.ROBOT_HALF_WIDTH_METERS),
                                             new Rotation2d())))),
-                        new WarmUpShooter(peterSubsystem)),
-                    new ShootNoWarmup(peterSubsystem))
+                        new SpinUpShooter(peterSubsystem)),
+                    new ShootNoWarmup(peterSubsystem, false))
                 .withInterruptBehavior(InterruptionBehavior.kCancelSelf));
 
     // zero-heading
     joystickB
         .povDown()
         .onTrue(
-            driveTrain.runOnce(
-                () ->
-                    driveTrain.seedFieldRelative(
-                        new Pose2d(
-                            new Translation2d(
-                                !redAlliance
-                                    ? 1.25
-                                    : (Constants.Landmarks.CENTER_LINE_LOCATION * 2 - 1.25),
-                                5.5),
-                            Rotation2d.fromDegrees(!redAlliance ? 0 : 180)))));
+            driveTrain
+                .runOnce(
+                    () ->
+                        driveTrain.seedFieldRelative(
+                            new Pose2d(
+                                new Translation2d(
+                                    !redAlliance
+                                        ? 1.34//1.34
+                                        : (Constants.Landmarks.CENTER_LINE_LOCATION * 2 - 1.25),
+                                    5.5),
+                                Rotation2d.fromDegrees(!redAlliance ? 0 : 180))))
+                .andThen(new PrintCommand("pov worked")));
+    
+    
   }
 
   // Constructs a Pose2d array of the note locations by a specific indexing so they can be accessed
@@ -263,8 +260,6 @@ public class RobotContainer {
     }
   }
 
-  private static boolean redAlliance;
-
   public static void setAlliance() {
     redAlliance =
         (DriverStation.getAlliance().isEmpty())
@@ -277,6 +272,7 @@ public class RobotContainer {
       pickup1choice = new SendableChooser<Optional<NoteLocation>>(),
       pickup2choice = new SendableChooser<Optional<NoteLocation>>(),
       pickup3choice = new SendableChooser<Optional<NoteLocation>>();
+  SendableChooser<String> startchoice = new SendableChooser<String>();
 
   private void setupChooser() {
 
@@ -295,20 +291,38 @@ public class RobotContainer {
     pickup3choice.addOption("MIDDLE", Optional.of(NoteLocation.MIDDLE));
     pickup3choice.addOption("STAGESIDE NOTE", Optional.of(NoteLocation.STAGESIDE));
 
+    startchoice.setDefaultOption("STARTING POSITION: MIDDLE START", "Mid");
+    startchoice.addOption("AMPSIDE START", "Amp");
+    startchoice.addOption("STAGESIDE START", "Stage");
+    
     SmartDashboard.putData(pickup1choice);
     SmartDashboard.putData(pickup2choice);
     SmartDashboard.putData(pickup3choice);
+    SmartDashboard.putData(startchoice);
   }
 
   public Command getAutonomousCommand() {
+    // NamedCommands.registerCommand("Fire", new FireAuton(peterSubsystem, armSubsystem, driveTrain,
+    // 1, redside));
+    // NamedCommands.registerCommand("Intake", new Intake(peterSubsystem, armSubsystem,
+    // joystickSubsystem));
+    // NamedCommands.registerCommand("Ratchette", new RatchetteDisengage(armSubsystem));
 
-    String autonName = (redAlliance) ? "ThreeNoteAutonRed" : "ThreeNoteAutonBlue";
-    SmartDashboard.putString("Auton to be run", autonName);
-    SmartDashboard.putBoolean("Red Alliance?", redAlliance);
-    return new PathPlannerAuto(autonName)
-        .andThen(new RatchetteDisengage(armSubsystem), new PrintCommand("finished Rachette"))
+    // return new PathPlannerAuto("SamplePath");
+
+    // String autonName = (redAlliance) ? "ThreeNoteAutonRed" : "ThreeNoteAutonBlue";
+    // SmartDashboard.putString("Auton to be run", autonName);
+    // SmartDashboard.putBoolean("Red Alliance?", redAlliance);
+    PathPlannerAuto start =
+        new PathPlannerAuto(
+            (redAlliance ? "Red" : "Blue")
+                .concat(startchoice.getSelected().trim())
+                .concat("Start"));
+    return new RatchetteDisengage(armSubsystem)
+        .andThen(start)
+        // .andThen(new RatchetteDisengage(armSubsystem), new PrintCommand("finished Rachette"))
         .andThen(
-            new FireAuton(peterSubsystem, armSubsystem, driveTrain, 1, () -> redAlliance),
+            new FireAuton(peterSubsystem, armSubsystem, driveTrain, 1, redside),
             new PrintCommand("ritvik gun fire1"))
         .andThen(getAutonShoot(pickup1choice.getSelected()))
         .andThen(new PrintCommand("pickup1 ended"))
@@ -322,26 +336,25 @@ public class RobotContainer {
         ? new WaitCommand(2.0)
         : MoveToTarget.withMirror(
                 driveTrain,
-                () -> redAlliance,
+                redside,
                 note.get()
                     .getNoteLocation()
                     .plus(new Transform2d(Units.inchesToMeters(-24), 0, new Rotation2d())))
             .andThen(
                 MoveToTarget.withMirror(
                     driveTrain,
-                    () -> redAlliance,
+                    redside,
                     note.get()
                         .getNoteLocation()
                         .plus(new Transform2d(Units.inchesToMeters(-18), 0, new Rotation2d()))))
-            .alongWith(new Intake(peterSubsystem, armSubsystem, joystickA.getHID()))
+            .alongWith(new Intake(peterSubsystem, armSubsystem, joystickSubsystem).withTimeout(2.75d))
             .andThen(
                 MoveToTarget.withMirror(
                     driveTrain,
-                    () -> redAlliance,
+                    redside,
                     NoteLocation.MIDDLE
                         .getNoteLocation()
                         .plus(new Transform2d(Units.inchesToMeters(-45), 0, new Rotation2d()))))
-            .andThen(new FireAuton(peterSubsystem, armSubsystem, driveTrain, 1, () -> redAlliance))
-            .andThen(new WaitCommand(0.25));
+            .andThen(new FireAuton(peterSubsystem, armSubsystem, driveTrain, 1, redside));
   }
 }

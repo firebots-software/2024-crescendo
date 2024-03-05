@@ -14,12 +14,14 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.PeterSubsystem;
 import frc.robot.subsystems.PhotonVision;
 import frc.robot.subsystems.SwerveSubsystem;
+import com.ctre.phoenix6.SignalLogger;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -42,6 +44,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    SignalLogger.setPath("/home/lvuser/logs/");
+    SignalLogger.start();
     CameraServer.startAutomaticCapture(0);
     visionMatrix.set(0, 0, 0);
     visionMatrix.set(1, 0, 0.2d);
@@ -82,8 +86,9 @@ public class Robot extends TimedRobot {
                   new Translation3d(
                       driveTrain.getState().Pose.getX(), driveTrain.getState().Pose.getY(), 0.0));
 
-      double xKalman = 0.0594966 * Math.pow(1.40936, distToAprilTag);
-      double yKalman = 0.0795021 * Math.pow(1.36084, distToAprilTag);
+      double xKalman = 0.01 * Math.pow(1.15, distToAprilTag);
+
+      double yKalman = 0.01 * Math.pow(1.4, distToAprilTag);
 
       visionMatrix.set(0, 0, xKalman);
       visionMatrix.set(1, 0, yKalman);
@@ -104,7 +109,10 @@ public class Robot extends TimedRobot {
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    SignalLogger.stop();
+    armSubsystem.setEnable(false);
+  }
 
   @Override
   public void disabledPeriodic() {}
@@ -112,8 +120,9 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
+    armSubsystem.setTargetDegrees(armSubsystem.getCorrectedDegrees()+15d);
+    armSubsystem.setEnable(true);
     absoluteInit();
-    armSubsystem.setTargetDegrees(armSubsystem.getCorrectedDegrees() + 5.0);
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     // schedule the autonomous command (example)
@@ -136,17 +145,25 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+    armSubsystem.setTargetDegrees(Constants.Arm.DEFAULT_ARM_ANGLE);
+    armSubsystem.setEnable(true);
   }
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    SmartDashboard.putBoolean(
+        "joystickB right trigger", m_robotContainer.joystickB.rightTrigger(0.5).getAsBoolean());
+    // SmartDashboard.putNumber("joystickB right trigger value",
+    // m_robotContainer.joystickB.rightTrigger());
+  }
 
   @Override
   public void testInit() {
     // Cancels all running commands at the start of test mode.
     absoluteInit();
     CommandScheduler.getInstance().cancelAll();
+    armSubsystem.setEnable(true);
   }
 
   /** This function is called periodically during test mode. */

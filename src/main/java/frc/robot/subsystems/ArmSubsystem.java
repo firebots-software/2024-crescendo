@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
@@ -24,7 +25,7 @@ public class ArmSubsystem extends SubsystemBase {
   private TalonFX rt, rb, lt, lb;
   private TalonFX master;
   private DutyCycleEncoder revEncoder;
-
+  private boolean enableArm;
   private ArmFeedforward armff;
   private MotionMagicConfigs mmc;
 
@@ -68,6 +69,8 @@ public class ArmSubsystem extends SubsystemBase {
     ltConfig.apply(moc);
     lbConfig.apply(moc);
 
+    // TODO: Why do we apply Current Limit Configs to each motor, but then only do s0c on the
+    // master?
     // Apply Current Limit to all motors
     rtConfig.apply(clc);
     rbConfig.apply(clc);
@@ -133,7 +136,10 @@ public class ArmSubsystem extends SubsystemBase {
     /* The way we take the Absolute Encoder's offsets.
      */
 
-    targetDegrees = Constants.Arm.DEFAULT_ARM_ANGLE;
+    // targetDegrees = Constants.Arm.DEFAULT_ARM_ANGLE;
+    targetDegrees = getCorrectedDegrees() + 10d;
+    // targetDegrees = 70d;
+    enableArm = false;
   }
 
   public static ArmSubsystem getInstance() {
@@ -144,8 +150,9 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   private void setPosition(double angleDegrees) {
+    // TODO: Why is the min angle here 4 degrees, but the min angle in `setTargetDegrees` 1 degree?
     angleDegrees = MathUtil.clamp(angleDegrees, 4, 90);
-    if (initialized) {
+    if (initialized && enableArm) {
       master.setControl(
           new MotionMagicVoltage(calculateIntegratedTargetRots(angleDegrees))
               .withFeedForward(armff.calculate((2 * Math.PI * getRawDegrees()) / 360d, 0)));
@@ -156,15 +163,7 @@ public class ArmSubsystem extends SubsystemBase {
     targetDegrees = MathUtil.clamp(angleDegrees, 1, 90);
   }
 
-  // public double determineAngle(Pose2d a, double fkla) {
-  //   return -1;
-  // }
-
-  public void rotateToSpeaker(Translation2d robotPosition, boolean redside) {
-    setTargetDegrees(calculateAngleToSpeaker(robotPosition, redside));
-  }
-
-  private double calculateAngleToSpeaker(Translation2d robotPosition, boolean redside) {
+  public static double calculateAngleToSpeaker(Translation2d robotPosition, boolean redside, boolean IncreaseAngle) {
     SmartDashboard.putBoolean("Redside Calculate angle To Speaker", redside);
     double groundDistFromSpeaker =
         ((redside)
@@ -174,12 +173,11 @@ public class ArmSubsystem extends SubsystemBase {
             .getDistance(robotPosition);
     SmartDashboard.putNumber("ground dist from speaker", groundDistFromSpeaker);
     SmartDashboard.putNumber(
-        "angle from intermap", Constants.Arm.INTERMAP.get(groundDistFromSpeaker));
-    return Constants.Arm.INTERMAP.get(groundDistFromSpeaker);
-  }
-
-  public void rotateToAmpPosition() {
-    setTargetDegrees(Constants.Arm.AMP_ANGLE);
+        "angle from intermap1", Constants.Arm.INTERMAP1.get(groundDistFromSpeaker));
+            SmartDashboard.putNumber(
+        "angle from intermap2", Constants.Arm.INTERMAP2.get(groundDistFromSpeaker));
+        return !IncreaseAngle ? Constants.Arm.INTERMAP1.get(groundDistFromSpeaker) : Constants.Arm.INTERMAP2.get(groundDistFromSpeaker);
+    // return Constants.Arm.INTERMAP.get(groundDistFromSpeaker);
   }
 
   public void rotateToRestPosition() {
@@ -230,6 +228,10 @@ public class ArmSubsystem extends SubsystemBase {
     return Math.abs(targetDegrees - getCorrectedDegrees()) < tolerance;
   }
 
+  public void setEnable(boolean toset){
+    this.enableArm = toset;
+  }
+
   @Override
   public void periodic() {
     setPosition(targetDegrees);
@@ -244,8 +246,13 @@ public class ArmSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("ARM Integrated Error: ", master.getClosedLoopError().getValue());
     SmartDashboard.putNumber("ARM Arm Rotations: ", getArmPosRotations());
     SmartDashboard.putNumber("ARM Arm Degrees: ", getRawDegrees());
+    SignalLogger.writeDouble("Arm Corrected Degrees", getCorrectedDegrees());
+    SignalLogger.writeDouble("Target Arm Degrees", targetDegrees);
     SmartDashboard.putNumber("ARM Arm Degrees Corrected: ", getCorrectedDegrees());
     SmartDashboard.putNumber("ARM Target Degrees: ", targetDegrees);
+    SmartDashboard.putString(
+        "Current commannd ARM:",
+        (getCurrentCommand() == null) ? "NULL" : getCurrentCommand().getName());
     SmartDashboard.putNumber(
         "ARM Target Integrated Rots: ", calculateIntegratedTargetRots(targetDegrees));
     SmartDashboard.putNumber(

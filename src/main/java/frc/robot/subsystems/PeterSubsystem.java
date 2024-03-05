@@ -7,6 +7,7 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -107,12 +108,6 @@ public class PeterSubsystem extends SubsystemBase {
   }
 
   // SHOOTER FUNCTIONS:
-  public void spinUpShooter() {
-    runRightShooterAtRPS(Constants.Peter.SHOOT_WHEEL_SPEED_RPS);
-    runLeftShooterAtRPS(Constants.Peter.SHOOT_WHEEL_SPEED_RPS);
-    // runShooterAtRPS(Constants.Peter.SHOOT_WHEEL_SPEED_RPS);
-  }
-
   private void runRightShooterAtRPS(double speed) {
     VelocityVoltage m_velocityControl =
         new VelocityVoltage(speed * Constants.Peter.SHOOTER_WHEELS_GEAR_RATIOS);
@@ -128,9 +123,14 @@ public class PeterSubsystem extends SubsystemBase {
     shooterMotorLeft.setControl(m_velocityControl);
   }
 
-  public void stopShooter() {
-    shooterMotorLeft.stopMotor();
-    shooterMotorRight.stopMotor();
+  public void stopShooter(boolean forceStop) {
+    if (forceStop) {
+      runRightShooterAtRPS(0);
+      runLeftShooterAtRPS(0);
+    } else {
+      shooterMotorLeft.stopMotor();
+      shooterMotorRight.stopMotor();
+    }
   }
 
   public void spinRightShooter() {
@@ -208,6 +208,9 @@ public class PeterSubsystem extends SubsystemBase {
   }
 
   private void runPreShooterAtRPS(double speed) {
+    // VoltageOut velocityControl = new VoltageOut(0);
+    // preShooterMotor.setControl(velocityControl);
+
     VelocityVoltage m_velocityControl =
         new VelocityVoltage(speed * Constants.Peter.PRESHOOTER_GEAR_RATIO);
     m_velocityControl.withFeedForward(0.1);
@@ -239,6 +242,7 @@ public class PeterSubsystem extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     SmartDashboard.putBoolean("Note Detected", notePresent()); // false = note detected!!
+    SmartDashboard.putBoolean("Shooter Ready", isShooterReady());
     SmartDashboard.putNumber(
         "Shooter left speed", shooterMotorLeft.getVelocity().getValueAsDouble());
     SmartDashboard.putNumber(
@@ -256,6 +260,9 @@ public class PeterSubsystem extends SubsystemBase {
         (this.getCurrentCommand() == null
             ? "none"
             : this.getCurrentCommand().getName())); // false = note detected!!
+    SmartDashboard.putString(
+        "Current commannd PETER:",
+        (getCurrentCommand() == null) ? "NULL" : getCurrentCommand().getName());
   }
 
   public void runShooter(int i) {

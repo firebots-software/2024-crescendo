@@ -27,13 +27,10 @@ public class FireAuton extends SequentialCommandGroup {
                 () -> 0.0,
                 tolerance,
                 2,
-                redside)
+                redside, () -> false)
             .withTimeout(1.0),
         new ParallelCommandGroup(
-            new ShootNoWarmup(peterSubsystem).withTimeout(0.5),
-
-            // we need this a second time because the first one ended in the
-            // aimBeforeShootCommand, this time without a tolerance end
+            new ShootNoWarmup(peterSubsystem, true).withTimeout(0.5),
             SwerveLockedAngleCmd.fromPoseMirrored(
                     () -> 0.0,
                     () -> 0.0,
