@@ -12,21 +12,21 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.util.Optional;
-
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
-import org.photonvision.PhotonUtils;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
+import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 public class PhotonVision extends SubsystemBase {
   Pose3d savedResult = new Pose3d(0.0, 0.0, 0.0, new Rotation3d(0.0, 0.0, 0.0));
-  private PhotonCamera camera = new PhotonCamera("FrontCam");
+  private PhotonCamera camera;
+  private static PhotonVision frontCamera = new PhotonVision("FrontCamera");
+  private static PhotonVision sideCamera = new PhotonVision("SideCamera");
   private PhotonPipelineResult pipeline;
   private PhotonTrackedTarget bestTarget;
-  private static PhotonVision pvisioninstance;
   AprilTagFieldLayout aprilTagFieldLayout;
   PhotonPoseEstimator photonPoseEstimator;
   Transform3d camToRobot = // robot relative to camera
@@ -34,21 +34,29 @@ public class PhotonVision extends SubsystemBase {
           new Translation3d(Units.inchesToMeters(-13), 0, Units.inchesToMeters(7.027)),
           new Rotation3d(0, -Units.degreesToRadians(24), Math.PI));
 
-  private PhotonVision() {
+  private PhotonVision(String name) {
+    camera = new PhotonCamera(name);
     aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
-    photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout,
-    PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
-            camera, camToRobot);
+    photonPoseEstimator =
+        new PhotonPoseEstimator(
+            aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, camera, camToRobot);
     pipeline = camera.getLatestResult();
     bestTarget = pipeline.getBestTarget();
   }
 
-  public static PhotonVision getInstance() {
-    if (pvisioninstance == null) {
-      pvisioninstance = new PhotonVision();
+  public static PhotonVision getFrontCamera(){
+    if(frontCamera == null){
+      frontCamera = new PhotonVision("FrontCam");
     }
 
-    return pvisioninstance;
+    return frontCamera;
+  }
+  public static PhotonVision getSideCamera(){
+    if(sideCamera == null){
+      sideCamera = new PhotonVision("SideCam");
+    }
+
+    return sideCamera;
   }
 
   public boolean hasTarget(PhotonPipelineResult pipeline) {
@@ -77,7 +85,7 @@ public class PhotonVision extends SubsystemBase {
     return savedResult;
   }
 
-  public Optional<EstimatedRobotPose> getMultiTagPose3d(Pose2d previousRobotPose){
+  public Optional<EstimatedRobotPose> getMultiTagPose3d(Pose2d previousRobotPose) {
     photonPoseEstimator.setReferencePose(previousRobotPose);
     return photonPoseEstimator.update();
   }

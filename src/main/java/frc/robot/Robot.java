@@ -4,10 +4,6 @@
 
 package frc.robot;
 
-import java.util.Optional;
-
-import org.photonvision.EstimatedRobotPose;
-
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
@@ -22,6 +18,8 @@ import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.PeterSubsystem;
 import frc.robot.subsystems.PhotonVision;
 import frc.robot.subsystems.SwerveSubsystem;
+import java.util.Optional;
+import org.photonvision.EstimatedRobotPose;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -31,7 +29,8 @@ import frc.robot.subsystems.SwerveSubsystem;
  */
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
-  PhotonVision vision = PhotonVision.getInstance();
+  PhotonVision frontVision = PhotonVision.getFrontCamera();
+  PhotonVision sideVision = PhotonVision.getSideCamera();
   private final SwerveSubsystem driveTrain = SwerveSubsystem.getInstance();
   private final ArmSubsystem armSubsystem = ArmSubsystem.getInstance();
   private final PeterSubsystem peterSubsystem = PeterSubsystem.getInstance();
@@ -74,9 +73,15 @@ public class Robot extends TimedRobot {
     // robot's periodic
     // block in order for anything in the Command-based framework to work.
     m_robotContainer.doTelemetry();
-    Optional<EstimatedRobotPose> robotPose = vision.getMultiTagPose3d(driveTrain.getState().Pose);
-    if (robotPose.isPresent()) {
-      driveTrain.addVisionMeasurement(robotPose.get().estimatedPose.toPose2d(), robotPose.get().timestampSeconds, visionMatrix);
+    Optional<EstimatedRobotPose> frontRobotPose = frontVision.getMultiTagPose3d(driveTrain.getState().Pose);
+    if (frontRobotPose.isPresent()) {
+      driveTrain.addVisionMeasurement(
+          frontRobotPose.get().estimatedPose.toPose2d(), Timer.getFPGATimestamp(), visionMatrix);
+    }
+    Optional<EstimatedRobotPose> sideRobotPose = sideVision.getMultiTagPose3d(driveTrain.getState().Pose);
+    if (sideRobotPose.isPresent()) {
+      driveTrain.addVisionMeasurement(
+          sideRobotPose.get().estimatedPose.toPose2d(), Timer.getFPGATimestamp(), visionMatrix);
     }
 
     CommandScheduler.getInstance().run();
