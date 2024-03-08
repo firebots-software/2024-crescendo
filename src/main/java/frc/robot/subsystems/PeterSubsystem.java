@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
@@ -235,6 +236,24 @@ public class PeterSubsystem extends SubsystemBase {
     SmartDashboard.putString(
         "Current commannd PETER:",
         (getCurrentCommand() == null) ? "NULL" : getCurrentCommand().getName());
+    periodicSignalLogger();
+  }
+
+  public void periodicSignalLogger(){
+    SignalLogger.writeBoolean("Note Detected", notePresent());
+    SignalLogger.writeBoolean("Shooter Ready", isShooterReady());
+    SignalLogger.writeDouble(
+        "Shooter left speed", shooterMotorLeft.getVelocity().getValueAsDouble());
+    SignalLogger.writeDouble(
+        "Shooter right speed", shooterMotorRight.getVelocity().getValueAsDouble());
+    SignalLogger.writeDouble(
+        "Shooter left power", shooterMotorLeft.getDutyCycle().getValueAsDouble());
+    SignalLogger.writeDouble(
+        "Shooter right power", shooterMotorRight.getDutyCycle().getValueAsDouble());
+    SignalLogger.writeDouble(
+        "Shooter left current", shooterMotorLeft.getStatorCurrent().getValueAsDouble());
+    SignalLogger.writeDouble(
+        "Shooter right current", shooterMotorRight.getStatorCurrent().getValueAsDouble());
   }
 
   public void runShooter(int i) {

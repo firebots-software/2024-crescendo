@@ -244,7 +244,6 @@ public class ArmSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     setPosition(targetDegrees);
-
     SmartDashboard.putString(
         "ARM Command:",
         this.getCurrentCommand() == null ? "none" : this.getCurrentCommand().getName());
@@ -255,8 +254,7 @@ public class ArmSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("ARM Integrated Error: ", master.getClosedLoopError().getValue());
     SmartDashboard.putNumber("ARM Arm Rotations: ", getArmPosRotations());
     SmartDashboard.putNumber("ARM Arm Degrees: ", getRawDegrees());
-    SignalLogger.writeDouble("Arm Corrected Degrees", getCorrectedDegrees());
-    SignalLogger.writeDouble("Target Arm Degrees", targetDegrees);
+
     SmartDashboard.putNumber("ARM Arm Degrees Corrected: ", getCorrectedDegrees());
     SmartDashboard.putNumber("ARM Target Degrees: ", targetDegrees);
     SmartDashboard.putString(
@@ -268,5 +266,16 @@ public class ArmSubsystem extends SubsystemBase {
         "ARM FeedForward Calculations: ",
         armff.calculate((2 * Math.PI * getRawDegrees()) / 360d, 0));
     SmartDashboard.putNumber("Master Velocity", master.getVelocity().getValue());
+
+    periodicSignalLogger();
+  }
+  
+  public void periodicSignalLogger(){
+    SignalLogger.writeDouble("ARM Abs Enc Func: ", getAbsolutePosition());
+    SignalLogger.writeDouble("ARM Integrated Current: ", master.getSupplyCurrent().getValue());
+    SignalLogger.writeDouble("ARM Integrated Error: ", master.getClosedLoopError().getValue());
+    SignalLogger.writeDouble("Arm Corrected Degrees", getCorrectedDegrees());
+    SignalLogger.writeDouble("Target Arm Degrees", targetDegrees);
+    SignalLogger.writeDouble("Master Velocity", master.getVelocity().getValue());  
   }
 }
