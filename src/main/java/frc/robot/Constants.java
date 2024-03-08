@@ -96,20 +96,28 @@ public final class Constants {
             * INTEGRATED_ABSOLUTE_CONVERSION_FACTOR; // 130.63563333333335;
     public static final double ABSOLUTE_ENCODER_HORIZONTAL = 0.08;
     public static final double ABSOLUTE_HORIZONTAL_OFFSET = 0.05;
+    public static double ARM_INTERMAP_OFFSET = 4;
+    public static final InterpolatingDoubleTreeMap INTERMAP = new InterpolatingDoubleTreeMap();
 
-    public static final InterpolatingDoubleTreeMap INTERMAP1 = new InterpolatingDoubleTreeMap();
     static {
-      INTERMAP1.put(1.34, 6d + 4); // measurements of distance are from front of robot bumper to wall
-      INTERMAP1.put(2.1, 17d + 4);
-      INTERMAP1.put(Units.feetToMeters(9) + Units.inchesToMeters(17), 23.5d + 4.5);
+      INTERMAP.put(1.34, 6d + ARM_INTERMAP_OFFSET); // measurements of distance are from front of robot bumper to wall
+      INTERMAP.put(2.1, 17d + ARM_INTERMAP_OFFSET);
+      INTERMAP.put(Units.feetToMeters(9) + Units.inchesToMeters(17), 23.5d + ARM_INTERMAP_OFFSET);
+    }
+
+    public static void UPDATE_INTERMAP(){
+      INTERMAP.clear();
+      INTERMAP.put(1.34, 6d + ARM_INTERMAP_OFFSET); // measurements of distance are from front of robot bumper to wall
+      INTERMAP.put(2.1, 17d + ARM_INTERMAP_OFFSET);
+      INTERMAP.put(Units.feetToMeters(9) + Units.inchesToMeters(17), 23.5d + ARM_INTERMAP_OFFSET);
     }
     
-    public static final InterpolatingDoubleTreeMap INTERMAP2 = new InterpolatingDoubleTreeMap();
-    static {
-      INTERMAP2.put(1.34, 6d + 5); // measurements of distance are from front of robot bumper to wall
-      INTERMAP2.put(2.1, 17d + 5);
-      INTERMAP2.put(Units.feetToMeters(9) + Units.inchesToMeters(17), 23.5d + 5);
-    }
+    // public static final InterpolatingDoubleTreeMap INTERMAP2 = new InterpolatingDoubleTreeMap();
+    // static {
+    //   INTERMAP2.put(1.34, 6d + 5); // measurements of distance are from front of robot bumper to wall
+    //   INTERMAP2.put(2.1, 17d + 5);
+    //   INTERMAP2.put(Units.feetToMeters(9) + Units.inchesToMeters(17), 23.5d + 5);
+    // }
   }
 
   public static class OI {

@@ -172,7 +172,7 @@ public class ArmSubsystem extends SubsystemBase {
     targetDegrees = MathUtil.clamp(angleDegrees, 1, 90);
   }
 
-  public static double calculateAngleToSpeaker(Translation2d robotPosition, boolean redside, boolean IncreaseAngle) {
+  public static double calculateAngleToSpeaker(Translation2d robotPosition, boolean redside) {
     SmartDashboard.putBoolean("Redside Calculate angle To Speaker", redside);
     double groundDistFromSpeaker =
         ((redside)
@@ -182,11 +182,11 @@ public class ArmSubsystem extends SubsystemBase {
             .getDistance(robotPosition);
     SmartDashboard.putNumber("ground dist from speaker", groundDistFromSpeaker);
     SmartDashboard.putNumber(
-        "angle from intermap1", Constants.Arm.INTERMAP1.get(groundDistFromSpeaker));
-            SmartDashboard.putNumber(
-        "angle from intermap2", Constants.Arm.INTERMAP2.get(groundDistFromSpeaker));
-        return !IncreaseAngle ? Constants.Arm.INTERMAP1.get(groundDistFromSpeaker) : Constants.Arm.INTERMAP2.get(groundDistFromSpeaker);
-    // return Constants.Arm.INTERMAP.get(groundDistFromSpeaker);
+        "angle from intermap1", Constants.Arm.INTERMAP.get(groundDistFromSpeaker));
+        //     SmartDashboard.putNumber(
+        // "angle from intermap2", Constants.Arm.INTERMAP2.get(groundDistFromSpeaker));
+        // return !IncreaseAngle ? Constants.Arm.INTERMAP1.get(groundDistFromSpeaker) : Constants.Arm.INTERMAP2.get(groundDistFromSpeaker);
+    return Constants.Arm.INTERMAP.get(groundDistFromSpeaker);
   }
 
   public void rotateToRestPosition() {
