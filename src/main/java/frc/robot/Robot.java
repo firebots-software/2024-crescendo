@@ -44,8 +44,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    SignalLogger.setPath("/home/lvuser/logs/");
-    SignalLogger.start();
     CameraServer.startAutomaticCapture(0);
     visionMatrix.set(0, 0, 0);
     visionMatrix.set(1, 0, 0.2d);
@@ -182,5 +180,7 @@ public class Robot extends TimedRobot {
 
   private void absoluteInit() {
     RobotContainer.setAlliance();
+    SignalLogger.setPath("/home/lvuser/logs/");
+    SignalLogger.start();
   }
 }
