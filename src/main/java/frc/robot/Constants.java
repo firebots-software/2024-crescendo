@@ -100,12 +100,13 @@ public final class Constants {
     public static final InterpolatingDoubleTreeMap INTERMAP = new InterpolatingDoubleTreeMap();
 
     static {
-      INTERMAP.put(
-          1.34,
-          6d + ARM_INTERMAP_OFFSET); // measurements of distance are from front of robot bumper to
-      // wall
-      INTERMAP.put(2.1, 17d + ARM_INTERMAP_OFFSET);
-      INTERMAP.put(Units.feetToMeters(9) + Units.inchesToMeters(17), 23.5d + ARM_INTERMAP_OFFSET);
+      UPDATE_INTERMAP();
+      // INTERMAP.put(
+      //     1.34,
+      //     6d + ARM_INTERMAP_OFFSET); // measurements of distance are from front of robot bumper to
+      // // wall
+      // INTERMAP.put(2.1, 17d + ARM_INTERMAP_OFFSET);
+      // INTERMAP.put(Units.feetToMeters(9) + Units.inchesToMeters(17), 23.5d + ARM_INTERMAP_OFFSET);
     }
 
     public static void UPDATE_INTERMAP() {
