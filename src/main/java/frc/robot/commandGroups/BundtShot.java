@@ -3,6 +3,7 @@ package frc.robot.commandGroups;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.ArmCommands.ArmToAngleCmd;
+import frc.robot.commands.DebugCommands.ResetArm;
 import frc.robot.commands.DebugCommands.Rumble;
 import frc.robot.commands.PeterCommands.ShootNoWarmup;
 import frc.robot.commands.PeterCommands.SpinUpShooter;
@@ -16,6 +17,7 @@ public class BundtShot extends SequentialCommandGroup {
       ArmSubsystem armSubsystem,
       JoystickSubsystem joystickSubsystem) {
     addCommands(
+        new ResetArm(armSubsystem),
         new ParallelCommandGroup(
             new SpinUpShooter(peterSubsystem),
             ArmToAngleCmd.toBundt(armSubsystem).withTolerance(1)),

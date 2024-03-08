@@ -149,6 +149,12 @@ public class ArmSubsystem extends SubsystemBase {
     return instance;
   }
 
+  public void resetPosition(){
+    if (revEncoder.isConnected()){
+      master.setPosition((getAbsolutePosition()) * Constants.Arm.INTEGRATED_ABSOLUTE_CONVERSION_FACTOR);
+    }
+  }
+
   private void setPosition(double angleDegrees) {
     // TODO: Why is the min angle here 4 degrees, but the min angle in `setTargetDegrees` 1 degree?
     angleDegrees = MathUtil.clamp(angleDegrees, 4, 90);
@@ -157,6 +163,9 @@ public class ArmSubsystem extends SubsystemBase {
           new MotionMagicVoltage(calculateIntegratedTargetRots(angleDegrees))
               .withFeedForward(armff.calculate((2 * Math.PI * getRawDegrees()) / 360d, 0)));
     }
+    // if(master.getVelocity().getValue() == 0){
+
+    // }
   }
 
   public void setTargetDegrees(double angleDegrees) {
@@ -258,5 +267,6 @@ public class ArmSubsystem extends SubsystemBase {
     SmartDashboard.putNumber(
         "ARM FeedForward Calculations: ",
         armff.calculate((2 * Math.PI * getRawDegrees()) / 360d, 0));
+    SmartDashboard.putNumber("Master Velocity", master.getVelocity().getValue());
   }
 }

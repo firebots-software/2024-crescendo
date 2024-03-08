@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.commands.ArmCommands.ArmToAngleCmd;
+import frc.robot.commands.DebugCommands.ResetArm;
 import frc.robot.commands.DebugCommands.Rumble;
 import frc.robot.commands.PeterCommands.ShootNoWarmup;
 import frc.robot.commands.SwerveCommands.SwerveLockedAngleCmd;
@@ -25,6 +26,7 @@ public class FireTeleop extends SequentialCommandGroup {
       Supplier<Double> speedFunction,
       Supplier<Boolean> redside,Supplier<Boolean> increaseAngle) {
     addCommands(
+        new ResetArm(armSubsystem),
         new AimAtSpeaker(
             peterSubsystem,
             armSubsystem,
