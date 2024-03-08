@@ -51,8 +51,8 @@ public final class Constants {
 
     public static final double INTAKE_WHEEL_SPEED_RPS = 200; // Intake gear ratio: 2:1
     public static final double ROTATIONS_TO_SHOOTER = 300; // Preshooter gear ratio: 4:1
-    public static final double SHOOT_WHEEL_SPEED_RPS = 4500.0 / 60.0;
-
+    public static final double SHOOT_WHEEL_SPEED_RPS = 3500.0 / 60.0;
+    public static final double PRESHOOTER_WHEEL_VOLTAGE = 9;
     public static final String CANBUS_NAME = "rio";
 
     public static final double INTAKE_GEAR_RATIO = 2;
@@ -98,15 +98,19 @@ public final class Constants {
     public static final double ABSOLUTE_HORIZONTAL_OFFSET = 0.05;
 
     public static final InterpolatingDoubleTreeMap INTERMAP1 = new InterpolatingDoubleTreeMap();
+
     static {
-      INTERMAP1.put(1.34, 6d + 4); // measurements of distance are from front of robot bumper to wall
+      INTERMAP1.put(
+          1.34, 6d + 4); // measurements of distance are from front of robot bumper to wall
       INTERMAP1.put(2.1, 17d + 4);
       INTERMAP1.put(Units.feetToMeters(9) + Units.inchesToMeters(17), 23.5d + 4.5);
     }
-    
+
     public static final InterpolatingDoubleTreeMap INTERMAP2 = new InterpolatingDoubleTreeMap();
+
     static {
-      INTERMAP2.put(1.34, 6d + 5); // measurements of distance are from front of robot bumper to wall
+      INTERMAP2.put(
+          1.34, 6d + 5); // measurements of distance are from front of robot bumper to wall
       INTERMAP2.put(2.1, 17d + 5);
       INTERMAP2.put(Units.feetToMeters(9) + Units.inchesToMeters(17), 23.5d + 5);
     }
