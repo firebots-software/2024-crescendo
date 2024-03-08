@@ -149,9 +149,10 @@ public class ArmSubsystem extends SubsystemBase {
     return instance;
   }
 
-  public void resetPosition(){
-    if (revEncoder.isConnected()){
-      master.setPosition((getAbsolutePosition()) * Constants.Arm.INTEGRATED_ABSOLUTE_CONVERSION_FACTOR);
+  public void resetPosition() {
+    if (revEncoder.isConnected()) {
+      master.setPosition(
+          (getAbsolutePosition()) * Constants.Arm.INTEGRATED_ABSOLUTE_CONVERSION_FACTOR);
     }
   }
 
@@ -183,9 +184,10 @@ public class ArmSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("ground dist from speaker", groundDistFromSpeaker);
     SmartDashboard.putNumber(
         "angle from intermap1", Constants.Arm.INTERMAP.get(groundDistFromSpeaker));
-        //     SmartDashboard.putNumber(
-        // "angle from intermap2", Constants.Arm.INTERMAP2.get(groundDistFromSpeaker));
-        // return !IncreaseAngle ? Constants.Arm.INTERMAP1.get(groundDistFromSpeaker) : Constants.Arm.INTERMAP2.get(groundDistFromSpeaker);
+    //     SmartDashboard.putNumber(
+    // "angle from intermap2", Constants.Arm.INTERMAP2.get(groundDistFromSpeaker));
+    // return !IncreaseAngle ? Constants.Arm.INTERMAP1.get(groundDistFromSpeaker) :
+    // Constants.Arm.INTERMAP2.get(groundDistFromSpeaker);
     return Constants.Arm.INTERMAP.get(groundDistFromSpeaker);
   }
 
@@ -237,7 +239,7 @@ public class ArmSubsystem extends SubsystemBase {
     return Math.abs(targetDegrees - getCorrectedDegrees()) < tolerance;
   }
 
-  public void setEnable(boolean toset){
+  public void setEnable(boolean toset) {
     this.enableArm = toset;
   }
 
@@ -269,13 +271,13 @@ public class ArmSubsystem extends SubsystemBase {
 
     periodicSignalLogger();
   }
-  
-  public void periodicSignalLogger(){
+
+  public void periodicSignalLogger() {
     SignalLogger.writeDouble("ARM Abs Enc Func: ", getAbsolutePosition());
     SignalLogger.writeDouble("ARM Integrated Current: ", master.getSupplyCurrent().getValue());
     SignalLogger.writeDouble("ARM Integrated Error: ", master.getClosedLoopError().getValue());
     SignalLogger.writeDouble("Arm Corrected Degrees", getCorrectedDegrees());
     SignalLogger.writeDouble("Target Arm Degrees", targetDegrees);
-    SignalLogger.writeDouble("Master Velocity", master.getVelocity().getValue());  
+    SignalLogger.writeDouble("Master Velocity", master.getVelocity().getValue());
   }
 }

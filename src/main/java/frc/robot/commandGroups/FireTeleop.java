@@ -36,8 +36,7 @@ public class FireTeleop extends SequentialCommandGroup {
             speedFunction,
             5,
             1,
-            redside
-            ),
+            redside),
         new ParallelCommandGroup(
             new ShootNoWarmup(peterSubsystem, false).withTimeout(1),
             Rumble.withNoBlock(joystickSubsystem, 1, 1, 0.25),

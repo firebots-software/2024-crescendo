@@ -19,8 +19,8 @@ public class FireAuton extends SequentialCommandGroup {
       double tolerance,
       Supplier<Boolean> redside) {
     addCommands(
-      new ResetArm(armSubsystem),
-      new AimAtSpeaker(
+        new ResetArm(armSubsystem),
+        new AimAtSpeaker(
                 peterSubsystem,
                 armSubsystem,
                 driveTrain,
@@ -29,9 +29,8 @@ public class FireAuton extends SequentialCommandGroup {
                 () -> 0.0,
                 tolerance,
                 2,
-                redside, () -> false)
+                redside)
             .withTimeout(1.0),
-            
         new ParallelCommandGroup(
             new ShootNoWarmup(peterSubsystem, true).withTimeout(0.5),
             SwerveLockedAngleCmd.fromPoseMirrored(

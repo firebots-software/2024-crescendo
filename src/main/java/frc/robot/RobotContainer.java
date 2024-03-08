@@ -234,12 +234,12 @@ public class RobotContainer {
                             new Pose2d(
                                 new Translation2d(
                                     !redAlliance
-                                        ? 1.34//1.34
+                                        ? 1.34 // 1.34
                                         : (Constants.Landmarks.CENTER_LINE_LOCATION * 2 - 1.25),
                                     5.5),
                                 Rotation2d.fromDegrees(!redAlliance ? 0 : 180))))
                 .andThen(new PrintCommand("pov worked")));
-    
+
     joystickB.povLeft().onTrue(new AlterArmValues(-0.25));
     joystickB.povRight().onTrue(new AlterArmValues(0.25));
   }
@@ -296,7 +296,7 @@ public class RobotContainer {
     startchoice.setDefaultOption("STARTING POSITION: MIDDLE START", "Mid");
     startchoice.addOption("AMPSIDE START", "Amp");
     startchoice.addOption("STAGESIDE START", "Stage");
-    
+
     SmartDashboard.putData(pickup1choice);
     SmartDashboard.putData(pickup2choice);
     SmartDashboard.putData(pickup3choice);
@@ -349,7 +349,8 @@ public class RobotContainer {
                     note.get()
                         .getNoteLocation()
                         .plus(new Transform2d(Units.inchesToMeters(-18), 0, new Rotation2d()))))
-            .alongWith(new Intake(peterSubsystem, armSubsystem, joystickSubsystem).withTimeout(2.75d))
+            .alongWith(
+                new Intake(peterSubsystem, armSubsystem, joystickSubsystem).withTimeout(2.75d))
             .andThen(
                 MoveToTarget.withMirror(
                     driveTrain,

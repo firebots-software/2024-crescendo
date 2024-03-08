@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.SignalLogger;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.Matrix;
@@ -21,7 +22,6 @@ import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.PeterSubsystem;
 import frc.robot.subsystems.PhotonVision;
 import frc.robot.subsystems.SwerveSubsystem;
-import com.ctre.phoenix6.SignalLogger;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -118,7 +118,7 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    armSubsystem.setTargetDegrees(armSubsystem.getCorrectedDegrees()+15d);
+    armSubsystem.setTargetDegrees(armSubsystem.getCorrectedDegrees() + 15d);
     armSubsystem.setEnable(true);
     absoluteInit();
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();

@@ -186,6 +186,7 @@ public class PeterSubsystem extends SubsystemBase {
     }
     return false;
   }
+
   // SENSOR FUNCTIONS:
   public boolean notePresent() {
     return !noteSensor.get();
@@ -239,7 +240,7 @@ public class PeterSubsystem extends SubsystemBase {
     periodicSignalLogger();
   }
 
-  public void periodicSignalLogger(){
+  public void periodicSignalLogger() {
     SignalLogger.writeBoolean("Note Detected", notePresent());
     SignalLogger.writeBoolean("Shooter Ready", isShooterReady());
     SignalLogger.writeDouble(
