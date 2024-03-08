@@ -22,6 +22,14 @@ import edu.wpi.first.math.util.Units;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+  public static class LED {
+    public static final int LED_STRIP_LENGTH = 34;
+    public static final int LED_STRIP_PORT = 7;
+    public static final int[] PURE_RED = {0, 100, 100};
+    public static final int[] PURE_BLUE = {201, 100, 100};
+    public static final int[] PURE_YELLOW = {61, 100, 100};
+  }
+  
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
     public static final int PS4_CONTROLLER_PORT_1 = 3;
