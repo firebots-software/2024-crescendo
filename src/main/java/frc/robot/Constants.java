@@ -41,27 +41,42 @@ public final class Constants {
     public static final int BIG_BUTTON_PORT = 14;
   }
 
-  public static final class Peter {
+  public static final class Pooer {
     public static final int INTAKE_MOTOR_PORT = 33;
     // public static final double SHOOTER_SPEED = 3; // Shooter gear ratio: 15:12
     public static final int NOTE_DETECTOR_PORT = 1;
     public static final int PRE_SHOOTER_PORT = 32;
-    public static final int SHOOTER_PORT_RIGHT = 30;
-    public static final int SHOOTER_PORT_LEFT = 31;
 
     public static final double INTAKE_WHEEL_SPEED_RPS = 200; // Intake gear ratio: 2:1
     public static final double ROTATIONS_TO_SHOOTER = 300; // Preshooter gear ratio: 4:1
-    public static final double SHOOT_WHEEL_SPEED_RPS = 4500.0 / 60.0;
 
     public static final String CANBUS_NAME = "rio";
 
     public static final double INTAKE_GEAR_RATIO = 2;
     public static final double PRESHOOTER_GEAR_RATIO = 4;
-    public static final double SHOOTER_WHEELS_GEAR_RATIOS = 24d / 18d;
 
-    public static final double SHOOTER_STATOR_CURRENT_LIMIT_AMPS = 40.0;
     public static final double PRESHOOTER_STATOR_CURRENT_LIMIT_AMPS = 25.0;
     public static final double INTAKE_STATOR_CURRENT_LIMIT_AMPS = 50.0;
+
+    public static final ShooterType SHOOTER_TYPE = ShooterType.PETER;
+
+    public static enum ShooterType {
+      PETER(30, 31, 4500.0 / 60.0, 24d / 18d, 40.0),
+      PIPER(30, 31, 3500 / 60.0, 24d / 18d, 40.0);
+      public final int PORT_1, PORT_2;
+      public final double SPEED_RPS;
+      public final double GEAR_RATIO;
+      public final double STATOR_CURRENT_LIMIT_AMPS;
+
+      ShooterType(
+          int port1, int port2, double speedRPS, double gearRatio, double statorCurrentLimitAmp) {
+        PORT_1 = port1;
+        PORT_2 = port2;
+        SPEED_RPS = speedRPS;
+        GEAR_RATIO = gearRatio;
+        STATOR_CURRENT_LIMIT_AMPS = statorCurrentLimitAmp;
+      }
+    }
   }
 
   public static final class Arm {
