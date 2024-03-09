@@ -94,7 +94,7 @@ public final class Constants {
     public static final double INTEGRATED_ARM_CONVERSION_FACTOR =
         ABSOLUTE_ARM_CONVERSION_FACTOR
             * INTEGRATED_ABSOLUTE_CONVERSION_FACTOR; // 130.63563333333335;
-    public static final double ABSOLUTE_ENCODER_HORIZONTAL = 0.08;
+    public static final double ABSOLUTE_ENCODER_HORIZONTAL = 0.6547;
     public static final double ABSOLUTE_HORIZONTAL_OFFSET = 0.05;
 
     public static final InterpolatingDoubleTreeMap INTERMAP1 = new InterpolatingDoubleTreeMap();
