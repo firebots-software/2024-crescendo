@@ -245,12 +245,10 @@ public class PeterSubsystem extends SubsystemBase {
     SmartDashboard.putBoolean("Shooter Ready", isShooterReady());
     SmartDashboard.putNumber(
         "Shooter down speed", shooterMotorDown.getVelocity().getValueAsDouble());
-    SmartDashboard.putNumber(
-        "Shooter up speed", shooterMotorUp.getVelocity().getValueAsDouble());
+    SmartDashboard.putNumber("Shooter up speed", shooterMotorUp.getVelocity().getValueAsDouble());
     SmartDashboard.putNumber(
         "Shooter down power", shooterMotorDown.getDutyCycle().getValueAsDouble());
-    SmartDashboard.putNumber(
-        "Shooter up power", shooterMotorUp.getDutyCycle().getValueAsDouble());
+    SmartDashboard.putNumber("Shooter up power", shooterMotorUp.getDutyCycle().getValueAsDouble());
     SmartDashboard.putNumber(
         "Shooter down current", shooterMotorDown.getStatorCurrent().getValueAsDouble());
     SmartDashboard.putNumber(
@@ -271,12 +269,10 @@ public class PeterSubsystem extends SubsystemBase {
     SignalLogger.writeBoolean("Shooter Ready", isShooterReady());
     SignalLogger.writeDouble(
         "Shooter down speed", shooterMotorDown.getVelocity().getValueAsDouble());
-    SignalLogger.writeDouble(
-        "Shooter up speed", shooterMotorUp.getVelocity().getValueAsDouble());
+    SignalLogger.writeDouble("Shooter up speed", shooterMotorUp.getVelocity().getValueAsDouble());
     SignalLogger.writeDouble(
         "Shooter down power", shooterMotorDown.getDutyCycle().getValueAsDouble());
-    SignalLogger.writeDouble(
-        "Shooter up power", shooterMotorUp.getDutyCycle().getValueAsDouble());
+    SignalLogger.writeDouble("Shooter up power", shooterMotorUp.getDutyCycle().getValueAsDouble());
     SignalLogger.writeDouble(
         "Shooter down current", shooterMotorDown.getStatorCurrent().getValueAsDouble());
     SignalLogger.writeDouble(

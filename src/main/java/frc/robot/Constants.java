@@ -29,7 +29,7 @@ public final class Constants {
     public static final int[] PURE_BLUE = {201, 100, 100};
     public static final int[] PURE_YELLOW = {61, 100, 100};
   }
-  
+
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
     public static final int PS4_CONTROLLER_PORT_1 = 3;
@@ -59,7 +59,8 @@ public final class Constants {
 
     public static final double INTAKE_WHEEL_SPEED_RPS = 200; // Intake gear ratio: 2:1
     public static final double ROTATIONS_TO_SHOOTER = 300; // Preshooter gear ratio: 4:1
-    public static final double SHOOT_WHEEL_SPEED_RPS = 3500.0 / 60.0;// TODO: Add right and left motor RPS, and change it to not max
+    public static final double SHOOT_WHEEL_SPEED_RPS =
+        3500.0 / 60.0; // TODO: Add right and left motor RPS, and change it to not max
     public static final double PRESHOOTER_WHEEL_VOLTAGE = 9;
     public static final String CANBUS_NAME = "rio";
 
@@ -102,7 +103,7 @@ public final class Constants {
     public static final double INTEGRATED_ARM_CONVERSION_FACTOR =
         ABSOLUTE_ARM_CONVERSION_FACTOR
             * INTEGRATED_ABSOLUTE_CONVERSION_FACTOR; // 130.63563333333335;
-    public static final double ABSOLUTE_ENCODER_HORIZONTAL = 0.08;
+    public static final double ABSOLUTE_ENCODER_HORIZONTAL = 0.6547;
     public static final double ABSOLUTE_HORIZONTAL_OFFSET = 0.05;
     public static double ARM_INTERMAP_OFFSET = 4;
     public static final InterpolatingDoubleTreeMap INTERMAP = new InterpolatingDoubleTreeMap();
@@ -111,10 +112,12 @@ public final class Constants {
       UPDATE_INTERMAP();
       // INTERMAP.put(
       //     1.34,
-      //     6d + ARM_INTERMAP_OFFSET); // measurements of distance are from front of robot bumper to
+      //     6d + ARM_INTERMAP_OFFSET); // measurements of distance are from front of robot bumper
+      // to
       // // wall
       // INTERMAP.put(2.1, 17d + ARM_INTERMAP_OFFSET);
-      // INTERMAP.put(Units.feetToMeters(9) + Units.inchesToMeters(17), 23.5d + ARM_INTERMAP_OFFSET);
+      // INTERMAP.put(Units.feetToMeters(9) + Units.inchesToMeters(17), 23.5d +
+      // ARM_INTERMAP_OFFSET);
     }
 
     public static void UPDATE_INTERMAP() {

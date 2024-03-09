@@ -88,8 +88,8 @@ public class SwerveJoystickCommand extends Command {
     }
 
     // Apply Square (will be [0,1] since `speed` is [0,1])
-    xSpeed = Math.pow(xSpeed, 2) * xSpeed < 0 ? -1 : 1;
-    ySpeed = Math.pow(ySpeed, 2) * ySpeed < 0 ? -1 : 1;
+    xSpeed = xSpeed * xSpeed * Math.signum(xSpeed);
+    ySpeed = ySpeed * ySpeed * Math.signum(ySpeed);
 
     // 3. Apply deadband
     xSpeed = Math.abs(xSpeed) > Constants.OI.LEFT_JOYSTICK_DEADBAND ? xSpeed : 0.0;

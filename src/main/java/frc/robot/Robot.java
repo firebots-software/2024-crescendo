@@ -36,7 +36,7 @@ public class Robot extends TimedRobot {
   private final SwerveSubsystem driveTrain = SwerveSubsystem.getInstance();
   private final ArmSubsystem armSubsystem = ArmSubsystem.getInstance();
   private final PeterSubsystem peterSubsystem = PeterSubsystem.getInstance();
-    private LightsSubsystem lightsSubsystem = LightsSubsystem.getInstance();
+  private LightsSubsystem lightsSubsystem = LightsSubsystem.getInstance();
 
   private RobotContainer m_robotContainer;
   private static Matrix<N3, N1> visionMatrix = new Matrix<N3, N1>(Nat.N3(), Nat.N1());

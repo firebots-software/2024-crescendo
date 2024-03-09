@@ -13,6 +13,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -268,7 +269,11 @@ public class ArmSubsystem extends SubsystemBase {
         "ARM FeedForward Calculations: ",
         armff.calculate((2 * Math.PI * getRawDegrees()) / 360d, 0));
     SmartDashboard.putNumber("Master Velocity", master.getVelocity().getValue());
-
+    SmartDashboard.putNumber(
+        "ARM Abs enc deg",
+        Units.rotationsToDegrees(getAbsolutePosition() - Constants.Arm.ABSOLUTE_HORIZONTAL_OFFSET)
+            / Constants.Arm.ABSOLUTE_ARM_CONVERSION_FACTOR);
+    SmartDashboard.putNumber("ARM updown adjustment", Constants.Arm.ARM_INTERMAP_OFFSET);
     periodicSignalLogger();
   }
 
