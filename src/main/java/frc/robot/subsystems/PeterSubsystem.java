@@ -1,7 +1,6 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.SignalLogger;
-// import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -21,37 +20,30 @@ public class PeterSubsystem extends SubsystemBase {
   private DigitalInput noteSensor;
   private TalonFX shooterMotorUp, shooterMotorDown;
   private TalonFX preShooterMotor, intakeMotor;
-  // private StatusSignal<Double> preShooterPosition;
 
   private MotionMagicConfigs mmcPreShooter;
 
   public PeterSubsystem() {
     // Initalize shooter
     // Follower f = new Follower(Constants.Intake.SHOOTER_PORT_LEFT, false );
-    shooterMotorDown = new TalonFX(Constants.Peter.SHOOTER_PORT_LEFT, Constants.Peter.CANBUS_NAME);
-    shooterMotorUp = new TalonFX(Constants.Peter.SHOOTER_PORT_RIGHT, Constants.Peter.CANBUS_NAME);
+    shooterMotorDown = new TalonFX(Constants.Pooer.SHOOTER.PORT_1, Constants.Pooer.CANBUS_NAME);
+    shooterMotorUp = new TalonFX(Constants.Pooer.SHOOTER.PORT_2, Constants.Pooer.CANBUS_NAME);
     shooterMotorUp.setInverted(true);
     // shooterMotorRight.setControl(f);
     Slot0Configs s0c =
         new Slot0Configs().withKP(0.001).withKI(0).withKD(0).withKG(0).withKV(0.2).withKA(0);
+    CurrentLimitsConfigs clc =
+        new CurrentLimitsConfigs()
+            .withStatorCurrentLimitEnable(true)
+            .withStatorCurrentLimit(Constants.Pooer.SHOOTER.STATOR_CURRENT_LIMIT_AMPS);
 
     shooterMotorUp.getConfigurator().apply(s0c);
     shooterMotorDown.getConfigurator().apply(s0c);
-    shooterMotorDown
-        .getConfigurator()
-        .apply(
-            new CurrentLimitsConfigs()
-                .withStatorCurrentLimitEnable(true)
-                .withStatorCurrentLimit(Constants.Peter.SHOOTER_STATOR_CURRENT_LIMIT_AMPS));
-    shooterMotorUp
-        .getConfigurator()
-        .apply(
-            new CurrentLimitsConfigs()
-                .withStatorCurrentLimitEnable(true)
-                .withStatorCurrentLimit(Constants.Peter.SHOOTER_STATOR_CURRENT_LIMIT_AMPS));
+    shooterMotorUp.getConfigurator().apply(clc);
+    shooterMotorDown.getConfigurator().apply(clc);
 
     // Preshooter
-    preShooterMotor = new TalonFX(Constants.Peter.PRE_SHOOTER_PORT, Constants.Peter.CANBUS_NAME);
+    preShooterMotor = new TalonFX(Constants.Pooer.PRE_SHOOTER_PORT, Constants.Pooer.CANBUS_NAME);
     mmcPreShooter = new MotionMagicConfigs();
     mmcPreShooter.MotionMagicCruiseVelocity = 80;
     mmcPreShooter.MotionMagicAcceleration = 160;
@@ -65,23 +57,21 @@ public class PeterSubsystem extends SubsystemBase {
         .apply(
             new CurrentLimitsConfigs()
                 .withStatorCurrentLimitEnable(true)
-                .withStatorCurrentLimit(Constants.Peter.PRESHOOTER_STATOR_CURRENT_LIMIT_AMPS));
+                .withStatorCurrentLimit(Constants.Pooer.PRESHOOTER_STATOR_CURRENT_LIMIT_AMPS));
     // Intake
     Slot0Configs intakePid =
         new Slot0Configs().withKP(0.1).withKI(0).withKD(0).withKG(0).withKV(0).withKA(0);
 
-    intakeMotor = new TalonFX(Constants.Peter.INTAKE_MOTOR_PORT, Constants.Peter.CANBUS_NAME);
+    intakeMotor = new TalonFX(Constants.Pooer.INTAKE_MOTOR_PORT, Constants.Pooer.CANBUS_NAME);
     intakeMotor.getConfigurator().apply(intakePid);
     intakeMotor
         .getConfigurator()
         .apply(
             new CurrentLimitsConfigs()
                 .withStatorCurrentLimitEnable(true)
-                .withStatorCurrentLimit(Constants.Peter.INTAKE_STATOR_CURRENT_LIMIT_AMPS));
+                .withStatorCurrentLimit(Constants.Pooer.INTAKE_STATOR_CURRENT_LIMIT_AMPS));
     intakeMotor.setInverted(true);
-    noteSensor = new DigitalInput(Constants.Peter.NOTE_DETECTOR_PORT);
-
-    // preShooterPosition = preShooterMotor.getPosition();
+    noteSensor = new DigitalInput(Constants.Pooer.NOTE_DETECTOR_PORT);
   }
 
   public static PeterSubsystem getInstance() {
@@ -93,12 +83,12 @@ public class PeterSubsystem extends SubsystemBase {
 
   // INTAKE FUNCTIONS:
   public void spinUpIntake() {
-    runIntakeAtRPS(Constants.Peter.INTAKE_WHEEL_SPEED_RPS);
+    runIntakeAtRPS(Constants.Pooer.INTAKE_WHEEL_SPEED_RPS);
   }
 
   private void runIntakeAtRPS(double speed) {
     VelocityVoltage m_velocityControl =
-        new VelocityVoltage(speed * Constants.Peter.INTAKE_GEAR_RATIO);
+        new VelocityVoltage(speed * Constants.Pooer.INTAKE_GEAR_RATIO);
     m_velocityControl.withFeedForward(0.1);
     intakeMotor.setControl(m_velocityControl);
   }
@@ -110,7 +100,7 @@ public class PeterSubsystem extends SubsystemBase {
   // SHOOTER FUNCTIONS:
   private void runRightShooterAtRPS(double speed) {
     VelocityVoltage m_velocityControl =
-        new VelocityVoltage(speed * Constants.Peter.SHOOTER_WHEELS_GEAR_RATIOS);
+        new VelocityVoltage(speed * Constants.Pooer.SHOOTER.GEAR_RATIO);
     m_velocityControl.withFeedForward(0.1);
     shooterMotorUp.setControl(m_velocityControl);
     shooterMotorUp.getVelocity();
@@ -118,7 +108,7 @@ public class PeterSubsystem extends SubsystemBase {
 
   private void runLeftShooterAtRPS(double speed) {
     VelocityVoltage m_velocityControl =
-        new VelocityVoltage(speed * Constants.Peter.SHOOTER_WHEELS_GEAR_RATIOS);
+        new VelocityVoltage(speed * Constants.Pooer.SHOOTER.GEAR_RATIO);
     m_velocityControl.withFeedForward(0.1);
     shooterMotorDown.setControl(m_velocityControl);
   }
@@ -134,11 +124,11 @@ public class PeterSubsystem extends SubsystemBase {
   }
 
   public void spinRightShooter() {
-    runRightShooterAtRPS(Constants.Peter.SHOOT_WHEEL_SPEED_RPS);
+    runRightShooterAtRPS(Constants.Pooer.SHOOTER.SPEED_RPS);
   }
 
   public void spinLeftShooter() {
-    runLeftShooterAtRPS(Constants.Peter.SHOOT_WHEEL_SPEED_RPS);
+    runLeftShooterAtRPS(Constants.Pooer.SHOOTER.SPEED_RPS);
   }
 
   public void stopRightShooter() {
@@ -154,13 +144,13 @@ public class PeterSubsystem extends SubsystemBase {
   }
 
   public void reversePreshooterRotations(double count) {
-    preShooterMotor.setControl(new PositionVoltage(-count * Constants.Peter.PRESHOOTER_GEAR_RATIO));
+    preShooterMotor.setControl(new PositionVoltage(-count * Constants.Pooer.PRESHOOTER_GEAR_RATIO));
   }
 
   public boolean isBackedUp(double count) {
     return Math.abs(
             preShooterMotor.getPosition().getValueAsDouble()
-                - (-count * Constants.Peter.PRESHOOTER_GEAR_RATIO))
+                - (-count * Constants.Pooer.PRESHOOTER_GEAR_RATIO))
         < 0.1;
   }
 
@@ -172,18 +162,10 @@ public class PeterSubsystem extends SubsystemBase {
   }
 
   public boolean isShooterReady() {
-    if (Math.abs(shooterMotorDown.getVelocity().getValue() - Constants.Peter.SHOOT_WHEEL_SPEED_RPS)
-        < 0.001) {
-      return true;
-    }
-    if (Math.abs(
+    return Math.abs(
             shooterMotorDown.getVelocity().getValueAsDouble()
-                - (Constants.Peter.SHOOT_WHEEL_SPEED_RPS
-                    * Constants.Peter.SHOOTER_WHEELS_GEAR_RATIOS))
-        < 10) {
-      return true;
-    }
-    return false;
+                - (Constants.Pooer.SHOOTER.SPEED_RPS * Constants.Pooer.SHOOTER.GEAR_RATIO))
+        < 10;
   }
 
   /* private void runShooterAtRPS(double speed) {
@@ -204,11 +186,11 @@ public class PeterSubsystem extends SubsystemBase {
   // PRE-SHOOTER FUNCTIONS:
 
   public void spinUpPreShooter() {
-    runPreShooterAtRPS(Constants.Peter.ROTATIONS_TO_SHOOTER);
+    runPreShooterAtRPS(Constants.Pooer.ROTATIONS_TO_SHOOTER);
   }
 
   private void runPreShooterAtRPS(double speed) {
-    VoltageOut velocityControl = new VoltageOut(Constants.Peter.PRESHOOTER_WHEEL_VOLTAGE);
+    VoltageOut velocityControl = new VoltageOut(Constants.Pooer.PRESHOOTER_WHEEL_VOLTAGE);
     preShooterMotor.setControl(velocityControl);
 
     // VelocityVoltage m_velocityControl =

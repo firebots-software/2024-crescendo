@@ -32,6 +32,7 @@ import frc.robot.commands.ArmCommands.AlterArmValues;
 import frc.robot.commands.ArmCommands.ArmToAngleCmd;
 import frc.robot.commands.Auton.MoveToTarget;
 import frc.robot.commands.Auton.RatchetteDisengage;
+import frc.robot.commands.DebugCommands.AlterArmValues;
 import frc.robot.commands.PeterCommands.ShootNoWarmup;
 import frc.robot.commands.PeterCommands.SpinUpShooter;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
