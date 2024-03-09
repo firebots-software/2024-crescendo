@@ -1,7 +1,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.SignalLogger;
-import com.ctre.phoenix6.StatusSignal;
+// import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -21,7 +21,7 @@ public class PeterSubsystem extends SubsystemBase {
   private DigitalInput noteSensor;
   private TalonFX shooterMotorUp, shooterMotorDown;
   private TalonFX preShooterMotor, intakeMotor;
-  private StatusSignal<Double> preShooterPosition;
+  // private StatusSignal<Double> preShooterPosition;
 
   private MotionMagicConfigs mmcPreShooter;
 
@@ -81,7 +81,7 @@ public class PeterSubsystem extends SubsystemBase {
     intakeMotor.setInverted(true);
     noteSensor = new DigitalInput(Constants.Peter.NOTE_DETECTOR_PORT);
 
-    preShooterPosition = preShooterMotor.getPosition();
+    // preShooterPosition = preShooterMotor.getPosition();
   }
 
   public static PeterSubsystem getInstance() {
@@ -278,9 +278,8 @@ public class PeterSubsystem extends SubsystemBase {
     SignalLogger.writeDouble(
         "Shooter up current", shooterMotorUp.getStatorCurrent().getValueAsDouble());
   }
-
-  public void runShooter(int i) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'runShooter'");
-  }
+  // public void runShooter(int i) {
+  //   // TODO Auto-generated method stub
+  //   throw new UnsupportedOperationException("Unimplemented method 'runShooter'");
+  // }
 }

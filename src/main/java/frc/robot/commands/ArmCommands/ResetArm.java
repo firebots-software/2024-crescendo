@@ -1,20 +1,19 @@
-package frc.robot.commands.DebugCommands;
+package frc.robot.commands.ArmCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants;
+import frc.robot.subsystems.ArmSubsystem;
 
-public class AlterArmValues extends Command {
-  private double increaseBy;
+public class ResetArm extends Command {
+  private ArmSubsystem armSubsystem;
 
-  public AlterArmValues(double increaseBy) {
-    this.increaseBy = increaseBy;
+  public ResetArm(ArmSubsystem armSubsystem) {
+    this.armSubsystem = armSubsystem;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    Constants.Arm.ARM_INTERMAP_OFFSET += increaseBy;
-    Constants.Arm.UPDATE_INTERMAP();
+    armSubsystem.resetPosition();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
