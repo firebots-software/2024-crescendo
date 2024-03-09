@@ -103,7 +103,7 @@ public class PeterSubsystem extends SubsystemBase {
         new VelocityVoltage(speed * Constants.Pooer.SHOOTER.GEAR_RATIO);
     m_velocityControl.withFeedForward(0.1);
     shooterMotorUp.setControl(m_velocityControl);
-    shooterMotorUp.getVelocity();
+    // shooterMotorUp.getVelocity();
   }
 
   private void runLeftShooterAtRPS(double speed) {
