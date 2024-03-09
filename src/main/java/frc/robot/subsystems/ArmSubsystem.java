@@ -13,6 +13,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -149,6 +150,13 @@ public class ArmSubsystem extends SubsystemBase {
     return instance;
   }
 
+  public void resetPosition() {
+    if (revEncoder.isConnected()) {
+      master.setPosition(
+          (getAbsolutePosition()) * Constants.Arm.INTEGRATED_ABSOLUTE_CONVERSION_FACTOR);
+    }
+  }
+
   private void setPosition(double angleDegrees) {
     // TODO: Why is the min angle here 4 degrees, but the min angle in `setTargetDegrees` 1 degree?
     angleDegrees = MathUtil.clamp(angleDegrees, 4, 90);
@@ -157,14 +165,16 @@ public class ArmSubsystem extends SubsystemBase {
           new MotionMagicVoltage(calculateIntegratedTargetRots(angleDegrees))
               .withFeedForward(armff.calculate((2 * Math.PI * getRawDegrees()) / 360d, 0)));
     }
+    // if(master.getVelocity().getValue() == 0){
+
+    // }
   }
 
   public void setTargetDegrees(double angleDegrees) {
     targetDegrees = MathUtil.clamp(angleDegrees, 1, 90);
   }
 
-  public static double calculateAngleToSpeaker(
-      Translation2d robotPosition, boolean redside, boolean IncreaseAngle) {
+  public static double calculateAngleToSpeaker(Translation2d robotPosition, boolean redside) {
     SmartDashboard.putBoolean("Redside Calculate angle To Speaker", redside);
     double groundDistFromSpeaker =
         ((redside)
@@ -174,13 +184,12 @@ public class ArmSubsystem extends SubsystemBase {
             .getDistance(robotPosition);
     SmartDashboard.putNumber("ground dist from speaker", groundDistFromSpeaker);
     SmartDashboard.putNumber(
-        "angle from intermap1", Constants.Arm.INTERMAP1.get(groundDistFromSpeaker));
-    SmartDashboard.putNumber(
-        "angle from intermap2", Constants.Arm.INTERMAP2.get(groundDistFromSpeaker));
-    return !IncreaseAngle
-        ? Constants.Arm.INTERMAP1.get(groundDistFromSpeaker)
-        : Constants.Arm.INTERMAP2.get(groundDistFromSpeaker);
-    // return Constants.Arm.INTERMAP.get(groundDistFromSpeaker);
+        "angle from intermap1", Constants.Arm.INTERMAP.get(groundDistFromSpeaker));
+    //     SmartDashboard.putNumber(
+    // "angle from intermap2", Constants.Arm.INTERMAP2.get(groundDistFromSpeaker));
+    // return !IncreaseAngle ? Constants.Arm.INTERMAP1.get(groundDistFromSpeaker) :
+    // Constants.Arm.INTERMAP2.get(groundDistFromSpeaker);
+    return Constants.Arm.INTERMAP.get(groundDistFromSpeaker);
   }
 
   public void rotateToRestPosition() {
@@ -238,7 +247,6 @@ public class ArmSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     setPosition(targetDegrees);
-
     SmartDashboard.putString(
         "ARM Command:",
         this.getCurrentCommand() == null ? "none" : this.getCurrentCommand().getName());
@@ -249,8 +257,7 @@ public class ArmSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("ARM Integrated Error: ", master.getClosedLoopError().getValue());
     SmartDashboard.putNumber("ARM Arm Rotations: ", getArmPosRotations());
     SmartDashboard.putNumber("ARM Arm Degrees: ", getRawDegrees());
-    SignalLogger.writeDouble("Arm Corrected Degrees", getCorrectedDegrees());
-    SignalLogger.writeDouble("Target Arm Degrees", targetDegrees);
+
     SmartDashboard.putNumber("ARM Arm Degrees Corrected: ", getCorrectedDegrees());
     SmartDashboard.putNumber("ARM Target Degrees: ", targetDegrees);
     SmartDashboard.putString(
@@ -261,5 +268,21 @@ public class ArmSubsystem extends SubsystemBase {
     SmartDashboard.putNumber(
         "ARM FeedForward Calculations: ",
         armff.calculate((2 * Math.PI * getRawDegrees()) / 360d, 0));
+    SmartDashboard.putNumber("Master Velocity", master.getVelocity().getValue());
+    SmartDashboard.putNumber(
+        "ARM Abs enc deg",
+        Units.rotationsToDegrees(getAbsolutePosition() - Constants.Arm.ABSOLUTE_HORIZONTAL_OFFSET)
+            / Constants.Arm.ABSOLUTE_ARM_CONVERSION_FACTOR);
+    SmartDashboard.putNumber("ARM updown adjustment", Constants.Arm.ARM_INTERMAP_OFFSET);
+    periodicSignalLogger();
+  }
+
+  public void periodicSignalLogger() {
+    SignalLogger.writeDouble("ARM Abs Enc Func: ", getAbsolutePosition());
+    SignalLogger.writeDouble("ARM Integrated Current: ", master.getSupplyCurrent().getValue());
+    SignalLogger.writeDouble("ARM Integrated Error: ", master.getClosedLoopError().getValue());
+    SignalLogger.writeDouble("Arm Corrected Degrees", getCorrectedDegrees());
+    SignalLogger.writeDouble("Target Arm Degrees", targetDegrees);
+    SignalLogger.writeDouble("Master Velocity", master.getVelocity().getValue());
   }
 }

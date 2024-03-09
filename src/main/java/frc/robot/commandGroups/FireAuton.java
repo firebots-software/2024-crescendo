@@ -3,6 +3,7 @@ package frc.robot.commandGroups;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
+import frc.robot.commands.DebugCommands.ResetArm;
 import frc.robot.commands.PeterCommands.ShootNoWarmup;
 import frc.robot.commands.SwerveCommands.SwerveLockedAngleCmd;
 import frc.robot.subsystems.ArmSubsystem;
@@ -18,6 +19,7 @@ public class FireAuton extends SequentialCommandGroup {
       double tolerance,
       Supplier<Boolean> redside) {
     addCommands(
+        new ResetArm(armSubsystem),
         new AimAtSpeaker(
                 peterSubsystem,
                 armSubsystem,
@@ -27,8 +29,7 @@ public class FireAuton extends SequentialCommandGroup {
                 () -> 0.0,
                 tolerance,
                 2,
-                redside,
-                () -> false)
+                redside)
             .withTimeout(1.0),
         new ParallelCommandGroup(
             new ShootNoWarmup(peterSubsystem, true).withTimeout(0.5),

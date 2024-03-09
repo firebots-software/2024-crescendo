@@ -31,6 +31,7 @@ import frc.robot.commandGroups.Intake;
 import frc.robot.commands.ArmCommands.ArmToAngleCmd;
 import frc.robot.commands.Auton.MoveToTarget;
 import frc.robot.commands.Auton.RatchetteDisengage;
+import frc.robot.commands.DebugCommands.AlterArmValues;
 import frc.robot.commands.PeterCommands.ShootNoWarmup;
 import frc.robot.commands.PeterCommands.SpinUpShooter;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
@@ -121,8 +122,7 @@ public class RobotContainer {
                 frontBackFunction,
                 leftRightFunction,
                 speedFunction,
-                redside,
-                () -> joystickB.getLeftX() >= 0.05));
+                redside));
 
     joystickA
         .a()
@@ -136,8 +136,7 @@ public class RobotContainer {
                 frontBackFunction,
                 leftRightFunction,
                 speedFunction,
-                redside,
-                () -> joystickB.getLeftX() >= 0.05));
+                redside));
 
     joystickA
         .a()
@@ -240,6 +239,9 @@ public class RobotContainer {
                                     5.5),
                                 Rotation2d.fromDegrees(!redAlliance ? 0 : 180))))
                 .andThen(new PrintCommand("pov worked")));
+
+    joystickB.povLeft().onTrue(new AlterArmValues(-0.25));
+    joystickB.povRight().onTrue(new AlterArmValues(0.25));
   }
 
   // Constructs a Pose2d array of the note locations by a specific indexing so they can be accessed

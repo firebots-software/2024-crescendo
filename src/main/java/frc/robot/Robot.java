@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.LightsSubsystem;
 import frc.robot.subsystems.PeterSubsystem;
 import frc.robot.subsystems.PhotonVision;
 import frc.robot.subsystems.SwerveSubsystem;
@@ -35,6 +36,8 @@ public class Robot extends TimedRobot {
   private final SwerveSubsystem driveTrain = SwerveSubsystem.getInstance();
   private final ArmSubsystem armSubsystem = ArmSubsystem.getInstance();
   private final PeterSubsystem peterSubsystem = PeterSubsystem.getInstance();
+  private LightsSubsystem lightsSubsystem = LightsSubsystem.getInstance();
+
   private RobotContainer m_robotContainer;
   private static Matrix<N3, N1> visionMatrix = new Matrix<N3, N1>(Nat.N3(), Nat.N1());
 
@@ -44,8 +47,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    SignalLogger.setPath("/home/lvuser/logs/");
-    SignalLogger.start();
     CameraServer.startAutomaticCapture(0);
     visionMatrix.set(0, 0, 0);
     visionMatrix.set(1, 0, 0.2d);
@@ -182,5 +183,7 @@ public class Robot extends TimedRobot {
 
   private void absoluteInit() {
     RobotContainer.setAlliance();
+    SignalLogger.setPath("/home/lvuser/logs/");
+    SignalLogger.start();
   }
 }
