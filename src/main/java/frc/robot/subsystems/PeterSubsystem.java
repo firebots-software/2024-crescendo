@@ -28,7 +28,9 @@ public class PeterSubsystem extends SubsystemBase {
     // Follower f = new Follower(Constants.Intake.SHOOTER_PORT_LEFT, false );
     shooterMotorDown = new TalonFX(Constants.Pooer.SHOOTER.PORT_1, Constants.Pooer.CANBUS_NAME);
     shooterMotorUp = new TalonFX(Constants.Pooer.SHOOTER.PORT_2, Constants.Pooer.CANBUS_NAME);
-    shooterMotorUp.setInverted(true);
+    shooterMotorUp.setInverted(false);
+    shooterMotorDown.setInverted(true);
+
     // shooterMotorRight.setControl(f);
     Slot0Configs s0c =
         new Slot0Configs().withKP(0.001).withKI(0).withKD(0).withKG(0).withKV(0.2).withKA(0);
