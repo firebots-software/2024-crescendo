@@ -32,6 +32,7 @@ import frc.robot.commands.ArmCommands.AlterArmValues;
 import frc.robot.commands.ArmCommands.ArmToAngleCmd;
 import frc.robot.commands.Auton.MoveToTarget;
 import frc.robot.commands.Auton.RatchetteDisengage;
+import frc.robot.commands.DebugCommands.SmartdashBoardCmd;
 // import frc.robot.commands.ArmCommands.AlterArmValues;
 import frc.robot.commands.PeterCommands.ShootNoWarmup;
 import frc.robot.commands.PeterCommands.SpinUpShooter;
@@ -321,16 +322,17 @@ public class RobotContainer {
                 .concat(startchoice.getSelected().trim())
                 .concat("Start"));
     return new RatchetteDisengage(armSubsystem)
-        .andThen(start)
+        .andThen(new SmartdashBoardCmd("auton status", "starting"), start)
         // .andThen(new RatchetteDisengage(armSubsystem), new PrintCommand("finished Rachette"))
         .andThen(
             new FireAuton(peterSubsystem, armSubsystem, driveTrain, 1, redside),
-            new PrintCommand("ritvik gun fire1"))
+            new SmartdashBoardCmd("auton status", "fired 1"))
         .andThen(getAutonShoot(pickup1choice.getSelected()))
-        .andThen(new PrintCommand("pickup1 ended"))
+        .andThen(new SmartdashBoardCmd("auton status", "pickup1 ended"))
         .andThen(getAutonShoot(pickup2choice.getSelected()))
-        .andThen(new PrintCommand("pickup2 ended"))
-        .andThen(getAutonShoot(pickup3choice.getSelected()));
+        .andThen(new SmartdashBoardCmd("auton status", "pickup2 ended"))
+        .andThen(getAutonShoot(pickup3choice.getSelected()))
+        .andThen(new SmartdashBoardCmd("auton status", "auton finished"));
   }
 
   public Command getAutonShoot(Optional<NoteLocation> note) {
