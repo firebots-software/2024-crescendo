@@ -41,6 +41,7 @@ import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.JoystickSubsystem;
 import frc.robot.subsystems.PeterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.util.MiscUtils;
 import frc.robot.util.OtherXBoxController;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -204,22 +205,20 @@ public class RobotContainer {
                         MoveToTarget.withMirror(
                                 driveTrain,
                                 redside,
-                                Constants.Landmarks.Amp.POSE.plus(
-                                    new Transform2d(
+                                MiscUtils.plus(Constants.Landmarks.Amp.POSE, new Transform2d(
                                         0d,
-                                        -(Units.inchesToMeters(24)
+                                        -(Units.inchesToMeters(12)
                                             + Constants.Swerve.ROBOT_HALF_WIDTH_METERS),
-                                        new Rotation2d())))
-                            .andThen(
-                                MoveToTarget.withMirror(
-                                    driveTrain,
-                                    redside,
-                                    Constants.Landmarks.Amp.POSE.plus(
-                                        new Transform2d(
-                                            0d,
-                                            -(Units.inchesToMeters(12)
-                                                + Constants.Swerve.ROBOT_HALF_WIDTH_METERS),
-                                            new Rotation2d())))),
+                                        new Rotation2d()))),
+                            // .andThen(
+                            //     MoveToTarget.withMirror(
+                            //         driveTrain,
+                            //         redside,
+                            //         MiscUtils.plus(Constants.Landmarks.Amp.POSE, new Transform2d(
+                            //                 0d,
+                            //                 -(Units.inchesToMeters(12)
+                            //                     + Constants.Swerve.ROBOT_HALF_WIDTH_METERS),
+                            //                 new Rotation2d())))),
                         new SpinUpShooter(peterSubsystem)),
                     new ShootNoWarmup(peterSubsystem, false))
                 .withInterruptBehavior(InterruptionBehavior.kCancelSelf));
