@@ -151,20 +151,20 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void resetPosition() {
-    if (revEncoder.isConnected()) {
-      master.setPosition(
-          (getAbsolutePosition()) * Constants.Arm.INTEGRATED_ABSOLUTE_CONVERSION_FACTOR);
-    }
+    // if (revEncoder.isConnected()) {
+    //   master.setPosition(
+    //       (getAbsolutePosition()) * Constants.Arm.INTEGRATED_ABSOLUTE_CONVERSION_FACTOR);
+    // }
   }
 
   private void setPosition(double angleDegrees) {
     // TODO: Why is the min angle here 4 degrees, but the min angle in `setTargetDegrees` 1 degree?
     angleDegrees = MathUtil.clamp(angleDegrees, 4, 90);
-    if (initialized && enableArm) {
-      master.setControl(
-          new MotionMagicVoltage(calculateIntegratedTargetRots(angleDegrees))
-              .withFeedForward(armff.calculate((2 * Math.PI * getRawDegrees()) / 360d, 0)));
-    }
+    // if (initialized && enableArm && false) {
+    //   master.setControl(
+    //       new MotionMagicVoltage(calculateIntegratedTargetRots(angleDegrees))
+    //           .withFeedForward(armff.calculate((2 * Math.PI * getRawDegrees()) / 360d, 0)));
+    // }
     // if(master.getVelocity().getValue() == 0){
 
     // }
