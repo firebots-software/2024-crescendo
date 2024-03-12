@@ -31,14 +31,14 @@ public class MoveToTarget extends Command {
     addRequirements(swerve);
   }
 
-  private MoveToTarget(
-    SwerveSubsystem swerve, Pose2d[] absolutePoses, Supplier<Boolean> reflected, Rotation2d startRotation2d) {
-    this.absolutePoses = absolutePoses;
-    this.swerve = SwerveSubsystem.getInstance();
-    this.reflected = reflected;
-    this.startRotation2d=startRotation2d;
-    addRequirements(swerve);
-  }
+  // private MoveToTarget(
+  //   SwerveSubsystem swerve, Pose2d[] absolutePoses, Supplier<Boolean> reflected, Rotation2d startRotation2d) {
+  //   this.absolutePoses = absolutePoses;
+  //   this.swerve = SwerveSubsystem.getInstance();
+  //   this.reflected = reflected;
+  //   this.startRotation2d=startRotation2d;
+  //   addRequirements(swerve);
+  // }
 
   private MoveToTarget(SwerveSubsystem swerve, Pose2d absolutePose, Supplier<Boolean> reflected) {
     this(swerve, new Pose2d[] {absolutePose}, reflected);
@@ -49,10 +49,10 @@ public class MoveToTarget extends Command {
     // constructing the list of path points using absolute coordinates on the field
 
     Pose2d currentPose = swerve.getState().Pose;
-    if(startRotation2d != null){
-      currentPose = new Pose2d(currentPose.getTranslation(), startRotation2d);
-    }
-    
+    // if(startRotation2d != null){
+    //   currentPose = new Pose2d(currentPose.getTranslation(), startRotation2d);
+    // }
+
     Pose2d[] poseArray = new Pose2d[absolutePoses.length + 1];
     poseArray[0] = currentPose;
     for (int i = 1; i < poseArray.length; i++) {
