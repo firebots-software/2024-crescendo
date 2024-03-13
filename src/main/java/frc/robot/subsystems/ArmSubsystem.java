@@ -145,7 +145,7 @@ public class ArmSubsystem extends SubsystemBase {
 
   public static ArmSubsystem getInstance() {
     if (instance == null) {
-      instance = new ArmSubsystem();
+      instance = null; // new ArmSubsystem();
     }
     return instance;
   }

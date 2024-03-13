@@ -23,7 +23,7 @@ public class MoveToTarget extends Command {
   private MoveToTarget(
       SwerveSubsystem swerve, Pose2d[] absolutePoses, Supplier<Boolean> reflected) {
     this.absolutePoses = absolutePoses;
-    this.swerve = SwerveSubsystem.getInstance();
+    this.swerve = swerve;
     this.reflected = reflected;
     addRequirements(swerve);
   }

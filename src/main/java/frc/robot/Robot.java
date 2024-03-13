@@ -5,24 +5,17 @@
 package frc.robot;
 
 import com.ctre.phoenix6.SignalLogger;
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.subsystems.ArmSubsystem;
-import frc.robot.subsystems.LightsSubsystem;
 import frc.robot.subsystems.PeterSubsystem;
-import frc.robot.subsystems.PhotonVision;
-import frc.robot.subsystems.SwerveSubsystem;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -32,11 +25,11 @@ import frc.robot.subsystems.SwerveSubsystem;
  */
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
-  PhotonVision vision = PhotonVision.getInstance();
-  private final SwerveSubsystem driveTrain = SwerveSubsystem.getInstance();
-  private final ArmSubsystem armSubsystem = ArmSubsystem.getInstance();
+  // PhotonVision vision = PhotonVision.getInstance();
+  // private final SwerveSubsystem driveTrain = SwerveSubsystem.getInstance();
+  // private final ArmSubsystem armSubsystem = ArmSubsystem.getInstance();
   private final PeterSubsystem peterSubsystem = PeterSubsystem.getInstance();
-  private LightsSubsystem lightsSubsystem = LightsSubsystem.getInstance();
+  // private LightsSubsystem lightsSubsystem = LightsSubsystem.getInstance();
 
   private RobotContainer m_robotContainer;
   private static Matrix<N3, N1> visionMatrix = new Matrix<N3, N1>(Nat.N3(), Nat.N1());
@@ -77,26 +70,27 @@ public class Robot extends TimedRobot {
     // robot's periodic
     // block in order for anything in the Command-based framework to work.
     m_robotContainer.doTelemetry();
-    if (vision.hasTarget(vision.getPipeline())) {
-      AprilTagFieldLayout apr = PhotonVision.aprilTagFieldLayout;
-      double distToAprilTag =
-          apr.getTagPose(vision.getPipeline().getBestTarget().getFiducialId())
-              .get()
-              .getTranslation()
-              .getDistance(
-                  new Translation3d(
-                      driveTrain.getState().Pose.getX(), driveTrain.getState().Pose.getY(), 0.0));
+    // if (vision.hasTarget(vision.getPipeline())) {
+    //   AprilTagFieldLayout apr = PhotonVision.aprilTagFieldLayout;
+    //   double distToAprilTag =
+    //       apr.getTagPose(vision.getPipeline().getBestTarget().getFiducialId())
+    //           .get()
+    //           .getTranslation()
+    //           .getDistance(
+    //               new Translation3d(
+    //                   driveTrain.getState().Pose.getX(), driveTrain.getState().Pose.getY(),
+    // 0.0));
 
-      double xKalman = 0.01 * Math.pow(1.15, distToAprilTag);
+    //   double xKalman = 0.01 * Math.pow(1.15, distToAprilTag);
 
-      double yKalman = 0.01 * Math.pow(1.4, distToAprilTag);
+    //   double yKalman = 0.01 * Math.pow(1.4, distToAprilTag);
 
-      visionMatrix.set(0, 0, xKalman);
-      visionMatrix.set(1, 0, yKalman);
+    //   visionMatrix.set(0, 0, xKalman);
+    //   visionMatrix.set(1, 0, yKalman);
 
-      driveTrain.addVisionMeasurement(
-          vision.getRobotPose2d(), Timer.getFPGATimestamp(), visionMatrix);
-    }
+    // driveTrain.addVisionMeasurement(
+    //    vision.getRobotPose2d(), Timer.getFPGATimestamp(), visionMatrix);
+    // }
 
     CommandScheduler.getInstance().run();
     // m_robotContainer.doTelemetry();
@@ -112,7 +106,7 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledInit() {
     SignalLogger.stop();
-    armSubsystem.setEnable(false);
+    // armSubsystem.setEnable(false);
   }
 
   @Override
@@ -121,8 +115,8 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    armSubsystem.setTargetDegrees(armSubsystem.getCorrectedDegrees() + 15d);
-    armSubsystem.setEnable(true);
+    // armSubsystem.setTargetDegrees(armSubsystem.getCorrectedDegrees() + 15d);
+    // armSubsystem.setEnable(true);
     absoluteInit();
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
@@ -146,8 +140,8 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    armSubsystem.setTargetDegrees(Constants.Arm.DEFAULT_ARM_ANGLE);
-    armSubsystem.setEnable(true);
+    // armSubsystem.setTargetDegrees(Constants.Arm.DEFAULT_ARM_ANGLE);
+    // armSubsystem.setEnable(true);
   }
 
   /** This function is called periodically during operator control. */
@@ -164,7 +158,7 @@ public class Robot extends TimedRobot {
     // Cancels all running commands at the start of test mode.
     absoluteInit();
     CommandScheduler.getInstance().cancelAll();
-    armSubsystem.setEnable(true);
+    // armSubsystem.setEnable(true);
   }
 
   /** This function is called periodically during test mode. */

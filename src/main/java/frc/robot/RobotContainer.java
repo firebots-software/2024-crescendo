@@ -4,42 +4,22 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commandGroups.AimAtSpeaker;
-import frc.robot.commandGroups.BundtShot;
-import frc.robot.commandGroups.FireAuton;
-import frc.robot.commandGroups.FireTeleop;
-import frc.robot.commandGroups.Intake;
-import frc.robot.commands.ArmCommands.ArmToAngleCmd;
-import frc.robot.commands.Auton.MoveToTarget;
-import frc.robot.commands.Auton.RatchetteDisengage;
-import frc.robot.commands.DebugCommands.AlterArmValues;
+import frc.robot.commands.DebugCommands.Rumble;
+import frc.robot.commands.PeterCommands.BackupPeter;
+import frc.robot.commands.PeterCommands.RunIntakeUntilDetection;
 import frc.robot.commands.PeterCommands.ShootNoWarmup;
 import frc.robot.commands.PeterCommands.SpinUpShooter;
-import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
-import frc.robot.commands.SwerveCommands.SwerveLockedAngleCmd;
-import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.JoystickSubsystem;
 import frc.robot.subsystems.PeterSubsystem;
-import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.util.OtherXBoxController;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -59,8 +39,8 @@ public class RobotContainer {
       new OtherXBoxController(Constants.OI.JOYSTICK_B_PORT);
 
   // Subsystems
-  private final SwerveSubsystem driveTrain = SwerveSubsystem.getInstance();
-  private final ArmSubsystem armSubsystem = ArmSubsystem.getInstance();
+  // private final SwerveSubsystem driveTrain = SwerveSubsystem.getInstance();
+  // private final ArmSubsystem armSubsystem = ArmSubsystem.getInstance();
   private final PeterSubsystem peterSubsystem = PeterSubsystem.getInstance();
   private final JoystickSubsystem joystickSubsystem = new JoystickSubsystem(joystickA.getHID());
 
@@ -81,167 +61,183 @@ public class RobotContainer {
 
   // Starts telemetry operations (essentially logging -> look on SmartDashboard, AdvantageScope)
   public void doTelemetry() {
-    logger.telemeterize(driveTrain.getState());
+    // logger.telemeterize(driveTrain.getState());
   }
 
   private void configureBindings() {
 
-    // Joystick suppliers,
-    Trigger leftShoulderTrigger = joystickA.leftBumper();
-    Supplier<Double>
-        frontBackFunction = () -> ((redAlliance) ? joystickA.getLeftY() : -joystickA.getLeftY()),
-        leftRightFunction = () -> ((redAlliance) ? joystickA.getLeftX() : -joystickA.getLeftX()),
-        rotationFunction = () -> -joystickA.getRightX(),
-        speedFunction =
-            () ->
-                leftShoulderTrigger.getAsBoolean()
-                    ? 0d
-                    : 1d; // slowmode when left shoulder is pressed, otherwise fast
-
-    SwerveJoystickCommand swerveJoystickCommand =
-        new SwerveJoystickCommand(
-            frontBackFunction,
-            leftRightFunction,
-            rotationFunction,
-            speedFunction, // slowmode when left shoulder is pressed, otherwise fast
-            () -> joystickA.leftTrigger().getAsBoolean(),
-            driveTrain);
-    driveTrain.setDefaultCommand(swerveJoystickCommand);
-
-    // Intake
-    joystickA.rightTrigger().whileTrue(new Intake(peterSubsystem, armSubsystem, joystickSubsystem));
-
-    // Aim
     joystickA
-        .x()
-        .whileTrue(
-            new AimAtSpeaker(
-                peterSubsystem,
-                armSubsystem,
-                driveTrain,
-                frontBackFunction,
-                leftRightFunction,
-                speedFunction,
-                redside));
-
-    joystickA
-        .a()
-        .and(joystickB.rightTrigger(0.5).negate())
-        .whileTrue(
-            new FireTeleop(
-                peterSubsystem,
-                armSubsystem,
-                driveTrain,
-                joystickSubsystem,
-                frontBackFunction,
-                leftRightFunction,
-                speedFunction,
-                redside));
-
-    joystickA
-        .a()
-        .and(joystickB.rightTrigger(0.5))
-        .whileTrue(new BundtShot(peterSubsystem, armSubsystem, joystickSubsystem));
-
-    joystickA
-        .y()
-        .whileTrue(
-            new SwerveLockedAngleCmd(
-                frontBackFunction,
-                leftRightFunction,
-                (redAlliance) ? () -> Rotation2d.fromDegrees(180) : () -> Rotation2d.fromDegrees(0),
-                speedFunction,
-                driveTrain));
-
-    // amp snap
-    joystickA
-        .b()
-        .whileTrue(
-            new SwerveLockedAngleCmd(
-                frontBackFunction,
-                leftRightFunction,
-                () -> new Rotation2d(-Math.PI / 2d),
-                speedFunction,
-                driveTrain));
-
-    joystickA.rightBumper().whileTrue(ArmToAngleCmd.toDuck(armSubsystem));
-    // When no Commands are being issued, Peter motors should not be moving
-    peterSubsystem.setDefaultCommand(
-        new InstantCommand(
-            () -> {
-              peterSubsystem.stopIntake();
-              peterSubsystem.stopLeftShooter();
-              peterSubsystem.stopRightShooter();
-              peterSubsystem.stopPreShooterMotor();
-            },
-            peterSubsystem));
-
-    driveTrain.registerTelemetry(logger::telemeterize);
-
-    // joystick B
-    // Outtake
-    joystickB
-        .leftTrigger()
-        .whileTrue(
-            new ParallelCommandGroup(
-                    new RunCommand(
-                        () -> {
-                          peterSubsystem.reverseMechanism();
-                        },
-                        peterSubsystem),
-                    ArmToAngleCmd.toNeutral(armSubsystem).withTolerance(1))
-                .withInterruptBehavior(InterruptionBehavior.kCancelSelf));
-
-    // amp shoot
-    joystickB
-        .rightBumper()
-        .and(joystickB.leftBumper())
+        .rightTrigger()
         .whileTrue(
             new SequentialCommandGroup(
-                    new ParallelCommandGroup(
-                        ArmToAngleCmd.toAmp(armSubsystem).withTolerance(1),
-                        MoveToTarget.withMirror(
-                                driveTrain,
-                                redside,
-                                Constants.Landmarks.Amp.POSE.plus(
-                                    new Transform2d(
-                                        0d,
-                                        -(Units.inchesToMeters(24)
-                                            + Constants.Swerve.ROBOT_HALF_WIDTH_METERS),
-                                        new Rotation2d())))
-                            .andThen(
-                                MoveToTarget.withMirror(
-                                    driveTrain,
-                                    redside,
-                                    Constants.Landmarks.Amp.POSE.plus(
-                                        new Transform2d(
-                                            0d,
-                                            -(Units.inchesToMeters(12)
-                                                + Constants.Swerve.ROBOT_HALF_WIDTH_METERS),
-                                            new Rotation2d())))),
-                        new SpinUpShooter(peterSubsystem)),
-                    new ShootNoWarmup(peterSubsystem, false))
-                .withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+                new RunIntakeUntilDetection(peterSubsystem),
+                new ParallelCommandGroup(
+                    new BackupPeter(peterSubsystem),
+                    Rumble.withNoBlock(joystickSubsystem, 0.25, 0.5, 0))));
 
-    // zero-heading
-    joystickB
-        .povDown()
-        .onTrue(
-            driveTrain
-                .runOnce(
-                    () ->
-                        driveTrain.seedFieldRelative(
-                            new Pose2d(
-                                new Translation2d(
-                                    !redAlliance
-                                        ? 1.34 // 1.34
-                                        : (Constants.Landmarks.CENTER_LINE_LOCATION * 2 - 1.25),
-                                    5.5),
-                                Rotation2d.fromDegrees(!redAlliance ? 0 : 180))))
-                .andThen(new PrintCommand("pov worked")));
+    joystickA
+        .a()
+        .whileTrue(
+            new SequentialCommandGroup(
+                new SpinUpShooter(peterSubsystem), new ShootNoWarmup(peterSubsystem, redAlliance)));
+    // // Joystick suppliers,
+    // Trigger leftShoulderTrigger = joystickA.leftBumper();
+    // Supplier<Double>
+    //     frontBackFunction = () -> ((redAlliance) ? joystickA.getLeftY() : -joystickA.getLeftY()),
+    //     leftRightFunction = () -> ((redAlliance) ? joystickA.getLeftX() : -joystickA.getLeftX()),
+    //     rotationFunction = () -> -joystickA.getRightX(),
+    //     speedFunction =
+    //         () ->
+    //             leftShoulderTrigger.getAsBoolean()
+    //                 ? 0d
+    //                 : 1d; // slowmode when left shoulder is pressed, otherwise fast
 
-    joystickB.povLeft().onTrue(new AlterArmValues(-0.25));
-    joystickB.povRight().onTrue(new AlterArmValues(0.25));
+    // SwerveJoystickCommand swerveJoystickCommand =
+    //     new SwerveJoystickCommand(
+    //         frontBackFunction,
+    //         leftRightFunction,
+    //         rotationFunction,
+    //         speedFunction, // slowmode when left shoulder is pressed, otherwise fast
+    //         () -> joystickA.leftTrigger().getAsBoolean(),
+    //         driveTrain);
+    // driveTrain.setDefaultCommand(swerveJoystickCommand);
+
+    // // Intake
+    // joystickA.rightTrigger().whileTrue(new Intake(peterSubsystem, armSubsystem,
+    // joystickSubsystem));
+
+    // // Aim
+    // joystickA
+    //     .x()
+    //     .whileTrue(
+    //         new AimAtSpeaker(
+    //             peterSubsystem,
+    //             armSubsystem,
+    //             driveTrain,
+    //             frontBackFunction,
+    //             leftRightFunction,
+    //             speedFunction,
+    //             redside));
+
+    // joystickA
+    //     .a()
+    //     .and(joystickB.rightTrigger(0.5).negate())
+    //     .whileTrue(
+    //         new FireTeleop(
+    //             peterSubsystem,
+    //             armSubsystem,
+    //             driveTrain,
+    //             joystickSubsystem,
+    //             frontBackFunction,
+    //             leftRightFunction,
+    //             speedFunction,
+    //             redside));
+
+    // joystickA
+    //     .a()
+    //     .and(joystickB.rightTrigger(0.5))
+    //     .whileTrue(new BundtShot(peterSubsystem, armSubsystem, joystickSubsystem));
+
+    // joystickA
+    //     .y()
+    //     .whileTrue(
+    //         new SwerveLockedAngleCmd(
+    //             frontBackFunction,
+    //             leftRightFunction,
+    //             (redAlliance) ? () -> Rotation2d.fromDegrees(180) : () ->
+    // Rotation2d.fromDegrees(0),
+    //             speedFunction,
+    //             driveTrain));
+
+    // // amp snap
+    // joystickA
+    //     .b()
+    //     .whileTrue(
+    //         new SwerveLockedAngleCmd(
+    //             frontBackFunction,
+    //             leftRightFunction,
+    //             () -> new Rotation2d(-Math.PI / 2d),
+    //             speedFunction,
+    //             driveTrain));
+
+    // joystickA.rightBumper().whileTrue(ArmToAngleCmd.toDuck(armSubsystem));
+    // // When no Commands are being issued, Peter motors should not be moving
+    // peterSubsystem.setDefaultCommand(
+    //     new InstantCommand(
+    //         () -> {
+    //           peterSubsystem.stopIntake();
+    //           peterSubsystem.stopLeftShooter();
+    //           peterSubsystem.stopRightShooter();
+    //           peterSubsystem.stopPreShooterMotor();
+    //         },
+    //         peterSubsystem));
+
+    // driveTrain.registerTelemetry(logger::telemeterize);
+
+    // // joystick B
+    // // Outtake
+    // joystickB
+    //     .leftTrigger()
+    //     .whileTrue(
+    //         new ParallelCommandGroup(
+    //                 new RunCommand(
+    //                     () -> {
+    //                       peterSubsystem.reverseMechanism();
+    //                     },
+    //                     peterSubsystem),
+    //                 ArmToAngleCmd.toNeutral(armSubsystem).withTolerance(1))
+    //             .withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+
+    // // amp shoot
+    // joystickB
+    //     .rightBumper()
+    //     .and(joystickB.leftBumper())
+    //     .whileTrue(
+    //         new SequentialCommandGroup(
+    //                 new ParallelCommandGroup(
+    //                     ArmToAngleCmd.toAmp(armSubsystem).withTolerance(1),
+    //                     MoveToTarget.withMirror(
+    //                             driveTrain,
+    //                             redside,
+    //                             Constants.Landmarks.Amp.POSE.plus(
+    //                                 new Transform2d(
+    //                                     0d,
+    //                                     -(Units.inchesToMeters(24)
+    //                                         + Constants.Swerve.ROBOT_HALF_WIDTH_METERS),
+    //                                     new Rotation2d())))
+    //                         .andThen(
+    //                             MoveToTarget.withMirror(
+    //                                 driveTrain,
+    //                                 redside,
+    //                                 Constants.Landmarks.Amp.POSE.plus(
+    //                                     new Transform2d(
+    //                                         0d,
+    //                                         -(Units.inchesToMeters(12)
+    //                                             + Constants.Swerve.ROBOT_HALF_WIDTH_METERS),
+    //                                         new Rotation2d())))),
+    //                     new SpinUpShooter(peterSubsystem)),
+    //                 new ShootNoWarmup(peterSubsystem, false))
+    //             .withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+
+    // // zero-heading
+    // joystickB
+    //     .povDown()
+    //     .onTrue(
+    //         driveTrain
+    //             .runOnce(
+    //                 () ->
+    //                     driveTrain.seedFieldRelative(
+    //                         new Pose2d(
+    //                             new Translation2d(
+    //                                 !redAlliance
+    //                                     ? 1.34 // 1.34
+    //                                     : (Constants.Landmarks.CENTER_LINE_LOCATION * 2 - 1.25),
+    //                                 5.5),
+    //                             Rotation2d.fromDegrees(!redAlliance ? 0 : 180))))
+    //             .andThen(new PrintCommand("pov worked")));
+
+    // joystickB.povLeft().onTrue(new AlterArmValues(-0.25));
+    // joystickB.povRight().onTrue(new AlterArmValues(0.25));
   }
 
   // Constructs a Pose2d array of the note locations by a specific indexing so they can be accessed
@@ -315,49 +311,50 @@ public class RobotContainer {
     // String autonName = (redAlliance) ? "ThreeNoteAutonRed" : "ThreeNoteAutonBlue";
     // SmartDashboard.putString("Auton to be run", autonName);
     // SmartDashboard.putBoolean("Red Alliance?", redAlliance);
-    PathPlannerAuto start =
-        new PathPlannerAuto(
-            (redAlliance ? "Red" : "Blue")
-                .concat(startchoice.getSelected().trim())
-                .concat("Start"));
-    return new RatchetteDisengage(armSubsystem)
-        .andThen(start)
-        // .andThen(new RatchetteDisengage(armSubsystem), new PrintCommand("finished Rachette"))
-        .andThen(
-            new FireAuton(peterSubsystem, armSubsystem, driveTrain, 1, redside),
-            new PrintCommand("ritvik gun fire1"))
-        .andThen(getAutonShoot(pickup1choice.getSelected()))
-        .andThen(new PrintCommand("pickup1 ended"))
-        .andThen(getAutonShoot(pickup2choice.getSelected()))
-        .andThen(new PrintCommand("pickup2 ended"))
-        .andThen(getAutonShoot(pickup3choice.getSelected()));
+    return new WaitCommand(1);
+    // PathPlannerAuto start =
+    //     new PathPlannerAuto(
+    //         (redAlliance ? "Red" : "Blue")
+    //             .concat(startchoice.getSelected().trim())
+    //             .concat("Start"));
+    // return new RatchetteDisengage(armSubsystem)
+    //     .andThen(start)
+    //     // .andThen(new RatchetteDisengage(armSubsystem), new PrintCommand("finished Rachette"))
+    //     .andThen(
+    //         new FireAuton(peterSubsystem, armSubsystem, driveTrain, 1, redside),
+    //         new PrintCommand("ritvik gun fire1"))
+    //     .andThen(getAutonShoot(pickup1choice.getSelected()))
+    //     .andThen(new PrintCommand("pickup1 ended"))
+    //     .andThen(getAutonShoot(pickup2choice.getSelected()))
+    //     .andThen(new PrintCommand("pickup2 ended"))
+    //     .andThen(getAutonShoot(pickup3choice.getSelected()));
   }
 
-  public Command getAutonShoot(Optional<NoteLocation> note) {
-    return (note.isEmpty())
-        ? new WaitCommand(2.0)
-        : MoveToTarget.withMirror(
-                driveTrain,
-                redside,
-                note.get()
-                    .getNoteLocation()
-                    .plus(new Transform2d(Units.inchesToMeters(-24), 0, new Rotation2d())))
-            .andThen(
-                MoveToTarget.withMirror(
-                    driveTrain,
-                    redside,
-                    note.get()
-                        .getNoteLocation()
-                        .plus(new Transform2d(Units.inchesToMeters(-18), 0, new Rotation2d()))))
-            .alongWith(
-                new Intake(peterSubsystem, armSubsystem, joystickSubsystem).withTimeout(2.75d))
-            .andThen(
-                MoveToTarget.withMirror(
-                    driveTrain,
-                    redside,
-                    NoteLocation.MIDDLE
-                        .getNoteLocation()
-                        .plus(new Transform2d(Units.inchesToMeters(-45), 0, new Rotation2d()))))
-            .andThen(new FireAuton(peterSubsystem, armSubsystem, driveTrain, 1, redside));
-  }
+  // public Command getAutonShoot(Optional<NoteLocation> note) {
+  //   return (note.isEmpty())
+  //       ? new WaitCommand(2.0)
+  //       : MoveToTarget.withMirror(
+  //               driveTrain,
+  //               redside,
+  //               note.get()
+  //                   .getNoteLocation()
+  //                   .plus(new Transform2d(Units.inchesToMeters(-24), 0, new Rotation2d())))
+  //           .andThen(
+  //               MoveToTarget.withMirror(
+  //                   driveTrain,
+  //                   redside,
+  //                   note.get()
+  //                       .getNoteLocation()
+  //                       .plus(new Transform2d(Units.inchesToMeters(-18), 0, new Rotation2d()))))
+  //           .alongWith(
+  //               new Intake(peterSubsystem, armSubsystem, joystickSubsystem).withTimeout(2.75d))
+  //           .andThen(
+  //               MoveToTarget.withMirror(
+  //                   driveTrain,
+  //                   redside,
+  //                   NoteLocation.MIDDLE
+  //                       .getNoteLocation()
+  //                       .plus(new Transform2d(Units.inchesToMeters(-45), 0, new Rotation2d()))))
+  //           .andThen(new FireAuton(peterSubsystem, armSubsystem, driveTrain, 1, redside));
+  // }
 }

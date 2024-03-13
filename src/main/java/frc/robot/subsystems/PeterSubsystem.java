@@ -28,7 +28,8 @@ public class PeterSubsystem extends SubsystemBase {
     // Follower f = new Follower(Constants.Intake.SHOOTER_PORT_LEFT, false );
     shooterMotorDown = new TalonFX(Constants.Pooer.SHOOTER.PORT_1, Constants.Pooer.CANBUS_NAME);
     shooterMotorUp = new TalonFX(Constants.Pooer.SHOOTER.PORT_2, Constants.Pooer.CANBUS_NAME);
-    shooterMotorUp.setInverted(true);
+    shooterMotorUp.setInverted(false);
+    shooterMotorDown.setInverted(false);
     // shooterMotorRight.setControl(f);
     Slot0Configs s0c =
         new Slot0Configs().withKP(0.001).withKI(0).withKD(0).withKG(0).withKV(0.2).withKA(0);
@@ -41,7 +42,6 @@ public class PeterSubsystem extends SubsystemBase {
     shooterMotorDown.getConfigurator().apply(s0c);
     shooterMotorUp.getConfigurator().apply(clc);
     shooterMotorDown.getConfigurator().apply(clc);
-
     // Preshooter
     preShooterMotor = new TalonFX(Constants.Pooer.PRE_SHOOTER_PORT, Constants.Pooer.CANBUS_NAME);
     mmcPreShooter = new MotionMagicConfigs();
@@ -49,6 +49,7 @@ public class PeterSubsystem extends SubsystemBase {
     mmcPreShooter.MotionMagicAcceleration = 160;
     mmcPreShooter.MotionMagicJerk = 1600;
     preShooterMotor.getConfigurator().apply(mmcPreShooter);
+    preShooterMotor.setInverted(true);
 
     Slot0Configs preshooterPID = new Slot0Configs().withKP(3).withKV(1);
     preShooterMotor.getConfigurator().apply(preshooterPID);
@@ -166,6 +167,10 @@ public class PeterSubsystem extends SubsystemBase {
             shooterMotorDown.getVelocity().getValueAsDouble()
                 - (Constants.Pooer.SHOOTER.SPEED_RPS * Constants.Pooer.SHOOTER.GEAR_RATIO))
         < 10;
+    // return Math.abs(
+    //         shooterMotorDown.getVelocity().getValueAsDouble()
+    //             - (Constants.Pooer.SHOOTER.SPEED_RPS * Constants.Pooer.SHOOTER.GEAR_RATIO))
+    //     < 10;
   }
 
   /* private void runShooterAtRPS(double speed) {

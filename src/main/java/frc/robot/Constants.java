@@ -56,7 +56,7 @@ public final class Constants {
 
     public static final double INTAKE_WHEEL_SPEED_RPS = 200; // Intake gear ratio: 2:1
     public static final double ROTATIONS_TO_SHOOTER = 300; // Preshooter gear ratio: 4:1
-    public static final double PRESHOOTER_WHEEL_VOLTAGE = 9;
+    public static final double PRESHOOTER_WHEEL_VOLTAGE = 12;
     public static final String CANBUS_NAME = "rio";
 
     public static final double INTAKE_GEAR_RATIO = 2;
@@ -65,11 +65,11 @@ public final class Constants {
     public static final double PRESHOOTER_STATOR_CURRENT_LIMIT_AMPS = 25.0;
     public static final double INTAKE_STATOR_CURRENT_LIMIT_AMPS = 50.0;
 
-    public static final ShooterType SHOOTER = ShooterType.PETER;
+    public static final ShooterType SHOOTER = ShooterType.PIPER;
 
     public static enum ShooterType {
       PETER(30, 31, 4500.0 / 60.0, 12d / 15d, 40.0),
-      PIPER(30, 31, 3500.0 / 60.0, 24d / 18d, 40.0);
+      PIPER(35, 34, 3000.0 / 60.0, 24d / 18d, 40.0);
       public final int PORT_1, PORT_2;
       public final double SPEED_RPS;
       public final double GEAR_RATIO;
@@ -105,7 +105,7 @@ public final class Constants {
     public static final double CURRENT_LIMIT = 8.0;
     public static final double S0C_KP = 1.2;
     public static final double ARMFF_KS = 0.1;
-    public static final double ARMFF_KG = 0.3;
+    public static final double ARMFF_KG = 0.20;
     public static final double ARMFF_KV = 2.49;
     public static final double MOTIONMAGIC_KV = 1; // MotionMagic Cruise Velocity in RPS of the arm
     public static final double MOTIONMAGIC_KA = 2.2; // MotionMagic Acceleration in RPS^2 of the arm
