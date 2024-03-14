@@ -36,11 +36,11 @@ public class SwerveLockedAngleCmd extends SwerveJoystickCommand {
           }
 
           // Logging
-          SmartDashboard.putNumber("Corrected Target", turnTarget.get().getDegrees());
-          SmartDashboard.putNumber("Shooter Angular Error", computedError.getDegrees());
-          SmartDashboard.putNumber("Shooter Computed Output", computedRotation);
-          SmartDashboard.putNumber(
-              "Swerve Heading", getSwerveRotation(swerveSubsystem).getDegrees());
+          // SmartDashboard.putNumber("Corrected Target", turnTarget.get().getDegrees());
+          // SmartDashboard.putNumber("Shooter Angular Error", computedError.getDegrees());
+          // SmartDashboard.putNumber("Shooter Computed Output", computedRotation);
+          // SmartDashboard.putNumber(
+          //     "Swerve Heading", getSwerveRotation(swerveSubsystem).getDegrees());
 
           return -computedRotation;
         },
@@ -145,8 +145,8 @@ public class SwerveLockedAngleCmd extends SwerveJoystickCommand {
 
   @Override
   public boolean isFinished() {
-    SmartDashboard.putNumber("swerve locked angle error", error.get());
-    SmartDashboard.putNumber("swerve locked angle tolerance", tolerance);
+    // SmartDashboard.putNumber("swerve locked angle error", error.get());
+    // SmartDashboard.putNumber("swerve locked angle tolerance", tolerance);
     return Math.abs(error.get()) < tolerance;
   }
 }

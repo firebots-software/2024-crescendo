@@ -175,16 +175,16 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public static double calculateAngleToSpeaker(Translation2d robotPosition, boolean redside) {
-    SmartDashboard.putBoolean("Redside Calculate angle To Speaker", redside);
+    // SmartDashboard.putBoolean("Redside Calculate angle To Speaker", redside);
     double groundDistFromSpeaker =
         ((redside)
                 ? MiscUtils.reflectAcrossMidline(Constants.Landmarks.Speaker.POSE)
                 : Constants.Landmarks.Speaker.POSE)
             .getTranslation()
             .getDistance(robotPosition);
-    SmartDashboard.putNumber("ground dist from speaker", groundDistFromSpeaker);
-    SmartDashboard.putNumber(
-        "angle from intermap1", Constants.Arm.INTERMAP.get(groundDistFromSpeaker));
+    // SmartDashboard.putNumber("ground dist from speaker", groundDistFromSpeaker);
+    // SmartDashboard.putNumber(
+        // "angle from intermap1", Constants.Arm.INTERMAP.get(groundDistFromSpeaker));
     //     SmartDashboard.putNumber(
     // "angle from intermap2", Constants.Arm.INTERMAP2.get(groundDistFromSpeaker));
     // return !IncreaseAngle ? Constants.Arm.INTERMAP1.get(groundDistFromSpeaker) :
@@ -247,33 +247,32 @@ public class ArmSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     setPosition(targetDegrees);
-    SmartDashboard.putString(
-        "ARM Command:",
-        this.getCurrentCommand() == null ? "none" : this.getCurrentCommand().getName());
-    SmartDashboard.putNumber("ARM Abs Enc Raw: ", revEncoder.getAbsolutePosition());
-    SmartDashboard.putNumber("ARM Abs Enc Func: ", getAbsolutePosition());
-    SmartDashboard.putNumber("ARM Integrated Rotations: ", getMotorPosRotations());
-    SmartDashboard.putNumber("ARM Integrated Current: ", master.getSupplyCurrent().getValue());
-    SmartDashboard.putNumber("ARM Integrated Error: ", master.getClosedLoopError().getValue());
-    SmartDashboard.putNumber("ARM Arm Rotations: ", getArmPosRotations());
+    // SmartDashboard.putString(
+    //     "ARM Command:",
+    //     this.getCurrentCommand() == null ? "none" : this.getCurrentCommand().getName());
+    // SmartDashboard.putNumber("ARM Abs Enc Raw: ", revEncoder.getAbsolutePosition());
+    // SmartDashboard.putNumber("ARM Abs Enc Func: ", getAbsolutePosition());
+    // SmartDashboard.putNumber("ARM Integrated Rotations: ", getMotorPosRotations());
+    // SmartDashboard.putNumber("ARM Integrated Current: ", master.getSupplyCurrent().getValue());
+    // SmartDashboard.putNumber("ARM Integrated Error: ", master.getClosedLoopError().getValue());
+    // SmartDashboard.putNumber("ARM Arm Rotations: ", getArmPosRotations());
     SmartDashboard.putNumber("ARM Arm Degrees: ", getRawDegrees());
-
     SmartDashboard.putNumber("ARM Arm Degrees Corrected: ", getCorrectedDegrees());
     SmartDashboard.putNumber("ARM Target Degrees: ", targetDegrees);
-    SmartDashboard.putString(
-        "Current commannd ARM:",
-        (getCurrentCommand() == null) ? "NULL" : getCurrentCommand().getName());
-    SmartDashboard.putNumber(
-        "ARM Target Integrated Rots: ", calculateIntegratedTargetRots(targetDegrees));
-    SmartDashboard.putNumber(
-        "ARM FeedForward Calculations: ",
-        armff.calculate((2 * Math.PI * getRawDegrees()) / 360d, 0));
-    SmartDashboard.putNumber("Master Velocity", master.getVelocity().getValue());
-    SmartDashboard.putNumber(
-        "ARM Abs enc deg",
-        Units.rotationsToDegrees(getAbsolutePosition() - Constants.Arm.ABSOLUTE_HORIZONTAL_OFFSET)
-            / Constants.Arm.ABSOLUTE_ARM_CONVERSION_FACTOR);
-    SmartDashboard.putNumber("ARM updown adjustment", Constants.Arm.ARM_INTERMAP_OFFSET);
+    // SmartDashboard.putString(
+    //     "Current commannd ARM:",
+    //     (getCurrentCommand() == null) ? "NULL" : getCurrentCommand().getName());
+    // SmartDashboard.putNumber(
+    //     "ARM Target Integrated Rots: ", calculateIntegratedTargetRots(targetDegrees));
+    // SmartDashboard.putNumber(
+    //     "ARM FeedForward Calculations: ",
+    //     armff.calculate((2 * Math.PI * getRawDegrees()) / 360d, 0));
+    // SmartDashboard.putNumber("Master Velocity", master.getVelocity().getValue());
+    // SmartDashboard.putNumber(
+    //     "ARM Abs enc deg",
+    //     Units.rotationsToDegrees(getAbsolutePosition() - Constants.Arm.ABSOLUTE_HORIZONTAL_OFFSET)
+    //         / Constants.Arm.ABSOLUTE_ARM_CONVERSION_FACTOR);
+    // SmartDashboard.putNumber("ARM updown adjustment", Constants.Arm.ARM_INTERMAP_OFFSET);
     periodicSignalLogger();
   }
 

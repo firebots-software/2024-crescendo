@@ -1,5 +1,6 @@
 package frc.robot.commands.ArmCommands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 
@@ -14,12 +15,14 @@ public class AlterArmValues extends Command {
   @Override
   public void initialize() {
     Constants.Arm.ARM_INTERMAP_OFFSET += increaseBy;
-    Constants.Arm.UPDATE_INTERMAP();
+    // Constants.Arm.UPDATE_INTERMAP();
+    // SmartDashboard.putNumber("", increaseBy)
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+  }
 
   // Called once the command ends or is interrupted.
   @Override

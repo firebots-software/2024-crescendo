@@ -34,7 +34,7 @@ public class ArmToAngleCmd extends Command {
 
   @Override
   public void execute() {
-    SmartDashboard.putNumber("RUNNNINING Angle to target laowajoiadoijwjoiawd", angle.get());
+    SmartDashboard.putNumber("Setting Arm Angle", angle.get());
     arm.setTargetDegrees(angle.get());
   }
 
@@ -84,7 +84,7 @@ public class ArmToAngleCmd extends Command {
   }
 
   public static ArmToAngleCmd toBundt(ArmSubsystem arm) {
-    return new ArmToAngleCmd(() -> 8.5d, arm);
+    return new ArmToAngleCmd(() -> Constants.Arm.ARM_INTERMAP_OFFSET, arm);
   }
 
   public static ArmToAngleCmd toDuck(ArmSubsystem arm) {

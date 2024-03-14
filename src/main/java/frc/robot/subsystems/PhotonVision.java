@@ -90,7 +90,7 @@ public class PhotonVision extends SubsystemBase {
   }
 
   private void log() {
-    SmartDashboard.putBoolean("Tag", pipeline.hasTargets());
+    // SmartDashboard.putBoolean("Tag", pipeline.hasTargets());
     if (pipeline.hasTargets()) {
       Optional<Pose3d> tagPose = aprilTagFieldLayout.getTagPose(bestTarget.getFiducialId());
       // double x = getTransformToTarget().getX();
@@ -99,17 +99,17 @@ public class PhotonVision extends SubsystemBase {
       double dist = get3dDist();
       Pose3d pose3D = getRobotPose3d();
       Transform3d transformToTarget = getTransformToTarget();
-      SmartDashboard.putNumber("Tag pose x", tagPose.get().getX());
-      SmartDashboard.putNumber("Tag pose y", tagPose.get().getY());
-      SmartDashboard.putNumber("Tag pose z", tagPose.get().getZ());
-      SmartDashboard.putNumber("TagID", bestTarget.getFiducialId());
-      SmartDashboard.putNumber("PoseX", pose3D.getX());
-      SmartDashboard.putNumber("PoseY", pose3D.getY());
-      SmartDashboard.putNumber("PoseZ", pose3D.getZ());
-      SmartDashboard.putNumber("TranslationX", transformToTarget.getX());
-      SmartDashboard.putNumber("TranslationY", transformToTarget.getY());
-      SmartDashboard.putNumber("TranslationZ", transformToTarget.getZ());
-      SmartDashboard.putNumber("StraightLineDist", dist);
+      // SmartDashboard.putNumber("Tag pose x", tagPose.get().getX());
+      // SmartDashboard.putNumber("Tag pose y", tagPose.get().getY());
+      // SmartDashboard.putNumber("Tag pose z", tagPose.get().getZ());
+      // SmartDashboard.putNumber("TagID", bestTarget.getFiducialId());
+      // SmartDashboard.putNumber("PoseX", pose3D.getX());
+      // SmartDashboard.putNumber("PoseY", pose3D.getY());
+      // SmartDashboard.putNumber("PoseZ", pose3D.getZ());
+      // SmartDashboard.putNumber("TranslationX", transformToTarget.getX());
+      // SmartDashboard.putNumber("TranslationY", transformToTarget.getY());
+      // SmartDashboard.putNumber("TranslationZ", transformToTarget.getZ());
+      // SmartDashboard.putNumber("StraightLineDist", dist);
       SignalLogger.writeBoolean("Found tag", true);
       periodicSignalLogger(tagPose, pose3D, dist, transformToTarget);
     } else {

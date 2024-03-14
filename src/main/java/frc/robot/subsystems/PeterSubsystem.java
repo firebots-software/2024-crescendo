@@ -233,26 +233,26 @@ public class PeterSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putBoolean("Note Detected", notePresent()); // false = note detected!!
-    SmartDashboard.putBoolean("Shooter Ready", isShooterReady());
-    SmartDashboard.putNumber(
-        "Shooter down speed", shooterMotorDown.getVelocity().getValueAsDouble());
-    SmartDashboard.putNumber("Shooter up speed", shooterMotorUp.getVelocity().getValueAsDouble());
-    SmartDashboard.putNumber(
-        "Shooter down power", shooterMotorDown.getDutyCycle().getValueAsDouble());
-    SmartDashboard.putNumber("Shooter up power", shooterMotorUp.getDutyCycle().getValueAsDouble());
-    SmartDashboard.putNumber(
-        "Shooter down current", shooterMotorDown.getStatorCurrent().getValueAsDouble());
-    SmartDashboard.putNumber(
-        "Shooter up current", shooterMotorUp.getStatorCurrent().getValueAsDouble());
-    SmartDashboard.putString(
-        "Command",
-        (this.getCurrentCommand() == null
-            ? "none"
-            : this.getCurrentCommand().getName())); // false = note detected!!
-    SmartDashboard.putString(
-        "Current commannd PETER:",
-        (getCurrentCommand() == null) ? "NULL" : getCurrentCommand().getName());
+    // SmartDashboard.putBoolean("Note Detected", notePresent()); // false = note detected!!
+    // SmartDashboard.putBoolean("Shooter Ready", isShooterReady());
+    // SmartDashboard.putNumber(
+    //     "Shooter down speed", shooterMotorDown.getVelocity().getValueAsDouble());
+    // SmartDashboard.putNumber("Shooter up speed", shooterMotorUp.getVelocity().getValueAsDouble());
+    // SmartDashboard.putNumber(
+    //     "Shooter down power", shooterMotorDown.getDutyCycle().getValueAsDouble());
+    // SmartDashboard.putNumber("Shooter up power", shooterMotorUp.getDutyCycle().getValueAsDouble());
+    // SmartDashboard.putNumber(
+    //     "Shooter down current", shooterMotorDown.getStatorCurrent().getValueAsDouble());
+    // SmartDashboard.putNumber(
+    //     "Shooter up current", shooterMotorUp.getStatorCurrent().getValueAsDouble());
+    // SmartDashboard.putString(
+    //     "Command",
+    //     (this.getCurrentCommand() == null
+    //         ? "none"
+    //         : this.getCurrentCommand().getName())); // false = note detected!!
+    // SmartDashboard.putString(
+    //     "Current commannd PETER:",
+    //     (getCurrentCommand() == null) ? "NULL" : getCurrentCommand().getName());
     periodicSignalLogger();
   }
 

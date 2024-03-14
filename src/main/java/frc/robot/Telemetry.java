@@ -132,10 +132,10 @@ public class Telemetry {
       // SmartDashboard.putData("Module " + i, m_moduleMechanisms[i]);
     }
 
-    SmartDashboard.putNumber("Odom period seconds", state.OdometryPeriod);
-    SmartDashboard.putNumber("posegetx", pose.getX());
-    SmartDashboard.putNumber("posegety", pose.getY());
-    SmartDashboard.putNumber("posegetrotation", pose.getRotation().getRotations());
+    // SmartDashboard.putNumber("Odom period seconds", state.OdometryPeriod);
+    // SmartDashboard.putNumber("posegetx", pose.getX());
+    // SmartDashboard.putNumber("posegety", pose.getY());
+    // SmartDashboard.putNumber("posegetrotation", pose.getRotation().getRotations());
 
     SignalLogger.writeDouble("Pose X", pose.getX());
     SignalLogger.writeDouble("Pose Y", pose.getY());
