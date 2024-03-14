@@ -72,12 +72,12 @@ public final class Constants {
       SPEED_VOLTAGE = voltage;
     }
 
-    public static MotorConstants speedControledMotor(
+    public static MotorConstants speedControled(
         int port, boolean reversed, double gearRatio, double statorCurrent, double speed) {
       return new MotorConstants(port, reversed, gearRatio, statorCurrent, speed, 0);
     }
 
-    public static MotorConstants voltageControlledMotor(
+    public static MotorConstants voltageControlled(
         int port, boolean reversed, double gearRatio, double statorCurrent, double voltage) {
       return new MotorConstants(port, reversed, gearRatio, statorCurrent, 0, voltage);
     }
@@ -91,15 +91,15 @@ public final class Constants {
 
     public static enum ShooterType {
       PETER(
-          MotorConstants.speedControledMotor(30, true, 12d / 15d, 40.0, 4500d / 60d),
-          MotorConstants.speedControledMotor(31, false, 12d / 15d, 40.0, 4500d / 60d),
-          MotorConstants.voltageControlledMotor(32, false, 4d / 1d, 25.0, 9d),
-          MotorConstants.speedControledMotor(33, true, 2d / 1d, 50.0, 200d)),
+          MotorConstants.speedControled(30, true, 12d / 15d, 40.0, 4500d / 60d),
+          MotorConstants.speedControled(31, false, 12d / 15d, 40.0, 4500d / 60d),
+          MotorConstants.voltageControlled(32, false, 4d / 1d, 25.0, 9d),
+          MotorConstants.speedControled(33, true, 2d / 1d, 50.0, 200d)),
       PIPER(
-          MotorConstants.speedControledMotor(35, false, 24d / 18d, 40.0, 3000d / 60d),
-          MotorConstants.speedControledMotor(34, false, 24d / 18d, 40.0, 3000d / 60d),
-          MotorConstants.voltageControlledMotor(32, true, 4d / 1d, 25.0, 9d),
-          MotorConstants.speedControledMotor(33, true, 2d / 1d, 50.0, 200d));
+          MotorConstants.speedControled(35, false, 24d / 18d, 40.0, 3000d / 60d),
+          MotorConstants.speedControled(34, false, 24d / 18d, 40.0, 3000d / 60d),
+          MotorConstants.voltageControlled(32, true, 4d / 1d, 25.0, 9d),
+          MotorConstants.speedControled(33, true, 2d / 1d, 50.0, 200d));
       public final MotorConstants SHOOTER_1, SHOOTER_2, PRESHOOTER, INTAKE;
 
       ShooterType(
