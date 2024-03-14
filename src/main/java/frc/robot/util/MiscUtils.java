@@ -24,7 +24,10 @@ public class MiscUtils {
         point.getY());
   }
 
-  public static Pose2d plus(Pose2d a, Transform2d b){
-    return new Pose2d(a.getX() + b.getX(), a.getY() + b.getY(), new Rotation2d(a.getRotation().getRadians() + b.getRotation().getRadians()));
+  public static Pose2d plus(Pose2d a, Transform2d b) {
+    return new Pose2d(
+        a.getX() + b.getX(),
+        a.getY() + b.getY(),
+        new Rotation2d(a.getRotation().getRadians() + b.getRotation().getRadians()));
   }
 }
