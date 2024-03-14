@@ -4,11 +4,8 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import frc.robot.Constants;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.util.MiscUtils;
@@ -19,7 +16,6 @@ public class MoveToTarget extends Command {
   private Pose2d[] absolutePoses;
   private SwerveSubsystem swerve;
   private Supplier<Boolean> reflected;
-  private Rotation2d startRotation2d;
   PathPlannerPath constructedPath;
   Command pathCommand;
 

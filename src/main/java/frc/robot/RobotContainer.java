@@ -4,47 +4,27 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commandGroups.AimAtSpeaker;
 import frc.robot.commandGroups.BundtShot;
-import frc.robot.commandGroups.FireAuton;
-import frc.robot.commandGroups.FireTeleop;
 import frc.robot.commandGroups.Intake;
 import frc.robot.commands.ArmCommands.AlterArmValues;
 import frc.robot.commands.ArmCommands.ArmToAngleCmd;
-import frc.robot.commands.Auton.MoveToTarget;
-import frc.robot.commands.Auton.RatchetteDisengage;
-import frc.robot.commands.DebugCommands.SmartdashBoardCmd;
-// import frc.robot.commands.ArmCommands.AlterArmValues;
-import frc.robot.commands.PeterCommands.ShootNoWarmup;
-import frc.robot.commands.PeterCommands.SpinUpShooter;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
-import frc.robot.commands.SwerveCommands.SwerveLockedAngleCmd;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.JoystickSubsystem;
 import frc.robot.subsystems.PeterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
-import frc.robot.util.MiscUtils;
 import frc.robot.util.OtherXBoxController;
-import java.util.Optional;
 import java.util.function.Supplier;
 
 /**
