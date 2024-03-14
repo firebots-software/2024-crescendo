@@ -49,39 +49,68 @@ public final class Constants {
     public static final int BIG_BUTTON_PORT = 14;
   }
 
+  public static final class MotorConstants {
+    public final int PORT;
+    public final boolean REVERSED;
+    public final double GEAR_RATIO;
+    public final double STATOR_CURRENT_LIMIT_AMPS;
+    public final double SPEED_RPS;
+    public final double SPEED_VOLTAGE;
+
+    private MotorConstants(
+        int port,
+        boolean reversed,
+        double gearRatio,
+        double statorCurrent,
+        double speed,
+        double voltage) {
+      PORT = port;
+      REVERSED = reversed;
+      GEAR_RATIO = gearRatio;
+      STATOR_CURRENT_LIMIT_AMPS = statorCurrent;
+      SPEED_RPS = speed;
+      SPEED_VOLTAGE = voltage;
+    }
+
+    public static MotorConstants speedControledMotor(
+        int port, boolean reversed, double gearRatio, double statorCurrent, double speed) {
+      return new MotorConstants(port, reversed, gearRatio, statorCurrent, speed, 0);
+    }
+
+    public static MotorConstants voltageControlledMotor(
+        int port, boolean reversed, double gearRatio, double statorCurrent, double voltage) {
+      return new MotorConstants(port, reversed, gearRatio, statorCurrent, 0, voltage);
+    }
+  }
+
   public static final class Pooer {
-    public static final int INTAKE_MOTOR_PORT = 33;
     public static final int NOTE_DETECTOR_PORT = 1;
-    public static final int PRE_SHOOTER_PORT = 32;
-
-    public static final double INTAKE_WHEEL_SPEED_RPS = 200; // Intake gear ratio: 2:1
-    public static final double ROTATIONS_TO_SHOOTER = 300; // Preshooter gear ratio: 4:1
-    public static final double PRESHOOTER_WHEEL_VOLTAGE = 9;
     public static final String CANBUS_NAME = "rio";
-
-    public static final double INTAKE_GEAR_RATIO = 2;
-    public static final double PRESHOOTER_GEAR_RATIO = 4;
-
-    public static final double PRESHOOTER_STATOR_CURRENT_LIMIT_AMPS = 25.0;
-    public static final double INTAKE_STATOR_CURRENT_LIMIT_AMPS = 50.0;
 
     public static final ShooterType SHOOTER = ShooterType.PETER;
 
     public static enum ShooterType {
-      PETER(30, 31, 4500.0 / 60.0, 12d / 15d, 40.0),
-      PIPER(30, 31, 3500.0 / 60.0, 24d / 18d, 40.0);
-      public final int PORT_1, PORT_2;
-      public final double SPEED_RPS;
-      public final double GEAR_RATIO;
-      public final double STATOR_CURRENT_LIMIT_AMPS;
+      PETER(
+          MotorConstants.speedControledMotor(30, true, 12d / 15d, 40.0, 4500d / 60d),
+          MotorConstants.speedControledMotor(31, false, 12d / 15d, 40.0, 4500d / 60d),
+          MotorConstants.voltageControlledMotor(32, false, 4d / 1d, 25.0, 9d),
+          MotorConstants.speedControledMotor(33, true, 2d / 1d, 50.0, 200d)),
+      PIPER(
+          MotorConstants.speedControledMotor(35, false, 24d / 18d, 40.0, 3000d / 60d),
+          MotorConstants.speedControledMotor(34, false, 24d / 18d, 40.0, 3000d / 60d),
+          MotorConstants.voltageControlledMotor(32, false, 4d / 1d, 25.0, 12d),
+          MotorConstants.speedControledMotor(33, true, 2d / 1d, 50.0, 200d));
+      public final MotorConstants SHOOTER_1, SHOOTER_2, PRESHOOTER, INTAKE;
 
       ShooterType(
-          int port1, int port2, double speedRPS, double gearRatio, double statorCurrentLimitAmp) {
-        PORT_1 = port1;
-        PORT_2 = port2;
-        SPEED_RPS = speedRPS;
-        GEAR_RATIO = gearRatio;
-        STATOR_CURRENT_LIMIT_AMPS = statorCurrentLimitAmp;
+          MotorConstants shooter1,
+          MotorConstants shooter2,
+          MotorConstants preshooter,
+          MotorConstants intake) {
+        SHOOTER_1 = shooter1;
+        SHOOTER_2 = shooter2;
+        PRESHOOTER = preshooter;
+        INTAKE = intake;
       }
     }
   }
@@ -244,7 +273,8 @@ public final class Constants {
 
     public static class PPConstants {
       public static final PathConstraints PATH_PLANNER_CONSTRAINTS =
-          new PathConstraints(3.0, 3.0, 2 * Math.PI, 4 * Math.PI); // TODO: Increase the auton velocity
+          new PathConstraints(
+              3.0, 3.0, 2 * Math.PI, 4 * Math.PI); // TODO: Increase the auton velocity
     }
 
     public static final double PHYSICAL_MAX_SPEED_METERS_PER_SECOND = 4.8768;
