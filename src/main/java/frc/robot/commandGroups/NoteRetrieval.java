@@ -25,7 +25,7 @@ public class NoteRetrieval extends SequentialCommandGroup {
                       new Pose2d(
                           swerve.getState().Pose.getTranslation(),
                           new Rotation2d(
-                              -1,
+                              -1, //TODO: Why do we not do SwerveX-NoteX?
                               swerve.getState().Pose.getY() - targetNote.getNoteLocation().getY())))
                   : new Pose2d(
                       swerve.getState().Pose.getTranslation(),
@@ -36,7 +36,7 @@ public class NoteRetrieval extends SequentialCommandGroup {
                       new Pose2d(
                           new Translation2d(
                               targetNote.getNoteLocation().getX()
-                                  - (Units.inchesToMeters(18)
+                                  - (Units.inchesToMeters(18) //TODO: Why 18 inches. Depending on what we do with this, it may just be better to do half the distance between robot and the note.
                                       * Math.cos(
                                           targetNote.getNoteLocation().getRotation().getRadians())),
                               targetNote.getNoteLocation().getY()
@@ -60,13 +60,13 @@ public class NoteRetrieval extends SequentialCommandGroup {
                       targetNote.getNoteLocation().getRotation())));
     } else {
       addCommands(
-          PathfindToTarget.withMirror(
+          PathfindToTarget.withMirror( //TODO: PathfindToTarget does not actually go anywhere (target position not set in constructor)
               swerve,
               redside,
               new Pose2d(
                   new Translation2d(
                       targetNote.getNoteLocation().getX() - 1, targetNote.getNoteLocation().getY()),
-                  targetNote.getNoteLocation().getRotation())),
+                  targetNote.getNoteLocation().getRotation())), // TODO: All of these rotations are just 0
           MoveToTarget.withMirror(
               swerve,
               redside,
