@@ -32,7 +32,7 @@ public class PhotonVision extends SubsystemBase {
   Transform3d camToRobot = // robot relative to camera
       new Transform3d(
           new Translation3d(Units.inchesToMeters(-13), 0, Units.inchesToMeters(7.027)),
-          new Rotation3d(0, -Units.degreesToRadians(24), Math.PI));
+          new Rotation3d(0, -Units.degreesToRadians(37), Math.PI));
 
   private PhotonVision(String name) {
     camera = new PhotonCamera(name);
@@ -44,15 +44,16 @@ public class PhotonVision extends SubsystemBase {
     bestTarget = pipeline.getBestTarget();
   }
 
-  public static PhotonVision getFrontCamera(){
-    if(frontCamera == null){
+  public static PhotonVision getFrontCamera() {
+    if (frontCamera == null) {
       frontCamera = new PhotonVision("FrontCam");
     }
 
     return frontCamera;
   }
-  public static PhotonVision getSideCamera(){
-    if(sideCamera == null){
+
+  public static PhotonVision getSideCamera() {
+    if (sideCamera == null) {
       sideCamera = new PhotonVision("SideCam");
     }
 
@@ -62,14 +63,6 @@ public class PhotonVision extends SubsystemBase {
   public boolean hasTarget(PhotonPipelineResult pipeline) {
     return pipeline.hasTargets();
   }
-
-  // public double getDistance() {
-  //     double distance = PhotonUtils.calculateDistanceToTargetMeters(cameraHeight, targetHeight,
-  // cameraPitch,
-  //             Units.degreesToRadians(bestTarget.getPitch()));
-  //     return distance;
-  // }
-
   public Pose3d getRobotPose3d() {
     if (!pipeline.hasTargets()) {
       return savedResult;
@@ -84,7 +77,6 @@ public class PhotonVision extends SubsystemBase {
     }
     return savedResult;
   }
-
   public Optional<EstimatedRobotPose> getMultiTagPose3d(Pose2d previousRobotPose) {
     photonPoseEstimator.setReferencePose(previousRobotPose);
     return photonPoseEstimator.update();
@@ -106,29 +98,14 @@ public class PhotonVision extends SubsystemBase {
     return new Pose2d(p.getX(), p.getY(), new Rotation2d(p.getRotation().getZ()));
   }
 
-  private double metersToInches(double meters) {
-    return 39.3701 * meters;
-  }
-
   private void log() {
     if (pipeline.hasTargets()) {
-      Optional<Pose3d> tagPose = aprilTagFieldLayout.getTagPose(bestTarget.getFiducialId());
-      double x = getTransformToTarget().getX();
-      double z = getTransformToTarget().getZ();
-      double y = getTransformToTarget().getY();
       double dist = get3dDist();
       Pose3d pose3D = getRobotPose3d();
-      Transform3d transformToTarget = getTransformToTarget();
-      SmartDashboard.putNumber("Tag pose x", tagPose.get().getX());
-      SmartDashboard.putNumber("Tag pose y", tagPose.get().getY());
-      SmartDashboard.putNumber("Tag pose z", tagPose.get().getZ());
       SmartDashboard.putNumber("TagID", bestTarget.getFiducialId());
       SmartDashboard.putNumber("PoseX", pose3D.getX());
       SmartDashboard.putNumber("PoseY", pose3D.getY());
       SmartDashboard.putNumber("PoseZ", pose3D.getZ());
-      SmartDashboard.putNumber("TranslationX", transformToTarget.getX());
-      SmartDashboard.putNumber("TranslationY", transformToTarget.getY());
-      SmartDashboard.putNumber("TranslationZ", transformToTarget.getZ());
       SmartDashboard.putNumber("StraightLineDist", dist);
     }
   }

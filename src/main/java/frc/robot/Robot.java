@@ -73,12 +73,14 @@ public class Robot extends TimedRobot {
     // robot's periodic
     // block in order for anything in the Command-based framework to work.
     m_robotContainer.doTelemetry();
-    Optional<EstimatedRobotPose> frontRobotPose = frontVision.getMultiTagPose3d(driveTrain.getState().Pose);
+    Optional<EstimatedRobotPose> frontRobotPose =
+        frontVision.getMultiTagPose3d(driveTrain.getState().Pose);
     if (frontRobotPose.isPresent()) {
       driveTrain.addVisionMeasurement(
           frontRobotPose.get().estimatedPose.toPose2d(), Timer.getFPGATimestamp(), visionMatrix);
     }
-    Optional<EstimatedRobotPose> sideRobotPose = sideVision.getMultiTagPose3d(driveTrain.getState().Pose);
+    Optional<EstimatedRobotPose> sideRobotPose =
+        sideVision.getMultiTagPose3d(driveTrain.getState().Pose);
     if (sideRobotPose.isPresent()) {
       driveTrain.addVisionMeasurement(
           sideRobotPose.get().estimatedPose.toPose2d(), Timer.getFPGATimestamp(), visionMatrix);
