@@ -104,8 +104,8 @@ public final class Constants {
 
     public static final double CURRENT_LIMIT = 8.0;
     public static final double S0C_KP = 1.2;
-    public static final double ARMFF_KS = 0.1;
-    public static final double ARMFF_KG = 0.3;
+    public static final double ARMFF_KS = 0.15;
+    public static final double ARMFF_KG = 0.2;
     public static final double ARMFF_KV = 2.49;
     public static final double MOTIONMAGIC_KV = 1; // MotionMagic Cruise Velocity in RPS of the arm
     public static final double MOTIONMAGIC_KA = 2.2; // MotionMagic Acceleration in RPS^2 of the arm
