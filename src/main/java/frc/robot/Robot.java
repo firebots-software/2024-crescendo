@@ -5,6 +5,8 @@
 package frc.robot;
 
 import com.ctre.phoenix6.SignalLogger;
+import com.pathplanner.lib.pathfinding.LocalADStar;
+import com.pathplanner.lib.pathfinding.Pathfinding;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.Matrix;
@@ -56,6 +58,7 @@ public class Robot extends TimedRobot {
     // and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+    Pathfinding.setPathfinder(new LocalADStar());
     absoluteInit();
     DataLogManager.start();
   }

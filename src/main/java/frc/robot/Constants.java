@@ -91,7 +91,8 @@ public final class Constants {
     public static final double DEFAULT_ARM_ANGLE = 56.12;
     public static final double INTAKE_ANGLE = 4; // subject to change
     public static final double AMP_ANGLE = 90; // subject to change
-    // public static final double ARM_ENCODER_OFFSET = 0; // TODO: Change the offset so that the 0
+    // public static final double ARM_ENCODER_OFFSET = 0; // TODO: Change the offset
+    // so that the 0
     // position is when the arm is at its resting
     // position.
     public static final String CANBUS_NAME = "Patrice the Pineapple";
@@ -124,8 +125,9 @@ public final class Constants {
     static {
       UPDATE_INTERMAP();
       // INTERMAP.put(
-      //     1.34,
-      //     6d + ARM_INTERMAP_OFFSET); // measurements of distance are from front of robot bumper
+      // 1.34,
+      // 6d + ARM_INTERMAP_OFFSET); // measurements of distance are from front of
+      // robot bumper
       // to
       // // wall
       // INTERMAP.put(2.1, 17d + ARM_INTERMAP_OFFSET);
@@ -143,12 +145,14 @@ public final class Constants {
       INTERMAP.put(Units.feetToMeters(9) + Units.inchesToMeters(17), 23.5d + ARM_INTERMAP_OFFSET);
     }
 
-    // public static final InterpolatingDoubleTreeMap INTERMAP2 = new InterpolatingDoubleTreeMap();
+    // public static final InterpolatingDoubleTreeMap INTERMAP2 = new
+    // InterpolatingDoubleTreeMap();
     // static {
-    //   INTERMAP2.put(1.34, 6d + 5); // measurements of distance are from front of robot bumper to
+    // INTERMAP2.put(1.34, 6d + 5); // measurements of distance are from front of
+    // robot bumper to
     // wall
-    //   INTERMAP2.put(2.1, 17d + 5);
-    //   INTERMAP2.put(Units.feetToMeters(9) + Units.inchesToMeters(17), 23.5d + 5);
+    // INTERMAP2.put(2.1, 17d + 5);
+    // INTERMAP2.put(Units.feetToMeters(9) + Units.inchesToMeters(17), 23.5d + 5);
     // }
   }
 
@@ -179,6 +183,7 @@ public final class Constants {
       Back(7),
       /** Start. */
       Start(8);
+
       public final int value;
 
       XBoxButtonID(int value) {
@@ -210,13 +215,48 @@ public final class Constants {
   }
 
   public static class Landmarks {
-    // Landmarks on the Blue side can be reflected to show the respective locations on the Blue side
-    public static final Pose2d STAGESIDE_NOTE_LOCATION =
-        new Pose2d(2.8956, 4.0522, new Rotation2d());
-    public static final Pose2d MIDDLE_NOTE_LOCATION = new Pose2d(2.8956, 5.5, new Rotation2d());
-    public static final Pose2d AMPSIDE_NOTE_LOCATION = new Pose2d(2.8956, 6.9478, new Rotation2d());
+    // Landmarks on the Blue side can be reflected to show the respective locations
+    // on the Blue side
     public static final Pose2d SUBWOOFER_LOCATION = new Pose2d(0.6, 5.7, new Rotation2d());
+    public static final Pose2d STAGESIDE_NOTE_LOCATION =
+        new Pose2d(
+            2.8956,
+            4.0522,
+            SUBWOOFER_LOCATION
+                .getTranslation()
+                .minus(new Translation2d(2.8956, 4.0522))
+                .rotateBy(Rotation2d.fromRadians(Math.PI))
+                .getAngle());
+    public static final Pose2d MIDDLE_NOTE_LOCATION =
+        new Pose2d(
+            2.8956,
+            5.5,
+            SUBWOOFER_LOCATION
+                .getTranslation()
+                .minus(new Translation2d(2.8956, 5.5))
+                .rotateBy(Rotation2d.fromRadians(Math.PI))
+                .getAngle());
+    public static final Pose2d AMPSIDE_NOTE_LOCATION =
+        new Pose2d(
+            2.8956,
+            6.9478,
+            SUBWOOFER_LOCATION
+                .getTranslation()
+                .minus(new Translation2d(2.8956, 6.9478))
+                .rotateBy(Rotation2d.fromRadians(Math.PI))
+                .getAngle());
+
     public static final double CENTER_LINE_LOCATION = 8.27;
+    public static final Pose2d MIDLINE_FROM_AMP1_NOTE_LOCATION =
+        new Pose2d(CENTER_LINE_LOCATION, 7.43, new Rotation2d());
+    public static final Pose2d MIDLINE_FROM_AMP2_NOTE_LOCATION =
+        new Pose2d(CENTER_LINE_LOCATION, 5.76, new Rotation2d());
+    public static final Pose2d MIDLINE_FROM_AMP3_NOTE_LOCATION =
+        new Pose2d(CENTER_LINE_LOCATION, 4.09, new Rotation2d());
+    public static final Pose2d MIDLINE_FROM_AMP4_NOTE_LOCATION =
+        new Pose2d(CENTER_LINE_LOCATION, 2.42, new Rotation2d());
+    public static final Pose2d MIDLINE_FROM_AMP5_NOTE_LOCATION =
+        new Pose2d(CENTER_LINE_LOCATION, 0.75, new Rotation2d());
 
     public static final class Speaker {
       public static final double HEIGHT_INCHES = 78.0;
@@ -228,7 +268,8 @@ public final class Constants {
       public static final double AMP_HEIGHT_INCHES = 35.0;
       public static final double AMP_HEIGHT_METERS = Units.inchesToMeters(AMP_HEIGHT_INCHES);
       public static final Pose2d POSE =
-          new Pose2d(new Translation2d(1.81, 8.11), new Rotation2d(-Math.PI / 2)); // isnt right
+          new Pose2d(new Translation2d(1.81, 8.11), new Rotation2d(-Math.PI / 2)); // isnt
+      // right
       // new Pose2d(new Translation2d(1.84 ,8.2), new Rotation2D(-Math.PI/2));
     }
 
@@ -244,7 +285,8 @@ public final class Constants {
 
     public static class PPConstants {
       public static final PathConstraints PATH_PLANNER_CONSTRAINTS =
-          new PathConstraints(3.0, 3.0, 2 * Math.PI, 4 * Math.PI); // TODO: Increase the auton velocity
+          new PathConstraints(
+              3.0, 3.0, 2 * Math.PI, 4 * Math.PI); // TODO: Increase the auton velocity
     }
 
     public static final double PHYSICAL_MAX_SPEED_METERS_PER_SECOND = 4.8768;
