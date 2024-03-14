@@ -38,8 +38,8 @@ public class RobotContainer {
   // OI
   private final OtherXBoxController joystickA =
       new OtherXBoxController(Constants.OI.JOYSTICK_A_PORT);
-//   public final OtherXBoxController joystickB =
-//       new OtherXBoxController(Constants.OI.JOYSTICK_B_PORT);
+  //   public final OtherXBoxController joystickB =
+  //       new OtherXBoxController(Constants.OI.JOYSTICK_B_PORT);
 
   // Subsystems
   private final SwerveSubsystem driveTrain = SwerveSubsystem.getInstance();
@@ -121,23 +121,21 @@ public class RobotContainer {
     //             speedFunction,
     //             redside));
 
-    joystickA
-        .a()
-        .whileTrue(new BundtShot(peterSubsystem, armSubsystem, joystickSubsystem));
+    joystickA.a().whileTrue(new BundtShot(peterSubsystem, armSubsystem, joystickSubsystem));
 
-    joystickA.y()
+    joystickA
+        .y()
         .onTrue(
-            driveTrain
-                .runOnce(
-                    () ->
-                        driveTrain.seedFieldRelative(
-                            new Pose2d(
-                                new Translation2d(
-                                    !redAlliance
-                                        ? 1.34 // 1.34
-                                        : (Constants.Landmarks.CENTER_LINE_LOCATION * 2 - 1.25),
-                                    5.5),
-                                Rotation2d.fromDegrees(!redAlliance ? 0 : 180)))));
+            driveTrain.runOnce(
+                () ->
+                    driveTrain.seedFieldRelative(
+                        new Pose2d(
+                            new Translation2d(
+                                !redAlliance
+                                    ? 1.34 // 1.34
+                                    : (Constants.Landmarks.CENTER_LINE_LOCATION * 2 - 1.25),
+                                5.5),
+                            Rotation2d.fromDegrees(!redAlliance ? 0 : 180)))));
 
     // joystickA
     //     .y()
@@ -145,7 +143,8 @@ public class RobotContainer {
     //         new SwerveLockedAngleCmd(
     //             frontBackFunction,
     //             leftRightFunction,
-    //             (redAlliance) ? () -> Rotation2d.fromDegrees(180) : () -> Rotation2d.fromDegrees(0),
+    //             (redAlliance) ? () -> Rotation2d.fromDegrees(180) : () ->
+    // Rotation2d.fromDegrees(0),
     //             speedFunction,
     //             driveTrain));
 
@@ -203,18 +202,18 @@ public class RobotContainer {
     //                                     -(Units.inchesToMeters(12)
     //                                         + Constants.Swerve.ROBOT_HALF_WIDTH_METERS),
     //                                     new Rotation2d()))),
-                            // .andThen(
-                            //     MoveToTarget.withMirror(
-                            //         driveTrain,
-                            //         redside,
-                            //         MiscUtils.plus(Constants.Landmarks.Amp.POSE, new Transform2d(
-                            //                 0d,
-                            //                 -(Units.inchesToMeters(12)
-                            //                     + Constants.Swerve.ROBOT_HALF_WIDTH_METERS),
-                            //                 new Rotation2d())))),
-                //         new SpinUpShooter(peterSubsystem)),
-                //     new ShootNoWarmup(peterSubsystem, false))
-                // .withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+    // .andThen(
+    //     MoveToTarget.withMirror(
+    //         driveTrain,
+    //         redside,
+    //         MiscUtils.plus(Constants.Landmarks.Amp.POSE, new Transform2d(
+    //                 0d,
+    //                 -(Units.inchesToMeters(12)
+    //                     + Constants.Swerve.ROBOT_HALF_WIDTH_METERS),
+    //                 new Rotation2d())))),
+    //         new SpinUpShooter(peterSubsystem)),
+    //     new ShootNoWarmup(peterSubsystem, false))
+    // .withInterruptBehavior(InterruptionBehavior.kCancelSelf));
 
     // zero-heading
     // joystickB
@@ -237,26 +236,25 @@ public class RobotContainer {
     joystickA.povRight().onTrue(new AlterArmValues(0.1));
     joystickA.povDown().onTrue(new AlterArmValues(-1.0));
     joystickA.povUp().onTrue(new AlterArmValues(1.0));
-
   }
 
   // Constructs a Pose2d array of the note locations by a specific indexing so they can be accessed
   // by the eventual autonomous chooser
-//   private enum NoteLocation {
-//     AMPSIDE(Constants.Landmarks.AMPSIDE_NOTE_LOCATION),
-//     MIDDLE(Constants.Landmarks.MIDDLE_NOTE_LOCATION),
-//     STAGESIDE(Constants.Landmarks.STAGESIDE_NOTE_LOCATION);
+  //   private enum NoteLocation {
+  //     AMPSIDE(Constants.Landmarks.AMPSIDE_NOTE_LOCATION),
+  //     MIDDLE(Constants.Landmarks.MIDDLE_NOTE_LOCATION),
+  //     STAGESIDE(Constants.Landmarks.STAGESIDE_NOTE_LOCATION);
 
-//     private final Pose2d pose;
+  //     private final Pose2d pose;
 
-//     private NoteLocation(Pose2d pose) {
-//       this.pose = pose;
-//     }
+  //     private NoteLocation(Pose2d pose) {
+  //       this.pose = pose;
+  //     }
 
-//     private Pose2d getNoteLocation() {
-//       return this.pose;
-//     }
-//   }
+  //     private Pose2d getNoteLocation() {
+  //       return this.pose;
+  //     }
+  //   }
 
   public static void setAlliance() {
     redAlliance =
@@ -266,95 +264,99 @@ public class RobotContainer {
   }
 
   // Options on SmartDashboard that return an integer index that refers to a note location
-//   private static SendableChooser<Optional<NoteLocation>>
-//       pickup1choice = new SendableChooser<Optional<NoteLocation>>(),
-//       pickup2choice = new SendableChooser<Optional<NoteLocation>>(),
-//       pickup3choice = new SendableChooser<Optional<NoteLocation>>();
-//   SendableChooser<String> startchoice = new SendableChooser<String>();
+  //   private static SendableChooser<Optional<NoteLocation>>
+  //       pickup1choice = new SendableChooser<Optional<NoteLocation>>(),
+  //       pickup2choice = new SendableChooser<Optional<NoteLocation>>(),
+  //       pickup3choice = new SendableChooser<Optional<NoteLocation>>();
+  //   SendableChooser<String> startchoice = new SendableChooser<String>();
 
-//   private void setupChooser() {
+  //   private void setupChooser() {
 
-//     pickup1choice.setDefaultOption("SECOND SHOT: DO NOTHING", Optional.empty());
-//     pickup1choice.addOption("AMPSIDE", Optional.of(NoteLocation.AMPSIDE));
-//     pickup1choice.addOption("MIDDLE", Optional.of(NoteLocation.MIDDLE));
-//     pickup1choice.addOption("STAGESIDE NOTE", Optional.of(NoteLocation.STAGESIDE));
+  //     pickup1choice.setDefaultOption("SECOND SHOT: DO NOTHING", Optional.empty());
+  //     pickup1choice.addOption("AMPSIDE", Optional.of(NoteLocation.AMPSIDE));
+  //     pickup1choice.addOption("MIDDLE", Optional.of(NoteLocation.MIDDLE));
+  //     pickup1choice.addOption("STAGESIDE NOTE", Optional.of(NoteLocation.STAGESIDE));
 
-//     pickup2choice.setDefaultOption("THIRD SHOT: DO NOTHING", Optional.empty());
-//     pickup2choice.addOption("AMPSIDE NOTE", Optional.of(NoteLocation.AMPSIDE));
-//     pickup2choice.addOption("MIDDLE NOTE", Optional.of(NoteLocation.MIDDLE));
-//     pickup2choice.addOption("STAGESIDE NOTE", Optional.of(NoteLocation.STAGESIDE));
+  //     pickup2choice.setDefaultOption("THIRD SHOT: DO NOTHING", Optional.empty());
+  //     pickup2choice.addOption("AMPSIDE NOTE", Optional.of(NoteLocation.AMPSIDE));
+  //     pickup2choice.addOption("MIDDLE NOTE", Optional.of(NoteLocation.MIDDLE));
+  //     pickup2choice.addOption("STAGESIDE NOTE", Optional.of(NoteLocation.STAGESIDE));
 
-//     pickup3choice.setDefaultOption("FOURTH SHOT: DO NOTHING", Optional.empty());
-//     pickup3choice.addOption("AMPSIDE", Optional.of(NoteLocation.AMPSIDE));
-//     pickup3choice.addOption("MIDDLE", Optional.of(NoteLocation.MIDDLE));
-//     pickup3choice.addOption("STAGESIDE NOTE", Optional.of(NoteLocation.STAGESIDE));
+  //     pickup3choice.setDefaultOption("FOURTH SHOT: DO NOTHING", Optional.empty());
+  //     pickup3choice.addOption("AMPSIDE", Optional.of(NoteLocation.AMPSIDE));
+  //     pickup3choice.addOption("MIDDLE", Optional.of(NoteLocation.MIDDLE));
+  //     pickup3choice.addOption("STAGESIDE NOTE", Optional.of(NoteLocation.STAGESIDE));
 
-//     startchoice.setDefaultOption("STARTING POSITION: MIDDLE START", "Mid");
-//     startchoice.addOption("AMPSIDE START", "Amp");
-//     startchoice.addOption("STAGESIDE START", "Stage");
+  //     startchoice.setDefaultOption("STARTING POSITION: MIDDLE START", "Mid");
+  //     startchoice.addOption("AMPSIDE START", "Amp");
+  //     startchoice.addOption("STAGESIDE START", "Stage");
 
-//     SmartDashboard.putData(pickup1choice);
-//     SmartDashboard.putData(pickup2choice);
-//     SmartDashboard.putData(pickup3choice);
-//     SmartDashboard.putData(startchoice);
-//   }
+  //     SmartDashboard.putData(pickup1choice);
+  //     SmartDashboard.putData(pickup2choice);
+  //     SmartDashboard.putData(pickup3choice);
+  //     SmartDashboard.putData(startchoice);
+  //   }
 
-//   public Command getAutonomousCommand() {
-//     // NamedCommands.registerCommand("Fire", new FireAuton(peterSubsystem, armSubsystem, driveTrain,
-//     // 1, redside));
-//     // NamedCommands.registerCommand("Intake", new Intake(peterSubsystem, armSubsystem,
-//     // joystickSubsystem));
-//     // NamedCommands.registerCommand("Ratchette", new RatchetteDisengage(armSubsystem));
+  //   public Command getAutonomousCommand() {
+  //     // NamedCommands.registerCommand("Fire", new FireAuton(peterSubsystem, armSubsystem,
+  // driveTrain,
+  //     // 1, redside));
+  //     // NamedCommands.registerCommand("Intake", new Intake(peterSubsystem, armSubsystem,
+  //     // joystickSubsystem));
+  //     // NamedCommands.registerCommand("Ratchette", new RatchetteDisengage(armSubsystem));
 
-//     // return new PathPlannerAuto("SamplePath");
+  //     // return new PathPlannerAuto("SamplePath");
 
-//     // String autonName = (redAlliance) ? "ThreeNoteAutonRed" : "ThreeNoteAutonBlue";
-//     // SmartDashboard.putString("Auton to be run", autonName);
-//     // SmartDashboard.putBoolean("Red Alliance?", redAlliance);
-//     PathPlannerAuto start =
-//         new PathPlannerAuto(
-//             (redAlliance ? "Red" : "Blue")
-//                 .concat(startchoice.getSelected().trim())
-//                 .concat("Start"));
-//     return new RatchetteDisengage(armSubsystem)
-//         .andThen(new SmartdashBoardCmd("auton status", "starting"), start)
-//         // .andThen(new RatchetteDisengage(armSubsystem), new PrintCommand("finished Rachette"))
-//         .andThen(
-//             new FireAuton(peterSubsystem, armSubsystem, driveTrain, 1, redside),
-//             new SmartdashBoardCmd("auton status", "fired 1"))
-//         .andThen(getAutonShoot(pickup1choice.getSelected()))
-//         .andThen(new SmartdashBoardCmd("auton status", "pickup1 ended"))
-//         .andThen(getAutonShoot(pickup2choice.getSelected()))
-//         .andThen(new SmartdashBoardCmd("auton status", "pickup2 ended"))
-//         .andThen(getAutonShoot(pickup3choice.getSelected()))
-//         .andThen(new SmartdashBoardCmd("auton status", "auton finished"));
-//   }
+  //     // String autonName = (redAlliance) ? "ThreeNoteAutonRed" : "ThreeNoteAutonBlue";
+  //     // SmartDashboard.putString("Auton to be run", autonName);
+  //     // SmartDashboard.putBoolean("Red Alliance?", redAlliance);
+  //     PathPlannerAuto start =
+  //         new PathPlannerAuto(
+  //             (redAlliance ? "Red" : "Blue")
+  //                 .concat(startchoice.getSelected().trim())
+  //                 .concat("Start"));
+  //     return new RatchetteDisengage(armSubsystem)
+  //         .andThen(new SmartdashBoardCmd("auton status", "starting"), start)
+  //         // .andThen(new RatchetteDisengage(armSubsystem), new PrintCommand("finished
+  // Rachette"))
+  //         .andThen(
+  //             new FireAuton(peterSubsystem, armSubsystem, driveTrain, 1, redside),
+  //             new SmartdashBoardCmd("auton status", "fired 1"))
+  //         .andThen(getAutonShoot(pickup1choice.getSelected()))
+  //         .andThen(new SmartdashBoardCmd("auton status", "pickup1 ended"))
+  //         .andThen(getAutonShoot(pickup2choice.getSelected()))
+  //         .andThen(new SmartdashBoardCmd("auton status", "pickup2 ended"))
+  //         .andThen(getAutonShoot(pickup3choice.getSelected()))
+  //         .andThen(new SmartdashBoardCmd("auton status", "auton finished"));
+  //   }
 
-//   public Command getAutonShoot(Optional<NoteLocation> note) {
-//     return (note.isEmpty())
-//         ? new WaitCommand(2.0)
-//         : MoveToTarget.withMirror(
-//                 driveTrain,
-//                 redside,
-//                 note.get()
-//                     .getNoteLocation()
-//                     .plus(new Transform2d(Units.inchesToMeters(-24), 0, new Rotation2d())))
-//             .andThen(
-//                 MoveToTarget.withMirror(
-//                     driveTrain,
-//                     redside,
-//                     note.get()
-//                         .getNoteLocation()
-//                         .plus(new Transform2d(Units.inchesToMeters(-18), 0, new Rotation2d()))))
-//             .alongWith(
-//                 new Intake(peterSubsystem, armSubsystem, joystickSubsystem).withTimeout(2.75d))
-//             .andThen(
-//                 MoveToTarget.withMirror(
-//                     driveTrain,
-//                     redside,
-//                     NoteLocation.MIDDLE
-//                         .getNoteLocation()
-//                         .plus(new Transform2d(Units.inchesToMeters(-45), 0, new Rotation2d()))))
-//             .andThen(new FireAuton(peterSubsystem, armSubsystem, driveTrain, 1, redside));
-//  }
+  //   public Command getAutonShoot(Optional<NoteLocation> note) {
+  //     return (note.isEmpty())
+  //         ? new WaitCommand(2.0)
+  //         : MoveToTarget.withMirror(
+  //                 driveTrain,
+  //                 redside,
+  //                 note.get()
+  //                     .getNoteLocation()
+  //                     .plus(new Transform2d(Units.inchesToMeters(-24), 0, new Rotation2d())))
+  //             .andThen(
+  //                 MoveToTarget.withMirror(
+  //                     driveTrain,
+  //                     redside,
+  //                     note.get()
+  //                         .getNoteLocation()
+  //                         .plus(new Transform2d(Units.inchesToMeters(-18), 0, new
+  // Rotation2d()))))
+  //             .alongWith(
+  //                 new Intake(peterSubsystem, armSubsystem, joystickSubsystem).withTimeout(2.75d))
+  //             .andThen(
+  //                 MoveToTarget.withMirror(
+  //                     driveTrain,
+  //                     redside,
+  //                     NoteLocation.MIDDLE
+  //                         .getNoteLocation()
+  //                         .plus(new Transform2d(Units.inchesToMeters(-45), 0, new
+  // Rotation2d()))))
+  //             .andThen(new FireAuton(peterSubsystem, armSubsystem, driveTrain, 1, redside));
+  //  }
 }

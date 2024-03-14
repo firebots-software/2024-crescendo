@@ -183,7 +183,7 @@ public class ArmSubsystem extends SubsystemBase {
             .getDistance(robotPosition);
     // SmartDashboard.putNumber("ground dist from speaker", groundDistFromSpeaker);
     // SmartDashboard.putNumber(
-        // "angle from intermap1", Constants.Arm.INTERMAP.get(groundDistFromSpeaker));
+    // "angle from intermap1", Constants.Arm.INTERMAP.get(groundDistFromSpeaker));
     //     SmartDashboard.putNumber(
     // "angle from intermap2", Constants.Arm.INTERMAP2.get(groundDistFromSpeaker));
     // return !IncreaseAngle ? Constants.Arm.INTERMAP1.get(groundDistFromSpeaker) :
@@ -269,7 +269,8 @@ public class ArmSubsystem extends SubsystemBase {
     // SmartDashboard.putNumber("Master Velocity", master.getVelocity().getValue());
     // SmartDashboard.putNumber(
     //     "ARM Abs enc deg",
-    //     Units.rotationsToDegrees(getAbsolutePosition() - Constants.Arm.ABSOLUTE_HORIZONTAL_OFFSET)
+    //     Units.rotationsToDegrees(getAbsolutePosition() -
+    // Constants.Arm.ABSOLUTE_HORIZONTAL_OFFSET)
     //         / Constants.Arm.ABSOLUTE_ARM_CONVERSION_FACTOR);
     // SmartDashboard.putNumber("ARM updown adjustment", Constants.Arm.ARM_INTERMAP_OFFSET);
     periodicSignalLogger();

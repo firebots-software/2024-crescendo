@@ -236,10 +236,12 @@ public class PeterSubsystem extends SubsystemBase {
     // SmartDashboard.putBoolean("Shooter Ready", isShooterReady());
     // SmartDashboard.putNumber(
     //     "Shooter down speed", shooterMotorDown.getVelocity().getValueAsDouble());
-    // SmartDashboard.putNumber("Shooter up speed", shooterMotorUp.getVelocity().getValueAsDouble());
+    // SmartDashboard.putNumber("Shooter up speed",
+    // shooterMotorUp.getVelocity().getValueAsDouble());
     // SmartDashboard.putNumber(
     //     "Shooter down power", shooterMotorDown.getDutyCycle().getValueAsDouble());
-    // SmartDashboard.putNumber("Shooter up power", shooterMotorUp.getDutyCycle().getValueAsDouble());
+    // SmartDashboard.putNumber("Shooter up power",
+    // shooterMotorUp.getDutyCycle().getValueAsDouble());
     // SmartDashboard.putNumber(
     //     "Shooter down current", shooterMotorDown.getStatorCurrent().getValueAsDouble());
     // SmartDashboard.putNumber(
