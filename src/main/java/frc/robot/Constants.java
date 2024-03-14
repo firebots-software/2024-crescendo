@@ -98,7 +98,7 @@ public final class Constants {
       PIPER(
           MotorConstants.speedControledMotor(35, false, 24d / 18d, 40.0, 3000d / 60d),
           MotorConstants.speedControledMotor(34, false, 24d / 18d, 40.0, 3000d / 60d),
-          MotorConstants.voltageControlledMotor(32, false, 4d / 1d, 25.0, 12d),
+          MotorConstants.voltageControlledMotor(32, true, 4d / 1d, 25.0, 12d),
           MotorConstants.speedControledMotor(33, true, 2d / 1d, 50.0, 200d));
       public final MotorConstants SHOOTER_1, SHOOTER_2, PRESHOOTER, INTAKE;
 
