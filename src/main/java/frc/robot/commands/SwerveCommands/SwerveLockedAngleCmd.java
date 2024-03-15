@@ -45,7 +45,8 @@ public class SwerveLockedAngleCmd extends SwerveJoystickCommand {
           return -computedRotation;
         },
         speedControlFunction,
-        swerveSubsystem);
+        swerveSubsystem,
+        false);
 
     // bro this be really bad coding, aaaa ~java~ OOP is stupid
     error =

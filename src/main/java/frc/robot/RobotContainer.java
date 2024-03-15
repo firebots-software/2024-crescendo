@@ -28,10 +28,12 @@ import frc.robot.commandGroups.BundtShot;
 import frc.robot.commandGroups.FireAuton;
 import frc.robot.commandGroups.FireTeleop;
 import frc.robot.commandGroups.Intake;
+import frc.robot.commands.ArmCommands.AlterArmValues;
 import frc.robot.commands.ArmCommands.ArmToAngleCmd;
 import frc.robot.commands.Auton.MoveToTarget;
 import frc.robot.commands.Auton.RatchetteDisengage;
-import frc.robot.commands.DebugCommands.AlterArmValues;
+import frc.robot.commands.DebugCommands.SmartdashBoardCmd;
+// import frc.robot.commands.ArmCommands.AlterArmValues;
 import frc.robot.commands.PeterCommands.ShootNoWarmup;
 import frc.robot.commands.PeterCommands.SpinUpShooter;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
@@ -40,6 +42,7 @@ import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.JoystickSubsystem;
 import frc.robot.subsystems.PeterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.util.MiscUtils;
 import frc.robot.util.OtherXBoxController;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -201,24 +204,24 @@ public class RobotContainer {
                     new ParallelCommandGroup(
                         ArmToAngleCmd.toAmp(armSubsystem).withTolerance(1),
                         MoveToTarget.withMirror(
-                                driveTrain,
-                                redside,
-                                Constants.Landmarks.Amp.POSE.plus(
-                                    new Transform2d(
-                                        0d,
-                                        -(Units.inchesToMeters(24)
-                                            + Constants.Swerve.ROBOT_HALF_WIDTH_METERS),
-                                        new Rotation2d())))
-                            .andThen(
-                                MoveToTarget.withMirror(
-                                    driveTrain,
-                                    redside,
-                                    Constants.Landmarks.Amp.POSE.plus(
-                                        new Transform2d(
-                                            0d,
-                                            -(Units.inchesToMeters(12)
-                                                + Constants.Swerve.ROBOT_HALF_WIDTH_METERS),
-                                            new Rotation2d())))),
+                            driveTrain,
+                            redside,
+                            MiscUtils.plus(
+                                Constants.Landmarks.Amp.POSE,
+                                new Transform2d(
+                                    0d,
+                                    -(Units.inchesToMeters(12)
+                                        + Constants.Swerve.ROBOT_HALF_WIDTH_METERS),
+                                    new Rotation2d()))),
+                        // .andThen(
+                        //     MoveToTarget.withMirror(
+                        //         driveTrain,
+                        //         redside,
+                        //         MiscUtils.plus(Constants.Landmarks.Amp.POSE, new Transform2d(
+                        //                 0d,
+                        //                 -(Units.inchesToMeters(12)
+                        //                     + Constants.Swerve.ROBOT_HALF_WIDTH_METERS),
+                        //                 new Rotation2d())))),
                         new SpinUpShooter(peterSubsystem)),
                     new ShootNoWarmup(peterSubsystem, false))
                 .withInterruptBehavior(InterruptionBehavior.kCancelSelf));
@@ -321,16 +324,17 @@ public class RobotContainer {
                 .concat(startchoice.getSelected().trim())
                 .concat("Start"));
     return new RatchetteDisengage(armSubsystem)
-        .andThen(start)
+        .andThen(new SmartdashBoardCmd("auton status", "starting"), start)
         // .andThen(new RatchetteDisengage(armSubsystem), new PrintCommand("finished Rachette"))
         .andThen(
             new FireAuton(peterSubsystem, armSubsystem, driveTrain, 1, redside),
-            new PrintCommand("ritvik gun fire1"))
+            new SmartdashBoardCmd("auton status", "fired 1"))
         .andThen(getAutonShoot(pickup1choice.getSelected()))
-        .andThen(new PrintCommand("pickup1 ended"))
+        .andThen(new SmartdashBoardCmd("auton status", "pickup1 ended"))
         .andThen(getAutonShoot(pickup2choice.getSelected()))
-        .andThen(new PrintCommand("pickup2 ended"))
-        .andThen(getAutonShoot(pickup3choice.getSelected()));
+        .andThen(new SmartdashBoardCmd("auton status", "pickup2 ended"))
+        .andThen(getAutonShoot(pickup3choice.getSelected()))
+        .andThen(new SmartdashBoardCmd("auton status", "auton finished"));
   }
 
   public Command getAutonShoot(Optional<NoteLocation> note) {

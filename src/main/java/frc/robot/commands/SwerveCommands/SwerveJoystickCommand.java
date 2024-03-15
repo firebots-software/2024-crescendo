@@ -25,6 +25,7 @@ public class SwerveJoystickCommand extends Command {
       new SwerveRequest.FieldCentric().withDriveRequestType(DriveRequestType.Velocity);
   private final SwerveRequest.RobotCentric robotCentricDrive =
       new SwerveRequest.RobotCentric().withDriveRequestType(DriveRequestType.Velocity);
+  private boolean squaredTurn;
 
   public SwerveJoystickCommand(
       Supplier<Double> frontBackFunction,
@@ -38,7 +39,7 @@ public class SwerveJoystickCommand extends Command {
     this.turningSpdFunction = turningSpdFunction;
     this.speedControlFunction = speedControlFunction;
     this.fieldRelativeFunction = fieldRelativeFunction;
-
+    this.squaredTurn = true;
     this.xLimiter =
         new SlewRateLimiter(Constants.Swerve.TELE_DRIVE_MAX_ACCELERATION_UNITS_PER_SECOND);
     this.yLimiter =
@@ -68,6 +69,23 @@ public class SwerveJoystickCommand extends Command {
         swerveSubsystem);
   }
 
+  public SwerveJoystickCommand(
+      Supplier<Double> frontBackFunction,
+      Supplier<Double> leftRightFunction,
+      Supplier<Double> turningSpdFunction,
+      Supplier<Double> speedControlFunction,
+      SwerveSubsystem swerveSubsystem,
+      boolean squaredTurn) {
+
+    this(
+        frontBackFunction,
+        leftRightFunction,
+        turningSpdFunction,
+        speedControlFunction,
+        swerveSubsystem);
+    this.squaredTurn = squaredTurn;
+  }
+
   @Override
   public void initialize() {}
 
@@ -90,7 +108,9 @@ public class SwerveJoystickCommand extends Command {
     // Apply Square (will be [0,1] since `speed` is [0,1])
     xSpeed = xSpeed * xSpeed * Math.signum(xSpeed);
     ySpeed = ySpeed * ySpeed * Math.signum(ySpeed);
-
+    if (squaredTurn) {
+      turningSpeed = turningSpeed * turningSpeed * Math.signum(turningSpeed);
+    }
     // 3. Apply deadband
     xSpeed = Math.abs(xSpeed) > Constants.OI.LEFT_JOYSTICK_DEADBAND ? xSpeed : 0.0;
     ySpeed = Math.abs(ySpeed) > Constants.OI.LEFT_JOYSTICK_DEADBAND ? ySpeed : 0.0;
@@ -104,7 +124,7 @@ public class SwerveJoystickCommand extends Command {
         (Constants.Swerve.TELE_DRIVE_PERCENT_SPEED_RANGE * (speedControlFunction.get()))
             + Constants.Swerve.TELE_DRIVE_SLOW_MODE_SPEED_PERCENT;
 
-    // Applies slew rate limieter
+    // Applies slew rate limiter
     xSpeed =
         xLimiter.calculate(xSpeed)
             * driveSpeed

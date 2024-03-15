@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.util.Units;
+import frc.robot.Constants.Pooer.ShooterType;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -49,28 +50,70 @@ public final class Constants {
     public static final int BIG_BUTTON_PORT = 14;
   }
 
-  public static final class Peter {
-    public static final int INTAKE_MOTOR_PORT = 33;
-    // public static final double SHOOTER_SPEED = 3; // Shooter gear ratio: 15:12
-    public static final int NOTE_DETECTOR_PORT = 1;
-    public static final int PRE_SHOOTER_PORT = 32;
-    public static final int SHOOTER_PORT_RIGHT = 30;
-    public static final int SHOOTER_PORT_LEFT = 31;
+  public static final class MotorConstants {
+    public final int PORT;
+    public final boolean REVERSED;
+    public final double GEAR_RATIO;
+    public final double STATOR_CURRENT_LIMIT_AMPS;
+    public final double SPEED_RPS;
+    public final double SPEED_VOLTAGE;
 
-    public static final double INTAKE_WHEEL_SPEED_RPS = 200; // Intake gear ratio: 2:1
-    public static final double ROTATIONS_TO_SHOOTER = 300; // Preshooter gear ratio: 4:1
-    public static final double SHOOT_WHEEL_SPEED_RPS =
-        3500.0 / 60.0; // TODO: Add right and left motor RPS, and change it to not max
-    public static final double PRESHOOTER_WHEEL_VOLTAGE = 9;
+    private MotorConstants(
+        int port,
+        boolean reversed,
+        double gearRatio,
+        double statorCurrent,
+        double speed,
+        double voltage) {
+      PORT = port;
+      REVERSED = reversed;
+      GEAR_RATIO = gearRatio;
+      STATOR_CURRENT_LIMIT_AMPS = statorCurrent;
+      SPEED_RPS = speed;
+      SPEED_VOLTAGE = voltage;
+    }
+
+    public static MotorConstants speedControled(
+        int port, boolean reversed, double gearRatio, double statorCurrent, double speed) {
+      return new MotorConstants(port, reversed, gearRatio, statorCurrent, speed, 0);
+    }
+
+    public static MotorConstants voltageControlled(
+        int port, boolean reversed, double gearRatio, double statorCurrent, double voltage) {
+      return new MotorConstants(port, reversed, gearRatio, statorCurrent, 0, voltage);
+    }
+  }
+
+  public static final class Pooer {
+    public static final int NOTE_DETECTOR_PORT = 1;
     public static final String CANBUS_NAME = "rio";
 
-    public static final double INTAKE_GEAR_RATIO = 2;
-    public static final double PRESHOOTER_GEAR_RATIO = 4;
-    public static final double SHOOTER_WHEELS_GEAR_RATIOS = 24d / 18d;
+    public static final ShooterType SHOOTER = ShooterType.PIPER;
 
-    public static final double SHOOTER_STATOR_CURRENT_LIMIT_AMPS = 40.0;
-    public static final double PRESHOOTER_STATOR_CURRENT_LIMIT_AMPS = 25.0;
-    public static final double INTAKE_STATOR_CURRENT_LIMIT_AMPS = 50.0;
+    public static enum ShooterType {
+      PETER(
+          MotorConstants.speedControled(30, true, 12d / 15d, 40.0, 4500d / 60d),
+          MotorConstants.speedControled(31, false, 12d / 15d, 40.0, 4500d / 60d),
+          MotorConstants.voltageControlled(32, false, 4d / 1d, 25.0, 9d),
+          MotorConstants.speedControled(33, true, 2d / 1d, 50.0, 200d)),
+      PIPER(
+          MotorConstants.speedControled(35, false, 24d / 18d, 40.0, 3000d / 60d),
+          MotorConstants.speedControled(34, false, 24d / 18d, 40.0, 3000d / 60d),
+          MotorConstants.voltageControlled(32, true, 4d / 1d, 25.0, 9d),
+          MotorConstants.speedControled(33, true, 2d / 1d, 50.0, 200d));
+      public final MotorConstants SHOOTER_1, SHOOTER_2, PRESHOOTER, INTAKE;
+
+      ShooterType(
+          MotorConstants shooter1,
+          MotorConstants shooter2,
+          MotorConstants preshooter,
+          MotorConstants intake) {
+        SHOOTER_1 = shooter1;
+        SHOOTER_2 = shooter2;
+        PRESHOOTER = preshooter;
+        INTAKE = intake;
+      }
+    }
   }
 
   public static final class Arm {
@@ -91,8 +134,8 @@ public final class Constants {
 
     public static final double CURRENT_LIMIT = 8.0;
     public static final double S0C_KP = 1.2;
-    public static final double ARMFF_KS = 0.1;
-    public static final double ARMFF_KG = 0.3;
+    public static final double ARMFF_KS = 0.16969;
+    public static final double ARMFF_KG = 0.34;
     public static final double ARMFF_KV = 2.49;
     public static final double MOTIONMAGIC_KV = 1; // MotionMagic Cruise Velocity in RPS of the arm
     public static final double MOTIONMAGIC_KA = 2.2; // MotionMagic Acceleration in RPS^2 of the arm
@@ -106,37 +149,48 @@ public final class Constants {
     public static final double ABSOLUTE_ENCODER_HORIZONTAL = 0.6547;
     public static final double ABSOLUTE_HORIZONTAL_OFFSET = 0.05;
     public static double ARM_INTERMAP_OFFSET = 4;
+    // public static double ZERO_SPEAKER_OFFSET_METERS = 0.6;
     public static final InterpolatingDoubleTreeMap INTERMAP = new InterpolatingDoubleTreeMap();
 
     static {
       UPDATE_INTERMAP();
-      // INTERMAP.put(
-      //     1.34,
-      //     6d + ARM_INTERMAP_OFFSET); // measurements of distance are from front of robot bumper
-      // to
-      // // wall
-      // INTERMAP.put(2.1, 17d + ARM_INTERMAP_OFFSET);
-      // INTERMAP.put(Units.feetToMeters(9) + Units.inchesToMeters(17), 23.5d +
-      // ARM_INTERMAP_OFFSET);
     }
 
-    public static void UPDATE_INTERMAP() {
+    public static void UPDATE_INTERMAP(){
+      if(Constants.Pooer.SHOOTER == ShooterType.PETER){
+        UPDATE_INTERMAP_PETER();
+      } else {
+        UPDATE_INTERMAP_PIPER();
+      }
+    }
+
+    public static void UPDATE_INTERMAP_PETER() {
       INTERMAP.clear();
       INTERMAP.put(
           1.34,
-          6d + ARM_INTERMAP_OFFSET); // measurements of distance are from front of robot bumper to
+          6.5 + ARM_INTERMAP_OFFSET); // measurements of distance are from front of robot bumper to
       // wall
       INTERMAP.put(2.1, 17d + ARM_INTERMAP_OFFSET);
       INTERMAP.put(Units.feetToMeters(9) + Units.inchesToMeters(17), 23.5d + ARM_INTERMAP_OFFSET);
     }
 
-    // public static final InterpolatingDoubleTreeMap INTERMAP2 = new InterpolatingDoubleTreeMap();
-    // static {
-    //   INTERMAP2.put(1.34, 6d + 5); // measurements of distance are from front of robot bumper to
-    // wall
-    //   INTERMAP2.put(2.1, 17d + 5);
-    //   INTERMAP2.put(Units.feetToMeters(9) + Units.inchesToMeters(17), 23.5d + 5);
-    // }
+    public static void UPDATE_INTERMAP_PIPER(){
+      INTERMAP.clear();
+      INTERMAP.put(1.34, 6.46);
+      INTERMAP.put(1.34+Units.inchesToMeters(30), 20.6);
+      INTERMAP.put(1.34+Units.inchesToMeters(60), 27.8);
+      INTERMAP.put(1.34+Units.inchesToMeters(90), 31.339);
+      INTERMAP.put(1.34+Units.inchesToMeters(120), 32.67);
+    }
+
+    public static double GET_YAJWINS_EQUATION(double distance){
+      double a = -6.02207;
+      double b = -8.6529 * Math.pow(10, 15);
+      double c = 252.816;
+      double d = 35.7582;
+      return b * Math.pow((distance + c),a)+d;
+    }
+
   }
 
   public static class OI {
@@ -231,7 +285,8 @@ public final class Constants {
 
     public static class PPConstants {
       public static final PathConstraints PATH_PLANNER_CONSTRAINTS =
-          new PathConstraints(3.0, 3.0, 2 * Math.PI, 4 * Math.PI);
+          new PathConstraints(
+              3.0, 3.0, 2 * Math.PI, 4 * Math.PI); // TODO: Increase the auton velocity
     }
 
     public static final double PHYSICAL_MAX_SPEED_METERS_PER_SECOND = 4.8768;

@@ -87,9 +87,9 @@ public class Robot extends TimedRobot {
                   new Translation3d(
                       driveTrain.getState().Pose.getX(), driveTrain.getState().Pose.getY(), 0.0));
 
-      double xKalman = 0.01 * Math.pow(1.15, distToAprilTag);
+      double xKalman = 0.02 * Math.pow(1.15, distToAprilTag);
 
-      double yKalman = 0.01 * Math.pow(1.4, distToAprilTag);
+      double yKalman = 0.02 * Math.pow(1.4, distToAprilTag);
 
       visionMatrix.set(0, 0, xKalman);
       visionMatrix.set(1, 0, yKalman);

@@ -4,6 +4,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
@@ -16,7 +17,7 @@ public class MoveToTarget extends Command {
   private Pose2d[] absolutePoses;
   private SwerveSubsystem swerve;
   private Supplier<Boolean> reflected;
-
+  private Rotation2d startRotation2d;
   PathPlannerPath constructedPath;
   Command pathCommand;
 
@@ -28,6 +29,16 @@ public class MoveToTarget extends Command {
     addRequirements(swerve);
   }
 
+  // private MoveToTarget(
+  //   SwerveSubsystem swerve, Pose2d[] absolutePoses, Supplier<Boolean> reflected, Rotation2d
+  // startRotation2d) {
+  //   this.absolutePoses = absolutePoses;
+  //   this.swerve = SwerveSubsystem.getInstance();
+  //   this.reflected = reflected;
+  //   this.startRotation2d=startRotation2d;
+  //   addRequirements(swerve);
+  // }
+
   private MoveToTarget(SwerveSubsystem swerve, Pose2d absolutePose, Supplier<Boolean> reflected) {
     this(swerve, new Pose2d[] {absolutePose}, reflected);
   }
@@ -37,6 +48,10 @@ public class MoveToTarget extends Command {
     // constructing the list of path points using absolute coordinates on the field
 
     Pose2d currentPose = swerve.getState().Pose;
+    // if(startRotation2d != null){
+    //   currentPose = new Pose2d(currentPose.getTranslation(), startRotation2d);
+    // }
+
     Pose2d[] poseArray = new Pose2d[absolutePoses.length + 1];
     poseArray[0] = currentPose;
     for (int i = 1; i < poseArray.length; i++) {
@@ -45,6 +60,7 @@ public class MoveToTarget extends Command {
               ? MiscUtils.reflectAcrossMidline(this.absolutePoses[i - 1])
               : this.absolutePoses[i - 1]);
     }
+
     List<Translation2d> bezierPoints = PathPlannerPath.bezierFromPoses(poseArray);
 
     // create the path using the path points and constraints (also providing the final robot
