@@ -30,7 +30,6 @@ import org.photonvision.EstimatedRobotPose;
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   PhotonVision frontVision = PhotonVision.getFrontCamera();
-  PhotonVision sideVision = PhotonVision.getSideCamera();
   private final SwerveSubsystem driveTrain = SwerveSubsystem.getInstance();
   private final ArmSubsystem armSubsystem = ArmSubsystem.getInstance();
   private final PeterSubsystem peterSubsystem = PeterSubsystem.getInstance();
@@ -77,13 +76,7 @@ public class Robot extends TimedRobot {
         frontVision.getMultiTagPose3d(driveTrain.getState().Pose);
     if (frontRobotPose.isPresent()) {
       driveTrain.addVisionMeasurement(
-          frontRobotPose.get().estimatedPose.toPose2d(), Timer.getFPGATimestamp(), visionMatrix);
-    }
-    Optional<EstimatedRobotPose> sideRobotPose =
-        sideVision.getMultiTagPose3d(driveTrain.getState().Pose);
-    if (sideRobotPose.isPresent()) {
-      driveTrain.addVisionMeasurement(
-          sideRobotPose.get().estimatedPose.toPose2d(), Timer.getFPGATimestamp(), visionMatrix);
+          frontRobotPose.get().estimatedPose.toPose2d(),frontRobotPose.get().timestampSeconds, visionMatrix);
     }
 
     CommandScheduler.getInstance().run();
