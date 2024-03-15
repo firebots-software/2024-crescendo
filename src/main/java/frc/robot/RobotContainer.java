@@ -21,7 +21,7 @@ import frc.robot.subsystems.SysID;
 public class RobotContainer {
   // CommandXboxController m_joystick = new CommandXboxController(0);
   private final CommandPS4Controller joystick =
-      new CommandPS4Controller(Constants.OI.JOYSTICK_PORT);
+      new CommandPS4Controller(Constants.OI.JOYSTICK_A_PORT);
   SysID m_mechanism = new SysID();
 
   public RobotContainer() {

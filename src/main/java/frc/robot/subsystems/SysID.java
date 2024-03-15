@@ -18,10 +18,10 @@ import frc.robot.Constants;
 import java.util.function.DoubleSupplier;
 
 public class SysID extends SubsystemBase {
-  private final TalonFX fl;
-  private final TalonFX bl;
-  private final TalonFX br;
-  private final TalonFX fr;
+  private final TalonFX rt;
+  private final TalonFX rb;
+  private final TalonFX lt;
+  private final TalonFX lb;
   private final TalonFX master;
 
   private final DutyCycleOut m_joystickControl = new DutyCycleOut(0);
@@ -31,16 +31,30 @@ public class SysID extends SubsystemBase {
   private SysIdRoutine m_SysIdRoutine;
 
   public SysID() {
-    fl = new TalonFX(Constants.Swerve.FRONT_LEFT_DRIVE_MOTOR_ID, Constants.Swerve.CANBUS_NAME);
-    bl = new TalonFX(Constants.Swerve.BACK_LEFT_DRIVE_MOTOR_ID, Constants.Swerve.CANBUS_NAME);
-    br = new TalonFX(Constants.Swerve.BACK_RIGHT_DRIVE_MOTOR_ID, Constants.Swerve.CANBUS_NAME);
-    fr = new TalonFX(Constants.Swerve.FRONT_RIGHT_DRIVE_MOTOR_ID, Constants.Swerve.CANBUS_NAME);
 
-    fr.setControl(new Follower(Constants.Swerve.FRONT_LEFT_DRIVE_MOTOR_ID, true));
-    br.setControl(new Follower(Constants.Swerve.FRONT_LEFT_DRIVE_MOTOR_ID, true));
-    bl.setControl(new Follower(Constants.Swerve.FRONT_LEFT_DRIVE_MOTOR_ID, false));
+    rt = new TalonFX(Constants.Arm.RT_PORT, Constants.Arm.CANBUS_NAME);
+    rb = new TalonFX(Constants.Arm.RB_PORT, Constants.Arm.CANBUS_NAME);
+    lt = new TalonFX(Constants.Arm.LT_PORT, Constants.Arm.CANBUS_NAME);
+    lb = new TalonFX(Constants.Arm.LB_PORT, Constants.Arm.CANBUS_NAME);
+
+    // Set up motor followers and deal with inverted motors
+    Follower follower = new Follower(Constants.Arm.LT_PORT, true);
+    Follower invertedFollower = new Follower(Constants.Arm.LT_PORT, false);
+    rt.setControl(follower);
+    rb.setControl(follower);
+    lb.setControl(invertedFollower);
+
+
+    // fl = new TalonFX(Constants.Swerve.FRONT_LEFT_DRIVE_MOTOR_ID, Constants.Swerve.CANBUS_NAME);
+    // bl = new TalonFX(Constants.Swerve.BACK_LEFT_DRIVE_MOTOR_ID, Constants.Swerve.CANBUS_NAME);
+    // br = new TalonFX(Constants.Swerve.BACK_RIGHT_DRIVE_MOTOR_ID, Constants.Swerve.CANBUS_NAME);
+    // fr = new TalonFX(Constants.Swerve.FRONT_RIGHT_DRIVE_MOTOR_ID, Constants.Swerve.CANBUS_NAME);
+
+    // fr.setControl(new Follower(Constants.Swerve.FRONT_LEFT_DRIVE_MOTOR_ID, true));
+    // br.setControl(new Follower(Constants.Swerve.FRONT_LEFT_DRIVE_MOTOR_ID, true));
+    // bl.setControl(new Follower(Constants.Swerve.FRONT_LEFT_DRIVE_MOTOR_ID, false));
     
-    master = fl;
+    master = lt;
 
     // fr.setInverted(true);
     // br.setControl(f);
@@ -60,7 +74,7 @@ public class SysID extends SubsystemBase {
               null,
               this));
 
-    setName("DrivetrainSysID");
+    setName("ArmSysID");
 
     TalonFXConfiguration cfg = new TalonFXConfiguration();
     master.getConfigurator().apply(cfg);
