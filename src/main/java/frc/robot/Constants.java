@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.util.Units;
+import frc.robot.Constants.Pooer.ShooterType;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -148,37 +149,48 @@ public final class Constants {
     public static final double ABSOLUTE_ENCODER_HORIZONTAL = 0.6547;
     public static final double ABSOLUTE_HORIZONTAL_OFFSET = 0.05;
     public static double ARM_INTERMAP_OFFSET = 4;
+    // public static double ZERO_SPEAKER_OFFSET_METERS = 0.6;
     public static final InterpolatingDoubleTreeMap INTERMAP = new InterpolatingDoubleTreeMap();
 
     static {
       UPDATE_INTERMAP();
-      // INTERMAP.put(
-      //     1.34,
-      //     6d + ARM_INTERMAP_OFFSET); // measurements of distance are from front of robot bumper
-      // to
-      // // wall
-      // INTERMAP.put(2.1, 17d + ARM_INTERMAP_OFFSET);
-      // INTERMAP.put(Units.feetToMeters(9) + Units.inchesToMeters(17), 23.5d +
-      // ARM_INTERMAP_OFFSET);
     }
 
-    public static void UPDATE_INTERMAP() {
+    public static void UPDATE_INTERMAP(){
+      if(Constants.Pooer.SHOOTER == ShooterType.PIPER){
+        UPDATE_INTERMAP_PETER();
+      } else {
+        UPDATE_INTERMAP_PIPER();
+      }
+    }
+
+    public static void UPDATE_INTERMAP_PETER() {
       INTERMAP.clear();
       INTERMAP.put(
           1.34,
-          6d + ARM_INTERMAP_OFFSET); // measurements of distance are from front of robot bumper to
+          6.5 + ARM_INTERMAP_OFFSET); // measurements of distance are from front of robot bumper to
       // wall
       INTERMAP.put(2.1, 17d + ARM_INTERMAP_OFFSET);
       INTERMAP.put(Units.feetToMeters(9) + Units.inchesToMeters(17), 23.5d + ARM_INTERMAP_OFFSET);
     }
 
-    // public static final InterpolatingDoubleTreeMap INTERMAP2 = new InterpolatingDoubleTreeMap();
-    // static {
-    //   INTERMAP2.put(1.34, 6d + 5); // measurements of distance are from front of robot bumper to
-    // wall
-    //   INTERMAP2.put(2.1, 17d + 5);
-    //   INTERMAP2.put(Units.feetToMeters(9) + Units.inchesToMeters(17), 23.5d + 5);
-    // }
+    public static void UPDATE_INTERMAP_PIPER(){
+      INTERMAP.clear();
+      INTERMAP.put(1.34, 6.46);
+      INTERMAP.put(1.34+Units.inchesToMeters(30), 20.6);
+      INTERMAP.put(1.34+Units.inchesToMeters(60), 27.8);
+      INTERMAP.put(1.34+Units.inchesToMeters(90), 31.339);
+      INTERMAP.put(1.34+Units.inchesToMeters(120), 32.67);
+    }
+
+    public static double GET_YAJWINS_EQUATION(double distance){
+      double a = -6.02207;
+      double b = -8.6529 * Math.pow(10, 15);
+      double c = 252.816;
+      double d = 35.7582;
+      return b * Math.pow((distance + c),a)+d;
+    }
+
   }
 
   public static class OI {
