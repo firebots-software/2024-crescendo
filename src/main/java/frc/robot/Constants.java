@@ -156,8 +156,8 @@ public final class Constants {
       UPDATE_INTERMAP();
     }
 
-    public static void UPDATE_INTERMAP(){
-      if(Constants.Pooer.SHOOTER == ShooterType.PETER){
+    public static void UPDATE_INTERMAP() {
+      if (Constants.Pooer.SHOOTER == ShooterType.PETER) {
         UPDATE_INTERMAP_PETER();
       } else {
         UPDATE_INTERMAP_PIPER();
@@ -174,23 +174,22 @@ public final class Constants {
       INTERMAP.put(Units.feetToMeters(9) + Units.inchesToMeters(17), 23.5d + ARM_INTERMAP_OFFSET);
     }
 
-    public static void UPDATE_INTERMAP_PIPER(){
+    public static void UPDATE_INTERMAP_PIPER() {
       INTERMAP.clear();
       INTERMAP.put(1.34, 6.46);
-      INTERMAP.put(1.34+Units.inchesToMeters(30), 20.6);
-      INTERMAP.put(1.34+Units.inchesToMeters(60), 27.8);
-      INTERMAP.put(1.34+Units.inchesToMeters(90), 31.339);
-      INTERMAP.put(1.34+Units.inchesToMeters(120), 32.67);
+      INTERMAP.put(1.34 + Units.inchesToMeters(30), 20.6);
+      INTERMAP.put(1.34 + Units.inchesToMeters(60), 27.8);
+      INTERMAP.put(1.34 + Units.inchesToMeters(90), 31.339);
+      INTERMAP.put(1.34 + Units.inchesToMeters(120), 32.67);
     }
 
-    public static double GET_YAJWINS_EQUATION(double distance){
+    public static double GET_YAJWINS_EQUATION(double distance) {
       double a = -6.02207;
       double b = -8.6529 * Math.pow(10, 15);
       double c = 252.816;
       double d = 35.7582;
-      return b * Math.pow((distance + c),a)+d;
+      return b * Math.pow((distance + c), a) + d;
     }
-
   }
 
   public static class OI {
