@@ -204,22 +204,24 @@ public class RobotContainer {
                     new ParallelCommandGroup(
                         ArmToAngleCmd.toAmp(armSubsystem).withTolerance(1),
                         MoveToTarget.withMirror(
-                                driveTrain,
-                                redside,
-                                MiscUtils.plus(Constants.Landmarks.Amp.POSE, new Transform2d(
-                                        0d,
-                                        -(Units.inchesToMeters(12)
-                                            + Constants.Swerve.ROBOT_HALF_WIDTH_METERS),
-                                        new Rotation2d()))),
-                            // .andThen(
-                            //     MoveToTarget.withMirror(
-                            //         driveTrain,
-                            //         redside,
-                            //         MiscUtils.plus(Constants.Landmarks.Amp.POSE, new Transform2d(
-                            //                 0d,
-                            //                 -(Units.inchesToMeters(12)
-                            //                     + Constants.Swerve.ROBOT_HALF_WIDTH_METERS),
-                            //                 new Rotation2d())))),
+                            driveTrain,
+                            redside,
+                            MiscUtils.plus(
+                                Constants.Landmarks.Amp.POSE,
+                                new Transform2d(
+                                    0d,
+                                    -(Units.inchesToMeters(12)
+                                        + Constants.Swerve.ROBOT_HALF_WIDTH_METERS),
+                                    new Rotation2d()))),
+                        // .andThen(
+                        //     MoveToTarget.withMirror(
+                        //         driveTrain,
+                        //         redside,
+                        //         MiscUtils.plus(Constants.Landmarks.Amp.POSE, new Transform2d(
+                        //                 0d,
+                        //                 -(Units.inchesToMeters(12)
+                        //                     + Constants.Swerve.ROBOT_HALF_WIDTH_METERS),
+                        //                 new Rotation2d())))),
                         new SpinUpShooter(peterSubsystem)),
                     new ShootNoWarmup(peterSubsystem, false))
                 .withInterruptBehavior(InterruptionBehavior.kCancelSelf));

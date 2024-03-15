@@ -69,7 +69,7 @@ public class SwerveJoystickCommand extends Command {
         swerveSubsystem);
   }
 
-    public SwerveJoystickCommand(
+  public SwerveJoystickCommand(
       Supplier<Double> frontBackFunction,
       Supplier<Double> leftRightFunction,
       Supplier<Double> turningSpdFunction,
@@ -108,8 +108,8 @@ public class SwerveJoystickCommand extends Command {
     // Apply Square (will be [0,1] since `speed` is [0,1])
     xSpeed = xSpeed * xSpeed * Math.signum(xSpeed);
     ySpeed = ySpeed * ySpeed * Math.signum(ySpeed);
-    if(squaredTurn){
-        turningSpeed = turningSpeed * turningSpeed * Math.signum(turningSpeed);
+    if (squaredTurn) {
+      turningSpeed = turningSpeed * turningSpeed * Math.signum(turningSpeed);
     }
     // 3. Apply deadband
     xSpeed = Math.abs(xSpeed) > Constants.OI.LEFT_JOYSTICK_DEADBAND ? xSpeed : 0.0;
