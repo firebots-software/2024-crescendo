@@ -189,8 +189,8 @@ public class ArmSubsystem extends SubsystemBase {
     // "angle from intermap2", Constants.Arm.INTERMAP2.get(groundDistFromSpeaker));
     // return !IncreaseAngle ? Constants.Arm.INTERMAP1.get(groundDistFromSpeaker) :
     // Constants.Arm.INTERMAP2.get(groundDistFromSpeaker);
-    //return Constants.Arm.INTERMAP.get(groundDistFromSpeaker); // THIS IS USING THE INTERMAP
-    return Constants.Arm.GET_YAJWINS_EQUATION(Math.abs(groundDistFromSpeaker)); // THIS IS USING YAJWIN'S EQUATION
+    return Constants.Arm.INTERMAP.get(groundDistFromSpeaker); // THIS IS USING THE INTERMAP
+    // return Constants.Arm.GET_YAJWINS_EQUATION(Math.abs(groundDistFromSpeaker)); // THIS IS USING YAJWIN'S EQUATION
   }
 
   // private get

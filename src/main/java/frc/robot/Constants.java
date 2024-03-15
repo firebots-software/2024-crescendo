@@ -157,7 +157,7 @@ public final class Constants {
     }
 
     public static void UPDATE_INTERMAP(){
-      if(Constants.Pooer.SHOOTER == ShooterType.PIPER){
+      if(Constants.Pooer.SHOOTER == ShooterType.PETER){
         UPDATE_INTERMAP_PETER();
       } else {
         UPDATE_INTERMAP_PIPER();
