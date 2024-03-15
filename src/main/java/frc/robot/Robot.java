@@ -4,17 +4,22 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.SignalLogger;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.LightsSubsystem;
 import frc.robot.subsystems.PeterSubsystem;
 import frc.robot.subsystems.PhotonVision;
 import frc.robot.subsystems.SwerveSubsystem;
@@ -33,6 +38,8 @@ public class Robot extends TimedRobot {
   private final SwerveSubsystem driveTrain = SwerveSubsystem.getInstance();
   private final ArmSubsystem armSubsystem = ArmSubsystem.getInstance();
   private final PeterSubsystem peterSubsystem = PeterSubsystem.getInstance();
+  private LightsSubsystem lightsSubsystem = LightsSubsystem.getInstance();
+
   private RobotContainer m_robotContainer;
   private static Matrix<N3, N1> visionMatrix = new Matrix<N3, N1>(Nat.N3(), Nat.N1());
 
@@ -45,7 +52,7 @@ public class Robot extends TimedRobot {
     CameraServer.startAutomaticCapture(0);
     visionMatrix.set(0, 0, 0);
     visionMatrix.set(1, 0, 0.2d);
-    visionMatrix.set(2, 0, Double.MAX_VALUE);
+    visionMatrix.set(2, 0, 100d);
 
     // Instantiate our RobotContainer. This will perform all our button bindings,
     // and put our
@@ -56,7 +63,7 @@ public class Robot extends TimedRobot {
   }
 
   /**
-   * This function is called every 20 ms, no matter the mode. Use this for items like diagnostics
+   * 2 This function is called every 20 ms, no matter the mode. Use this for items like diagnostics
    * that you want ran during disabled, autonomous, teleoperated and test.
    *
    * <p>This runs after the mode specific periodic functions, but before LiveWindow and
@@ -80,11 +87,21 @@ public class Robot extends TimedRobot {
     }
 
     CommandScheduler.getInstance().run();
+    // m_robotContainer.doTelemetry();
+    // if (vision.hasTarget(vision.getPipeline())) {
+    //   driveTrain.addVisionMeasurement(
+    //       vision.getRobotPose2d(), Timer.getFPGATimestamp(), visionMatrix);
+    // }
+
+    // CommandScheduler.getInstance().run();
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    SignalLogger.stop();
+    armSubsystem.setEnable(false);
+  }
 
   @Override
   public void disabledPeriodic() {}
@@ -92,8 +109,9 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
+    armSubsystem.setTargetDegrees(armSubsystem.getCorrectedDegrees() + 15d);
+    armSubsystem.setEnable(true);
     absoluteInit();
-    armSubsystem.setTargetDegrees(armSubsystem.getCorrectedDegrees() + 5.0);
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     // schedule the autonomous command (example)
@@ -116,17 +134,25 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+    armSubsystem.setTargetDegrees(Constants.Arm.DEFAULT_ARM_ANGLE);
+    armSubsystem.setEnable(true);
   }
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    SmartDashboard.putBoolean(
+        "joystickB right trigger", m_robotContainer.joystickB.rightTrigger(0.5).getAsBoolean());
+    // SmartDashboard.putNumber("joystickB right trigger value",
+    // m_robotContainer.joystickB.rightTrigger());
+  }
 
   @Override
   public void testInit() {
     // Cancels all running commands at the start of test mode.
     absoluteInit();
     CommandScheduler.getInstance().cancelAll();
+    armSubsystem.setEnable(true);
   }
 
   /** This function is called periodically during test mode. */
@@ -145,5 +171,7 @@ public class Robot extends TimedRobot {
 
   private void absoluteInit() {
     RobotContainer.setAlliance();
+    SignalLogger.setPath("/home/lvuser/logs/");
+    SignalLogger.start();
   }
 }

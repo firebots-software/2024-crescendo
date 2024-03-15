@@ -2,7 +2,7 @@ package frc.robot.commandGroups;
 
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.Constants;
-import frc.robot.commands.ArmCommands.AimArmCmd;
+import frc.robot.commands.ArmCommands.ArmToAngleCmd;
 import frc.robot.commands.PeterCommands.SpinUpShooter;
 import frc.robot.commands.SwerveCommands.SwerveLockedAngleCmd;
 import frc.robot.subsystems.ArmSubsystem;
@@ -18,17 +18,20 @@ public class AimAtSpeaker extends ParallelCommandGroup {
       Supplier<Double> frontBackFunction,
       Supplier<Double> leftRightFunction,
       Supplier<Double> speedFunction,
-      double tolerance) {
+      double headingToleranceDegrees,
+      double armToleranceDegrees,
+      Supplier<Boolean> redSide) {
     addCommands(
         new SpinUpShooter(peter),
-        new AimArmCmd(arm, swerve),
-        SwerveLockedAngleCmd.fromPose(
+        ArmToAngleCmd.aimAtSpeaker(arm, swerve, redSide).withTolerance(armToleranceDegrees),
+        SwerveLockedAngleCmd.fromPoseMirrored(
                 frontBackFunction,
                 leftRightFunction,
                 () -> Constants.Landmarks.Speaker.POSE.getTranslation(),
                 speedFunction,
-                swerve)
-            .withToleranceEnd(tolerance));
+                swerve,
+                redSide)
+            .withToleranceEnd(headingToleranceDegrees));
   }
 
   // Constructs without a end condition
@@ -38,7 +41,8 @@ public class AimAtSpeaker extends ParallelCommandGroup {
       SwerveSubsystem swerve,
       Supplier<Double> frontBackFunction,
       Supplier<Double> leftRightFunction,
-      Supplier<Double> speedFunction) {
-    this(peter, arm, swerve, frontBackFunction, leftRightFunction, speedFunction, -1);
+      Supplier<Double> speedFunction,
+      Supplier<Boolean> redSide) {
+    this(peter, arm, swerve, frontBackFunction, leftRightFunction, speedFunction, -1, -1, redSide);
   }
 }

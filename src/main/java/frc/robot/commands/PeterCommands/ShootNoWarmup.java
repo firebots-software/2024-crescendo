@@ -5,14 +5,17 @@ import frc.robot.subsystems.PeterSubsystem;
 
 public class ShootNoWarmup extends Command {
   private PeterSubsystem peterSubsystem;
+  private boolean auton;
 
   /**
    * Creates a new ExampleCommand.
    *
    * @param peterSubsystem The subsystem used by this command.
    */
-  public ShootNoWarmup(PeterSubsystem peterSubsystem) {
+  public ShootNoWarmup(PeterSubsystem peterSubsystem, boolean auton) {
     this.peterSubsystem = peterSubsystem;
+    this.auton = auton;
+
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(peterSubsystem);
   }
@@ -32,8 +35,7 @@ public class ShootNoWarmup extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    peterSubsystem.stopLeftShooter();
-    peterSubsystem.stopRightShooter();
+    peterSubsystem.stopShooter(auton);
     peterSubsystem.stopPreShooterMotor();
   }
 

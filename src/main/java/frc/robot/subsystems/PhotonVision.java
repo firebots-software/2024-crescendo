@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.SignalLogger;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -27,6 +28,7 @@ public class PhotonVision extends SubsystemBase {
   private static PhotonVision sideCamera = new PhotonVision("SideCamera");
   private PhotonPipelineResult pipeline;
   private PhotonTrackedTarget bestTarget;
+
   AprilTagFieldLayout aprilTagFieldLayout;
   PhotonPoseEstimator photonPoseEstimator;
   Transform3d camToRobot = // robot relative to camera
@@ -99,6 +101,7 @@ public class PhotonVision extends SubsystemBase {
   }
 
   private void log() {
+    SmartDashboard.putBoolean("Tag", pipeline.hasTargets());
     if (pipeline.hasTargets()) {
       double dist = get3dDist();
       Pose3d pose3D = getRobotPose3d();
@@ -107,6 +110,10 @@ public class PhotonVision extends SubsystemBase {
       SmartDashboard.putNumber("PoseY", pose3D.getY());
       SmartDashboard.putNumber("PoseZ", pose3D.getZ());
       SmartDashboard.putNumber("StraightLineDist", dist);
+      SignalLogger.writeBoolean("Found tag", true);
+      periodicSignalLogger(tagPose, pose3D, dist, transformToTarget);
+    } else {
+      SignalLogger.writeBoolean("Found tag", false);
     }
   }
 
@@ -119,5 +126,20 @@ public class PhotonVision extends SubsystemBase {
     pipeline = camera.getLatestResult();
     bestTarget = pipeline.getBestTarget();
     log();
+  }
+
+  public void periodicSignalLogger(
+      Optional<Pose3d> tagPose, Pose3d pose3D, double dist, Transform3d transformToTarget) {
+    SignalLogger.writeDouble("Tag pose x", tagPose.get().getX());
+    SignalLogger.writeDouble("Tag pose y", tagPose.get().getY());
+    SignalLogger.writeDouble("Tag pose z", tagPose.get().getZ());
+    SignalLogger.writeDouble("TagID", bestTarget.getFiducialId());
+    SignalLogger.writeDouble("PoseX", pose3D.getX());
+    SignalLogger.writeDouble("PoseY", pose3D.getY());
+    SignalLogger.writeDouble("PoseZ", pose3D.getZ());
+    SignalLogger.writeDouble("TranslationX", transformToTarget.getX());
+    SignalLogger.writeDouble("TranslationY", transformToTarget.getY());
+    SignalLogger.writeDouble("TranslationZ", transformToTarget.getZ());
+    SignalLogger.writeDouble("StraightLineDist", dist);
   }
 }
