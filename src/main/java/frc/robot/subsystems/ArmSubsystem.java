@@ -159,7 +159,7 @@ public class ArmSubsystem extends SubsystemBase {
 
   private void setPosition(double angleDegrees) {
     // TODO: Why is the min angle here 4 degrees, but the min angle in `setTargetDegrees` 1 degree?
-    angleDegrees = MathUtil.clamp(angleDegrees, 4, 90);
+    angleDegrees = MathUtil.clamp(angleDegrees, 3, 110);
     if (initialized && enableArm) {
       master.setControl(
           new MotionMagicVoltage(calculateIntegratedTargetRots(angleDegrees))

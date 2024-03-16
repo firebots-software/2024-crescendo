@@ -139,6 +139,14 @@ public class PeterSubsystem extends SubsystemBase {
     runLeftShooterAtRPS(Constants.Pooer.SHOOTER.SHOOTER_2.SPEED_RPS);
   }
 
+  public void spinLeftShooterForAmp() {
+    runLeftShooterAtRPS(Constants.Pooer.SHOOTER.SHOOTER_2.AMP_SPEED_RPS);
+  }
+
+  public void spinRightShooterForAmp() {
+    runLeftShooterAtRPS(Constants.Pooer.SHOOTER.SHOOTER_1.AMP_SPEED_RPS);
+  }
+
   public void stopRightShooter() {
     shooterMotorUp.stopMotor();
   }

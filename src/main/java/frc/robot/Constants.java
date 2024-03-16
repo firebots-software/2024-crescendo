@@ -56,6 +56,7 @@ public final class Constants {
     public final double GEAR_RATIO;
     public final double STATOR_CURRENT_LIMIT_AMPS;
     public final double SPEED_RPS;
+    public final double AMP_SPEED_RPS;
     public final double SPEED_VOLTAGE;
 
     private MotorConstants(
@@ -64,23 +65,35 @@ public final class Constants {
         double gearRatio,
         double statorCurrent,
         double speed,
+        double ampSpeed,
         double voltage) {
       PORT = port;
       REVERSED = reversed;
       GEAR_RATIO = gearRatio;
       STATOR_CURRENT_LIMIT_AMPS = statorCurrent;
       SPEED_RPS = speed;
+      AMP_SPEED_RPS = ampSpeed;
       SPEED_VOLTAGE = voltage;
     }
 
     public static MotorConstants speedControled(
-        int port, boolean reversed, double gearRatio, double statorCurrent, double speed) {
-      return new MotorConstants(port, reversed, gearRatio, statorCurrent, speed, 0);
+        int port,
+        boolean reversed,
+        double gearRatio,
+        double statorCurrent,
+        double speed,
+        double ampSpeed) {
+      return new MotorConstants(port, reversed, gearRatio, statorCurrent, speed, ampSpeed, 0);
     }
 
     public static MotorConstants voltageControlled(
-        int port, boolean reversed, double gearRatio, double statorCurrent, double voltage) {
-      return new MotorConstants(port, reversed, gearRatio, statorCurrent, 0, voltage);
+        int port,
+        boolean reversed,
+        double gearRatio,
+        double statorCurrent,
+        double ampSpeed,
+        double voltage) {
+      return new MotorConstants(port, reversed, gearRatio, statorCurrent, 0, ampSpeed, voltage);
     }
   }
 
@@ -92,15 +105,15 @@ public final class Constants {
 
     public static enum ShooterType {
       PETER(
-          MotorConstants.speedControled(30, true, 12d / 15d, 40.0, 4500d / 60d),
-          MotorConstants.speedControled(31, false, 12d / 15d, 40.0, 4500d / 60d),
-          MotorConstants.voltageControlled(32, false, 4d / 1d, 25.0, 9d),
-          MotorConstants.speedControled(33, true, 2d / 1d, 50.0, 200d)),
+          MotorConstants.speedControled(30, true, 12d / 15d, 40.0, 4500d / 60d, 4500d / 60d),
+          MotorConstants.speedControled(31, false, 12d / 15d, 40.0, 4500d / 60d, 4500d / 60d),
+          MotorConstants.voltageControlled(32, false, 4d / 1d, 25.0, 0, 9d),
+          MotorConstants.speedControled(33, true, 2d / 1d, 50.0, 200d, 200d)),
       PIPER(
-          MotorConstants.speedControled(35, false, 24d / 18d, 40.0, 3000d / 60d),
-          MotorConstants.speedControled(34, false, 24d / 18d, 40.0, 3000d / 60d),
-          MotorConstants.voltageControlled(32, true, 4d / 1d, 25.0, 9d),
-          MotorConstants.speedControled(33, true, 2d / 1d, 50.0, 200d));
+          MotorConstants.speedControled(35, false, 24d / 18d, 40.0, 3000d / 60d, 2000d / 60d),
+          MotorConstants.speedControled(34, false, 24d / 18d, 40.0, 3000d / 60d, 2000d / 60d),
+          MotorConstants.voltageControlled(32, true, 4d / 1d, 25.0, 0, 9d),
+          MotorConstants.speedControled(33, true, 2d / 1d, 50.0, 200d, 200d));
       public final MotorConstants SHOOTER_1, SHOOTER_2, PRESHOOTER, INTAKE;
 
       ShooterType(
@@ -119,8 +132,8 @@ public final class Constants {
   public static final class Arm {
     public static final double ARM_STATOR_CURRENT_LIMIT_AMPS = 40.0;
     public static final double DEFAULT_ARM_ANGLE = 56.12;
-    public static final double INTAKE_ANGLE = 4; // subject to change
-    public static final double AMP_ANGLE = 90; // subject to change
+    public static final double INTAKE_ANGLE = 3; // subject to change
+    public static final double AMP_ANGLE = 95; // subject to change
     // public static final double ARM_ENCODER_OFFSET = 0; // TODO: Change the offset so that the 0
     // position is when the arm is at its resting
     // position.

@@ -30,6 +30,7 @@ import frc.robot.commandGroups.FireTeleop;
 import frc.robot.commandGroups.Intake;
 import frc.robot.commands.ArmCommands.AlterArmValues;
 import frc.robot.commands.ArmCommands.ArmToAngleCmd;
+import frc.robot.commands.ArmCommands.ArmToAngleCmd.EndBehavior;
 import frc.robot.commands.Auton.MoveToTarget;
 import frc.robot.commands.Auton.RatchetteDisengage;
 import frc.robot.commands.DebugCommands.SmartdashBoardCmd;
@@ -222,11 +223,26 @@ public class RobotContainer {
                         //                 -(Units.inchesToMeters(12)
                         //                     + Constants.Swerve.ROBOT_HALF_WIDTH_METERS),
                         //                 new Rotation2d())))),
-                        new SpinUpShooter(peterSubsystem)),
+                        new SpinUpShooter(peterSubsystem, true)),
                     new ShootNoWarmup(peterSubsystem, false))
                 .withInterruptBehavior(InterruptionBehavior.kCancelSelf));
 
+    // just move arm to amp position
+    joystickB
+        .a()
+        .whileTrue(
+            ArmToAngleCmd.toAmp(armSubsystem).withTolerance(1).withReturnToRest(EndBehavior.STAY));
+    // shoot
+    joystickB
+        .y()
+        .whileTrue(
+            new SequentialCommandGroup(
+                new SpinUpShooter(peterSubsystem, true),
+                new ShootNoWarmup(peterSubsystem, false).withTimeout(0.5),
+                ArmToAngleCmd.toNeutral(armSubsystem)));
+
     // zero-heading
+
     joystickB
         .povDown()
         .onTrue(

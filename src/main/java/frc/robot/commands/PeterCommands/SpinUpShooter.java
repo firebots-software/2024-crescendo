@@ -5,14 +5,16 @@ import frc.robot.subsystems.PeterSubsystem;
 
 public class SpinUpShooter extends Command {
   private PeterSubsystem peterSubsystem;
+  private boolean isAmp;
 
   /**
    * Creates a new ExampleCommand.
    *
    * @param peterSubsystem The subsystem used by this command.
    */
-  public SpinUpShooter(PeterSubsystem peterSubsystem) {
+  public SpinUpShooter(PeterSubsystem peterSubsystem, boolean isAmp) {
     this.peterSubsystem = peterSubsystem;
+    this.isAmp = isAmp;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(peterSubsystem);
   }
@@ -24,8 +26,13 @@ public class SpinUpShooter extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    peterSubsystem.spinLeftShooter();
-    peterSubsystem.spinRightShooter();
+    if (isAmp) {
+      peterSubsystem.spinLeftShooterForAmp();
+      peterSubsystem.spinRightShooterForAmp();
+    } else {
+      peterSubsystem.spinLeftShooter();
+      peterSubsystem.spinRightShooter();
+    }
   }
 
   // Called once the command ends or is interrupted.
