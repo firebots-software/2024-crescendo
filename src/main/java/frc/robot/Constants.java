@@ -298,7 +298,7 @@ public final class Constants {
     public static class PPConstants {
       public static final PathConstraints PATH_PLANNER_CONSTRAINTS =
           new PathConstraints(
-              3.0, 3.0, 2 * Math.PI, 4 * Math.PI); // TODO: Increase the auton velocity
+              4.0, 3.0, 2 * Math.PI, 4 * Math.PI); // TODO: Increase the auton velocity
     }
 
     public static final double PHYSICAL_MAX_SPEED_METERS_PER_SECOND = 4.8768;
