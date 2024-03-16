@@ -223,8 +223,9 @@ public class RobotContainer {
                                         -(Units.inchesToMeters(5)
                                             + Constants.Swerve.ROBOT_HALF_WIDTH_METERS),
                                         new Rotation2d())))),
-                        new SpinUpShooter(peterSubsystem, false)),
-                    new ShootNoWarmup(peterSubsystem, false))
+                        new SpinUpShooter(peterSubsystem, true)),
+                    new ShootNoWarmup(peterSubsystem, false),
+                    ArmToAngleCmd.toNeutral(armSubsystem))
                 .withInterruptBehavior(InterruptionBehavior.kCancelSelf));
 
     // just move arm to amp position
