@@ -370,10 +370,10 @@ public class RobotContainer {
                     redside,
                     note.get()
                         .getNoteLocation()
-                        .plus(new Transform2d(Units.inchesToMeters(-18), 0, new Rotation2d()))))
+                        .plus(new Transform2d(Units.inchesToMeters(-18), 0, new Rotation2d())))
             .alongWith(
                 new SmartdashBoardCmd("auton intake status", "intake started"),
-                new Intake(peterSubsystem, armSubsystem, joystickSubsystem).withTimeout(2.75d))
+                new Intake(peterSubsystem, armSubsystem, joystickSubsystem).withTimeout(2.75d)))
             // .andThen(
             //     MoveToTarget.withMirror(
             //         driveTrain,
