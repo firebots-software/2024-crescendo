@@ -25,12 +25,12 @@ public class NoteRetrieval extends SequentialCommandGroup {
                       new Pose2d(
                           swerve.getState().Pose.getTranslation(),
                           new Rotation2d(
-                              -1, //TODO: Why do we not do SwerveX-NoteX?
+                              swerve.getState().Pose.getX() - targetNote.getNoteLocation().getX() - Units.inchesToMeters(14), //TODO: Why do we not do SwerveX-NoteX?
                               swerve.getState().Pose.getY() - targetNote.getNoteLocation().getY())))
                   : new Pose2d(
                       swerve.getState().Pose.getTranslation(),
                       new Rotation2d(
-                          -1, swerve.getState().Pose.getY() - targetNote.getNoteLocation().getY())),
+                        swerve.getState().Pose.getX() - targetNote.getNoteLocation().getX() - Units.inchesToMeters(14), swerve.getState().Pose.getY() - targetNote.getNoteLocation().getY())),
               (redside.get())
                   ? MiscUtils.reflectAcrossMidline(
                       new Pose2d(
