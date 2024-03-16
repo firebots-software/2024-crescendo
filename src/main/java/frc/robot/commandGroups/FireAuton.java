@@ -31,7 +31,7 @@ public class FireAuton extends SequentialCommandGroup {
                 2,
                 redside)
             .withTimeout(1.0),
-            new ShootNoWarmup(peterSubsystem, true).withTimeout(0.5).deadlineWith(SwerveLockedAngleCmd.fromPoseMirrored(
+            new ShootNoWarmup(peterSubsystem, true).withTimeout(0.35).deadlineWith(SwerveLockedAngleCmd.fromPoseMirrored(
                     () -> 0.0,
                     () -> 0.0,
                     () -> Constants.Landmarks.Speaker.POSE.getTranslation(),
