@@ -95,7 +95,7 @@ public class Robot extends TimedRobot {
       visionMatrix.set(1, 0, yKalman);
 
       driveTrain.addVisionMeasurement(
-          vision.getRobotPose2d(), Timer.getFPGATimestamp(), visionMatrix);
+          vision.getRobotPose2d(), Timer.getFPGATimestamp()-0.02, visionMatrix);
     }
 
     CommandScheduler.getInstance().run();

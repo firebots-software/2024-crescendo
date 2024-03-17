@@ -265,9 +265,9 @@ public final class Constants {
   public static class Landmarks {
     // Landmarks on the Blue side can be reflected to show the respective locations on the Blue side
     public static final Pose2d STAGESIDE_NOTE_LOCATION =
-        new Pose2d(2.8956, 4.1, new Rotation2d());
+        new Pose2d(2.8956, 4, new Rotation2d());
     public static final Pose2d MIDDLE_NOTE_LOCATION = new Pose2d(2.8956, 5.5, new Rotation2d());
-    public static final Pose2d AMPSIDE_NOTE_LOCATION = new Pose2d(2.8956, 6.9, new Rotation2d());
+    public static final Pose2d AMPSIDE_NOTE_LOCATION = new Pose2d(2.8956, 7, new Rotation2d());
     public static final Pose2d SUBWOOFER_LOCATION = new Pose2d(0.6, 5.7, new Rotation2d());
     public static final double CENTER_LINE_LOCATION = 8.27;
 
@@ -397,7 +397,7 @@ public final class Constants {
     private static final int FRONT_LEFT_STEER_MOTOR_ID = 3;
     private static final int FRONT_LEFT_DRIVE_MOTOR_ID = 4;
     private static final int FRONT_LEFT_ENCODER_ID = 21;
-    private static final double FRONT_LEFT_ENCODER_OFFSET = -0.472412109375;
+    private static final double FRONT_LEFT_ENCODER_OFFSET = -0.46728515625;
 
     private static final double FRONT_LEFT_X_POS_INCHES = 11.26 - moveCOMX;
     private static final double FRONT_LEFT_Y_POS_INCHES = 11.417 - moveCOMY;

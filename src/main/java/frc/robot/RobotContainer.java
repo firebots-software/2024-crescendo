@@ -362,7 +362,7 @@ public class RobotContainer {
                 redside,
                 note.get()
                     .getNoteLocation()
-                    .plus(new Transform2d(Units.inchesToMeters(-35), 0, new Rotation2d()))))
+                    .plus(new Transform2d(Units.inchesToMeters(-40), 0, new Rotation2d()))))
             .andThen(
                 new SmartdashBoardCmd("auton status detail", "MTND-DU"),
                 MoveToTarget.withMirror(
