@@ -22,7 +22,7 @@ public class AimAtSpeaker extends ParallelCommandGroup {
       double armToleranceDegrees,
       Supplier<Boolean> redSide) {
     addCommands(
-        new SpinUpShooter(peter),
+        new SpinUpShooter(peter, false),
         ArmToAngleCmd.aimAtSpeaker(arm, swerve, redSide).withTolerance(armToleranceDegrees),
         SwerveLockedAngleCmd.fromPoseMirrored(
                 frontBackFunction,

@@ -18,7 +18,7 @@ public class BackupPeter extends Command {
 
   @Override
   public void execute() {
-    peter.reversePreshooterRotations(1);
+    peter.reversePreshooterRotations(1.25); // TODO: make constant
   }
 
   @Override
@@ -28,6 +28,6 @@ public class BackupPeter extends Command {
 
   @Override
   public boolean isFinished() {
-    return peter.isBackedUp(1);
+    return peter.isBackedUp(1.25);
   }
 }

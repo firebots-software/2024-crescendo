@@ -19,7 +19,7 @@ public class BundtShot extends SequentialCommandGroup {
     addCommands(
         new ResetArm(armSubsystem),
         new ParallelCommandGroup(
-            new SpinUpShooter(peterSubsystem),
+            new SpinUpShooter(peterSubsystem, false),
             ArmToAngleCmd.toBundt(armSubsystem).withTolerance(1)),
         new ParallelCommandGroup(
             new ShootNoWarmup(peterSubsystem, false).withTimeout(1),
