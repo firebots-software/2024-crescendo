@@ -56,6 +56,7 @@ public class PhotonVision extends SubsystemBase {
   public boolean hasTarget(PhotonPipelineResult pipeline) {
     return pipeline.hasTargets();
   }
+
   public Pose3d getRobotPose3d() {
     if (!pipeline.hasTargets()) {
       return savedResult;
@@ -70,6 +71,7 @@ public class PhotonVision extends SubsystemBase {
     }
     return savedResult;
   }
+
   public Optional<EstimatedRobotPose> getMultiTagPose3d(Pose2d previousRobotPose) {
     photonPoseEstimator.setReferencePose(previousRobotPose);
     return photonPoseEstimator.update();

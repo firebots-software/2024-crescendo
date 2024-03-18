@@ -1,6 +1,5 @@
 package frc.robot.commandGroups;
 
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.commands.ArmCommands.ResetArm;
@@ -31,14 +30,16 @@ public class FireAuton extends SequentialCommandGroup {
                 2,
                 redside)
             .withTimeout(1.0),
-            new ShootNoWarmup(peterSubsystem, true).withTimeout(0.35).deadlineWith(SwerveLockedAngleCmd.fromPoseMirrored(
-                    () -> 0.0,
-                    () -> 0.0,
-                    () -> Constants.Landmarks.Speaker.POSE.getTranslation(),
-                    () -> 0.0,
-                    driveTrain,
-                    redside)
-                .withToleranceEnd(tolerance))
-            );
+        new ShootNoWarmup(peterSubsystem, true)
+            .withTimeout(0.35)
+            .deadlineWith(
+                SwerveLockedAngleCmd.fromPoseMirrored(
+                        () -> 0.0,
+                        () -> 0.0,
+                        () -> Constants.Landmarks.Speaker.POSE.getTranslation(),
+                        () -> 0.0,
+                        driveTrain,
+                        redside)
+                    .withToleranceEnd(tolerance)));
   }
 }

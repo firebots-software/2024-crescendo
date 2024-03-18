@@ -96,7 +96,6 @@ public final class Constants {
       return new MotorConstants(port, reversed, gearRatio, statorCurrent, 0, ampSpeed, voltage);
     }
 
-
     public static MotorConstants dualControlled(
         int port,
         boolean reversed,
@@ -119,12 +118,12 @@ public final class Constants {
       PETER(
           MotorConstants.speedControled(30, true, 12d / 15d, 40.0, 4500d / 60d, 4500d / 60d),
           MotorConstants.speedControled(31, false, 12d / 15d, 40.0, 4500d / 60d, 4500d / 60d),
-          MotorConstants.dualControlled(32, false, 4d / 1d, 25.0, 0, 300/60, 9d),
+          MotorConstants.dualControlled(32, false, 4d / 1d, 25.0, 0, 300 / 60, 9d),
           MotorConstants.speedControled(33, true, 2d / 1d, 50.0, 200d, 200d)),
       PIPER(
           MotorConstants.speedControled(35, false, 24d / 18d, 40.0, 3000d / 60d, 2000d / 60d),
           MotorConstants.speedControled(34, false, 24d / 18d, 40.0, 3000d / 60d, 2000d / 60d),
-          MotorConstants.dualControlled(32, true, 4d / 1d, 25.0, 0, 300/60, 9d),
+          MotorConstants.dualControlled(32, true, 4d / 1d, 25.0, 0, 300 / 60, 9d),
           MotorConstants.speedControled(33, true, 2d / 1d, 50.0, 200d, 200d));
       public final MotorConstants SHOOTER_1, SHOOTER_2, PRESHOOTER, INTAKE;
 
@@ -276,8 +275,7 @@ public final class Constants {
 
   public static class Landmarks {
     // Landmarks on the Blue side can be reflected to show the respective locations on the Blue side
-    public static final Pose2d STAGESIDE_NOTE_LOCATION =
-        new Pose2d(2.8956, 4, new Rotation2d());
+    public static final Pose2d STAGESIDE_NOTE_LOCATION = new Pose2d(2.8956, 4, new Rotation2d());
     public static final Pose2d MIDDLE_NOTE_LOCATION = new Pose2d(2.8956, 5.5, new Rotation2d());
     public static final Pose2d AMPSIDE_NOTE_LOCATION = new Pose2d(2.8956, 7, new Rotation2d());
     public static final Pose2d SUBWOOFER_LOCATION = new Pose2d(0.6, 5.7, new Rotation2d());
