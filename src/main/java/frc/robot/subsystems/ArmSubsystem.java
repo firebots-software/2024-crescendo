@@ -159,7 +159,7 @@ public class ArmSubsystem extends SubsystemBase {
 
   private void setPosition(double angleDegrees) {
     // TODO: Why is the min angle here 4 degrees, but the min angle in `setTargetDegrees` 1 degree?
-    angleDegrees = MathUtil.clamp(angleDegrees, 4, 90);
+    angleDegrees = MathUtil.clamp(angleDegrees, 3, 110);
     if (initialized && enableArm) {
       master.setControl(
           new MotionMagicVoltage(calculateIntegratedTargetRots(angleDegrees))
@@ -190,7 +190,8 @@ public class ArmSubsystem extends SubsystemBase {
     // return !IncreaseAngle ? Constants.Arm.INTERMAP1.get(groundDistFromSpeaker) :
     // Constants.Arm.INTERMAP2.get(groundDistFromSpeaker);
     return Constants.Arm.INTERMAP.get(groundDistFromSpeaker); // THIS IS USING THE INTERMAP
-    // return Constants.Arm.GET_YAJWINS_EQUATION(Math.abs(groundDistFromSpeaker)); // THIS IS USING YAJWIN'S EQUATION
+    // return Constants.Arm.GET_YAJWINS_EQUATION(Math.abs(groundDistFromSpeaker)); // THIS IS USING
+    // YAJWIN'S EQUATION
   }
 
   // private get

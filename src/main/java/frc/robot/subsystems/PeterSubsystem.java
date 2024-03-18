@@ -9,6 +9,7 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
+
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -109,7 +110,7 @@ public class PeterSubsystem extends SubsystemBase {
   private void runRightShooterAtRPS(double speed) {
     VelocityVoltage m_velocityControl =
         new VelocityVoltage(speed * Constants.Pooer.SHOOTER.SHOOTER_1.GEAR_RATIO);
-    m_velocityControl.withFeedForward(0.1);
+    SmartDashboard.putNumber("vel", speed * Constants.Pooer.SHOOTER.SHOOTER_1.GEAR_RATIO);
     shooterMotorUp.setControl(m_velocityControl);
     // shooterMotorUp.getVelocity();
   }
@@ -117,7 +118,6 @@ public class PeterSubsystem extends SubsystemBase {
   private void runLeftShooterAtRPS(double speed) {
     VelocityVoltage m_velocityControl =
         new VelocityVoltage(speed * Constants.Pooer.SHOOTER.SHOOTER_2.GEAR_RATIO);
-    m_velocityControl.withFeedForward(0.1);
     shooterMotorDown.setControl(m_velocityControl);
   }
 
@@ -137,6 +137,14 @@ public class PeterSubsystem extends SubsystemBase {
 
   public void spinLeftShooter() {
     runLeftShooterAtRPS(Constants.Pooer.SHOOTER.SHOOTER_2.SPEED_RPS);
+  }
+
+  public void spinLeftShooterForAmp() {
+    runLeftShooterAtRPS(Constants.Pooer.SHOOTER.SHOOTER_2.AMP_SPEED_RPS);
+  }
+
+  public void spinRightShooterForAmp() {
+    runLeftShooterAtRPS(Constants.Pooer.SHOOTER.SHOOTER_1.AMP_SPEED_RPS);
   }
 
   public void stopRightShooter() {
@@ -171,10 +179,11 @@ public class PeterSubsystem extends SubsystemBase {
   }
 
   public boolean isShooterReady() {
+    SmartDashboard.putNumber("shooterMotor/gear", shooterMotorDown.getVelocity().getValueAsDouble() / Constants.Pooer.SHOOTER.SHOOTER_1.GEAR_RATIO);
+    SmartDashboard.putNumber("shooter", Constants.Pooer.SHOOTER.SHOOTER_1.SPEED_RPS * Constants.Pooer.SHOOTER.SHOOTER_1.GEAR_RATIO);
     return Math.abs(
-            shooterMotorDown.getVelocity().getValueAsDouble()
-                - (Constants.Pooer.SHOOTER.SHOOTER_1.SPEED_RPS
-                    * Constants.Pooer.SHOOTER.SHOOTER_1.GEAR_RATIO))
+            (shooterMotorDown.getVelocity().getValueAsDouble() / Constants.Pooer.SHOOTER.SHOOTER_1.GEAR_RATIO)
+                - (Constants.Pooer.SHOOTER.SHOOTER_1.SPEED_RPS * Constants.Pooer.SHOOTER.SHOOTER_1.GEAR_RATIO))
         < 10;
   }
 
@@ -264,6 +273,10 @@ public class PeterSubsystem extends SubsystemBase {
         "Current commannd PETER:",
         (getCurrentCommand() == null) ? "NULL" : getCurrentCommand().getName());
     periodicSignalLogger();
+    SmartDashboard.putNumber("shooter motor velo", shooterMotorDown.getVelocity().getValueAsDouble());
+            
+    SmartDashboard.putNumber("shooter motor max velo", Constants.Pooer.SHOOTER.SHOOTER_1.SPEED_RPS
+                    * Constants.Pooer.SHOOTER.SHOOTER_1.GEAR_RATIO);
   }
 
   public void periodicSignalLogger() {

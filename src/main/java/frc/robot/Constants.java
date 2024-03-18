@@ -56,6 +56,7 @@ public final class Constants {
     public final double GEAR_RATIO;
     public final double STATOR_CURRENT_LIMIT_AMPS;
     public final double SPEED_RPS;
+    public final double AMP_SPEED_RPS;
     public final double SPEED_VOLTAGE;
 
     private MotorConstants(
@@ -64,28 +65,47 @@ public final class Constants {
         double gearRatio,
         double statorCurrent,
         double speed,
+        double ampSpeed,
         double voltage) {
       PORT = port;
       REVERSED = reversed;
       GEAR_RATIO = gearRatio;
       STATOR_CURRENT_LIMIT_AMPS = statorCurrent;
       SPEED_RPS = speed;
+      AMP_SPEED_RPS = ampSpeed;
       SPEED_VOLTAGE = voltage;
     }
 
     public static MotorConstants speedControled(
-        int port, boolean reversed, double gearRatio, double statorCurrent, double speed) {
-      return new MotorConstants(port, reversed, gearRatio, statorCurrent, speed, 0);
+        int port,
+        boolean reversed,
+        double gearRatio,
+        double statorCurrent,
+        double speed,
+        double ampSpeed) {
+      return new MotorConstants(port, reversed, gearRatio, statorCurrent, speed, ampSpeed, 0);
     }
 
     public static MotorConstants voltageControlled(
-        int port, boolean reversed, double gearRatio, double statorCurrent, double voltage) {
-      return new MotorConstants(port, reversed, gearRatio, statorCurrent, 0, voltage);
+        int port,
+        boolean reversed,
+        double gearRatio,
+        double statorCurrent,
+        double ampSpeed,
+        double voltage) {
+      return new MotorConstants(port, reversed, gearRatio, statorCurrent, 0, ampSpeed, voltage);
     }
 
-    public static MotorConstants dualControlled(int port, boolean reversed, double gearRatio, double statorCurrent, double speed, double voltage){
-      return new MotorConstants(port, reversed, gearRatio, statorCurrent, speed, voltage);
 
+    public static MotorConstants dualControlled(
+        int port,
+        boolean reversed,
+        double gearRatio,
+        double statorCurrent,
+        double ampSpeed,
+        double speed,
+        double voltage) {
+      return new MotorConstants(port, reversed, gearRatio, statorCurrent, speed, ampSpeed, voltage);
     }
   }
 
@@ -97,15 +117,15 @@ public final class Constants {
 
     public static enum ShooterType {
       PETER(
-          MotorConstants.speedControled(30, true, 12d / 15d, 40.0, 4500d / 60d),
-          MotorConstants.speedControled(31, false, 12d / 15d, 40.0, 4500d / 60d),
-          MotorConstants.dualControlled(32, false, 4d / 1d, 25.0, 300d/60, 9d),
-          MotorConstants.speedControled(33, true, 2d / 1d, 50.0, 200d)),
+          MotorConstants.speedControled(30, true, 12d / 15d, 40.0, 4500d / 60d, 4500d / 60d),
+          MotorConstants.speedControled(31, false, 12d / 15d, 40.0, 4500d / 60d, 4500d / 60d),
+          MotorConstants.dualControlled(32, false, 4d / 1d, 25.0, 0, 300/60, 9d),
+          MotorConstants.speedControled(33, true, 2d / 1d, 50.0, 200d, 200d)),
       PIPER(
-          MotorConstants.speedControled(35, false, 24d / 18d, 40.0, 3000d / 60d),
-          MotorConstants.speedControled(34, false, 24d / 18d, 40.0, 3000d / 60d),
-          MotorConstants.dualControlled(32, true, 4d / 1d, 25.0, 300d/60, 9d),
-          MotorConstants.speedControled(33, true, 2d / 1d, 50.0, 200d));
+          MotorConstants.speedControled(35, false, 24d / 18d, 40.0, 3000d / 60d, 2000d / 60d),
+          MotorConstants.speedControled(34, false, 24d / 18d, 40.0, 3000d / 60d, 2000d / 60d),
+          MotorConstants.dualControlled(32, true, 4d / 1d, 25.0, 0, 300/60, 9d),
+          MotorConstants.speedControled(33, true, 2d / 1d, 50.0, 200d, 200d));
       public final MotorConstants SHOOTER_1, SHOOTER_2, PRESHOOTER, INTAKE;
 
       ShooterType(
@@ -124,8 +144,8 @@ public final class Constants {
   public static final class Arm {
     public static final double ARM_STATOR_CURRENT_LIMIT_AMPS = 40.0;
     public static final double DEFAULT_ARM_ANGLE = 56.12;
-    public static final double INTAKE_ANGLE = 4; // subject to change
-    public static final double AMP_ANGLE = 90; // subject to change
+    public static final double INTAKE_ANGLE = 3; // subject to change
+    public static final double AMP_ANGLE = 95; // subject to change
     // public static final double ARM_ENCODER_OFFSET = 0; // TODO: Change the offset so that the 0
     // position is when the arm is at its resting
     // position.
@@ -161,8 +181,8 @@ public final class Constants {
       UPDATE_INTERMAP();
     }
 
-    public static void UPDATE_INTERMAP(){
-      if(Constants.Pooer.SHOOTER == ShooterType.PETER){
+    public static void UPDATE_INTERMAP() {
+      if (Constants.Pooer.SHOOTER == ShooterType.PETER) {
         UPDATE_INTERMAP_PETER();
       } else {
         UPDATE_INTERMAP_PIPER();
@@ -179,23 +199,22 @@ public final class Constants {
       INTERMAP.put(Units.feetToMeters(9) + Units.inchesToMeters(17), 23.5d + ARM_INTERMAP_OFFSET);
     }
 
-    public static void UPDATE_INTERMAP_PIPER(){
+    public static void UPDATE_INTERMAP_PIPER() {
       INTERMAP.clear();
       INTERMAP.put(1.34, 6.46);
-      INTERMAP.put(1.34+Units.inchesToMeters(30), 20.6);
-      INTERMAP.put(1.34+Units.inchesToMeters(60), 27.8);
-      INTERMAP.put(1.34+Units.inchesToMeters(90), 31.339);
-      INTERMAP.put(1.34+Units.inchesToMeters(120), 32.67);
+      INTERMAP.put(1.34 + Units.inchesToMeters(30), 20.6);
+      INTERMAP.put(1.34 + Units.inchesToMeters(60), 27.8);
+      INTERMAP.put(1.34 + Units.inchesToMeters(90), 31.339);
+      INTERMAP.put(1.34 + Units.inchesToMeters(120), 32.67);
     }
 
-    public static double GET_YAJWINS_EQUATION(double distance){
+    public static double GET_YAJWINS_EQUATION(double distance) {
       double a = -6.02207;
       double b = -8.6529 * Math.pow(10, 15);
       double c = 252.816;
       double d = 35.7582;
-      return b * Math.pow((distance + c),a)+d;
+      return b * Math.pow((distance + c), a) + d;
     }
-
   }
 
   public static class OI {
@@ -258,9 +277,9 @@ public final class Constants {
   public static class Landmarks {
     // Landmarks on the Blue side can be reflected to show the respective locations on the Blue side
     public static final Pose2d STAGESIDE_NOTE_LOCATION =
-        new Pose2d(2.8956, 4.0522, new Rotation2d());
+        new Pose2d(2.8956, 4, new Rotation2d());
     public static final Pose2d MIDDLE_NOTE_LOCATION = new Pose2d(2.8956, 5.5, new Rotation2d());
-    public static final Pose2d AMPSIDE_NOTE_LOCATION = new Pose2d(2.8956, 6.9478, new Rotation2d());
+    public static final Pose2d AMPSIDE_NOTE_LOCATION = new Pose2d(2.8956, 7, new Rotation2d());
     public static final Pose2d SUBWOOFER_LOCATION = new Pose2d(0.6, 5.7, new Rotation2d());
     public static final double CENTER_LINE_LOCATION = 8.27;
 
@@ -291,7 +310,7 @@ public final class Constants {
     public static class PPConstants {
       public static final PathConstraints PATH_PLANNER_CONSTRAINTS =
           new PathConstraints(
-              3.0, 3.0, 2 * Math.PI, 4 * Math.PI); // TODO: Increase the auton velocity
+              4.0, 3.0, 2 * Math.PI, 4 * Math.PI); // TODO: Increase the auton velocity
     }
 
     public static final double PHYSICAL_MAX_SPEED_METERS_PER_SECOND = 4.8768;
@@ -390,7 +409,7 @@ public final class Constants {
     private static final int FRONT_LEFT_STEER_MOTOR_ID = 3;
     private static final int FRONT_LEFT_DRIVE_MOTOR_ID = 4;
     private static final int FRONT_LEFT_ENCODER_ID = 21;
-    private static final double FRONT_LEFT_ENCODER_OFFSET = -0.472412109375;
+    private static final double FRONT_LEFT_ENCODER_OFFSET = -0.46728515625;
 
     private static final double FRONT_LEFT_X_POS_INCHES = 11.26 - moveCOMX;
     private static final double FRONT_LEFT_Y_POS_INCHES = 11.417 - moveCOMY;

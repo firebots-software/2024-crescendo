@@ -30,6 +30,7 @@ import frc.robot.commandGroups.FireTeleop;
 import frc.robot.commandGroups.Intake;
 import frc.robot.commands.ArmCommands.AlterArmValues;
 import frc.robot.commands.ArmCommands.ArmToAngleCmd;
+import frc.robot.commands.ArmCommands.ArmToAngleCmd.EndBehavior;
 import frc.robot.commands.Auton.MoveToTarget;
 import frc.robot.commands.Auton.RatchetteDisengage;
 import frc.robot.commands.DebugCommands.SmartdashBoardCmd;
@@ -212,21 +213,37 @@ public class RobotContainer {
                                     0d,
                                     -(Units.inchesToMeters(12)
                                         + Constants.Swerve.ROBOT_HALF_WIDTH_METERS),
-                                    new Rotation2d()))),
-                        // .andThen(
-                        //     MoveToTarget.withMirror(
-                        //         driveTrain,
-                        //         redside,
-                        //         MiscUtils.plus(Constants.Landmarks.Amp.POSE, new Transform2d(
-                        //                 0d,
-                        //                 -(Units.inchesToMeters(12)
-                        //                     + Constants.Swerve.ROBOT_HALF_WIDTH_METERS),
-                        //                 new Rotation2d())))),
-                        new SpinUpShooter(peterSubsystem)),
-                    new ShootNoWarmup(peterSubsystem, false))
+                                    new Rotation2d())))
+                        .andThen(
+                            MoveToTarget.withMirror(
+                                driveTrain,
+                                redside,
+                                MiscUtils.plus(Constants.Landmarks.Amp.POSE, new Transform2d(
+                                        0d,
+                                        -(Units.inchesToMeters(5)
+                                            + Constants.Swerve.ROBOT_HALF_WIDTH_METERS),
+                                        new Rotation2d())))),
+                        new SpinUpShooter(peterSubsystem, true)),
+                    new ShootNoWarmup(peterSubsystem, false),
+                    ArmToAngleCmd.toNeutral(armSubsystem))
                 .withInterruptBehavior(InterruptionBehavior.kCancelSelf));
 
+    // just move arm to amp position
+    joystickB
+        .a()
+        .whileTrue(
+            ArmToAngleCmd.toAmp(armSubsystem).withTolerance(1).withReturnToRest(EndBehavior.STAY));
+    // shoot
+    joystickB
+        .y()
+        .whileTrue(
+            new SequentialCommandGroup(
+                new SpinUpShooter(peterSubsystem, true),
+                new ShootNoWarmup(peterSubsystem, false).withTimeout(0.5),
+                ArmToAngleCmd.toNeutral(armSubsystem)));
+
     // zero-heading
+
     joystickB
         .povDown()
         .onTrue(
@@ -338,30 +355,33 @@ public class RobotContainer {
   }
 
   public Command getAutonShoot(Optional<NoteLocation> note) {
-    return (note.isEmpty())
-        ? new WaitCommand(2.0)
-        : MoveToTarget.withMirror(
-                driveTrain,
-                redside,
-                note.get()
-                    .getNoteLocation()
-                    .plus(new Transform2d(Units.inchesToMeters(-24), 0, new Rotation2d())))
-            .andThen(
-                MoveToTarget.withMirror(
+    return new SmartdashBoardCmd("auton status detail", "BEGIN")
+        .andThen((note.isEmpty())
+            ? new WaitCommand(2.0)
+            : MoveToTarget.withMirror(
                     driveTrain,
                     redside,
                     note.get()
                         .getNoteLocation()
-                        .plus(new Transform2d(Units.inchesToMeters(-18), 0, new Rotation2d()))))
-            .alongWith(
-                new Intake(peterSubsystem, armSubsystem, joystickSubsystem).withTimeout(2.75d))
-            .andThen(
-                MoveToTarget.withMirror(
-                    driveTrain,
-                    redside,
-                    NoteLocation.MIDDLE
-                        .getNoteLocation()
-                        .plus(new Transform2d(Units.inchesToMeters(-45), 0, new Rotation2d()))))
-            .andThen(new FireAuton(peterSubsystem, armSubsystem, driveTrain, 1, redside));
+                        .plus(new Transform2d(Units.inchesToMeters(-40), 0, new Rotation2d())))
+                .andThen(
+                    new SmartdashBoardCmd("auton status detail", "MTND-DU"),
+                    MoveToTarget.withMirror(
+                        driveTrain,
+                        redside,
+                        note.get()
+                            .getNoteLocation()
+                            .plus(new Transform2d(Units.inchesToMeters(-18), 0, new Rotation2d())))
+                    .alongWith(
+                        new SmartdashBoardCmd("auton intake status", "intake started"),
+                        new Intake(peterSubsystem, armSubsystem, joystickSubsystem).withTimeout(2.75d)))
+                // .andThen(
+                //     MoveToTarget.withMirror(
+                //         driveTrain,
+                //         redside,
+                //         NoteLocation.MIDDLE
+                //             .getNoteLocation()
+                //             .plus(new Transform2d(Units.inchesToMeters(-45), 0, new Rotation2d()))))
+                .andThen(new FireAuton(peterSubsystem, armSubsystem, driveTrain, 1, redside), new SmartdashBoardCmd("auton status detail", "shot and ended")));
   }
 }
