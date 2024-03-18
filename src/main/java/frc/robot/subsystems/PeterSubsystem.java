@@ -195,8 +195,18 @@ public class PeterSubsystem extends SubsystemBase {
 
   // PRE-SHOOTER FUNCTIONS:
 
-  public void spinUpPreShooter() {
+  public void spinUpPreShooterVoltage() {
     runPreShooterAtVolts(Constants.Pooer.SHOOTER.PRESHOOTER.SPEED_VOLTAGE);
+  }
+
+  public void spinUpPreShooterVelocity() {
+    runPreShooterAtRPS(Constants.Pooer.SHOOTER.PRESHOOTER.SPEED_RPS);
+  }
+  private void runPreShooterAtRPS(double speed){
+    VelocityVoltage m_velocityControl =
+      new VelocityVoltage(speed * Constants.Pooer.SHOOTER.PRESHOOTER.GEAR_RATIO);
+    m_velocityControl.withFeedForward(0.1);
+    preShooterMotor.setControl(m_velocityControl);
   }
 
   private void runPreShooterAtVolts(double voltage) {

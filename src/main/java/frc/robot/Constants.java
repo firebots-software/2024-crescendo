@@ -82,6 +82,11 @@ public final class Constants {
         int port, boolean reversed, double gearRatio, double statorCurrent, double voltage) {
       return new MotorConstants(port, reversed, gearRatio, statorCurrent, 0, voltage);
     }
+
+    public static MotorConstants dualControlled(int port, boolean reversed, double gearRatio, double statorCurrent, double speed, double voltage){
+      return new MotorConstants(port, reversed, gearRatio, statorCurrent, speed, voltage);
+
+    }
   }
 
   public static final class Pooer {
@@ -94,12 +99,12 @@ public final class Constants {
       PETER(
           MotorConstants.speedControled(30, true, 12d / 15d, 40.0, 4500d / 60d),
           MotorConstants.speedControled(31, false, 12d / 15d, 40.0, 4500d / 60d),
-          MotorConstants.voltageControlled(32, false, 4d / 1d, 25.0, 9d),
+          MotorConstants.dualControlled(32, false, 4d / 1d, 25.0, 300d/60, 9d),
           MotorConstants.speedControled(33, true, 2d / 1d, 50.0, 200d)),
       PIPER(
           MotorConstants.speedControled(35, false, 24d / 18d, 40.0, 3000d / 60d),
           MotorConstants.speedControled(34, false, 24d / 18d, 40.0, 3000d / 60d),
-          MotorConstants.voltageControlled(32, true, 4d / 1d, 25.0, 9d),
+          MotorConstants.dualControlled(32, true, 4d / 1d, 25.0, 300d/60, 9d),
           MotorConstants.speedControled(33, true, 2d / 1d, 50.0, 200d));
       public final MotorConstants SHOOTER_1, SHOOTER_2, PRESHOOTER, INTAKE;
 

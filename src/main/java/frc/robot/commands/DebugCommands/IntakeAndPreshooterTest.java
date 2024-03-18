@@ -30,7 +30,7 @@ public class IntakeAndPreshooterTest extends Command {
   @Override
   public void execute() {
     peterSubsystem.spinUpIntake();
-    peterSubsystem.spinUpPreShooter();
+    peterSubsystem.spinUpPreShooterVoltage();
   }
 
   // Called once the command ends or is interrupted.
