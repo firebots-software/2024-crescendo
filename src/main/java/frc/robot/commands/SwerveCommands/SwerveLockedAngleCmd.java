@@ -9,8 +9,6 @@ import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.util.MiscUtils;
 import java.util.function.Supplier;
 
-import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
-
 public class SwerveLockedAngleCmd extends SwerveJoystickCommand {
 
   private static final PIDController turningPID = new PIDController(1d, 0.002, 0.01d);
