@@ -262,8 +262,8 @@ public class RobotContainer {
                                 Rotation2d.fromDegrees(!redAlliance ? 0 : 180))))
                 .andThen(new PrintCommand("pov worked")));
 
-    joystickB.povLeft().onTrue(new AlterArmValues(-0.25));
-    joystickB.povRight().onTrue(new AlterArmValues(0.25));
+    joystickB.povLeft().onTrue(new AlterArmValues(0.25));
+    joystickB.povRight().onTrue(new AlterArmValues(-0.25));
   }
 
   // Constructs a Pose2d array of the note locations by a specific indexing so they can be accessed
