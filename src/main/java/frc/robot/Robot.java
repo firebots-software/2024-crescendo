@@ -5,13 +5,17 @@
 package frc.robot;
 
 import com.ctre.phoenix6.SignalLogger;
+
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -78,7 +82,30 @@ public class Robot extends TimedRobot {
     m_robotContainer.doTelemetry();
     Optional<EstimatedRobotPose> frontRobotPose =
         frontVision.getMultiTagPose3d(driveTrain.getState().Pose);
-    if (frontRobotPose.isPresent()) {
+    if (frontVision.hasTarget(frontVision.getPipeline()) && frontRobotPose.isPresent()) {
+      AprilTagFieldLayout apr = PhotonVision.aprilTagFieldLayout;
+      double distToAprilTag =
+          apr.getTagPose(frontVision.getPipeline().getBestTarget().getFiducialId())
+              .get()
+              .getTranslation()
+              .getDistance(
+                  new Translation3d(
+                      driveTrain.getState().Pose.getX(), driveTrain.getState().Pose.getY(), 0.0));
+
+      double xKalman = 0.01 * Math.pow(1.15, distToAprilTag);
+
+      double yKalman = 0.01 * Math.pow(1.4, distToAprilTag);
+
+      visionMatrix.set(0, 0, xKalman);
+      visionMatrix.set(1, 0, yKalman);
+      
+      
+      driveTrain.addVisionMeasurement(
+        frontRobotPose.get().estimatedPose.toPose2d(), Timer.getFPGATimestamp()-0.02, visionMatrix);
+    }
+
+    
+    // if (frontRobotPose.isPresent()) {
       // frontVision.get
       // AprilTagFieldLayout apr = PhotonVision.aprilTagFieldLayout;
       // double distToAprilTag =
@@ -95,12 +122,12 @@ public class Robot extends TimedRobot {
       // double yKalman = 0.02 * Math.pow(1.4, distToAprilTag);
 
       // visionMatrix.set(0, 0, xKalman);
-      // visionMatrix.set(1, 0, yKalman);
-      driveTrain.addVisionMeasurement(
-          frontRobotPose.get().estimatedPose.toPose2d(),
-          frontRobotPose.get().timestampSeconds - 0.02,
-          visionMatrix);
-    }
+    //   // visionMatrix.set(1, 0, yKalman);
+    //   driveTrain.addVisionMeasurement(
+    //       frontRobotPose.get().estimatedPose.toPose2d(),
+    //       frontRobotPose.get().timestampSeconds - 0.02,
+    //       visionMatrix);
+    // }
 
     CommandScheduler.getInstance().run();
     // m_robotContainer.doTelemetry();
