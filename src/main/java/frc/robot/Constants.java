@@ -172,7 +172,7 @@ public final class Constants {
             * INTEGRATED_ABSOLUTE_CONVERSION_FACTOR; // 130.63563333333335;
     public static final double ABSOLUTE_ENCODER_HORIZONTAL = 0.6547;
     public static final double ABSOLUTE_HORIZONTAL_OFFSET = 0.05;
-    public static double ARM_INTERMAP_OFFSET = 4;
+    public static double ARM_INTERMAP_OFFSET = 0;
     // public static double ZERO_SPEAKER_OFFSET_METERS = 0.6;
     public static final InterpolatingDoubleTreeMap INTERMAP = new InterpolatingDoubleTreeMap();
 
@@ -200,11 +200,11 @@ public final class Constants {
 
     public static void UPDATE_INTERMAP_PIPER() {
       INTERMAP.clear();
-      INTERMAP.put(1.34, 6.46);
-      INTERMAP.put(1.34 + Units.inchesToMeters(30), 20.6);
-      INTERMAP.put(1.34 + Units.inchesToMeters(60), 27.8);
-      INTERMAP.put(1.34 + Units.inchesToMeters(90), 31.339);
-      INTERMAP.put(1.34 + Units.inchesToMeters(120), 32.67);
+      INTERMAP.put(1.34, 6.46 + ARM_INTERMAP_OFFSET);
+      INTERMAP.put(1.34 + Units.inchesToMeters(30), 20.6 + ARM_INTERMAP_OFFSET);
+      INTERMAP.put(1.34 + Units.inchesToMeters(60), 27.8 + ARM_INTERMAP_OFFSET);
+      INTERMAP.put(1.34 + Units.inchesToMeters(90), 31.339 + ARM_INTERMAP_OFFSET);
+      INTERMAP.put(1.34 + Units.inchesToMeters(120), 32.67 + ARM_INTERMAP_OFFSET);
     }
 
     public static double GET_YAJWINS_EQUATION(double distance) {
