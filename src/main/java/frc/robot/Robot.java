@@ -5,7 +5,6 @@
 package frc.robot;
 
 import com.ctre.phoenix6.SignalLogger;
-
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.Matrix;
@@ -98,30 +97,30 @@ public class Robot extends TimedRobot {
 
       visionMatrix.set(0, 0, xKalman);
       visionMatrix.set(1, 0, yKalman);
-      
-      
+
       driveTrain.addVisionMeasurement(
-        frontRobotPose.get().estimatedPose.toPose2d(), Timer.getFPGATimestamp()-0.02, visionMatrix);
+          frontRobotPose.get().estimatedPose.toPose2d(),
+          Timer.getFPGATimestamp() - 0.02,
+          visionMatrix);
     }
 
-    
     // if (frontRobotPose.isPresent()) {
-      // frontVision.get
-      // AprilTagFieldLayout apr = PhotonVision.aprilTagFieldLayout;
-      // double distToAprilTag =
-      //     apr.getTagPose(frontVision.getPipeline().getBestTarget().getFiducialId())
-      //         .get()
-      //         .getTranslation()
-      //         .getDistance(
-      //             new Translation3d(
-      //                 driveTrain.getState().Pose.getX(), driveTrain.getState().Pose.getY(),
-      // 0.0));
+    // frontVision.get
+    // AprilTagFieldLayout apr = PhotonVision.aprilTagFieldLayout;
+    // double distToAprilTag =
+    //     apr.getTagPose(frontVision.getPipeline().getBestTarget().getFiducialId())
+    //         .get()
+    //         .getTranslation()
+    //         .getDistance(
+    //             new Translation3d(
+    //                 driveTrain.getState().Pose.getX(), driveTrain.getState().Pose.getY(),
+    // 0.0));
 
-      // double xKalman = 0.02 * Math.pow(1.15, distToAprilTag);
+    // double xKalman = 0.02 * Math.pow(1.15, distToAprilTag);
 
-      // double yKalman = 0.02 * Math.pow(1.4, distToAprilTag);
+    // double yKalman = 0.02 * Math.pow(1.4, distToAprilTag);
 
-      // visionMatrix.set(0, 0, xKalman);
+    // visionMatrix.set(0, 0, xKalman);
     //   // visionMatrix.set(1, 0, yKalman);
     //   driveTrain.addVisionMeasurement(
     //       frontRobotPose.get().estimatedPose.toPose2d(),

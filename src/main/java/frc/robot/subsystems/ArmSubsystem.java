@@ -171,7 +171,7 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void setTargetDegrees(double angleDegrees) {
-    targetDegrees = MathUtil.clamp(angleDegrees, 1, 90);
+    targetDegrees = angleDegrees;
   }
 
   public static double calculateAngleToSpeaker(Translation2d robotPosition, boolean redside) {
