@@ -14,10 +14,11 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public class MoveToTarget extends Command {
-  private Pose2d[] pointDirs;
+  private Pose2d[] pointDirsInput, pointDirsConvert;
   private SwerveSubsystem swerve;
   private Supplier<Boolean> reflected;
   private Rotation2d endRotation;
+  private double goalEndVelo;
   PathPlannerPath constructedPath;
   Command pathCommand;
 
@@ -25,30 +26,25 @@ public class MoveToTarget extends Command {
       SwerveSubsystem swerve,
       Pose2d[] pointDirs,
       Supplier<Boolean> reflected,
-      Rotation2d endRotation) {
-    this.pointDirs = pointDirs;
+      Rotation2d endRotation,
+      double goalEndVelo) {
+    this.pointDirsInput = pointDirs;
     this.swerve = SwerveSubsystem.getInstance();
     this.reflected = reflected;
-    this.endRotation = endRotation;
+    this.endRotation = (reflected.get()) ? new Rotation2d(Math.PI - endRotation.getRadians()) : endRotation;
+    this.goalEndVelo = goalEndVelo;
     addRequirements(swerve);
   }
 
   @Override
   public void initialize() {
-    for (int i = 0; i < pointDirs.length; i++) {
-      if (i == 0) {
-        pointDirs[0] =
-            reflected.get()
-                ? MiscUtils.reflectAcrossMidline(
-                    new Pose2d(swerve.getState().Pose.getTranslation(), pointDirs[0].getRotation()))
-                : new Pose2d(swerve.getState().Pose.getTranslation(), pointDirs[0].getRotation());
-        continue;
-      }
-      pointDirs[i] =
-          (reflected.get() ? MiscUtils.reflectAcrossMidline(pointDirs[i]) : pointDirs[i]);
+    pointDirsConvert[0] = swerve.getState().Pose;
+    for (int i = 0; i < pointDirsInput.length; i++) {
+      pointDirsConvert[i+1] =
+          (reflected.get() ? MiscUtils.reflectAcrossMidline(pointDirsInput[i]) : pointDirsInput[i]);
     }
 
-    List<Translation2d> bezierPoints = PathPlannerPath.bezierFromPoses(pointDirs);
+    List<Translation2d> bezierPoints = PathPlannerPath.bezierFromPoses(pointDirsConvert);
 
     // create the path using the path points and constraints (also providing the final robot
     // heading)
@@ -56,7 +52,7 @@ public class MoveToTarget extends Command {
         new PathPlannerPath(
             bezierPoints,
             Constants.Swerve.PPConstants.PATH_PLANNER_CONSTRAINTS,
-            new GoalEndState(0.0, endRotation) // goal end velocity and heading
+            new GoalEndState(goalEndVelo, endRotation) // goal end velocity and heading
             );
 
     // prevent automatic path flipping by AutoBuilder (we want to execute absolute path)
@@ -90,7 +86,12 @@ public class MoveToTarget extends Command {
   // Factory pattern (two separate constructors that invoke the mirror / non mirror)
   public static Command withAbsolute(
       SwerveSubsystem swerve, Rotation2d endRotation, Pose2d... pointDirs) {
-    return new MoveToTarget(swerve, pointDirs, () -> false, endRotation);
+    return new MoveToTarget(swerve, pointDirs, () -> false, endRotation, 0d);
+  }
+
+  public static Command withAbsolute(
+      SwerveSubsystem swerve, Rotation2d endRotation, double goalEndVelo, Pose2d... pointDirs) {
+    return new MoveToTarget(swerve, pointDirs, () -> false, endRotation, goalEndVelo);
   }
 
   public static Command withMirror(
@@ -98,7 +99,16 @@ public class MoveToTarget extends Command {
       Supplier<Boolean> mirror,
       Rotation2d endRotation,
       Pose2d... pointDirs) {
-    return new MoveToTarget(swerve, pointDirs, mirror, endRotation);
+    return new MoveToTarget(swerve, pointDirs, mirror, endRotation, 0d);
+  }
+
+  public static Command withMirror(
+      SwerveSubsystem swerve,
+      Supplier<Boolean> mirror,
+      Rotation2d endRotation,
+      double goalEndVelo,
+      Pose2d... pointDirs) {
+    return new MoveToTarget(swerve, pointDirs, mirror, endRotation, goalEndVelo);
   }
 }
 

@@ -208,7 +208,7 @@ public class RobotContainer {
                         MoveToTarget.withMirror(
                                 driveTrain,
                                 redside,
-                                new Rotation2d(),
+                                Constants.Landmarks.Amp.POSE.getRotation(),
                                 MiscUtils.plus(
                                     Constants.Landmarks.Amp.POSE,
                                     new Transform2d(
@@ -220,6 +220,7 @@ public class RobotContainer {
                                 MoveToTarget.withMirror(
                                     driveTrain,
                                     redside,
+                                    Constants.Landmarks.Amp.POSE.getRotation(),
                                     MiscUtils.plus(
                                         Constants.Landmarks.Amp.POSE,
                                         new Transform2d(
@@ -363,17 +364,20 @@ public class RobotContainer {
         .andThen(
             (note.isEmpty())
                 ? new WaitCommand(2.0)
-                : MoveToTargetOld.withMirror(
+                : MoveToTarget.withMirror(
                         driveTrain,
                         redside,
+                        new Rotation2d(),
+                        0.5,
                         note.get()
                             .getNoteLocation()
                             .plus(new Transform2d(Units.inchesToMeters(-40), 0, new Rotation2d())))
                     .andThen(
                         new SmartdashBoardCmd("auton status detail", "MTND-DU"),
-                        MoveToTargetOld.withMirror(
+                        MoveToTarget.withMirror(
                                 driveTrain,
                                 redside,
+                                new Rotation2d(),
                                 note.get()
                                     .getNoteLocation()
                                     .plus(
