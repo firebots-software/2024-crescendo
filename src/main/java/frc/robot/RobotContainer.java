@@ -32,6 +32,7 @@ import frc.robot.commands.ArmCommands.AlterArmValues;
 import frc.robot.commands.ArmCommands.ArmToAngleCmd;
 import frc.robot.commands.ArmCommands.ArmToAngleCmd.EndBehavior;
 import frc.robot.commands.Auton.MoveToTarget;
+// import frc.robot.commands.Auton.MoveToTargetOld;
 import frc.robot.commands.Auton.RatchetteDisengage;
 import frc.robot.commands.DebugCommands.SmartdashBoardCmd;
 // import frc.robot.commands.ArmCommands.AlterArmValues;
@@ -207,6 +208,7 @@ public class RobotContainer {
                         MoveToTarget.withMirror(
                                 driveTrain,
                                 redside,
+                                new Rotation2d(),
                                 MiscUtils.plus(
                                     Constants.Landmarks.Amp.POSE,
                                     new Transform2d(
@@ -361,7 +363,7 @@ public class RobotContainer {
         .andThen(
             (note.isEmpty())
                 ? new WaitCommand(2.0)
-                : MoveToTarget.withMirror(
+                : MoveToTargetOld.withMirror(
                         driveTrain,
                         redside,
                         note.get()
@@ -369,7 +371,7 @@ public class RobotContainer {
                             .plus(new Transform2d(Units.inchesToMeters(-40), 0, new Rotation2d())))
                     .andThen(
                         new SmartdashBoardCmd("auton status detail", "MTND-DU"),
-                        MoveToTarget.withMirror(
+                        MoveToTargetOld.withMirror(
                                 driveTrain,
                                 redside,
                                 note.get()
