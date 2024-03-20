@@ -35,7 +35,7 @@ public class PeterSubsystem extends SubsystemBase {
 
     // shooterMotorRight.setControl(f);
     Slot0Configs s0c =
-        new Slot0Configs().withKP(0.02).withKI(0).withKD(0).withKG(0).withKV(0.12).withKA(0);
+        new Slot0Configs().withKP(0.02).withKI(0).withKD(0).withKG(0).withKV(0.1185).withKA(0);
     CurrentLimitsConfigs clc =
         new CurrentLimitsConfigs()
             .withStatorCurrentLimitEnable(true)

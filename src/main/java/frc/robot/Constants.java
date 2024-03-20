@@ -157,7 +157,7 @@ public final class Constants {
     public static final int ENCODER_PORT = 0; // subject to change
 
     public static final double CURRENT_LIMIT = 8.0;
-    public static final double S0C_KP = 1.2;
+    public static final double S0C_KP = 1.0;
     public static final double ARMFF_KS = 0.16969;
     public static final double ARMFF_KG = 0.34;
     public static final double ARMFF_KV = 2.49;

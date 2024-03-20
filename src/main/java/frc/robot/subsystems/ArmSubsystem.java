@@ -252,25 +252,25 @@ public class ArmSubsystem extends SubsystemBase {
   public void periodic() {
     setPosition(targetDegrees);
     SmartDashboard.putString(
-        "ARM Command:",
+        "ARM Command",
         this.getCurrentCommand() == null ? "none" : this.getCurrentCommand().getName());
-    SmartDashboard.putNumber("ARM Abs Enc Raw: ", revEncoder.getAbsolutePosition());
-    SmartDashboard.putNumber("ARM Abs Enc Func: ", getAbsolutePosition());
-    SmartDashboard.putNumber("ARM Integrated Rotations: ", getMotorPosRotations());
-    SmartDashboard.putNumber("ARM Integrated Current: ", master.getSupplyCurrent().getValue());
-    SmartDashboard.putNumber("ARM Integrated Error: ", master.getClosedLoopError().getValue());
-    SmartDashboard.putNumber("ARM Arm Rotations: ", getArmPosRotations());
-    SmartDashboard.putNumber("ARM Arm Degrees: ", getRawDegrees());
+    SmartDashboard.putNumber("ARM Abs Enc Raw", revEncoder.getAbsolutePosition());
+    SmartDashboard.putNumber("ARM Abs Enc Func", getAbsolutePosition());
+    SmartDashboard.putNumber("ARM Integrated Rotations", getMotorPosRotations());
+    SmartDashboard.putNumber("ARM Integrated Current", master.getSupplyCurrent().getValue());
+    SmartDashboard.putNumber("ARM Integrated Error", master.getClosedLoopError().getValue());
+    SmartDashboard.putNumber("ARM Arm Rotations", getArmPosRotations());
+    SmartDashboard.putNumber("ARM Arm Degrees", getRawDegrees());
 
-    SmartDashboard.putNumber("ARM Arm Degrees Corrected: ", getCorrectedDegrees());
-    SmartDashboard.putNumber("ARM Target Degrees: ", targetDegrees);
+    SmartDashboard.putNumber("ARM Arm Degrees Corrected", getCorrectedDegrees());
+    SmartDashboard.putNumber("ARM Target Degrees", targetDegrees);
     SmartDashboard.putString(
         "Current commannd ARM:",
         (getCurrentCommand() == null) ? "NULL" : getCurrentCommand().getName());
     SmartDashboard.putNumber(
-        "ARM Target Integrated Rots: ", calculateIntegratedTargetRots(targetDegrees));
+        "ARM Target Integrated Rots", calculateIntegratedTargetRots(targetDegrees));
     SmartDashboard.putNumber(
-        "ARM FeedForward Calculations: ",
+        "ARM FeedForward Calculations",
         armff.calculate((2 * Math.PI * getRawDegrees()) / 360d, 0));
     SmartDashboard.putNumber("Master Velocity", master.getVelocity().getValue());
     SmartDashboard.putNumber(
