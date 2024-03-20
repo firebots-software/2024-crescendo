@@ -145,7 +145,7 @@ public class PeterSubsystem extends SubsystemBase {
   }
 
   public void spinRightShooterForAmp() {
-    runLeftShooterAtRPS(Constants.Pooer.SHOOTER.SHOOTER_1.AMP_SPEED_RPS);
+    runRightShooterAtRPS(Constants.Pooer.SHOOTER.SHOOTER_1.AMP_SPEED_RPS);
   }
 
   public void stopRightShooter() {
@@ -191,6 +191,18 @@ public class PeterSubsystem extends SubsystemBase {
             (shooter1.getVelocity().getValueAsDouble()
                     )
                 - (Constants.Pooer.SHOOTER.SHOOTER_1.SPEED_RPS
+                    * Constants.Pooer.SHOOTER.SHOOTER_1.GEAR_RATIO))
+        < 10;
+  }
+
+    public boolean isShooterReadyAmp() {
+      SmartDashboard.putNumber(
+        "shooter amp",
+        Constants.Pooer.SHOOTER.SHOOTER_1.AMP_SPEED_RPS * Constants.Pooer.SHOOTER.SHOOTER_1.GEAR_RATIO);
+    return Math.abs(
+            (shooter1.getVelocity().getValueAsDouble()
+                    )
+                - (Constants.Pooer.SHOOTER.SHOOTER_1.AMP_SPEED_RPS
                     * Constants.Pooer.SHOOTER.SHOOTER_1.GEAR_RATIO))
         < 10;
   }
