@@ -319,22 +319,26 @@ public class RobotContainer {
         .andThen(
             (note.isEmpty())
                 ? new WaitCommand(2.0)
-                : MoveToTarget.withMirror(
-                        driveTrain,
-                        redside,
-                        note.get().getNoteLocation().getRotation(),
-                        (backw) ? new Rotation2d(Math.PI) : null,
-                        0.3,
-                        note.get()
-                            .getNoteLocation()
-                            .plus(new Transform2d(Units.inchesToMeters(-40)*Math.sin(note.get().getNoteLocation().getRotation().getRadians()), Units.inchesToMeters(-40)*Math.cos(note.get().getNoteLocation().getRotation().getRadians()), new Rotation2d())))
-                    .alongWith(
-                        new SmartdashBoardCmd("auton intake status", "intake started"),
-                        new Intake(peterSubsystem, armSubsystem, joystickSubsystem)
-                            .withTimeout(2.75d))
-                    .andThen(
-                        new FireAuton(peterSubsystem, armSubsystem, driveTrain, 1, redside),
-                        new SmartdashBoardCmd("auton status detail", "shot and ended")));
+                : new Intake(peterSubsystem, armSubsystem, joystickSubsystem).withTimeout(2.75d)
+        .deadlineWith(
+            MoveToTarget.withMirror(
+                driveTrain,
+                redside,
+                note.get().getNoteLocation().getRotation(),
+                (backw) ? new Rotation2d(Math.PI) : null,
+                0.3,
+                note.get()
+                    .getNoteLocation()
+                    .plus(
+                        new Transform2d(
+                            Units.inchesToMeters(-40)
+                                * Math.sin(note.get().getNoteLocation().getRotation().getRadians()),
+                            Units.inchesToMeters(-40)
+                                * Math.cos(note.get().getNoteLocation().getRotation().getRadians()),
+                            new Rotation2d()))))
+        .andThen(
+            new FireAuton(peterSubsystem, armSubsystem, driveTrain, 1, redside),
+            new SmartdashBoardCmd("auton status detail", "shot and ended")));
     // .andThen(
     //     new SmartdashBoardCmd("auton status detail", "MTND-DU"),
     //     MoveToTarget.withMirror(
