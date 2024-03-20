@@ -204,6 +204,7 @@ public class RobotContainer {
                     // ArmToAngleCmd.toNeutral(armSubsystem))
                 // .withInterruptBehavior(InterruptionBehavior.kCancelSelf)
                 // );
+
     // just move arm to amp position
     joystickB
         .a()
