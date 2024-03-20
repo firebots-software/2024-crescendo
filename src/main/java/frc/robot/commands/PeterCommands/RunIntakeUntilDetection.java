@@ -27,7 +27,7 @@ public class RunIntakeUntilDetection extends Command {
   @Override
   public void execute() {
     peterSubsystem.spinUpIntake();
-    peterSubsystem.spinUpPreShooter();
+    peterSubsystem.spinUpPreShooterVelocity(); // Run Velocity instead of Voltage for intake
   }
 
   // Called once the command ends or is interrupted.

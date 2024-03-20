@@ -34,7 +34,7 @@ public class FireTeleop extends SequentialCommandGroup {
             frontBackFunction,
             leftRightFunction,
             speedFunction,
-            5,
+            2,
             1,
             redside),
         new ParallelCommandGroup(

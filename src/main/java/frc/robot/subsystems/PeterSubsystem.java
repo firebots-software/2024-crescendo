@@ -18,7 +18,7 @@ public class PeterSubsystem extends SubsystemBase {
   private static PeterSubsystem instance;
 
   private DigitalInput noteSensor;
-  private TalonFX shooterMotorUp, shooterMotorDown;
+  private TalonFX shooter1, shooter2;
   private TalonFX preShooterMotor, intakeMotor;
 
   private MotionMagicConfigs mmcPreShooter;
@@ -26,25 +26,25 @@ public class PeterSubsystem extends SubsystemBase {
   public PeterSubsystem() {
     // Initalize shooter
     // Follower f = new Follower(Constants.Intake.SHOOTER_PORT_LEFT, false );
-    shooterMotorDown =
+    shooter2 =
         new TalonFX(Constants.Pooer.SHOOTER.SHOOTER_1.PORT, Constants.Pooer.CANBUS_NAME);
-    shooterMotorUp =
+    shooter1 =
         new TalonFX(Constants.Pooer.SHOOTER.SHOOTER_2.PORT, Constants.Pooer.CANBUS_NAME);
-    shooterMotorDown.setInverted(Constants.Pooer.SHOOTER.SHOOTER_1.REVERSED);
-    shooterMotorUp.setInverted(Constants.Pooer.SHOOTER.SHOOTER_2.REVERSED);
+    shooter2.setInverted(Constants.Pooer.SHOOTER.SHOOTER_1.REVERSED);
+    shooter1.setInverted(Constants.Pooer.SHOOTER.SHOOTER_2.REVERSED);
 
     // shooterMotorRight.setControl(f);
     Slot0Configs s0c =
-        new Slot0Configs().withKP(0.001).withKI(0).withKD(0).withKG(0).withKV(0.2).withKA(0);
+        new Slot0Configs().withKP(0.02).withKI(0).withKD(0).withKG(0).withKV(0.1185).withKA(0);
     CurrentLimitsConfigs clc =
         new CurrentLimitsConfigs()
             .withStatorCurrentLimitEnable(true)
             .withStatorCurrentLimit(Constants.Pooer.SHOOTER.SHOOTER_1.STATOR_CURRENT_LIMIT_AMPS);
 
-    shooterMotorUp.getConfigurator().apply(s0c);
-    shooterMotorDown.getConfigurator().apply(s0c);
-    shooterMotorUp.getConfigurator().apply(clc);
-    shooterMotorDown.getConfigurator().apply(clc);
+    shooter1.getConfigurator().apply(s0c);
+    shooter2.getConfigurator().apply(s0c);
+    shooter1.getConfigurator().apply(clc);
+    shooter2.getConfigurator().apply(clc);
 
     // Preshooter
     preShooterMotor =
@@ -109,16 +109,17 @@ public class PeterSubsystem extends SubsystemBase {
   private void runRightShooterAtRPS(double speed) {
     VelocityVoltage m_velocityControl =
         new VelocityVoltage(speed * Constants.Pooer.SHOOTER.SHOOTER_1.GEAR_RATIO);
-    m_velocityControl.withFeedForward(0.1);
-    shooterMotorUp.setControl(m_velocityControl);
+    SmartDashboard.putNumber("vel", speed * Constants.Pooer.SHOOTER.SHOOTER_1.GEAR_RATIO);
+    shooter1.setControl(m_velocityControl);
     // shooterMotorUp.getVelocity();
   }
 
   private void runLeftShooterAtRPS(double speed) {
     VelocityVoltage m_velocityControl =
         new VelocityVoltage(speed * Constants.Pooer.SHOOTER.SHOOTER_2.GEAR_RATIO);
-    m_velocityControl.withFeedForward(0.1);
-    shooterMotorDown.setControl(m_velocityControl);
+        // m_velocityControl.with
+    SmartDashboard.putNumber("Shooter 2 speed", speed);      
+    shooter2.setControl(m_velocityControl);
   }
 
   public void stopShooter(boolean forceStop) {
@@ -126,8 +127,8 @@ public class PeterSubsystem extends SubsystemBase {
       runRightShooterAtRPS(0);
       runLeftShooterAtRPS(0);
     } else {
-      shooterMotorDown.stopMotor();
-      shooterMotorUp.stopMotor();
+      shooter2.stopMotor();
+      shooter1.stopMotor();
     }
   }
 
@@ -148,11 +149,11 @@ public class PeterSubsystem extends SubsystemBase {
   }
 
   public void stopRightShooter() {
-    shooterMotorUp.stopMotor();
+    shooter1.stopMotor();
   }
 
   public void stopLeftShooter() {
-    shooterMotorDown.stopMotor();
+    shooter2.stopMotor();
   }
 
   public void resetPreshooterPosition() {
@@ -173,14 +174,22 @@ public class PeterSubsystem extends SubsystemBase {
 
   public void reverseMechanism() {
     preShooterMotor.setControl(new DutyCycleOut(-0.5));
-    shooterMotorDown.setControl(new DutyCycleOut(-0.5));
-    shooterMotorUp.setControl(new DutyCycleOut(-0.5));
+    shooter2.setControl(new DutyCycleOut(-0.5));
+    shooter1.setControl(new DutyCycleOut(-0.5));
     intakeMotor.setControl(new DutyCycleOut(-0.5));
   }
 
   public boolean isShooterReady() {
+    SmartDashboard.putNumber(
+        "shooterMotor/gear",
+        shooter1.getVelocity().getValueAsDouble()
+            / Constants.Pooer.SHOOTER.SHOOTER_1.GEAR_RATIO);
+    SmartDashboard.putNumber(
+        "shooter",
+        Constants.Pooer.SHOOTER.SHOOTER_1.SPEED_RPS * Constants.Pooer.SHOOTER.SHOOTER_1.GEAR_RATIO);
     return Math.abs(
-            shooterMotorDown.getVelocity().getValueAsDouble()
+            (shooter1.getVelocity().getValueAsDouble()
+                    )
                 - (Constants.Pooer.SHOOTER.SHOOTER_1.SPEED_RPS
                     * Constants.Pooer.SHOOTER.SHOOTER_1.GEAR_RATIO))
         < 10;
@@ -203,8 +212,19 @@ public class PeterSubsystem extends SubsystemBase {
 
   // PRE-SHOOTER FUNCTIONS:
 
-  public void spinUpPreShooter() {
+  public void spinUpPreShooterVoltage() {
     runPreShooterAtVolts(Constants.Pooer.SHOOTER.PRESHOOTER.SPEED_VOLTAGE);
+  }
+
+  public void spinUpPreShooterVelocity() {
+    runPreShooterAtRPS(Constants.Pooer.SHOOTER.PRESHOOTER.SPEED_RPS);
+  }
+
+  private void runPreShooterAtRPS(double speed) {
+    VelocityVoltage m_velocityControl =
+        new VelocityVoltage(speed * Constants.Pooer.SHOOTER.PRESHOOTER.GEAR_RATIO);
+    m_velocityControl.withFeedForward(0.1);
+    preShooterMotor.setControl(m_velocityControl);
   }
 
   private void runPreShooterAtVolts(double voltage) {
@@ -243,16 +263,22 @@ public class PeterSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
     SmartDashboard.putBoolean("Note Detected", notePresent()); // false = note detected!!
     SmartDashboard.putBoolean("Shooter Ready", isShooterReady());
+    SmartDashboard.putNumber("Target Speed", (Constants.Pooer.SHOOTER.SHOOTER_1.SPEED_RPS
+                    * Constants.Pooer.SHOOTER.SHOOTER_1.GEAR_RATIO));
+    SmartDashboard.putNumber("Shoot Error", (shooter1.getVelocity().getValueAsDouble())
+                    
+                - (Constants.Pooer.SHOOTER.SHOOTER_1.SPEED_RPS
+                    * Constants.Pooer.SHOOTER.SHOOTER_1.GEAR_RATIO));
     SmartDashboard.putNumber(
-        "Shooter down speed", shooterMotorDown.getVelocity().getValueAsDouble());
-    SmartDashboard.putNumber("Shooter up speed", shooterMotorUp.getVelocity().getValueAsDouble());
+        "Shooter down speed", shooter2.getVelocity().getValueAsDouble());
+    SmartDashboard.putNumber("Shooter up speed", shooter1.getVelocity().getValueAsDouble());
     SmartDashboard.putNumber(
-        "Shooter down power", shooterMotorDown.getDutyCycle().getValueAsDouble());
-    SmartDashboard.putNumber("Shooter up power", shooterMotorUp.getDutyCycle().getValueAsDouble());
+        "Shooter down power", shooter2.getDutyCycle().getValueAsDouble());
+    SmartDashboard.putNumber("Shooter up power", shooter1.getDutyCycle().getValueAsDouble());
     SmartDashboard.putNumber(
-        "Shooter down current", shooterMotorDown.getStatorCurrent().getValueAsDouble());
+        "Shooter down current", shooter2.getStatorCurrent().getValueAsDouble());
     SmartDashboard.putNumber(
-        "Shooter up current", shooterMotorUp.getStatorCurrent().getValueAsDouble());
+        "Shooter up current", shooter1.getStatorCurrent().getValueAsDouble());
     SmartDashboard.putString(
         "Command",
         (this.getCurrentCommand() == null
@@ -262,21 +288,27 @@ public class PeterSubsystem extends SubsystemBase {
         "Current commannd PETER:",
         (getCurrentCommand() == null) ? "NULL" : getCurrentCommand().getName());
     periodicSignalLogger();
+    SmartDashboard.putNumber(
+        "shooter motor velo", shooter2.getVelocity().getValueAsDouble());
+
+    SmartDashboard.putNumber(
+        "shooter motor max velo",
+        Constants.Pooer.SHOOTER.SHOOTER_1.SPEED_RPS * Constants.Pooer.SHOOTER.SHOOTER_1.GEAR_RATIO);
   }
 
   public void periodicSignalLogger() {
     SignalLogger.writeBoolean("Note Detected", notePresent());
     SignalLogger.writeBoolean("Shooter Ready", isShooterReady());
     SignalLogger.writeDouble(
-        "Shooter down speed", shooterMotorDown.getVelocity().getValueAsDouble());
-    SignalLogger.writeDouble("Shooter up speed", shooterMotorUp.getVelocity().getValueAsDouble());
+        "Shooter down speed", shooter2.getVelocity().getValueAsDouble());
+    SignalLogger.writeDouble("Shooter up speed", shooter1.getVelocity().getValueAsDouble());
     SignalLogger.writeDouble(
-        "Shooter down power", shooterMotorDown.getDutyCycle().getValueAsDouble());
-    SignalLogger.writeDouble("Shooter up power", shooterMotorUp.getDutyCycle().getValueAsDouble());
+        "Shooter down power", shooter2.getDutyCycle().getValueAsDouble());
+    SignalLogger.writeDouble("Shooter up power", shooter1.getDutyCycle().getValueAsDouble());
     SignalLogger.writeDouble(
-        "Shooter down current", shooterMotorDown.getStatorCurrent().getValueAsDouble());
+        "Shooter down current", shooter2.getStatorCurrent().getValueAsDouble());
     SignalLogger.writeDouble(
-        "Shooter up current", shooterMotorUp.getStatorCurrent().getValueAsDouble());
+        "Shooter up current", shooter1.getStatorCurrent().getValueAsDouble());
   }
   // public void runShooter(int i) {
   //   // TODO Auto-generated method stub

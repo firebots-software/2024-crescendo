@@ -1,9 +1,4 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot;
-
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -47,7 +42,6 @@ import frc.robot.util.MiscUtils;
 import frc.robot.util.OtherXBoxController;
 import java.util.Optional;
 import java.util.function.Supplier;
-
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -55,41 +49,32 @@ import java.util.function.Supplier;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-
   // OI
   private final OtherXBoxController joystickA =
       new OtherXBoxController(Constants.OI.JOYSTICK_A_PORT);
   public final OtherXBoxController joystickB =
       new OtherXBoxController(Constants.OI.JOYSTICK_B_PORT);
-
   // Subsystems
   private final SwerveSubsystem driveTrain = SwerveSubsystem.getInstance();
   private final ArmSubsystem armSubsystem = ArmSubsystem.getInstance();
   private final PeterSubsystem peterSubsystem = PeterSubsystem.getInstance();
   private final JoystickSubsystem joystickSubsystem = new JoystickSubsystem(joystickA.getHID());
-
   // Logging
   public final Telemetry logger = new Telemetry();
-
   // Alliance color
   private Supplier<Boolean> redside = () -> redAlliance;
   private static boolean redAlliance;
-
   public RobotContainer() {
     // Vibrate joysticks when someone interesting happens!
     // joystick.getHID().setRumble(GenericHID.RumbleType.kLeftRumble, 1);
-
     configureBindings();
     setupChooser();
   }
-
   // Starts telemetry operations (essentially logging -> look on SmartDashboard, AdvantageScope)
   public void doTelemetry() {
     logger.telemeterize(driveTrain.getState());
   }
-
   private void configureBindings() {
-
     // Joystick suppliers,
     Trigger leftShoulderTrigger = joystickA.leftBumper();
     Supplier<Double>
@@ -101,7 +86,6 @@ public class RobotContainer {
                 leftShoulderTrigger.getAsBoolean()
                     ? 0d
                     : 1d; // slowmode when left shoulder is pressed, otherwise fast
-
     SwerveJoystickCommand swerveJoystickCommand =
         new SwerveJoystickCommand(
             frontBackFunction,
@@ -111,10 +95,8 @@ public class RobotContainer {
             () -> joystickA.leftTrigger().getAsBoolean(),
             driveTrain);
     driveTrain.setDefaultCommand(swerveJoystickCommand);
-
     // Intake
     joystickA.rightTrigger().whileTrue(new Intake(peterSubsystem, armSubsystem, joystickSubsystem));
-
     // Aim
     joystickA
         .x()
@@ -127,7 +109,6 @@ public class RobotContainer {
                 leftRightFunction,
                 speedFunction,
                 redside));
-
     joystickA
         .a()
         .and(joystickB.rightTrigger(0.5).negate())
@@ -141,12 +122,10 @@ public class RobotContainer {
                 leftRightFunction,
                 speedFunction,
                 redside));
-
     joystickA
         .a()
         .and(joystickB.rightTrigger(0.5))
         .whileTrue(new BundtShot(peterSubsystem, armSubsystem, joystickSubsystem));
-
     joystickA
         .y()
         .whileTrue(
@@ -156,7 +135,6 @@ public class RobotContainer {
                 (redAlliance) ? () -> Rotation2d.fromDegrees(180) : () -> Rotation2d.fromDegrees(0),
                 speedFunction,
                 driveTrain));
-
     // amp snap
     joystickA
         .b()
@@ -167,7 +145,6 @@ public class RobotContainer {
                 () -> new Rotation2d(-Math.PI / 2d),
                 speedFunction,
                 driveTrain));
-
     joystickA.rightBumper().whileTrue(ArmToAngleCmd.toDuck(armSubsystem));
     // When no Commands are being issued, Peter motors should not be moving
     peterSubsystem.setDefaultCommand(
@@ -179,9 +156,7 @@ public class RobotContainer {
               peterSubsystem.stopPreShooterMotor();
             },
             peterSubsystem));
-
     driveTrain.registerTelemetry(logger::telemeterize);
-
     // joystick B
     // Outtake
     joystickB
@@ -195,7 +170,6 @@ public class RobotContainer {
                         peterSubsystem),
                     ArmToAngleCmd.toNeutral(armSubsystem).withTolerance(1))
                 .withInterruptBehavior(InterruptionBehavior.kCancelSelf));
-
     // amp shoot
     joystickB
         .rightBumper()
@@ -205,29 +179,30 @@ public class RobotContainer {
                     new ParallelCommandGroup(
                         ArmToAngleCmd.toAmp(armSubsystem).withTolerance(1),
                         MoveToTarget.withMirror(
-                            driveTrain,
-                            redside,
-                            MiscUtils.plus(
-                                Constants.Landmarks.Amp.POSE,
-                                new Transform2d(
-                                    0d,
-                                    -(Units.inchesToMeters(12)
-                                        + Constants.Swerve.ROBOT_HALF_WIDTH_METERS),
-                                    new Rotation2d())))
-                        .andThen(
-                            MoveToTarget.withMirror(
                                 driveTrain,
                                 redside,
-                                MiscUtils.plus(Constants.Landmarks.Amp.POSE, new Transform2d(
+                                MiscUtils.plus(
+                                    Constants.Landmarks.Amp.POSE,
+                                    new Transform2d(
                                         0d,
-                                        -(Units.inchesToMeters(5)
+                                        -(Units.inchesToMeters(12)
                                             + Constants.Swerve.ROBOT_HALF_WIDTH_METERS),
-                                        new Rotation2d())))),
+                                        new Rotation2d())))
+                            .andThen(
+                                MoveToTarget.withMirror(
+                                    driveTrain,
+                                    redside,
+                                    MiscUtils.plus(
+                                        Constants.Landmarks.Amp.POSE,
+                                        new Transform2d(
+                                            0d,
+                                            -(Units.inchesToMeters(5)
+                                                + Constants.Swerve.ROBOT_HALF_WIDTH_METERS),
+                                            new Rotation2d())))),
                         new SpinUpShooter(peterSubsystem, true)),
                     new ShootNoWarmup(peterSubsystem, false),
                     ArmToAngleCmd.toNeutral(armSubsystem))
                 .withInterruptBehavior(InterruptionBehavior.kCancelSelf));
-
     // just move arm to amp position
     joystickB
         .a()
@@ -241,11 +216,9 @@ public class RobotContainer {
                 new SpinUpShooter(peterSubsystem, true),
                 new ShootNoWarmup(peterSubsystem, false).withTimeout(0.5),
                 ArmToAngleCmd.toNeutral(armSubsystem)));
-
     // zero-heading
-
     joystickB
-        .povDown()
+        .x()
         .onTrue(
             driveTrain
                 .runOnce(
@@ -259,79 +232,63 @@ public class RobotContainer {
                                     5.5),
                                 Rotation2d.fromDegrees(!redAlliance ? 0 : 180))))
                 .andThen(new PrintCommand("pov worked")));
-
-    joystickB.povLeft().onTrue(new AlterArmValues(-0.25));
-    joystickB.povRight().onTrue(new AlterArmValues(0.25));
+    joystickB.povDown().onTrue(new AlterArmValues(0.25));
+    joystickB.povUp().onTrue(new AlterArmValues(-0.25));
   }
-
   // Constructs a Pose2d array of the note locations by a specific indexing so they can be accessed
   // by the eventual autonomous chooser
   private enum NoteLocation {
     AMPSIDE(Constants.Landmarks.AMPSIDE_NOTE_LOCATION),
     MIDDLE(Constants.Landmarks.MIDDLE_NOTE_LOCATION),
     STAGESIDE(Constants.Landmarks.STAGESIDE_NOTE_LOCATION);
-
     private final Pose2d pose;
-
     private NoteLocation(Pose2d pose) {
       this.pose = pose;
     }
-
     private Pose2d getNoteLocation() {
       return this.pose;
     }
   }
-
   public static void setAlliance() {
     redAlliance =
         (DriverStation.getAlliance().isEmpty())
             ? false
             : (DriverStation.getAlliance().get() == Alliance.Red);
   }
-
   // Options on SmartDashboard that return an integer index that refers to a note location
   private static SendableChooser<Optional<NoteLocation>>
       pickup1choice = new SendableChooser<Optional<NoteLocation>>(),
       pickup2choice = new SendableChooser<Optional<NoteLocation>>(),
       pickup3choice = new SendableChooser<Optional<NoteLocation>>();
   SendableChooser<String> startchoice = new SendableChooser<String>();
-
   private void setupChooser() {
-
     pickup1choice.setDefaultOption("SECOND SHOT: DO NOTHING", Optional.empty());
     pickup1choice.addOption("AMPSIDE", Optional.of(NoteLocation.AMPSIDE));
     pickup1choice.addOption("MIDDLE", Optional.of(NoteLocation.MIDDLE));
     pickup1choice.addOption("STAGESIDE NOTE", Optional.of(NoteLocation.STAGESIDE));
-
     pickup2choice.setDefaultOption("THIRD SHOT: DO NOTHING", Optional.empty());
     pickup2choice.addOption("AMPSIDE NOTE", Optional.of(NoteLocation.AMPSIDE));
     pickup2choice.addOption("MIDDLE NOTE", Optional.of(NoteLocation.MIDDLE));
     pickup2choice.addOption("STAGESIDE NOTE", Optional.of(NoteLocation.STAGESIDE));
-
     pickup3choice.setDefaultOption("FOURTH SHOT: DO NOTHING", Optional.empty());
     pickup3choice.addOption("AMPSIDE", Optional.of(NoteLocation.AMPSIDE));
     pickup3choice.addOption("MIDDLE", Optional.of(NoteLocation.MIDDLE));
     pickup3choice.addOption("STAGESIDE NOTE", Optional.of(NoteLocation.STAGESIDE));
-
     startchoice.setDefaultOption("STARTING POSITION: MIDDLE START", "Mid");
     startchoice.addOption("AMPSIDE START", "Amp");
     startchoice.addOption("STAGESIDE START", "Stage");
-
     SmartDashboard.putData(pickup1choice);
     SmartDashboard.putData(pickup2choice);
     SmartDashboard.putData(pickup3choice);
     SmartDashboard.putData(startchoice);
   }
-
   public Command getAutonomousCommand() {
     // NamedCommands.registerCommand("Fire", new FireAuton(peterSubsystem, armSubsystem, driveTrain,
     // 1, redside));
     // NamedCommands.registerCommand("Intake", new Intake(peterSubsystem, armSubsystem,
     // joystickSubsystem));
     // NamedCommands.registerCommand("Ratchette", new RatchetteDisengage(armSubsystem));
-
     // return new PathPlannerAuto("SamplePath");
-
     // String autonName = (redAlliance) ? "ThreeNoteAutonRed" : "ThreeNoteAutonBlue";
     // SmartDashboard.putString("Auton to be run", autonName);
     // SmartDashboard.putBoolean("Red Alliance?", redAlliance);
@@ -353,34 +310,41 @@ public class RobotContainer {
         .andThen(getAutonShoot(pickup3choice.getSelected()))
         .andThen(new SmartdashBoardCmd("auton status", "auton finished"));
   }
-
   public Command getAutonShoot(Optional<NoteLocation> note) {
-    return new SmartdashBoardCmd("auton status detail", "BEGIN").andThen((note.isEmpty())
-        ? new WaitCommand(2.0)
-        : MoveToTarget.withMirror(
-                driveTrain,
-                redside,
-                note.get()
-                    .getNoteLocation()
-                    .plus(new Transform2d(Units.inchesToMeters(-24), 0, new Rotation2d()))))
-            .andThen(
-                new SmartdashBoardCmd("auton status detail", "MTND-DU"),
-                MoveToTarget.withMirror(
-                    driveTrain,
-                    redside,
-                    note.get()
-                        .getNoteLocation()
-                        .plus(new Transform2d(Units.inchesToMeters(-18), 0, new Rotation2d()))))
-            .alongWith(
-                new SmartdashBoardCmd("auton intake status", "intake started"),
-                new Intake(peterSubsystem, armSubsystem, joystickSubsystem).withTimeout(2.75d))
-            // .andThen(
-            //     MoveToTarget.withMirror(
-            //         driveTrain,
-            //         redside,
-            //         NoteLocation.MIDDLE
-            //             .getNoteLocation()
-            //             .plus(new Transform2d(Units.inchesToMeters(-45), 0, new Rotation2d()))))
-            .andThen(new FireAuton(peterSubsystem, armSubsystem, driveTrain, 1, redside), new SmartdashBoardCmd("auton status detail", "shot and ended"));
+    return new SmartdashBoardCmd("auton status detail", "BEGIN")
+        .andThen(
+            (note.isEmpty())
+                ? new WaitCommand(2.0)
+                : MoveToTarget.withMirror(
+                        driveTrain,
+                        redside,
+                        note.get()
+                            .getNoteLocation()
+                            .plus(new Transform2d(Units.inchesToMeters(-40), 0, new Rotation2d())))
+                    .andThen(
+                        new SmartdashBoardCmd("auton status detail", "MTND-DU"),
+                        MoveToTarget.withMirror(
+                                driveTrain,
+                                redside,
+                                note.get()
+                                    .getNoteLocation()
+                                    .plus(
+                                        new Transform2d(
+                                            Units.inchesToMeters(-18), 0, new Rotation2d())))
+                            .alongWith(
+                                new SmartdashBoardCmd("auton intake status", "intake started"),
+                                new Intake(peterSubsystem, armSubsystem, joystickSubsystem)
+                                    .withTimeout(2.75d)))
+                    // .andThen(
+                    //     MoveToTarget.withMirror(
+                    //         driveTrain,
+                    //         redside,
+                    //         NoteLocation.MIDDLE
+                    //             .getNoteLocation()
+                    //             .plus(new Transform2d(Units.inchesToMeters(-45), 0, new
+                    // Rotation2d()))))
+                    .andThen(
+                        new FireAuton(peterSubsystem, armSubsystem, driveTrain, 1, redside),
+                        new SmartdashBoardCmd("auton status detail", "shot and ended")));
   }
 }

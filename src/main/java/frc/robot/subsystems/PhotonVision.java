@@ -13,50 +13,49 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.util.Optional;
+import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonPoseEstimator;
+import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 public class PhotonVision extends SubsystemBase {
   Pose3d savedResult = new Pose3d(0.0, 0.0, 0.0, new Rotation3d(0.0, 0.0, 0.0));
-  private PhotonCamera camera = new PhotonCamera("FrontCam");
+  private PhotonCamera camera;
+  private static PhotonVision frontCamera = new PhotonVision("FrontCam");
   private PhotonPipelineResult pipeline;
   private PhotonTrackedTarget bestTarget;
-  private static PhotonVision pvisioninstance;
+
   public static AprilTagFieldLayout aprilTagFieldLayout;
+  PhotonPoseEstimator photonPoseEstimator;
   Transform3d camToRobot = // robot relative to camera
       new Transform3d(
           new Translation3d(Units.inchesToMeters(-13), 0, Units.inchesToMeters(7.027)),
-          new Rotation3d(0, -Units.degreesToRadians(24), Math.PI));
+          new Rotation3d(0, -Units.degreesToRadians(37), Math.PI));
 
-  private PhotonVision() {
+  private PhotonVision(String name) {
+    camera = new PhotonCamera(name);
     aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
-    // photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout,
-    // PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
-    //         camera, robotToCam);
+    photonPoseEstimator =
+        new PhotonPoseEstimator(
+            aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, camera, camToRobot);
     pipeline = camera.getLatestResult();
     bestTarget = pipeline.getBestTarget();
   }
 
-  public static PhotonVision getInstance() {
-    if (pvisioninstance == null) {
-      pvisioninstance = new PhotonVision();
+  public static PhotonVision getFrontCamera() {
+    if (frontCamera == null) {
+      frontCamera = new PhotonVision("FrontCam");
     }
 
-    return pvisioninstance;
+    return frontCamera;
   }
 
   public boolean hasTarget(PhotonPipelineResult pipeline) {
     return pipeline.hasTargets();
   }
-
-  // public double getDistance() {
-  //     double distance = PhotonUtils.calculateDistanceToTargetMeters(cameraHeight, targetHeight,
-  // cameraPitch,
-  //             Units.degreesToRadians(bestTarget.getPitch()));
-  //     return distance;
-  // }
 
   public Pose3d getRobotPose3d() {
     if (!pipeline.hasTargets()) {
@@ -71,6 +70,11 @@ public class PhotonVision extends SubsystemBase {
               getTransformToTarget(), tagPose.get(), camToRobot);
     }
     return savedResult;
+  }
+
+  public Optional<EstimatedRobotPose> getMultiTagPose3d(Pose2d previousRobotPose) {
+    photonPoseEstimator.setReferencePose(previousRobotPose);
+    return photonPoseEstimator.update();
   }
 
   public Transform3d getTransformToTarget() {
@@ -92,26 +96,14 @@ public class PhotonVision extends SubsystemBase {
   private void log() {
     SmartDashboard.putBoolean("Tag", pipeline.hasTargets());
     if (pipeline.hasTargets()) {
-      Optional<Pose3d> tagPose = aprilTagFieldLayout.getTagPose(bestTarget.getFiducialId());
-      // double x = getTransformToTarget().getX();
-      // double z = getTransformToTarget().getZ();
-      // double y = getTransformToTarget().getY();
       double dist = get3dDist();
       Pose3d pose3D = getRobotPose3d();
-      Transform3d transformToTarget = getTransformToTarget();
-      SmartDashboard.putNumber("Tag pose x", tagPose.get().getX());
-      SmartDashboard.putNumber("Tag pose y", tagPose.get().getY());
-      SmartDashboard.putNumber("Tag pose z", tagPose.get().getZ());
       SmartDashboard.putNumber("TagID", bestTarget.getFiducialId());
       SmartDashboard.putNumber("PoseX", pose3D.getX());
       SmartDashboard.putNumber("PoseY", pose3D.getY());
       SmartDashboard.putNumber("PoseZ", pose3D.getZ());
-      SmartDashboard.putNumber("TranslationX", transformToTarget.getX());
-      SmartDashboard.putNumber("TranslationY", transformToTarget.getY());
-      SmartDashboard.putNumber("TranslationZ", transformToTarget.getZ());
       SmartDashboard.putNumber("StraightLineDist", dist);
       SignalLogger.writeBoolean("Found tag", true);
-      periodicSignalLogger(tagPose, pose3D, dist, transformToTarget);
     } else {
       SignalLogger.writeBoolean("Found tag", false);
     }

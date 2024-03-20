@@ -19,10 +19,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.ArmSubsystem;
-import frc.robot.subsystems.LightsSubsystem;
+// import frc.robot.subsystems.LightsSubsystem;
 import frc.robot.subsystems.PeterSubsystem;
 import frc.robot.subsystems.PhotonVision;
 import frc.robot.subsystems.SwerveSubsystem;
+import java.util.Optional;
+import org.photonvision.EstimatedRobotPose;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -32,11 +34,11 @@ import frc.robot.subsystems.SwerveSubsystem;
  */
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
-  PhotonVision vision = PhotonVision.getInstance();
+  PhotonVision frontVision = PhotonVision.getFrontCamera();
   private final SwerveSubsystem driveTrain = SwerveSubsystem.getInstance();
   private final ArmSubsystem armSubsystem = ArmSubsystem.getInstance();
   private final PeterSubsystem peterSubsystem = PeterSubsystem.getInstance();
-  private LightsSubsystem lightsSubsystem = LightsSubsystem.getInstance();
+  // private LightsSubsystem lightsSubsystem = LightsSubsystem.getInstance();
 
   private RobotContainer m_robotContainer;
   private static Matrix<N3, N1> visionMatrix = new Matrix<N3, N1>(Nat.N3(), Nat.N1());
@@ -48,8 +50,8 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     CameraServer.startAutomaticCapture(0);
-    visionMatrix.set(0, 0, 0);
-    visionMatrix.set(1, 0, 0.2d);
+    visionMatrix.set(0, 0, 0.01);
+    visionMatrix.set(1, 0, 0.03d);
     visionMatrix.set(2, 0, 100d);
 
     // Instantiate our RobotContainer. This will perform all our button bindings,
@@ -77,26 +79,54 @@ public class Robot extends TimedRobot {
     // robot's periodic
     // block in order for anything in the Command-based framework to work.
     m_robotContainer.doTelemetry();
-    if (vision.hasTarget(vision.getPipeline())) {
+    Optional<EstimatedRobotPose> frontRobotPose =
+        frontVision.getMultiTagPose3d(driveTrain.getState().Pose);
+    if (frontVision.hasTarget(frontVision.getPipeline()) && frontRobotPose.isPresent()) {
       AprilTagFieldLayout apr = PhotonVision.aprilTagFieldLayout;
       double distToAprilTag =
-          apr.getTagPose(vision.getPipeline().getBestTarget().getFiducialId())
+          apr.getTagPose(frontVision.getPipeline().getBestTarget().getFiducialId())
               .get()
               .getTranslation()
               .getDistance(
                   new Translation3d(
                       driveTrain.getState().Pose.getX(), driveTrain.getState().Pose.getY(), 0.0));
 
-      double xKalman = 0.02 * Math.pow(1.15, distToAprilTag);
+      double xKalman = 0.01 * Math.pow(1.15, distToAprilTag);
 
-      double yKalman = 0.02 * Math.pow(1.4, distToAprilTag);
+      double yKalman = 0.01 * Math.pow(1.4, distToAprilTag);
 
       visionMatrix.set(0, 0, xKalman);
       visionMatrix.set(1, 0, yKalman);
 
       driveTrain.addVisionMeasurement(
-          vision.getRobotPose2d(), Timer.getFPGATimestamp(), visionMatrix);
+          frontRobotPose.get().estimatedPose.toPose2d(),
+          Timer.getFPGATimestamp() - 0.02,
+          visionMatrix);
     }
+
+    // if (frontRobotPose.isPresent()) {
+    // frontVision.get
+    // AprilTagFieldLayout apr = PhotonVision.aprilTagFieldLayout;
+    // double distToAprilTag =
+    //     apr.getTagPose(frontVision.getPipeline().getBestTarget().getFiducialId())
+    //         .get()
+    //         .getTranslation()
+    //         .getDistance(
+    //             new Translation3d(
+    //                 driveTrain.getState().Pose.getX(), driveTrain.getState().Pose.getY(),
+    // 0.0));
+
+    // double xKalman = 0.02 * Math.pow(1.15, distToAprilTag);
+
+    // double yKalman = 0.02 * Math.pow(1.4, distToAprilTag);
+
+    // visionMatrix.set(0, 0, xKalman);
+    //   // visionMatrix.set(1, 0, yKalman);
+    //   driveTrain.addVisionMeasurement(
+    //       frontRobotPose.get().estimatedPose.toPose2d(),
+    //       frontRobotPose.get().timestampSeconds - 0.02,
+    //       visionMatrix);
+    // }
 
     CommandScheduler.getInstance().run();
     // m_robotContainer.doTelemetry();

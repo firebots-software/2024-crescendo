@@ -95,6 +95,17 @@ public final class Constants {
         double voltage) {
       return new MotorConstants(port, reversed, gearRatio, statorCurrent, 0, ampSpeed, voltage);
     }
+
+    public static MotorConstants dualControlled(
+        int port,
+        boolean reversed,
+        double gearRatio,
+        double statorCurrent,
+        double ampSpeed,
+        double speed,
+        double voltage) {
+      return new MotorConstants(port, reversed, gearRatio, statorCurrent, speed, ampSpeed, voltage);
+    }
   }
 
   public static final class Pooer {
@@ -107,12 +118,12 @@ public final class Constants {
       PETER(
           MotorConstants.speedControled(30, true, 12d / 15d, 40.0, 4500d / 60d, 4500d / 60d),
           MotorConstants.speedControled(31, false, 12d / 15d, 40.0, 4500d / 60d, 4500d / 60d),
-          MotorConstants.voltageControlled(32, false, 4d / 1d, 25.0, 0, 9d),
+          MotorConstants.dualControlled(32, false, 4d / 1d, 25.0, 0, 300 / 60, 9d),
           MotorConstants.speedControled(33, true, 2d / 1d, 50.0, 200d, 200d)),
       PIPER(
-          MotorConstants.speedControled(35, false, 24d / 18d, 40.0, 3000d / 60d, 2000d / 60d),
-          MotorConstants.speedControled(34, false, 24d / 18d, 40.0, 3000d / 60d, 2000d / 60d),
-          MotorConstants.voltageControlled(32, true, 4d / 1d, 25.0, 0, 9d),
+          MotorConstants.speedControled(35, false, 24d / 18d, 40.0, 3500d / 60d, 2000d / 60d),
+          MotorConstants.speedControled(34, false, 24d / 18d, 40.0, 3500d / 60d, 2000d / 60d),
+          MotorConstants.dualControlled(32, true, 4d / 1d, 25.0, 0, 300 / 60, 9d),
           MotorConstants.speedControled(33, true, 2d / 1d, 50.0, 200d, 200d));
       public final MotorConstants SHOOTER_1, SHOOTER_2, PRESHOOTER, INTAKE;
 
@@ -146,7 +157,7 @@ public final class Constants {
     public static final int ENCODER_PORT = 0; // subject to change
 
     public static final double CURRENT_LIMIT = 8.0;
-    public static final double S0C_KP = 1.2;
+    public static final double S0C_KP = 1.0;
     public static final double ARMFF_KS = 0.16969;
     public static final double ARMFF_KG = 0.34;
     public static final double ARMFF_KV = 2.49;
@@ -161,7 +172,7 @@ public final class Constants {
             * INTEGRATED_ABSOLUTE_CONVERSION_FACTOR; // 130.63563333333335;
     public static final double ABSOLUTE_ENCODER_HORIZONTAL = 0.6547;
     public static final double ABSOLUTE_HORIZONTAL_OFFSET = 0.05;
-    public static double ARM_INTERMAP_OFFSET = 4;
+    public static double ARM_INTERMAP_OFFSET = 0;
     // public static double ZERO_SPEAKER_OFFSET_METERS = 0.6;
     public static final InterpolatingDoubleTreeMap INTERMAP = new InterpolatingDoubleTreeMap();
 
@@ -189,11 +200,11 @@ public final class Constants {
 
     public static void UPDATE_INTERMAP_PIPER() {
       INTERMAP.clear();
-      INTERMAP.put(1.34, 6.46);
-      INTERMAP.put(1.34 + Units.inchesToMeters(30), 20.6);
-      INTERMAP.put(1.34 + Units.inchesToMeters(60), 27.8);
-      INTERMAP.put(1.34 + Units.inchesToMeters(90), 31.339);
-      INTERMAP.put(1.34 + Units.inchesToMeters(120), 32.67);
+      INTERMAP.put(1.34, 6.46 + ARM_INTERMAP_OFFSET);
+      INTERMAP.put(1.34 + Units.inchesToMeters(30), 20.6 + ARM_INTERMAP_OFFSET);
+      INTERMAP.put(1.34 + Units.inchesToMeters(60), 27.8 + ARM_INTERMAP_OFFSET);
+      INTERMAP.put(1.34 + Units.inchesToMeters(90), 31.339 + ARM_INTERMAP_OFFSET);
+      INTERMAP.put(1.34 + Units.inchesToMeters(120), 32.67 + ARM_INTERMAP_OFFSET);
     }
 
     public static double GET_YAJWINS_EQUATION(double distance) {
@@ -264,10 +275,9 @@ public final class Constants {
 
   public static class Landmarks {
     // Landmarks on the Blue side can be reflected to show the respective locations on the Blue side
-    public static final Pose2d STAGESIDE_NOTE_LOCATION =
-        new Pose2d(2.8956, 4.0522, new Rotation2d());
+    public static final Pose2d STAGESIDE_NOTE_LOCATION = new Pose2d(2.8956, 4, new Rotation2d());
     public static final Pose2d MIDDLE_NOTE_LOCATION = new Pose2d(2.8956, 5.5, new Rotation2d());
-    public static final Pose2d AMPSIDE_NOTE_LOCATION = new Pose2d(2.8956, 6.9478, new Rotation2d());
+    public static final Pose2d AMPSIDE_NOTE_LOCATION = new Pose2d(2.8956, 7, new Rotation2d());
     public static final Pose2d SUBWOOFER_LOCATION = new Pose2d(0.6, 5.7, new Rotation2d());
     public static final double CENTER_LINE_LOCATION = 8.27;
 
