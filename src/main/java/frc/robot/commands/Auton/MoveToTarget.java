@@ -18,24 +18,41 @@ public class MoveToTarget extends Command {
   private Pose2d[] pointDirs;
   private SwerveSubsystem swerve;
   private Supplier<Boolean> reflected;
-  private Rotation2d  goalEndRot;
+  private Rotation2d goalEndRot, startDir;
   private double goalEndVelo;
   PathPlannerPath constructedPath;
   Command pathCommand;
 
   private MoveToTarget(
-      SwerveSubsystem swerve, Pose2d[] pointDirs, Supplier<Boolean> reflected, double goalEndVelo, Rotation2d goalEndRot) {
+      SwerveSubsystem swerve,
+      Pose2d[] pointDirs,
+      Supplier<Boolean> reflected,
+      double goalEndVelo,
+      Rotation2d goalEndRot,
+      Rotation2d startDir) {
     this.pointDirs = pointDirs;
     this.swerve = SwerveSubsystem.getInstance();
     this.reflected = reflected;
     this.goalEndVelo = goalEndVelo;
-    this.goalEndRot = goalEndRot;
+    this.goalEndRot =
+        (reflected.get()) ? new Rotation2d(Math.PI - goalEndRot.getRadians()) : goalEndRot;
+    if (startDir != null) {
+      this.startDir =
+          (reflected.get()) ? new Rotation2d(Math.PI - startDir.getRadians()) : startDir;
+    } else {
+      this.startDir = null;
+    }
     addRequirements(swerve);
   }
 
   private MoveToTarget(
-      SwerveSubsystem swerve, Pose2d pointDirs, Supplier<Boolean> reflected, double goalEndVelo, Rotation2d goalEndRot) {
-      this(swerve, new Pose2d[] {pointDirs}, reflected, goalEndVelo, goalEndRot);
+      SwerveSubsystem swerve,
+      Pose2d pointDirs,
+      Supplier<Boolean> reflected,
+      double goalEndVelo,
+      Rotation2d goalEndRot,
+      Rotation2d startDir) {
+    this(swerve, new Pose2d[] {pointDirs}, reflected, goalEndVelo, goalEndRot, startDir);
   }
 
   @Override
@@ -43,7 +60,10 @@ public class MoveToTarget extends Command {
     // constructing the list of path points using absolute coordinates on the field
 
     Pose2d[] poseArray = new Pose2d[pointDirs.length + 1];
-    poseArray[0] = swerve.getState().Pose;
+    poseArray[0] =
+        new Pose2d(
+            swerve.getState().Pose.getTranslation(),
+            (startDir == null) ? swerve.getState().Pose.getRotation() : startDir);
     for (int i = 1; i < poseArray.length; i++) {
       poseArray[i] =
           (reflected.get()
@@ -59,8 +79,7 @@ public class MoveToTarget extends Command {
         new PathPlannerPath(
             bezierPoints,
             Constants.Swerve.PPConstants.PATH_PLANNER_CONSTRAINTS,
-            new GoalEndState(
-                goalEndVelo, goalEndRot) // goal end velocity and heading
+            new GoalEndState(goalEndVelo, goalEndRot) // goal end velocity and heading
             );
 
     // prevent automatic path flipping by AutoBuilder (we want to execute absolute path)
@@ -93,21 +112,36 @@ public class MoveToTarget extends Command {
   }
 
   // Factory pattern (two separate constructors that invoke the mirror / non mirror)
-  public static Command withAbsolute(SwerveSubsystem swerve, Rotation2d goalEndRot, Pose2d... absolutePose) {
-    return new MoveToTarget(swerve, absolutePose, () -> false, 0, goalEndRot);
+  public static Command withAbsolute(
+      SwerveSubsystem swerve, Rotation2d goalEndRot, Rotation2d startDir, Pose2d... absolutePose) {
+    return new MoveToTarget(swerve, absolutePose, () -> false, 0, goalEndRot, startDir);
   }
 
-  public static Command withAbsolute(SwerveSubsystem swerve, Rotation2d goalEndRot, double goalEndVelo, Pose2d... absolutePose) {
-    return new MoveToTarget(swerve, absolutePose, () -> false, goalEndVelo, goalEndRot);
+  public static Command withAbsolute(
+      SwerveSubsystem swerve,
+      Rotation2d goalEndRot,
+      Rotation2d startDir,
+      double goalEndVelo,
+      Pose2d... absolutePose) {
+    return new MoveToTarget(swerve, absolutePose, () -> false, goalEndVelo, goalEndRot, startDir);
   }
 
   public static Command withMirror(
-      SwerveSubsystem swerve, Supplier<Boolean> mirror, Rotation2d goalEndRot, Pose2d... absolutePose) {
-    return new MoveToTarget(swerve, absolutePose, mirror, 0, goalEndRot);
+      SwerveSubsystem swerve,
+      Supplier<Boolean> mirror,
+      Rotation2d goalEndRot,
+      Rotation2d startDir,
+      Pose2d... absolutePose) {
+    return new MoveToTarget(swerve, absolutePose, mirror, 0, goalEndRot, startDir);
   }
 
   public static Command withMirror(
-      SwerveSubsystem swerve, Supplier<Boolean> mirror, Rotation2d goalEndRot, double goalEndVelo, Pose2d... absolutePose) {
-    return new MoveToTarget(swerve, absolutePose, mirror, goalEndVelo, goalEndRot);
+      SwerveSubsystem swerve,
+      Supplier<Boolean> mirror,
+      Rotation2d goalEndRot,
+      Rotation2d startDir,
+      double goalEndVelo,
+      Pose2d... absolutePose) {
+    return new MoveToTarget(swerve, absolutePose, mirror, goalEndVelo, goalEndRot, startDir);
   }
 }

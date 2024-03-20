@@ -280,6 +280,16 @@ public final class Constants {
     public static final Pose2d AMPSIDE_NOTE_LOCATION = new Pose2d(2.8956, 7, new Rotation2d());
     public static final Pose2d SUBWOOFER_LOCATION = new Pose2d(0.6, 5.7, new Rotation2d());
     public static final double CENTER_LINE_LOCATION = 8.27;
+    public static final Pose2d MIDLINE_FROM_AMP1_NOTE_LOCATION =
+        new Pose2d(CENTER_LINE_LOCATION, 7.43, new Rotation2d());
+    public static final Pose2d MIDLINE_FROM_AMP2_NOTE_LOCATION =
+        new Pose2d(CENTER_LINE_LOCATION, 5.76, new Rotation2d());
+    public static final Pose2d MIDLINE_FROM_AMP3_NOTE_LOCATION =
+        new Pose2d(CENTER_LINE_LOCATION, 4.09, new Rotation2d());
+    public static final Pose2d MIDLINE_FROM_AMP4_NOTE_LOCATION =
+        new Pose2d(CENTER_LINE_LOCATION, 2.42, new Rotation2d());
+    public static final Pose2d MIDLINE_FROM_AMP5_NOTE_LOCATION =
+        new Pose2d(CENTER_LINE_LOCATION, 0.75, new Rotation2d());
 
     public static final class Speaker {
       public static final double HEIGHT_INCHES = 78.0;
