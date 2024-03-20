@@ -275,10 +275,38 @@ public final class Constants {
 
   public static class Landmarks {
     // Landmarks on the Blue side can be reflected to show the respective locations on the Blue side
-    public static final Pose2d STAGESIDE_NOTE_LOCATION = new Pose2d(2.8956, 4, new Rotation2d());
-    public static final Pose2d MIDDLE_NOTE_LOCATION = new Pose2d(2.8956, 5.5, new Rotation2d());
-    public static final Pose2d AMPSIDE_NOTE_LOCATION = new Pose2d(2.8956, 7, new Rotation2d());
+    // public static final Pose2d STAGESIDE_NOTE_LOCATION = new Pose2d(2.8956, 4, new Rotation2d());
+    // public static final Pose2d MIDDLE_NOTE_LOCATION = new Pose2d(2.8956, 5.5, new Rotation2d());
+    // public static final Pose2d AMPSIDE_NOTE_LOCATION = new Pose2d(2.8956, 7, new Rotation2d());
     public static final Pose2d SUBWOOFER_LOCATION = new Pose2d(0.6, 5.7, new Rotation2d());
+
+    public static final Pose2d STAGESIDE_NOTE_LOCATION =
+        new Pose2d(
+            2.8956,
+            4.0522,
+            SUBWOOFER_LOCATION
+                .getTranslation()
+                .minus(new Translation2d(2.8956, 4.0522))
+                .rotateBy(Rotation2d.fromRadians(Math.PI))
+                .getAngle());
+    public static final Pose2d MIDDLE_NOTE_LOCATION =
+        new Pose2d(
+            2.8956,
+            5.5,
+            SUBWOOFER_LOCATION
+                .getTranslation()
+                .minus(new Translation2d(2.8956, 5.5))
+                .rotateBy(Rotation2d.fromRadians(Math.PI))
+                .getAngle());
+    public static final Pose2d AMPSIDE_NOTE_LOCATION =
+        new Pose2d(
+            2.8956,
+            6.9478,
+            SUBWOOFER_LOCATION
+                .getTranslation()
+                .minus(new Translation2d(2.8956, 6.9478))
+                .rotateBy(Rotation2d.fromRadians(Math.PI))
+                .getAngle());
     public static final double CENTER_LINE_LOCATION = 8.27;
     public static final Pose2d MIDLINE_FROM_AMP1_NOTE_LOCATION =
         new Pose2d(CENTER_LINE_LOCATION, 7.43, new Rotation2d());

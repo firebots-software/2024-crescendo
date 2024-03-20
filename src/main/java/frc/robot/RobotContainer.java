@@ -324,10 +324,10 @@ public class RobotContainer {
                         redside,
                         note.get().getNoteLocation().getRotation(),
                         (backw) ? new Rotation2d(Math.PI) : null,
-                        0.25,
+                        0.3,
                         note.get()
                             .getNoteLocation()
-                            .plus(new Transform2d(Units.inchesToMeters(-40), 0, new Rotation2d())))
+                            .plus(new Transform2d(Units.inchesToMeters(-40)*Math.sin(note.get().getNoteLocation().getRotation().getRadians()), Units.inchesToMeters(-40)*Math.cos(note.get().getNoteLocation().getRotation().getRadians()), new Rotation2d())))
                     .alongWith(
                         new SmartdashBoardCmd("auton intake status", "intake started"),
                         new Intake(peterSubsystem, armSubsystem, joystickSubsystem)
