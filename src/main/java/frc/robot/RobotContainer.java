@@ -181,6 +181,7 @@ public class RobotContainer {
                         MoveToTarget.withMirror(
                                 driveTrain,
                                 redside,
+                                Constants.Landmarks.Amp.POSE.getRotation(),
                                 MiscUtils.plus(
                                     Constants.Landmarks.Amp.POSE,
                                     new Transform2d(
@@ -192,6 +193,7 @@ public class RobotContainer {
                                 MoveToTarget.withMirror(
                                     driveTrain,
                                     redside,
+                                    Constants.Landmarks.Amp.POSE.getRotation(),
                                     MiscUtils.plus(
                                         Constants.Landmarks.Amp.POSE,
                                         new Transform2d(
