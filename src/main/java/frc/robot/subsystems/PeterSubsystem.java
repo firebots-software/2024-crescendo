@@ -26,14 +26,16 @@ public class PeterSubsystem extends SubsystemBase {
   public PeterSubsystem() {
     // Initalize shooter
     // Follower f = new Follower(Constants.Intake.SHOOTER_PORT_LEFT, false );
-    shooter2 = new TalonFX(Constants.Pooer.SHOOTER.SHOOTER_1.PORT, Constants.Pooer.CANBUS_NAME);
-    shooter1 = new TalonFX(Constants.Pooer.SHOOTER.SHOOTER_2.PORT, Constants.Pooer.CANBUS_NAME);
+    shooter2 =
+        new TalonFX(Constants.Pooer.SHOOTER.SHOOTER_1.PORT, Constants.Pooer.CANBUS_NAME);
+    shooter1 =
+        new TalonFX(Constants.Pooer.SHOOTER.SHOOTER_2.PORT, Constants.Pooer.CANBUS_NAME);
     shooter2.setInverted(Constants.Pooer.SHOOTER.SHOOTER_1.REVERSED);
     shooter1.setInverted(Constants.Pooer.SHOOTER.SHOOTER_2.REVERSED);
 
     // shooterMotorRight.setControl(f);
     Slot0Configs s0c =
-        new Slot0Configs().withKP(0.02).withKI(0).withKD(0).withKG(0).withKV(0.12).withKA(0);
+        new Slot0Configs().withKP(0.02).withKI(0).withKD(0).withKG(0).withKV(0.1185).withKA(0);
     CurrentLimitsConfigs clc =
         new CurrentLimitsConfigs()
             .withStatorCurrentLimitEnable(true)
@@ -115,8 +117,8 @@ public class PeterSubsystem extends SubsystemBase {
   private void runLeftShooterAtRPS(double speed) {
     VelocityVoltage m_velocityControl =
         new VelocityVoltage(speed * Constants.Pooer.SHOOTER.SHOOTER_2.GEAR_RATIO);
-    // m_velocityControl.with
-    SmartDashboard.putNumber("Shooter 2 speed", speed);
+        // m_velocityControl.with
+    SmartDashboard.putNumber("Shooter 2 speed", speed);      
     shooter2.setControl(m_velocityControl);
   }
 
@@ -143,7 +145,7 @@ public class PeterSubsystem extends SubsystemBase {
   }
 
   public void spinRightShooterForAmp() {
-    runLeftShooterAtRPS(Constants.Pooer.SHOOTER.SHOOTER_1.AMP_SPEED_RPS);
+    runRightShooterAtRPS(Constants.Pooer.SHOOTER.SHOOTER_1.AMP_SPEED_RPS);
   }
 
   public void stopRightShooter() {
@@ -180,13 +182,27 @@ public class PeterSubsystem extends SubsystemBase {
   public boolean isShooterReady() {
     SmartDashboard.putNumber(
         "shooterMotor/gear",
-        shooter1.getVelocity().getValueAsDouble() / Constants.Pooer.SHOOTER.SHOOTER_1.GEAR_RATIO);
+        shooter1.getVelocity().getValueAsDouble()
+            / Constants.Pooer.SHOOTER.SHOOTER_1.GEAR_RATIO);
     SmartDashboard.putNumber(
         "shooter",
         Constants.Pooer.SHOOTER.SHOOTER_1.SPEED_RPS * Constants.Pooer.SHOOTER.SHOOTER_1.GEAR_RATIO);
     return Math.abs(
-            (shooter1.getVelocity().getValueAsDouble())
+            (shooter1.getVelocity().getValueAsDouble()
+                    )
                 - (Constants.Pooer.SHOOTER.SHOOTER_1.SPEED_RPS
+                    * Constants.Pooer.SHOOTER.SHOOTER_1.GEAR_RATIO))
+        < 10;
+  }
+
+    public boolean isShooterReadyAmp() {
+      SmartDashboard.putNumber(
+        "shooter amp",
+        Constants.Pooer.SHOOTER.SHOOTER_1.AMP_SPEED_RPS * Constants.Pooer.SHOOTER.SHOOTER_1.GEAR_RATIO);
+    return Math.abs(
+            (shooter1.getVelocity().getValueAsDouble()
+                    )
+                - (Constants.Pooer.SHOOTER.SHOOTER_1.AMP_SPEED_RPS
                     * Constants.Pooer.SHOOTER.SHOOTER_1.GEAR_RATIO))
         < 10;
   }
@@ -259,22 +275,22 @@ public class PeterSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
     SmartDashboard.putBoolean("Note Detected", notePresent()); // false = note detected!!
     SmartDashboard.putBoolean("Shooter Ready", isShooterReady());
+    SmartDashboard.putNumber("Target Speed", (Constants.Pooer.SHOOTER.SHOOTER_1.SPEED_RPS
+                    * Constants.Pooer.SHOOTER.SHOOTER_1.GEAR_RATIO));
+    SmartDashboard.putNumber("Shoot Error", (shooter1.getVelocity().getValueAsDouble())
+                    
+                - (Constants.Pooer.SHOOTER.SHOOTER_1.SPEED_RPS
+                    * Constants.Pooer.SHOOTER.SHOOTER_1.GEAR_RATIO));
     SmartDashboard.putNumber(
-        "Target Speed",
-        (Constants.Pooer.SHOOTER.SHOOTER_1.SPEED_RPS
-            * Constants.Pooer.SHOOTER.SHOOTER_1.GEAR_RATIO));
-    SmartDashboard.putNumber(
-        "Shoot Error",
-        (shooter1.getVelocity().getValueAsDouble())
-            - (Constants.Pooer.SHOOTER.SHOOTER_1.SPEED_RPS
-                * Constants.Pooer.SHOOTER.SHOOTER_1.GEAR_RATIO));
-    SmartDashboard.putNumber("Shooter down speed", shooter2.getVelocity().getValueAsDouble());
+        "Shooter down speed", shooter2.getVelocity().getValueAsDouble());
     SmartDashboard.putNumber("Shooter up speed", shooter1.getVelocity().getValueAsDouble());
-    SmartDashboard.putNumber("Shooter down power", shooter2.getDutyCycle().getValueAsDouble());
+    SmartDashboard.putNumber(
+        "Shooter down power", shooter2.getDutyCycle().getValueAsDouble());
     SmartDashboard.putNumber("Shooter up power", shooter1.getDutyCycle().getValueAsDouble());
     SmartDashboard.putNumber(
         "Shooter down current", shooter2.getStatorCurrent().getValueAsDouble());
-    SmartDashboard.putNumber("Shooter up current", shooter1.getStatorCurrent().getValueAsDouble());
+    SmartDashboard.putNumber(
+        "Shooter up current", shooter1.getStatorCurrent().getValueAsDouble());
     SmartDashboard.putString(
         "Command",
         (this.getCurrentCommand() == null
@@ -284,7 +300,8 @@ public class PeterSubsystem extends SubsystemBase {
         "Current commannd PETER:",
         (getCurrentCommand() == null) ? "NULL" : getCurrentCommand().getName());
     periodicSignalLogger();
-    SmartDashboard.putNumber("shooter motor velo", shooter2.getVelocity().getValueAsDouble());
+    SmartDashboard.putNumber(
+        "shooter motor velo", shooter2.getVelocity().getValueAsDouble());
 
     SmartDashboard.putNumber(
         "shooter motor max velo",
@@ -299,8 +316,15 @@ public class PeterSubsystem extends SubsystemBase {
     SignalLogger.writeDouble("Shooter down power", shooter2.getDutyCycle().getValueAsDouble());
     SignalLogger.writeDouble("Shooter up power", shooter1.getDutyCycle().getValueAsDouble());
     SignalLogger.writeDouble(
+        "Shooter down speed", shooter2.getVelocity().getValueAsDouble());
+    SignalLogger.writeDouble("Shooter up speed", shooter1.getVelocity().getValueAsDouble());
+    SignalLogger.writeDouble(
+        "Shooter down power", shooter2.getDutyCycle().getValueAsDouble());
+    SignalLogger.writeDouble("Shooter up power", shooter1.getDutyCycle().getValueAsDouble());
+    SignalLogger.writeDouble(
         "Shooter down current", shooter2.getStatorCurrent().getValueAsDouble());
-    SignalLogger.writeDouble("Shooter up current", shooter1.getStatorCurrent().getValueAsDouble());
+    SignalLogger.writeDouble(
+        "Shooter up current", shooter1.getStatorCurrent().getValueAsDouble());
   }
   // public void runShooter(int i) {
   //   // TODO Auto-generated method stub

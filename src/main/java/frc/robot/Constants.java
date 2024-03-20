@@ -157,7 +157,7 @@ public final class Constants {
     public static final int ENCODER_PORT = 0; // subject to change
 
     public static final double CURRENT_LIMIT = 8.0;
-    public static final double S0C_KP = 1.2;
+    public static final double S0C_KP = 1.0;
     public static final double ARMFF_KS = 0.16969;
     public static final double ARMFF_KG = 0.34;
     public static final double ARMFF_KV = 2.49;
@@ -445,7 +445,7 @@ public final class Constants {
     private static final int FRONT_LEFT_STEER_MOTOR_ID = 3;
     private static final int FRONT_LEFT_DRIVE_MOTOR_ID = 4;
     private static final int FRONT_LEFT_ENCODER_ID = 21;
-    private static final double FRONT_LEFT_ENCODER_OFFSET = -0.46728515625;
+    private static final double FRONT_LEFT_ENCODER_OFFSET = -0.466552734375;
 
     private static final double FRONT_LEFT_X_POS_INCHES = 11.26 - moveCOMX;
     private static final double FRONT_LEFT_Y_POS_INCHES = 11.417 - moveCOMY;

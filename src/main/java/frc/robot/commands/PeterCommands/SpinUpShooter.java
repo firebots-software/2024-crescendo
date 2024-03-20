@@ -42,6 +42,10 @@ public class SpinUpShooter extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return peterSubsystem.isShooterReady();
+    if(isAmp){
+      return peterSubsystem.isShooterReadyAmp();
+    } else {
+      return peterSubsystem.isShooterReady();
+    }
   }
 }

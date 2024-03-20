@@ -1,5 +1,4 @@
 package frc.robot;
-
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -44,7 +43,6 @@ import frc.robot.util.NoteLocation;
 import frc.robot.util.OtherXBoxController;
 import java.util.Optional;
 import java.util.function.Supplier;
-
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -67,19 +65,16 @@ public class RobotContainer {
   // Alliance color
   private Supplier<Boolean> redside = () -> redAlliance;
   private static boolean redAlliance;
-
   public RobotContainer() {
     // Vibrate joysticks when someone interesting happens!
     // joystick.getHID().setRumble(GenericHID.RumbleType.kLeftRumble, 1);
     configureBindings();
     setupChooser();
   }
-
   // Starts telemetry operations (essentially logging -> look on SmartDashboard, AdvantageScope)
   public void doTelemetry() {
     logger.telemeterize(driveTrain.getState());
   }
-
   private void configureBindings() {
     // Joystick suppliers,
     Trigger leftShoulderTrigger = joystickA.leftBumper();
@@ -245,24 +240,20 @@ public class RobotContainer {
     joystickB.povDown().onTrue(new AlterArmValues(0.25));
     joystickB.povUp().onTrue(new AlterArmValues(-0.25));
   }
-
   // Constructs a Pose2d array of the note locations by a specific indexing so they can be accessed
   // by the eventual autonomous chooser
-
   public static void setAlliance() {
     redAlliance =
         (DriverStation.getAlliance().isEmpty())
             ? false
             : (DriverStation.getAlliance().get() == Alliance.Red);
   }
-
   // Options on SmartDashboard that return an integer index that refers to a note location
   private static SendableChooser<Optional<NoteLocation>>
       pickup1choice = new SendableChooser<Optional<NoteLocation>>(),
       pickup2choice = new SendableChooser<Optional<NoteLocation>>(),
       pickup3choice = new SendableChooser<Optional<NoteLocation>>();
   SendableChooser<String> startchoice = new SendableChooser<String>();
-
   private void setupChooser() {
     pickup1choice.setDefaultOption("SECOND SHOT: DO NOTHING", Optional.empty());
     pickup1choice.addOption("AMPSIDE", Optional.of(NoteLocation.AMPSIDE));
@@ -284,7 +275,6 @@ public class RobotContainer {
     SmartDashboard.putData(pickup3choice);
     SmartDashboard.putData(startchoice);
   }
-
   public Command getAutonomousCommand() {
     // NamedCommands.registerCommand("Fire", new FireAuton(peterSubsystem, armSubsystem, driveTrain,
     // 1, redside));
