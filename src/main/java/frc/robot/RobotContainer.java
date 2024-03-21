@@ -319,7 +319,9 @@ public class RobotContainer {
         .andThen(
             (note.isEmpty())
                 ? new WaitCommand(2.0)
-                : MoveToTarget.withMirror(
+                : new Intake(peterSubsystem, armSubsystem, joystickSubsystem)
+                            .withTimeout(3d).deadlineWith(
+                MoveToTarget.withMirror(
                         driveTrain,
                         redside,
                         note.get().getNoteLocation().getRotation(),
@@ -327,17 +329,22 @@ public class RobotContainer {
                         0.2,
                         MiscUtils.plus(note.get()
                         .getNoteLocation(), new Translation2d(Units.inchesToMeters(-28d),note.get().getNoteLocation().getRotation())))
+                ,new SmartdashBoardCmd("auton intake status", "intake started"))
+)
+                    // .deadlineWith(new Intake(peterSubsystem, armSubsystem, joystickSubsystem)
+                    //         .withTimeout(3d))
+
                         // note.get()
                         //     .getNoteLocation()
                         //     .plus(new Transform2d(-40d,note.get().getNoteLocation().getRotation()))))
                             // .plus(new Transform2d(Units.inchesToMeters(-40)*Math.sin(note.get().getNoteLocation().getRotation().getRadians()), Units.inchesToMeters(-40)*Math.cos(note.get().getNoteLocation().getRotation().getRadians()), new Rotation2d())))
-                    .alongWith(
-                        new SmartdashBoardCmd("auton intake status", "intake started"),
-                        new Intake(peterSubsystem, armSubsystem, joystickSubsystem)
-                            .withTimeout(3d))
+                    // .alongWith(
+                    //     new SmartdashBoardCmd("auton intake status", "intake started"),
+                    //     new Intake(peterSubsystem, armSubsystem, joystickSubsystem)
+                    //         .withTimeout(3d))
                     .andThen(
                         new FireAuton(peterSubsystem, armSubsystem, driveTrain, 1, redside),
-                        new SmartdashBoardCmd("auton status detail", "shot and ended")));
+                        new SmartdashBoardCmd("auton status detail", "shot and ended"));
     // .andThen(
     //     new SmartdashBoardCmd("auton status detail", "MTND-DU"),
     //     MoveToTarget.withMirror(
