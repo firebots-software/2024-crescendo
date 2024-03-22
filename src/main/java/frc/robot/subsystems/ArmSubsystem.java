@@ -270,8 +270,7 @@ public class ArmSubsystem extends SubsystemBase {
     SmartDashboard.putNumber(
         "ARM Target Integrated Rots", calculateIntegratedTargetRots(targetDegrees));
     SmartDashboard.putNumber(
-        "ARM FeedForward Calculations",
-        armff.calculate((2 * Math.PI * getRawDegrees()) / 360d, 0));
+        "ARM FeedForward Calculations", armff.calculate((2 * Math.PI * getRawDegrees()) / 360d, 0));
     SmartDashboard.putNumber("Master Velocity", master.getVelocity().getValue());
     SmartDashboard.putNumber(
         "ARM Abs enc deg",
