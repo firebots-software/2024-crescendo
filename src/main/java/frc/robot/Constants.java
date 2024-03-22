@@ -282,11 +282,11 @@ public final class Constants {
 
     public static final Pose2d STAGESIDE_NOTE_LOCATION =
         new Pose2d(
-            2.8956,
-            4.0522,
+            2.9,
+            4.1,
             SUBWOOFER_LOCATION
                 .getTranslation()
-                .minus(new Translation2d(2.8956, 4.0522))
+                .minus(new Translation2d(2.9, 4.1))
                 .rotateBy(Rotation2d.fromRadians(Math.PI))
                 .getAngle());
     public static final Pose2d MIDDLE_NOTE_LOCATION =

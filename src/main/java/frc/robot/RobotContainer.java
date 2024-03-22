@@ -209,10 +209,10 @@ public class RobotContainer {
                                             -(Units.inchesToMeters(5)
                                                 + Constants.Swerve.ROBOT_HALF_WIDTH_METERS),
                                             new Rotation2d())))),
-                        new SpinUpShooter(peterSubsystem, true)),
-                    new ShootNoWarmup(peterSubsystem, false),
-                    ArmToAngleCmd.toNeutral(armSubsystem))
-                .withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+                        new SpinUpShooter(peterSubsystem, true))));
+                    // new ShootNoWarmup(peterSubsystem, false),
+                    // ArmToAngleCmd.toNeutral(armSubsystem))
+                /* .withInterruptBehavior(InterruptionBehavior.kCancelSelf)*/
     // just move arm to amp position
     joystickB
         .a()
@@ -332,7 +332,7 @@ public class RobotContainer {
                                 note.get().getNoteLocation().getRotation())))
                     // note.get()
                     //     .getNoteLocation()
-                    //     .plus(new Transform2d(-40d,note.get().getNoteLocation().getRotation()))))
+                    //     .plus(new Transform2d(-40d,note.gext().getNoteLocation().getRotation()))))
                     // .plus(new
                     // Transform2d(Units.inchesToMeters(-40)*Math.sin(note.get().getNoteLocation().getRotation().getRadians()), Units.inchesToMeters(-40)*Math.cos(note.get().getNoteLocation().getRotation().getRadians()), new Rotation2d())))
                     .alongWith(
