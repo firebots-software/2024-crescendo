@@ -108,6 +108,7 @@ public class Telemetry {
     Pose2d pose = state.Pose;
     fieldTypePub.set("Field2d");
     fieldPub.set(new double[] {pose.getX(), pose.getY(), pose.getRotation().getRadians()});
+    SignalLogger.writeDoubleArray("Robot Pose", new double[] {pose.getX(), pose.getY(), pose.getRotation().getRadians()});
 
     /* Telemeterize the robot's general speeds */
     double currentTime = Utils.getCurrentTimeSeconds();
