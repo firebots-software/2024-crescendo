@@ -140,7 +140,7 @@ public class Telemetry {
     SignalLogger.writeDouble("Pose X", pose.getX());
     SignalLogger.writeDouble("Pose Y", pose.getY());
     SignalLogger.writeDouble("Pose Rot", pose.getRotation().getRotations());
-
+    SignalLogger.writeDoubleArray("Robot Pose", new double[] {pose.getX(), pose.getY(), pose.getRotation().getRadians()});
     for (CommandWithTime c : runningCommands) {
       if (c.getCommand() == null || c.getCommand().isFinished()) {
         CommandAsString.append(
