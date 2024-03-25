@@ -40,7 +40,7 @@ public class PhotonVision extends SubsystemBase {
     aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
     photonPoseEstimator =
         new PhotonPoseEstimator(
-            aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, camera, camToRobot);
+            aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, camera, camToRobot); // it was PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR before
     pipeline = camera.getLatestResult();
     bestTarget = pipeline.getBestTarget();
   }
