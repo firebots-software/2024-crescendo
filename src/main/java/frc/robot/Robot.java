@@ -5,26 +5,18 @@
 package frc.robot;
 
 import com.ctre.phoenix6.SignalLogger;
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.ArmSubsystem;
-// import frc.robot.subsystems.LightsSubsystem;
 import frc.robot.subsystems.PeterSubsystem;
-import frc.robot.subsystems.PhotonVision;
 import frc.robot.subsystems.SwerveSubsystem;
-import java.util.Optional;
-import org.photonvision.EstimatedRobotPose;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -39,7 +31,6 @@ public class Robot extends TimedRobot {
   private final PeterSubsystem peterSubsystem = PeterSubsystem.getInstance();
 
   private RobotContainer m_robotContainer;
-  private static Matrix<N3, N1> visionMatrix = new Matrix<N3, N1>(Nat.N3(), Nat.N1());
 
   /**
    * This function is run when the robot is first started up and should be used for any
