@@ -23,14 +23,6 @@ import frc.robot.Constants.Pooer.ShooterType;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-  public static class LED {
-    public static final int LED_STRIP_LENGTH = 34;
-    public static final int LED_STRIP_PORT = 7;
-    public static final int[] PURE_RED = {0, 100, 100};
-    public static final int[] PURE_BLUE = {201, 100, 100};
-    public static final int[] PURE_YELLOW = {61, 100, 100};
-  }
-
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
     public static final int PS4_CONTROLLER_PORT_1 = 3;
@@ -143,8 +135,9 @@ public final class Constants {
   public static final class Arm {
     public static final double ARM_STATOR_CURRENT_LIMIT_AMPS = 40.0;
     public static final double DEFAULT_ARM_ANGLE = 56.12;
-    public static final double INTAKE_ANGLE = 3; // subject to change
-    public static final double AMP_ANGLE = 95; // subject to change
+    public static final double INTAKE_ANGLE = 3;
+    public static final double BUNDT_ANGLE = 45;
+    public static final double AMP_ANGLE = 95;
     // public static final double ARM_ENCODER_OFFSET = 0; // TODO: Change the offset so that the 0
     // position is when the arm is at its resting
     // position.
@@ -352,7 +345,7 @@ public final class Constants {
     public static final double PHYSICAL_MAX_SPEED_METERS_PER_SECOND =5.944;// before: 4.8768;// 18ft/s = 5.486, 19m/s = 5.791ft/s, 19.5m/s = 5.944 ft/s, 
     public static final double PHYSICAL_MAX_ANGLUAR_SPEED_RADIANS_PER_SECOND = 2 * 2 * Math.PI;
 
-    public static final double TELE_DRIVE_FAST_MODE_SPEED_PERCENT = 1.0;
+    public static final double TELE_DRIVE_FAST_MODE_SPEED_PERCENT = 0.6;
     public static final double TELE_DRIVE_SLOW_MODE_SPEED_PERCENT = 0.3;
     public static final double TELE_DRIVE_PERCENT_SPEED_RANGE =
         (TELE_DRIVE_FAST_MODE_SPEED_PERCENT - TELE_DRIVE_SLOW_MODE_SPEED_PERCENT);
