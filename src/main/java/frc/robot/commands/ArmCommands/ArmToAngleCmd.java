@@ -84,7 +84,7 @@ public class ArmToAngleCmd extends Command {
   }
 
   public static ArmToAngleCmd toBundt(ArmSubsystem arm) {
-    return new ArmToAngleCmd(() -> 8.5d, arm);
+    return new ArmToAngleCmd(() -> Constants.Arm.BUNDT_ANGLE, arm);
   }
 
   public static ArmToAngleCmd toDuck(ArmSubsystem arm) {
