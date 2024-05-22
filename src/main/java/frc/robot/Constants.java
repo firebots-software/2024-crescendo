@@ -136,7 +136,7 @@ public final class Constants {
     public static final double ARM_STATOR_CURRENT_LIMIT_AMPS = 40.0;
     public static final double DEFAULT_ARM_ANGLE = 56.12;
     public static final double INTAKE_ANGLE = 3;
-    public static final double BUNDT_ANGLE = 45;
+    public static final double BUNDT_ANGLE = 6.5;
     public static final double AMP_ANGLE = 95;
     // public static final double ARM_ENCODER_OFFSET = 0; // TODO: Change the offset so that the 0
     // position is when the arm is at its resting
