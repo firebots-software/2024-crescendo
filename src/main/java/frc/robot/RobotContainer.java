@@ -34,6 +34,7 @@ public class RobotContainer {
   // OI
   private final OtherXBoxController joystick =
       new OtherXBoxController(Constants.OI.JOYSTICK_A_PORT);
+  private final OtherXBoxController joystickSpeedController = new OtherXBoxController(2);
   // Subsystems
   private final SwerveSubsystem driveTrain = SwerveSubsystem.getInstance();
   private final ArmSubsystem armSubsystem = ArmSubsystem.getInstance();

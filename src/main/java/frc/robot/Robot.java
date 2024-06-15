@@ -78,7 +78,7 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledPeriodic() {}
 
-  /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
+  /** This autonomous runs the autonomoTimer.getFPGATimestamp(),us command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
     armSubsystem.setTargetDegrees(armSubsystem.getCorrectedDegrees() + 15d);
