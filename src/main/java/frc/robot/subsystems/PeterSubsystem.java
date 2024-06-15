@@ -66,11 +66,11 @@ public class PeterSubsystem extends SubsystemBase {
                     Constants.Pooer.SHOOTER.PRESHOOTER.STATOR_CURRENT_LIMIT_AMPS));
     // Intake
     Slot0Configs intakePid =
-        new Slot0Configs().withKP(0.1).withKI(0).withKD(0).withKG(0).withKV(0).withKA(0);
+        new Slot0Configs().withKP(0.2).withKI(0).withKD(0).withKG(0).withKV(0).withKA(0);
 
     intakeMotor = new TalonFX(Constants.Pooer.SHOOTER.INTAKE.PORT, Constants.Pooer.CANBUS_NAME);
     intakeMotor.getConfigurator().apply(intakePid);
-    intakeMotor
+    intakeMotor 
         .getConfigurator()
         .apply(
             new CurrentLimitsConfigs()
@@ -301,6 +301,7 @@ public class PeterSubsystem extends SubsystemBase {
     SmartDashboard.putNumber(
         "shooter motor max velo",
         Constants.Pooer.SHOOTER.SHOOTER_1.SPEED_RPS * Constants.Pooer.SHOOTER.SHOOTER_1.GEAR_RATIO);
+    SmartDashboard.putNumber("Intake current speed", intakeMotor.getVelocity().getValueAsDouble());
   }
 
   public void periodicSignalLogger() {
