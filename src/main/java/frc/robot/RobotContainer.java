@@ -3,6 +3,8 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -11,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commandGroups.BundtShot;
+import frc.robot.commandGroups.FireTeleop;
 import frc.robot.commandGroups.Intake;
 import frc.robot.commands.ArmCommands.ArmToAngleCmd;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
@@ -48,6 +51,15 @@ public class RobotContainer {
     logger.telemeterize(driveTrain.getState());
   }
 
+  public boolean isRedAlliance() {
+    boolean redAlliance =
+        (DriverStation.getAlliance().isEmpty())
+            ? false
+            : (DriverStation.getAlliance().get() == Alliance.Red);
+
+    return redAlliance;
+  }
+
   private void configureBindings() {
     // For outreach, we only want
     // 1. drive
@@ -67,6 +79,8 @@ public class RobotContainer {
         leftRightFunction = () -> -joystick.getLeftX(),
         rotationFunction = () -> -joystick.getRightX(),
         speedFunction = () -> rightShoulderTrigger.getAsBoolean() ? 1d : 0d;
+
+    Supplier<Boolean> redAllianceSupplier = () -> isRedAlliance();
     
     SwerveJoystickCommand swerveJoystickCommand =
         new SwerveJoystickCommand(
@@ -86,6 +100,8 @@ public class RobotContainer {
     // Shoot - right trigger
     // Angle controlled by Constants.Arm.BUNDT_ANGLE
     joystick.rightTrigger().whileTrue(new BundtShot(peterSubsystem, armSubsystem, joystickSubsystem));
+
+    joystick.a().whileTrue(new FireTeleop(peterSubsystem, armSubsystem, driveTrain, joystickSubsystem, frontBackFunction, leftRightFunction, speedFunction, redAllianceSupplier));
     
     // When no Commands are being issued, Peter motors should not be moving
     peterSubsystem.setDefaultCommand(
