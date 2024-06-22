@@ -74,7 +74,7 @@ public class RobotContainer {
     // Speed is determined by 
     // Constants.Swerve.TELE_DRIVE_SLOW_MODE_SPEED_PERCENT for when right shoulder is not pressed
     // Constants.Swerve.TELE_DRIVE_FAST_MODE_SPEED_PERCENT for when right shoulder is pressed
-    Trigger rightShoulderTrigger = joystick.rightBumper();
+    Trigger rightShoulderTrigger = joystickSpeedController.rightBumper();
     Supplier<Double>
         frontBackFunction = () -> -joystick.getLeftY(),
         leftRightFunction = () -> -joystick.getLeftX(),
