@@ -6,17 +6,13 @@ package frc.robot;
 
 import com.ctre.phoenix6.SignalLogger;
 import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.math.Matrix;
-import edu.wpi.first.math.Nat;
-import edu.wpi.first.math.numbers.N1;
-import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.ArmSubsystem;
-import frc.robot.subsystems.PeterSubsystem;
-import frc.robot.subsystems.SwerveSubsystem;
+// import frc.robot.subsystems.PeterSubsystem;
+// import frc.robot.subsystems.SwerveSubsystem;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -26,9 +22,9 @@ import frc.robot.subsystems.SwerveSubsystem;
  */
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
-  private final SwerveSubsystem driveTrain = SwerveSubsystem.getInstance();
+  // private final SwerveSubsystem driveTrain = SwerveSubsystem.getInstance();
   private final ArmSubsystem armSubsystem = ArmSubsystem.getInstance();
-  private final PeterSubsystem peterSubsystem = PeterSubsystem.getInstance();
+  // private final PeterSubsystem peterSubsystem = PeterSubsystem.getInstance();
 
   private RobotContainer m_robotContainer;
 
