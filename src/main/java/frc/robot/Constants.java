@@ -149,6 +149,8 @@ public final class Constants {
     // public static final double ARM_ENCODER_OFFSET = 0; // TODO: Change the offset so that the 0
     // position is when the arm is at its resting
     // position.
+    
+    //TODO: Is our canbus still called this?
     public static final String CANBUS_NAME = "Patrice the Pineapple";
 
     public static final int RT_PORT = 14; // Right Top motor
@@ -207,21 +209,12 @@ public final class Constants {
       INTERMAP.put(1.34 + Units.inchesToMeters(90), 31.339 + ARM_INTERMAP_OFFSET);
       INTERMAP.put(1.34 + Units.inchesToMeters(120), 32.67 + ARM_INTERMAP_OFFSET);
     }
-
-    public static double GET_YAJWINS_EQUATION(double distance) {
-      double a = -6.02207;
-      double b = -8.6529 * Math.pow(10, 15);
-      double c = 252.816;
-      double d = 35.7582;
-      return b * Math.pow((distance + c), a) + d;
-    }
   }
 
   public static class OI {
     public static final double LEFT_JOYSTICK_DEADBAND = 0.07;
     public static final double RIGHT_JOYSTICK_DEADBAND = 0.07;
     public static final int JOYSTICK_A_PORT = 0;
-    public static final int JOYSTICK_B_PORT = 1;
 
     public enum XBoxButtonID {
       /** A. */
@@ -272,71 +265,6 @@ public final class Constants {
         this.value = value;
       }
     }
-  }
-
-  public static class Landmarks {
-    // Landmarks on the Blue side can be reflected to show the respective locations on the Blue side
-    // public static final Pose2d STAGESIDE_NOTE_LOCATION = new Pose2d(2.8956, 4, new Rotation2d());
-    // public static final Pose2d MIDDLE_NOTE_LOCATION = new Pose2d(2.8956, 5.5, new Rotation2d());
-    // public static final Pose2d AMPSIDE_NOTE_LOCATION = new Pose2d(2.8956, 7, new Rotation2d());
-    public static final Pose2d SUBWOOFER_LOCATION = new Pose2d(0.6, 5.7, new Rotation2d());
-
-    public static final Pose2d STAGESIDE_NOTE_LOCATION =
-        new Pose2d(
-            2.8956,
-            4.0522,
-            SUBWOOFER_LOCATION
-                .getTranslation()
-                .minus(new Translation2d(2.8956, 4.0522))
-                .rotateBy(Rotation2d.fromRadians(Math.PI))
-                .getAngle());
-    public static final Pose2d MIDDLE_NOTE_LOCATION =
-        new Pose2d(
-            2.8956,
-            5.5,
-            SUBWOOFER_LOCATION
-                .getTranslation()
-                .minus(new Translation2d(2.8956, 5.5))
-                .rotateBy(Rotation2d.fromRadians(Math.PI))
-                .getAngle());
-    public static final Pose2d AMPSIDE_NOTE_LOCATION =
-        new Pose2d(
-            2.8956,
-            6.9478,
-            SUBWOOFER_LOCATION
-                .getTranslation()
-                .minus(new Translation2d(2.8956, 6.9478))
-                .rotateBy(Rotation2d.fromRadians(Math.PI))
-                .getAngle());
-    public static final double CENTER_LINE_LOCATION = 8.27;
-    public static final Pose2d MIDLINE_FROM_AMP1_NOTE_LOCATION =
-        new Pose2d(CENTER_LINE_LOCATION, 7.43, new Rotation2d());
-    public static final Pose2d MIDLINE_FROM_AMP2_NOTE_LOCATION =
-        new Pose2d(CENTER_LINE_LOCATION, 5.76, new Rotation2d());
-    public static final Pose2d MIDLINE_FROM_AMP3_NOTE_LOCATION =
-        new Pose2d(CENTER_LINE_LOCATION, 4.09, new Rotation2d());
-    public static final Pose2d MIDLINE_FROM_AMP4_NOTE_LOCATION =
-        new Pose2d(CENTER_LINE_LOCATION, 2.42, new Rotation2d());
-    public static final Pose2d MIDLINE_FROM_AMP5_NOTE_LOCATION =
-        new Pose2d(CENTER_LINE_LOCATION, 0.75, new Rotation2d());
-
-    public static final class Speaker {
-      public static final double HEIGHT_INCHES = 78.0;
-      public static final double HEIGHT_METERS = Units.inchesToMeters(HEIGHT_INCHES);
-      public static final Pose2d POSE = new Pose2d(new Translation2d(0, 5.5), new Rotation2d(0));
-    }
-
-    public static final class Amp {
-      public static final double AMP_HEIGHT_INCHES = 35.0;
-      public static final double AMP_HEIGHT_METERS = Units.inchesToMeters(AMP_HEIGHT_INCHES);
-      public static final Pose2d POSE =
-          new Pose2d(new Translation2d(1.81, 8.11), new Rotation2d(-Math.PI / 2)); // isnt right
-      // new Pose2d(new Translation2d(1.84 ,8.2), new Rotation2D(-Math.PI/2));
-    }
-
-    public static final double INTAKE_MODE_HEIGHT_INCHES = 4.0;
-    public static final double INTAKE_MODE_HEIGHT_METERS =
-        Units.inchesToMeters(INTAKE_MODE_HEIGHT_INCHES);
   }
 
   public static class Swerve {
@@ -407,6 +335,7 @@ public final class Constants {
     private static final boolean INVERT_LEFT_SIDE = false;
     private static final boolean INVERT_RIGHT_SIDE = true;
 
+    //TODO: Is our canbus still called this?
     private static final String CANBUS_NAME = "Patrice the Pineapple";
     private static final int PIGEON_ID = 40;
 

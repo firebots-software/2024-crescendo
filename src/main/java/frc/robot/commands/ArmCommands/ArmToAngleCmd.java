@@ -66,15 +66,6 @@ public class ArmToAngleCmd extends Command {
     return new ArmToAngleCmd(() -> Constants.Arm.AMP_ANGLE, arm);
   }
 
-  public static ArmToAngleCmd aimAtSpeaker(
-      ArmSubsystem arm, SwerveSubsystem swerveSubsystem, Supplier<Boolean> redside) {
-    return new ArmToAngleCmd(
-        () ->
-            ArmSubsystem.calculateAngleToSpeaker(
-                swerveSubsystem.getState().Pose.getTranslation(), redside.get()),
-        arm);
-  }
-
   public static ArmToAngleCmd toNeutral(ArmSubsystem arm) {
     return new ArmToAngleCmd(() -> Constants.Arm.DEFAULT_ARM_ANGLE, arm);
   }
