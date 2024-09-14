@@ -10,6 +10,8 @@ import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+
+import dev.doglog.DogLog;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.util.Units;
@@ -260,11 +262,17 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void periodicSignalLogger() {
-    SignalLogger.writeDouble("ARM Abs Enc Func: ", getAbsolutePosition());
-    SignalLogger.writeDouble("ARM Integrated Current: ", master.getSupplyCurrent().getValue());
-    SignalLogger.writeDouble("ARM Integrated Error: ", master.getClosedLoopError().getValue());
-    SignalLogger.writeDouble("Arm Corrected Degrees", getCorrectedDegrees());
-    SignalLogger.writeDouble("Target Arm Degrees", targetDegrees);
-    SignalLogger.writeDouble("Master Velocity", master.getVelocity().getValue());
+    DogLog.log("arm/abs_encoder_raw", getAbsolutePosition());
+    DogLog.log("arm/integrated_current", master.getSupplyCurrent().getValueAsDouble());
+    DogLog.log("arm/closed_loop_error", master.getClosedLoopError().getValueAsDouble());
+    DogLog.log("arm/corrected_angle", getCorrectedDegrees());
+    DogLog.log("arm/target_angle_deg", targetDegrees);
+    DogLog.log("arm/current_velocity_rps", master.getVelocity().getValueAsDouble());
+    // SignalLogger.writeDouble("ARM Abs Enc Func: ", getAbsolutePosition());
+    // SignalLogger.writeDouble("ARM Integrated Current: ", master.getSupplyCurrent().getValue());
+    // SignalLogger.writeDouble("ARM Integrated Error: ", master.getClosedLoopError().getValue());
+    // SignalLogger.writeDouble("Arm Corrected Degrees", getCorrectedDegrees());
+    // SignalLogger.writeDouble("Target Arm Degrees", targetDegrees);
+    // SignalLogger.writeDouble("Master Velocity", master.getVelocity().getValue());
   }
 }

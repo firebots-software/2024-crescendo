@@ -11,6 +11,9 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.ArmSubsystem;
+
+import dev.doglog.DogLog;
+import dev.doglog.DogLogOptions;
 // import frc.robot.subsystems.PeterSubsystem;
 // import frc.robot.subsystems.SwerveSubsystem;
 
@@ -42,6 +45,11 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
     absoluteInit();
     DataLogManager.start();
+
+    DogLog.setOptions(new DogLogOptions()
+        .withNtPublish(true)
+        .withCaptureDs(true)
+        .withLogExtras(true));
   }
 
   /**
