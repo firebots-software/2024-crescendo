@@ -19,12 +19,13 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.util.LoggedTalonFX;
 
 public class ArmSubsystem extends SubsystemBase {
   private static ArmSubsystem instance;
 
-  private TalonFX rt, rb, lt, lb;
-  private TalonFX master;
+  private LoggedTalonFX rt, rb, lt, lb;
+  private LoggedTalonFX master;
   private DutyCycleEncoder revEncoder;
   private boolean enableArm;
   private ArmFeedforward armff;
@@ -48,10 +49,10 @@ public class ArmSubsystem extends SubsystemBase {
         new ArmFeedforward(Constants.Arm.ARMFF_KS, Constants.Arm.ARMFF_KG, Constants.Arm.ARMFF_KV);
 
     // Initialize motors
-    rt = new TalonFX(Constants.Arm.RT_PORT, Constants.Arm.CANBUS_NAME);
-    rb = new TalonFX(Constants.Arm.RB_PORT, Constants.Arm.CANBUS_NAME);
-    lt = new TalonFX(Constants.Arm.LT_PORT, Constants.Arm.CANBUS_NAME);
-    lb = new TalonFX(Constants.Arm.LB_PORT, Constants.Arm.CANBUS_NAME);
+    rt = new LoggedTalonFX("jeffta",Constants.Arm.RT_PORT, Constants.Arm.CANBUS_NAME);
+    rb = new LoggedTalonFX(Constants.Arm.RB_PORT, Constants.Arm.CANBUS_NAME);
+    lt = new LoggedTalonFX(Constants.Arm.LT_PORT, Constants.Arm.CANBUS_NAME);
+    lb = new LoggedTalonFX(Constants.Arm.LB_PORT, Constants.Arm.CANBUS_NAME);
 
     // Set up motor followers and deal with inverted motors
     Follower follower = new Follower(Constants.Arm.LT_PORT, true);

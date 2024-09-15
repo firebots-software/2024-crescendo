@@ -13,21 +13,22 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.util.LoggedTalonFX;
 
 public class PeterSubsystem extends SubsystemBase {
   private static PeterSubsystem instance;
 
   private DigitalInput noteSensor;
-  private TalonFX shooter1, shooter2;
-  private TalonFX preShooterMotor, intakeMotor;
+  private LoggedTalonFX shooter1, shooter2;
+  private LoggedTalonFX preShooterMotor, intakeMotor;
 
   private MotionMagicConfigs mmcPreShooter;
 
   public PeterSubsystem() {
     // Initalize shooter
     // Follower f = new Follower(Constants.Intake.SHOOTER_PORT_LEFT, false );
-    shooter2 = new TalonFX(Constants.Pooer.SHOOTER.SHOOTER_1.PORT, Constants.Pooer.CANBUS_NAME);
-    shooter1 = new TalonFX(Constants.Pooer.SHOOTER.SHOOTER_2.PORT, Constants.Pooer.CANBUS_NAME);
+    shooter2 = new LoggedTalonFX(Constants.Pooer.SHOOTER.SHOOTER_1.PORT, Constants.Pooer.CANBUS_NAME);
+    shooter1 = new LoggedTalonFX(Constants.Pooer.SHOOTER.SHOOTER_2.PORT, Constants.Pooer.CANBUS_NAME);
     shooter2.setInverted(Constants.Pooer.SHOOTER.SHOOTER_1.REVERSED);
     shooter1.setInverted(Constants.Pooer.SHOOTER.SHOOTER_2.REVERSED);
 
@@ -46,7 +47,7 @@ public class PeterSubsystem extends SubsystemBase {
 
     // Preshooter
     preShooterMotor =
-        new TalonFX(Constants.Pooer.SHOOTER.PRESHOOTER.PORT, Constants.Pooer.CANBUS_NAME);
+        new LoggedTalonFX(Constants.Pooer.SHOOTER.PRESHOOTER.PORT, Constants.Pooer.CANBUS_NAME);
     preShooterMotor.setInverted(Constants.Pooer.SHOOTER.PRESHOOTER.REVERSED);
 
     mmcPreShooter = new MotionMagicConfigs();
@@ -68,7 +69,7 @@ public class PeterSubsystem extends SubsystemBase {
     Slot0Configs intakePid =
         new Slot0Configs().withKP(0.1).withKI(0).withKD(0).withKG(0).withKV(0).withKA(0);
 
-    intakeMotor = new TalonFX(Constants.Pooer.SHOOTER.INTAKE.PORT, Constants.Pooer.CANBUS_NAME);
+    intakeMotor = new LoggedTalonFX(Constants.Pooer.SHOOTER.INTAKE.PORT, Constants.Pooer.CANBUS_NAME);
     intakeMotor.getConfigurator().apply(intakePid);
     intakeMotor
         .getConfigurator()
