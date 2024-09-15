@@ -47,31 +47,22 @@ public class LoggedTalonFX extends TalonFX{
     }
     
     public void periodic(){
-        addLoggedValue(name,"temperature","C",this.getDeviceTemp());
-        addLoggedValue(name,"closedLoopError",this.getClosedLoopError());
-        addLoggedValue(name,"closedLoopReference",this.getClosedLoopReference());
+        DogLog.log(name + "/temperature(degC)",this.getDeviceTemp().getValue());
+        DogLog.log(name + "/closedLoopError",this.getClosedLoopError().getValue());
+        DogLog.log(name + "/closedLoopReference",this.getClosedLoopReference().getValue());
 
-        addLoggedValue(name,"position",this.getPosition());
-        addLoggedValue(name,"velocity",this.getVelocity());
-        addLoggedValue(name,"acceleration","rotations per second2",this.getAcceleration());
+        DogLog.log(name + "/position(rotations)",this.getPosition().getValue());
+        DogLog.log(name + "/velocity(rps)",this.getVelocity().getValue());
+        DogLog.log(name + "/closedLoopReference(rps2)",this.getAcceleration().getValue());
 
         //Current
-        addLoggedValue(name+"/current","supply",this.getSupplyCurrent());
-        addLoggedValue(name+"/current","stator",this.getStatorCurrent());
-        addLoggedValue(name+"/current","torque",this.getTorqueCurrent());
+        DogLog.log(name + "/current/supply(A)",this.getSupplyCurrent().getValue());
+        DogLog.log(name + "/current/stator(A)",this.getStatorCurrent().getValue());
+        DogLog.log(name + "/current/torque(A)",this.getTorqueCurrent().getValue());
 
         //Voltage
-        addLoggedValue(name+"/voltage","motor",this.getMotorVoltage());
-        addLoggedValue(name+"/voltage","supply",this.getSupplyVoltage());
-        
+        DogLog.log(name + "/voltage/motor(V)",this.getMotorVoltage().getValue());
+        DogLog.log(name + "/voltage/motor(V)",this.getSupplyVoltage().getValue());
     }
-    public void addLoggedValue(String path, String name, StatusSignal<Double> value){
-        DogLog.log(path + "/" + name + "(" + value.getUnits() + ")",value.getValue());
-    }
-
-    public void addLoggedValue(String path, String name, String units, StatusSignal<Double> value){
-        DogLog.log(path + "/" + name + "(" + units + ")",value.getValue());
-    }
-
 
 }
