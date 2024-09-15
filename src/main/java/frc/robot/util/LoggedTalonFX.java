@@ -47,14 +47,13 @@ public class LoggedTalonFX extends TalonFX{
     }
     
     public void periodic(){
-        int id = this.getDeviceID();
-        addLoggedValue(name,"temperature",this.getDeviceTemp());
+        addLoggedValue(name,"temperature","C",this.getDeviceTemp());
         addLoggedValue(name,"closedLoopError",this.getClosedLoopError());
         addLoggedValue(name,"closedLoopReference",this.getClosedLoopReference());
 
         addLoggedValue(name,"position",this.getPosition());
         addLoggedValue(name,"velocity",this.getVelocity());
-        addLoggedValue(name,"acceleration",this.getAcceleration());
+        addLoggedValue(name,"acceleration","rotations per second2",this.getAcceleration());
 
         //Current
         addLoggedValue(name+"/current","supply",this.getSupplyCurrent());
@@ -67,7 +66,11 @@ public class LoggedTalonFX extends TalonFX{
         
     }
     public void addLoggedValue(String path, String name, StatusSignal<Double> value){
-        DogLog.log(path+"/"+name+"("+value.getUnits()+")",value.getValue());
+        DogLog.log(path + "/" + name + "(" + value.getUnits() + ")",value.getValue());
+    }
+
+    public void addLoggedValue(String path, String name, String units, StatusSignal<Double> value){
+        DogLog.log(path + "/" + name + "(" + units + ")",value.getValue());
     }
 
 
