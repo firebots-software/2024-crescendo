@@ -138,6 +138,19 @@ public class SwerveSubsystem extends SwerveDrivetrain implements Subsystem {
     DogLog.log("chassis/speed_x", getCurrentRobotChassisSpeeds().vxMetersPerSecond);
     DogLog.log("chassis/speed_y", getCurrentRobotChassisSpeeds().vyMetersPerSecond);
     DogLog.log("chassis/rotation_speed_radps", getCurrentRobotChassisSpeeds().omegaRadiansPerSecond);
+
+
+    DogLog.log("pigeon/yaw", this.getPigeon2().getYaw().getValue());
+    DogLog.log("pigeon/pitch", this.getPigeon2().getPitch().getValue());
+    DogLog.log("pigeon/roll", this.getPigeon2().getRoll().getValue());
+    DogLog.log("pigeon/vel_yaw", this.getPigeon2().getAngularVelocityYWorld().getValue());
+    DogLog.log("pigeon/vel_pitch", this.getPigeon2().getAngularVelocityXWorld().getValue());
+    DogLog.log("pigeon/vel_roll", this.getPigeon2().getAngularVelocityZWorld().getValue());
+    DogLog.log("pigeon/accel_x", this.getPigeon2().getAccelerationX().getValue());
+    DogLog.log("pigeon/accel_y", this.getPigeon2().getAccelerationY().getValue());
+    DogLog.log("pigeon/accel_z", this.getPigeon2().getAccelerationZ().getValue());
+
+
     // Chassis Speeds information
     // SmartDashboard.putNumber("ChassisSpeedsX", getCurrentRobotChassisSpeeds().vxMetersPerSecond);
     // SmartDashboard.putNumber("ChassisSpeedsY", getCurrentRobotChassisSpeeds().vyMetersPerSecond);

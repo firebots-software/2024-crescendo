@@ -5,15 +5,20 @@
 package frc.robot;
 
 import com.ctre.phoenix6.SignalLogger;
+import com.reduxrobotics.sensors.canandgyro.Canandgyro;
+
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.util.LoggedTalonFX;
 import dev.doglog.DogLog;
 import dev.doglog.DogLogOptions;
+
+
 // import frc.robot.subsystems.PeterSubsystem;
 // import frc.robot.subsystems.SwerveSubsystem;
 
@@ -28,15 +33,16 @@ public class Robot extends TimedRobot {
   // private final SwerveSubsystem driveTrain = SwerveSubsystem.getInstance();
   private final ArmSubsystem armSubsystem = ArmSubsystem.getInstance();
   // private final PeterSubsystem peterSubsystem = PeterSubsystem.getInstance();
+  private Canandgyro gyro = new Canandgyro(0);
 
   private RobotContainer m_robotContainer;
-
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
   @Override
   public void robotInit() {
+
     CameraServer.startAutomaticCapture(0);
 
     // Instantiate our RobotContainer. This will perform all our button bindings,
@@ -61,6 +67,32 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+
+      //    // Units are in rotations
+      // SmartDashboard.putNumber("00_yaw", gyro.getYaw());
+      // SmartDashboard.putNumber("01_pitch", gyro.getPitch());
+      // SmartDashboard.putNumber("02_roll", gyro.getRoll());
+
+      // // Units are in rotations per second
+      // SmartDashboard.putNumber("03_vel_yaw", gyro.getAngularVelocityYaw());
+      // SmartDashboard.putNumber("04_vel_pitch", gyro.getAngularVelocityPitch());
+      // SmartDashboard.putNumber("05_vel_roll", gyro.getAngularVelocityRoll());
+
+      // // Units are in standard gravitational units
+      // SmartDashboard.putNumber("06_accel_x", gyro.getAccelerationX());
+      // SmartDashboard.putNumber("07_accel_y", gyro.getAccelerationY());
+      // SmartDashboard.putNumber("08_accel_z", gyro.getAccelerationZ());
+
+      DogLog.log("canand/yaw", gyro.getYaw());
+      DogLog.log("canand/pitch", gyro.getPitch());
+      DogLog.log("canand/roll", gyro.getRoll());
+      DogLog.log("canand/vel_yaw", gyro.getAngularVelocityYaw());
+      DogLog.log("canand/vel_pitch", gyro.getAngularVelocityPitch());
+      DogLog.log("canand/vel_roll", gyro.getAngularVelocityRoll());
+      DogLog.log("canand/accel_x", gyro.getAccelerationX());
+      DogLog.log("canand/accel_y", gyro.getAccelerationY());
+      DogLog.log("canand/accel_z", gyro.getAccelerationZ());
+
     // Runs the Scheduler. This is responsible for polling buttons, adding
     // newly-scheduled
     // commands, running already-scheduled commands, removing finished or
