@@ -10,14 +10,14 @@ import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.util.MiscUtils;
 import java.util.function.Supplier;
 
-public class SwerveLockedAngleCmd extends SwerveJoystickCommand {
+public class SwerveTurnToAngle extends SwerveJoystickCommand {
 
   private static final PIDController turningPID = new PIDController(1d, 0.002, 0.01d);
   private static final double MAX_RATE = 0.4; // Stick command output
   private final Supplier<Double> error;
   private double tolerance = -1d;
 
-  public SwerveLockedAngleCmd(
+  public SwerveTurnToAngle(
       Supplier<Double> frontBackFunction,
       Supplier<Double> leftRightFunction,
       Supplier<Rotation2d> turnTarget,
@@ -27,10 +27,12 @@ public class SwerveLockedAngleCmd extends SwerveJoystickCommand {
         frontBackFunction,
         leftRightFunction,
         () -> {
+
           // Rotate 90 degrees so we avoid all wrap regions
           double actualTarget = MathUtil.angleModulus(turnTarget.get().getRadians());
           // Rotation2d actualTarget = turnTarget.get().rotateBy(Rotation2d.fromDegrees(90));
           double computedError = actualTarget - (getSwerveRotation(swerveSubsystem).getRadians());
+          // Rotation2d computedError = actualTarget.minus(getSwerveRotation(swerveSubsystem));
           double computedRotation = turningPID.calculate(computedError);
           computedRotation = MathUtil.clamp(computedRotation, -MAX_RATE, MAX_RATE);
           if (Math.abs(Units.radiansToDegrees(computedError)) < 1) {
@@ -140,7 +142,7 @@ public class SwerveLockedAngleCmd extends SwerveJoystickCommand {
    *     to end. If negative, the command will not end by itself.
    * @return Itself
    */
-  public SwerveLockedAngleCmd withToleranceEnd(double tolerance) {
+  public SwerveTurnToAngle withToleranceEnd(double tolerance) {
     this.tolerance = tolerance;
     return this;
   }

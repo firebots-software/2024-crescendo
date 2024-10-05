@@ -36,10 +36,12 @@ import frc.robot.commands.PeterCommands.ShootNoWarmup;
 import frc.robot.commands.PeterCommands.SpinUpShooter;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.commands.SwerveCommands.SwerveLockedAngleCmd;
+import frc.robot.commands.SwerveCommands.TurnToNote;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.JoystickSubsystem;
 import frc.robot.subsystems.PeterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.util.MiscUtils;
 import frc.robot.util.NoteLocation;
 import frc.robot.util.OtherXBoxController;
@@ -63,6 +65,7 @@ public class RobotContainer {
   private final ArmSubsystem armSubsystem = ArmSubsystem.getInstance();
   private final PeterSubsystem peterSubsystem = PeterSubsystem.getInstance();
   private final JoystickSubsystem joystickSubsystem = new JoystickSubsystem(joystickA.getHID());
+  private final VisionSubsystem cameraSubsystem = new VisionSubsystem();
   // Logging
   public final Telemetry logger = new Telemetry();
   // Alliance color
@@ -133,6 +136,9 @@ public class RobotContainer {
         .a()
         .and(joystickB.rightTrigger(0.5))
         .whileTrue(new BundtShot(peterSubsystem, armSubsystem, joystickSubsystem));
+    joystickA
+        .a()
+        .whileTrue(new TurnToNote(driveTrain, cameraSubsystem, frontBackFunction, leftRightFunction));
     joystickA
         .y()
         .whileTrue(
