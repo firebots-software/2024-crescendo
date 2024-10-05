@@ -43,7 +43,7 @@ public class VisionSubsystem extends PhotonCamera implements Subsystem {
         if (result.hasTargets()) {
             List<PhotonTrackedTarget> targets = result.getTargets();
             
-            // Runs through the list of targets and gets the one with the highest x and y coord (bottom right of camera)
+            // Runs through the list of targets and gets the one with the highest y coord and closest to center x (bottom center of camera)
             PhotonTrackedTarget bestTarget = targets.stream()
             .max(Comparator.<PhotonTrackedTarget>comparingDouble(target -> {
                 List<TargetCorner> cornersList = target.getDetectedCorners();
@@ -59,14 +59,14 @@ public class VisionSubsystem extends PhotonCamera implements Subsystem {
                 avgX = (avgX) / 4.0;
                 avgY = (avgY) / 4.0;
                 
-                return avgX + avgY; // Higher values are closer to bottom right
+                double xCenterOffset = Math.abs(avgX - 0.5);
+                return avgY - (xCenterOffset * 2); // Higher Y values (lower in frame) are preferred, subtracts the X offset from center
             }))
             .orElse(null);
             
             if (bestTarget != null) {
                 // Calculate yaw (horizontal angle) to target
                 double yaw = bestTarget.getYaw();
-                double pitch = bestTarget.getPitch();
                 double distance = getDistanceToTarget();
 
                 noteAngleEntry.setDouble(yaw);
