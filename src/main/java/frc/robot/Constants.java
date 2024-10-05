@@ -170,8 +170,8 @@ public final class Constants {
     public static final double INTEGRATED_ARM_CONVERSION_FACTOR =
         ABSOLUTE_ARM_CONVERSION_FACTOR
             * INTEGRATED_ABSOLUTE_CONVERSION_FACTOR; // 130.63563333333335;
-    public static final double ABSOLUTE_ENCODER_HORIZONTAL = 0.6547;
-    public static final double ABSOLUTE_HORIZONTAL_OFFSET = 0.05;
+    public static final double ABSOLUTE_ENCODER_HORIZONTAL = 0.6655; //0.6547
+    public static final double ABSOLUTE_HORIZONTAL_OFFSET = 0.05; //0.05
     public static double ARM_INTERMAP_OFFSET = 0;
     // public static double ZERO_SPEAKER_OFFSET_METERS = 0.6;
     public static final InterpolatingDoubleTreeMap INTERMAP = new InterpolatingDoubleTreeMap();
@@ -356,7 +356,7 @@ public final class Constants {
     public static final double TELE_DRIVE_SLOW_MODE_SPEED_PERCENT = 0.3;
     public static final double TELE_DRIVE_PERCENT_SPEED_RANGE =
         (TELE_DRIVE_FAST_MODE_SPEED_PERCENT - TELE_DRIVE_SLOW_MODE_SPEED_PERCENT);
-    public static final double TELE_DRIVE_MAX_ACCELERATION_UNITS_PER_SECOND = 6;
+    public static final double TELE_DRIVE_MAX_ACCELERATION_UNITS_PER_SECOND = 6.01420;
     public static final double TELE_DRIVE_MAX_ANGULAR_ACCELERATION_UNITS_PER_SECOND = 3;
     // Both sets of gains need to be tuned to your individual robot.
 
@@ -445,7 +445,7 @@ public final class Constants {
     private static final int FRONT_LEFT_STEER_MOTOR_ID = 3;
     private static final int FRONT_LEFT_DRIVE_MOTOR_ID = 4;
     private static final int FRONT_LEFT_ENCODER_ID = 21;
-    private static final double FRONT_LEFT_ENCODER_OFFSET = -0.466552734375;
+    private static final double FRONT_LEFT_ENCODER_OFFSET = -0.46337890625;//-0.464599609375;//-0.466552734375;
 
     private static final double FRONT_LEFT_X_POS_INCHES = 11.26 - moveCOMX;
     private static final double FRONT_LEFT_Y_POS_INCHES = 11.417 - moveCOMY;
@@ -454,7 +454,7 @@ public final class Constants {
     private static final int FRONT_RIGHT_STEER_MOTOR_ID = 5;
     private static final int FRONT_RIGHT_DRIVE_MOTOR_ID = 6;
     private static final int FRONT_RIGHT_ENCODER_ID = 22;
-    private static final double FRONT_RIGHT_ENCODER_OFFSET = -0.436767578125;
+    private static final double FRONT_RIGHT_ENCODER_OFFSET = -0.437744140625;//-0.44775390625;//-0.436767578125;
 
     private static final double FRONT_RIGHT_X_POS_INCHES = 11.26 - moveCOMX;
     private static final double FRONT_RIGHT_Y_POS_INCHES = -11.417 - moveCOMY;
@@ -463,7 +463,7 @@ public final class Constants {
     private static final int BACK_LEFT_STEER_MOTOR_ID = 1;
     private static final int BACK_LEFT_DRIVE_MOTOR_ID = 2;
     private static final int BACK_LEFT_ENCODER_ID = 20;
-    private static final double BACK_LEFT_ENCODER_OFFSET = -0.165283203125;
+    private static final double BACK_LEFT_ENCODER_OFFSET = -0.1796875;//-0.18886484375;//-0.165283203125;
 
     private static final double BACK_LEFT_X_POS_INCHES = -11.26 - moveCOMX;
     private static final double BACK_LEFT_Y_POS_INCHES = 11.417 - moveCOMY;
@@ -472,7 +472,7 @@ public final class Constants {
     private static final int BACK_RIGHT_STEER_MOTOR_ID = 7;
     private static final int BACK_RIGHT_DRIVE_MOTOR_ID = 8;
     private static final int BACK_RIGHT_ENCODER_ID = 23;
-    private static final double BACK_RIGHT_ENCODER_OFFSET = -0.336181640625;
+    private static final double BACK_RIGHT_ENCODER_OFFSET = -0.345703125;//-0.33544921875;//-0.336181640625;
 
     private static final double BACK_RIGHT_X_POS_INCHES = -11.26 - moveCOMX;
     private static final double BACK_RIGHT_Y_POS_INCHES = -11.417 - moveCOMY;
