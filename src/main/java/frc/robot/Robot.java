@@ -5,6 +5,9 @@
 package frc.robot;
 
 import com.ctre.phoenix6.SignalLogger;
+
+import dev.doglog.DogLog;
+import dev.doglog.DogLogOptions;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.Matrix;
@@ -12,6 +15,8 @@ import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.networktables.DoubleArraySubscriber;
+import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -22,9 +27,12 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.ArmSubsystem;
 // import frc.robot.subsystems.LightsSubsystem;
 import frc.robot.subsystems.PeterSubsystem;
-import frc.robot.subsystems.PhotonVision;
 import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
+
 import java.util.Optional;
+
+import org.ejml.data.FGrowArray;
 import org.photonvision.EstimatedRobotPose;
 
 /**
@@ -35,7 +43,6 @@ import org.photonvision.EstimatedRobotPose;
  */
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
-  PhotonVision frontVision = PhotonVision.getFrontCamera();
   private final SwerveSubsystem driveTrain = SwerveSubsystem.getInstance();
   private final ArmSubsystem armSubsystem = ArmSubsystem.getInstance();
   private final PeterSubsystem peterSubsystem = PeterSubsystem.getInstance();
@@ -56,6 +63,7 @@ public class Robot extends TimedRobot {
     visionMatrix.set(2, 0, 100d);
 
     NetworkTableInstance.getDefault().setServerTeam(3501);
+    DogLog.setOptions(new DogLogOptions().withNtPublish(true).withCaptureDs(true).withLogExtras(true));
 
     // Instantiate our RobotContainer. This will perform all our button bindings,
     // and put our
@@ -82,30 +90,30 @@ public class Robot extends TimedRobot {
     // robot's periodic
     // block in order for anything in the Command-based framework to work.
     m_robotContainer.doTelemetry();
-    Optional<EstimatedRobotPose> frontRobotPose =
-        frontVision.getMultiTagPose3d(driveTrain.getState().Pose);
-    if (frontVision.hasTarget(frontVision.getPipeline()) && frontRobotPose.isPresent()) {
-      AprilTagFieldLayout apr = PhotonVision.aprilTagFieldLayout;
-      double distToAprilTag =
-          apr.getTagPose(frontVision.getPipeline().getBestTarget().getFiducialId())
-              .get()
-              .getTranslation()
-              .getDistance(
-                  new Translation3d(
-                      driveTrain.getState().Pose.getX(), driveTrain.getState().Pose.getY(), 0.0));
+    // Optional<EstimatedRobotPose> frontRobotPose =
+    //     frontVision.getMultiTagPose3d(driveTrain.getState().Pose);
+    // if (frontVision.hasTarget(frontVision.getPipeline()) && frontRobotPose.isPresent()) {
+    //   AprilTagFieldLayout apr = PhotonVision.aprilTagFieldLayout;
+    //   double distToAprilTag =
+    //       apr.getTagPose(frontVision.getPipeline().getBestTarget().getFiducialId())
+    //           .get()
+    //           .getTranslation()
+    //           .getDistance(
+    //               new Translation3d(
+    //                   driveTrain.getState().Pose.getX(), driveTrain.getState().Pose.getY(), 0.0));
 
-      double xKalman = 0.01 * Math.pow(1.15, distToAprilTag);
+    //   double xKalman = 0.01 * Math.pow(1.15, distToAprilTag);
 
-      double yKalman = 0.01 * Math.pow(1.4, distToAprilTag);
+    //   double yKalman = 0.01 * Math.pow(1.4, distToAprilTag);
 
-      visionMatrix.set(0, 0, xKalman);
-      visionMatrix.set(1, 0, yKalman);
+    //   visionMatrix.set(0, 0, xKalman);
+    //   visionMatrix.set(1, 0, yKalman);
 
-      driveTrain.addVisionMeasurement(
-          frontRobotPose.get().estimatedPose.toPose2d(),
-          Timer.getFPGATimestamp() - 0.02,
-          visionMatrix);
-    }
+    //   driveTrain.addVisionMeasurement(
+    //       frontRobotPose.get().estimatedPose.toPose2d(),
+    //       Timer.getFPGATimestamp() - 0.02,
+    //       visionMatrix);
+    // }
 
     // if (frontRobotPose.isPresent()) {
     // frontVision.get
@@ -149,7 +157,10 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+
+    
+  }
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
@@ -185,9 +196,10 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {
+  public void teleopPeriodic() {  
     SmartDashboard.putBoolean(
         "joystickB right trigger", m_robotContainer.joystickB.rightTrigger(0.5).getAsBoolean());
+    
     // SmartDashboard.putNumber("joystickB right trigger value",
     // m_robotContainer.joystickB.rightTrigger());
   }

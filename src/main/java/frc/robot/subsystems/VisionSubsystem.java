@@ -20,7 +20,7 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 /** Wrapper for PhotonCamera class */
 public class VisionSubsystem extends PhotonCamera implements Subsystem {
 
-    private static final String DEFAULT_CAM_NAME = "ObjectDetectionCam";
+    private static final String DEFAULT_CAM_NAME = "ObjDetectionCam";
     private final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(18.0);
     private final double CAMERA_PITCH_RADIANS = Rotation2d.fromDegrees(-25.0).getRadians();
     private final double TARGET_HEIGHT_METERS = 0.0; 
@@ -28,13 +28,22 @@ public class VisionSubsystem extends PhotonCamera implements Subsystem {
     private final NetworkTableEntry noteAngleEntry;
     private final NetworkTableEntry noteFoundEntry;
     private final NetworkTableEntry noteDistanceEntry;
+    private double noteAngle = 0.0;
+    private static VisionSubsystem vs;
 
-    public VisionSubsystem() {
+    private VisionSubsystem() {
         super(DEFAULT_CAM_NAME);
         noteTable = NetworkTableInstance.getDefault().getTable("Note");
         noteAngleEntry = noteTable.getEntry("targetAngle");
         noteFoundEntry = noteTable.getEntry("noteFound");
         noteDistanceEntry = noteTable.getEntry("targetDistance");
+    }
+
+    public static VisionSubsystem getInstance() {
+        if(vs == null){
+            vs = new VisionSubsystem();
+        }
+        return vs;
     }
 
     public void periodic() {
@@ -67,6 +76,7 @@ public class VisionSubsystem extends PhotonCamera implements Subsystem {
             if (bestTarget != null) {
                 // Calculate yaw (horizontal angle) to target
                 double yaw = bestTarget.getYaw();
+                noteAngle = bestTarget.getYaw();
                 double distance = getDistanceToTarget();
 
                 noteAngleEntry.setDouble(yaw);
@@ -78,6 +88,11 @@ public class VisionSubsystem extends PhotonCamera implements Subsystem {
             noteAngleEntry.setDouble(0.0);
             noteDistanceEntry.setDouble(0.0);
         }
+
+    }
+
+    public double getYaw() {
+        return noteAngle;
     }
 
     public double getDistanceToTarget() {

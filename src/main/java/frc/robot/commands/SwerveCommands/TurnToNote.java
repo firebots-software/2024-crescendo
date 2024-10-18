@@ -2,7 +2,9 @@ package frc.robot.commands.SwerveCommands;
 
 import java.util.function.Supplier;
 
+import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.networktables.DoubleArraySubscriber;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -13,36 +15,34 @@ import frc.robot.subsystems.SwerveSubsystem;
 public class TurnToNote extends Command {
     private final SwerveSubsystem swerve;
     private final VisionSubsystem camera;
-    private final NetworkTable noteTable;
-    private final NetworkTableEntry noteAngleEntry;
-    private final NetworkTableEntry noteFoundEntry;
-    private final NetworkTableEntry noteDistanceEntry;
     private Supplier<Double> frontBackFunction;
     private Supplier<Double> leftRightFunction;
+
+    NetworkTableInstance inst = NetworkTableInstance.getDefault();
+
+    NetworkTable table = inst.getTable("photonvision/ObjDetectionCam");
     
     public TurnToNote(SwerveSubsystem swerve, VisionSubsystem camera, Supplier<Double> frontBackFunction, Supplier<Double> leftRightFunction) {
         this.swerve = swerve;
         this.camera = camera;
         this.frontBackFunction = frontBackFunction;
         this.leftRightFunction = leftRightFunction;
-
-        noteTable = NetworkTableInstance.getDefault().getTable("Note");
-        noteAngleEntry = noteTable.getEntry("targetAngle");
-        noteFoundEntry = noteTable.getEntry("noteFound");
-        noteDistanceEntry = noteTable.getEntry("targetDistance");
         
-        addRequirements(swerve, camera);
+        // addRequirements(swerve, camera);
     }
     
     @Override
     public void execute() {
-        if (noteFoundEntry.getBoolean(false)) {
+        double yawAngle = table.getEntry("targetYaw").getDouble(0.0);
+        boolean noteFound = table.getEntry("noteFound").getBoolean(false); //TODO: check the actual entry name, otherwise wont work
+        
+        if (noteFound) {
             
             Rotation2d currentRotation = swerve.getState().Pose.getRotation();
             
 
             Rotation2d targetRotation = currentRotation.plus(
-                Rotation2d.fromDegrees(noteAngleEntry.getDouble(0))
+                Rotation2d.fromDegrees(yawAngle)
             );
             
             // Piggybacking off of existing SwerveTurnToAngle

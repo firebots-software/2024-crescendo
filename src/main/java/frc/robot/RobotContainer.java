@@ -48,6 +48,8 @@ import frc.robot.util.OtherXBoxController;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import org.photonvision.simulation.VisionSystemSim;
+
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -70,7 +72,7 @@ public class RobotContainer {
   // Alliance color
   private Supplier<Boolean> redside = () -> redAlliance;
   private static boolean redAlliance;
-  private VisionSubsystem cameraSubsystem;
+  private VisionSubsystem cameraSubsystem = VisionSubsystem.getInstance();
 
   public RobotContainer() {
     // Vibrate joysticks when someone interesting happens!
