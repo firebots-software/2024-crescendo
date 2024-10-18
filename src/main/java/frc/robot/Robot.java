@@ -12,6 +12,7 @@ import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
@@ -53,6 +54,8 @@ public class Robot extends TimedRobot {
     visionMatrix.set(0, 0, 0.01);
     visionMatrix.set(1, 0, 0.03d);
     visionMatrix.set(2, 0, 100d);
+
+    NetworkTableInstance.getDefault().setServerTeam(3501);
 
     // Instantiate our RobotContainer. This will perform all our button bindings,
     // and put our

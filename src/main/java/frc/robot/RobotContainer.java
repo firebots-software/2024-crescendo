@@ -36,10 +36,12 @@ import frc.robot.commands.PeterCommands.ShootNoWarmup;
 import frc.robot.commands.PeterCommands.SpinUpShooter;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.commands.SwerveCommands.SwerveLockedAngleCmd;
+import frc.robot.commands.SwerveCommands.TurnToNote;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.JoystickSubsystem;
 import frc.robot.subsystems.PeterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.util.MiscUtils;
 import frc.robot.util.NoteLocation;
 import frc.robot.util.OtherXBoxController;
@@ -68,6 +70,7 @@ public class RobotContainer {
   // Alliance color
   private Supplier<Boolean> redside = () -> redAlliance;
   private static boolean redAlliance;
+  private VisionSubsystem cameraSubsystem;
 
   public RobotContainer() {
     // Vibrate joysticks when someone interesting happens!
@@ -133,6 +136,9 @@ public class RobotContainer {
         .a()
         .and(joystickB.rightTrigger(0.5))
         .whileTrue(new BundtShot(peterSubsystem, armSubsystem, joystickSubsystem));
+    joystickA
+        .a()
+        .whileTrue(new TurnToNote(driveTrain, cameraSubsystem, frontBackFunction, leftRightFunction));
     joystickA
         .y()
         .whileTrue(
