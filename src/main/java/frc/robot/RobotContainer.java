@@ -1,5 +1,7 @@
 package frc.robot;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -68,12 +70,20 @@ public class RobotContainer {
   // Alliance color
   private Supplier<Boolean> redside = () -> redAlliance;
   private static boolean redAlliance;
+  private SendableChooser<Command> autoChooser;
+
 
   public RobotContainer() {
     // Vibrate joysticks when someone interesting happens!
     // joystick.getHID().setRumble(GenericHID.RumbleType.kLeftRumble, 1);
+
+    NamedCommands.registerCommand("Raise Arm", new ArmToAngleCmd(() -> 50.0, armSubsystem));
+    NamedCommands.registerCommand("Stop Robot", new InstantCommand(() -> driveTrain.stop()));
+
+    autoChooser = AutoBuilder.buildAutoChooser();
+
+    SmartDashboard.putData("Auto Chooser", autoChooser);
     configureBindings();
-    setupChooser();
   }
 
   // Starts telemetry operations (essentially logging -> look on SmartDashboard, AdvantageScope)
@@ -257,62 +267,8 @@ public class RobotContainer {
             : (DriverStation.getAlliance().get() == Alliance.Red);
   }
 
-  // Options on SmartDashboard that return an integer index that refers to a note location
-  private static SendableChooser<Optional<NoteLocation>>
-      pickup1choice = new SendableChooser<Optional<NoteLocation>>(),
-      pickup2choice = new SendableChooser<Optional<NoteLocation>>(),
-      pickup3choice = new SendableChooser<Optional<NoteLocation>>();
-  SendableChooser<String> startchoice = new SendableChooser<String>();
-
-  private void setupChooser() {
-    pickup1choice.setDefaultOption("SECOND SHOT: DO NOTHING", Optional.empty());
-    pickup1choice.addOption("AMPSIDE", Optional.of(NoteLocation.AMPSIDE));
-    pickup1choice.addOption("MIDDLE", Optional.of(NoteLocation.MIDDLE));
-    pickup1choice.addOption("STAGESIDE NOTE", Optional.of(NoteLocation.STAGESIDE));
-    pickup2choice.setDefaultOption("THIRD SHOT: DO NOTHING", Optional.empty());
-    pickup2choice.addOption("AMPSIDE NOTE", Optional.of(NoteLocation.AMPSIDE));
-    pickup2choice.addOption("MIDDLE NOTE", Optional.of(NoteLocation.MIDDLE));
-    pickup2choice.addOption("STAGESIDE NOTE", Optional.of(NoteLocation.STAGESIDE));
-    pickup3choice.setDefaultOption("FOURTH SHOT: DO NOTHING", Optional.empty());
-    pickup3choice.addOption("AMPSIDE", Optional.of(NoteLocation.AMPSIDE));
-    pickup3choice.addOption("MIDDLE", Optional.of(NoteLocation.MIDDLE));
-    pickup3choice.addOption("STAGESIDE NOTE", Optional.of(NoteLocation.STAGESIDE));
-    startchoice.setDefaultOption("STARTING POSITION: MIDDLE START", "Mid");
-    startchoice.addOption("AMPSIDE START", "Amp");
-    startchoice.addOption("STAGESIDE START", "Stage");
-    SmartDashboard.putData(pickup1choice);
-    SmartDashboard.putData(pickup2choice);
-    SmartDashboard.putData(pickup3choice);
-    SmartDashboard.putData(startchoice);
-  }
-
   public Command getAutonomousCommand() {
-    // NamedCommands.registerCommand("Fire", new FireAuton(peterSubsystem, armSubsystem, driveTrain,
-    // 1, redside));
-    // NamedCommands.registerCommand("Intake", new Intake(peterSubsystem, armSubsystem,
-    // joystickSubsystem));
-    // NamedCommands.registerCommand("Ratchette", new RatchetteDisengage(armSubsystem));
-    // return new PathPlannerAuto("SamplePath");
-    // String autonName = (redAlliance) ? "ThreeNoteAutonRed" : "ThreeNoteAutonBlue";
-    // SmartDashboard.putString("Auton to be run", autonName);
-    // SmartDashboard.putBoolean("Red Alliance?", redAlliance);
-    PathPlannerAuto start =
-        new PathPlannerAuto(
-            (redAlliance ? "Red" : "Blue")
-                .concat(startchoice.getSelected().trim())
-                .concat("Start"));
-    return new RatchetteDisengage(armSubsystem)
-        .andThen(new SmartdashBoardCmd("auton status", "starting"), start)
-        // .andThen(new RatchetteDisengage(armSubsystem), new PrintCommand("finished Rachette"))
-        .andThen(
-            new FireAuton(peterSubsystem, armSubsystem, driveTrain, 1, redside),
-            new SmartdashBoardCmd("auton status", "fired 1"))
-        .andThen(getAutonShoot(pickup1choice.getSelected(), false))
-        .andThen(new SmartdashBoardCmd("auton status", "pickup1 ended"))
-        .andThen(getAutonShoot(pickup2choice.getSelected(), false))
-        .andThen(new SmartdashBoardCmd("auton status", "pickup2 ended"))
-        .andThen(getAutonShoot(pickup3choice.getSelected(), false))
-        .andThen(new SmartdashBoardCmd("auton status", "auton finished"));
+    return autoChooser.getSelected().andThen(new InstantCommand(() -> driveTrain.stop()));
   }
 
   public Command getAutonShoot(Optional<NoteLocation> note, boolean backw) {

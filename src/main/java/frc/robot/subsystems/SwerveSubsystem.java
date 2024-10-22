@@ -25,6 +25,7 @@ import java.util.function.Supplier;
 public class SwerveSubsystem extends SwerveDrivetrain implements Subsystem {
   // instance of SwerveSubsystem
   private static SwerveSubsystem instance;
+  private final SwerveRequest.ApplyChassisSpeeds stopRequest = new SwerveRequest.ApplyChassisSpeeds();
 
   // Constructor allows for custom odometry update frequency
   public SwerveSubsystem(
@@ -130,6 +131,15 @@ public class SwerveSubsystem extends SwerveDrivetrain implements Subsystem {
   public ChassisSpeeds getCurrentRobotChassisSpeeds() {
     return m_kinematics.toChassisSpeeds(getState().ModuleStates);
   }
+
+  public Command stop() {
+    return run(() -> 
+        this.setControl(
+            stopRequest.withSpeeds(new ChassisSpeeds(0, 0, 0))
+                .withDriveRequestType(DriveRequestType.Velocity)
+        )
+    );
+}
 
   @Override
   public void periodic() {
