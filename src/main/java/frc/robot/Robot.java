@@ -34,7 +34,7 @@ import org.photonvision.EstimatedRobotPose;
  */
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
-  PhotonVision frontVision = PhotonVision.getFrontCamera();
+  // PhotonVision frontVision = PhotonVision.getFrontCamera();
   private final SwerveSubsystem driveTrain = SwerveSubsystem.getInstance();
   private final ArmSubsystem armSubsystem = ArmSubsystem.getInstance();
   private final PeterSubsystem peterSubsystem = PeterSubsystem.getInstance();
@@ -79,30 +79,30 @@ public class Robot extends TimedRobot {
     // robot's periodic
     // block in order for anything in the Command-based framework to work.
     m_robotContainer.doTelemetry();
-    Optional<EstimatedRobotPose> frontRobotPose =
-        frontVision.getMultiTagPose3d(driveTrain.getState().Pose);
-    if (frontVision.hasTarget(frontVision.getPipeline()) && frontRobotPose.isPresent()) {
-      AprilTagFieldLayout apr = PhotonVision.aprilTagFieldLayout;
-      double distToAprilTag =
-          apr.getTagPose(frontVision.getPipeline().getBestTarget().getFiducialId())
-              .get()
-              .getTranslation()
-              .getDistance(
-                  new Translation3d(
-                      driveTrain.getState().Pose.getX(), driveTrain.getState().Pose.getY(), 0.0));
+    // Optional<EstimatedRobotPose> frontRobotPose =
+    //     frontVision.getMultiTagPose3d(driveTrain.getState().Pose);
+    // if (frontVision.hasTarget(frontVision.getPipeline()) && frontRobotPose.isPresent()) {
+    //   AprilTagFieldLayout apr = PhotonVision.aprilTagFieldLayout;
+    //   double distToAprilTag =
+    //       apr.getTagPose(frontVision.getPipeline().getBestTarget().getFiducialId())
+    //           .get()
+    //           .getTranslation()
+    //           .getDistance(
+    //               new Translation3d(
+    //                   driveTrain.getState().Pose.getX(), driveTrain.getState().Pose.getY(), 0.0));
 
-      double xKalman = 0.01 * Math.pow(1.15, distToAprilTag);
+    //   double xKalman = 0.01 * Math.pow(1.15, distToAprilTag);
 
-      double yKalman = 0.01 * Math.pow(1.4, distToAprilTag);
+    //   double yKalman = 0.01 * Math.pow(1.4, distToAprilTag);
 
-      visionMatrix.set(0, 0, xKalman);
-      visionMatrix.set(1, 0, yKalman);
+    //   visionMatrix.set(0, 0, xKalman);
+    //   visionMatrix.set(1, 0, yKalman);
 
-      driveTrain.addVisionMeasurement(
-          frontRobotPose.get().estimatedPose.toPose2d(),
-          Timer.getFPGATimestamp() - 0.02,
-          visionMatrix);
-    }
+    //   driveTrain.addVisionMeasurement(
+    //       frontRobotPose.get().estimatedPose.toPose2d(),
+    //       Timer.getFPGATimestamp() - 0.02,
+    //       visionMatrix);
+    // }
 
     // if (frontRobotPose.isPresent()) {
     // frontVision.get
@@ -211,6 +211,7 @@ public class Robot extends TimedRobot {
   private void absoluteInit() {
     RobotContainer.setAlliance();
     SignalLogger.setPath("/home/lvuser/logs/");
+
     SignalLogger.start();
   }
 }
