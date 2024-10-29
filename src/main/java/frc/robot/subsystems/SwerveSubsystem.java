@@ -9,13 +9,26 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
+
+import dev.doglog.DogLog;
+import dev.doglog.DogLogOptions;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Constants;
+
+import java.util.Optional;
 import java.util.function.Supplier;
 
 /**
@@ -26,6 +39,7 @@ public class SwerveSubsystem extends SwerveDrivetrain implements Subsystem {
   // instance of SwerveSubsystem
   private static SwerveSubsystem instance;
   private final SwerveRequest.ApplyChassisSpeeds stopRequest = new SwerveRequest.ApplyChassisSpeeds();
+  private final Field2d field = new Field2d();
 
   // Constructor allows for custom odometry update frequency
   public SwerveSubsystem(
@@ -36,6 +50,7 @@ public class SwerveSubsystem extends SwerveDrivetrain implements Subsystem {
     // Sets the drivetrain constants, odometry update frequency and constants for
     // the swerve modules
     super(driveTrainConstants, OdometryUpdateFrequency, modules);
+    
 
     // Sets the supply current limits for the swerve modules (for driving and
     // turning)
@@ -59,6 +74,8 @@ public class SwerveSubsystem extends SwerveDrivetrain implements Subsystem {
 
     // Configures the holonomic auto builder
     configurePathPlanner();
+    DogLog.setOptions(new DogLogOptions().withNtPublish(true));
+    SmartDashboard.putData("Field", field);
   }
 
   // Constructor for default odometry update frequency
@@ -113,7 +130,10 @@ public class SwerveSubsystem extends SwerveDrivetrain implements Subsystem {
             Constants.Swerve.SPEED_AT_12V_METERS_PER_SECOND,
             driveBaseRadius,
             new ReplanningConfig()),
-        () -> false, // Change this if the path needs to be flipped on red vs blue
+        () -> {
+          Optional<Alliance> alliance = DriverStation.getAlliance();
+                return alliance.isPresent() ? alliance.get() == DriverStation.Alliance.Red : false;
+        }, // Change this if the path needs to be flipped on red vs blue
         this); // Subsystem for requirements
   }
 
@@ -125,6 +145,10 @@ public class SwerveSubsystem extends SwerveDrivetrain implements Subsystem {
     return new PathPlannerAuto(pathName);
   }
 
+  public Command followPathCommand(PathPlannerPath path) {
+    return AutoBuilder.followPath(path);
+  }
+  
   /**
    * @return Robot's current Chassis Speeds
    */
@@ -132,17 +156,27 @@ public class SwerveSubsystem extends SwerveDrivetrain implements Subsystem {
     return m_kinematics.toChassisSpeeds(getState().ModuleStates);
   }
 
+  public Pose2d getPose() {
+    return this.getState().Pose;
+  }
+
   public Command stop() {
-    return run(() -> 
+    return run(() ->
         this.setControl(
-            stopRequest.withSpeeds(new ChassisSpeeds(0, 0, 0))
-                .withDriveRequestType(DriveRequestType.Velocity)
+          stopRequest.withSpeeds(new ChassisSpeeds(0, 0, 0))
+              .withDriveRequestType(DriveRequestType.Velocity)
         )
     );
-}
+  }
+
+  public void simulationPeriodic() {
+    updateSimState(0.020, 12);
+  }
 
   @Override
   public void periodic() {
+    DogLog.log("Odometer/Pose", getPose());
+
     // Chassis Speeds information
     // SmartDashboard.putNumber("ChassisSpeedsX", getCurrentRobotChassisSpeeds().vxMetersPerSecond);
     // SmartDashboard.putNumber("ChassisSpeedsY", getCurrentRobotChassisSpeeds().vyMetersPerSecond);

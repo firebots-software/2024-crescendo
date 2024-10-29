@@ -3,6 +3,10 @@ package frc.robot;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.GoalEndState;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
@@ -13,6 +17,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -20,6 +25,9 @@ import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commandGroups.AimAtSpeaker;
 import frc.robot.commandGroups.BundtShot;
@@ -45,6 +53,9 @@ import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.util.MiscUtils;
 import frc.robot.util.NoteLocation;
 import frc.robot.util.OtherXBoxController;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -72,6 +83,8 @@ public class RobotContainer {
   private static boolean redAlliance;
   private SendableChooser<Command> autoChooser;
 
+  private final CommandXboxController controller = new CommandXboxController(0);
+
 
   public RobotContainer() {
     // Vibrate joysticks when someone interesting happens!
@@ -90,7 +103,7 @@ public class RobotContainer {
   public void doTelemetry() {
     logger.telemeterize(driveTrain.getState());
   }
-
+  
   private void configureBindings() {
     // Joystick suppliers,
     Trigger leftShoulderTrigger = joystickA.leftBumper();
@@ -103,6 +116,16 @@ public class RobotContainer {
                 leftShoulderTrigger.getAsBoolean()
                     ? 0d
                     : 1d; // slowmode when left shoulder is pressed, otherwise fast
+    // Supplier<Double>
+    //     frontBackFunction = () -> ((redAlliance) ? controller.getRawAxis(0) : -controller.getRawAxis(0)),
+    //     leftRightFunction = () -> ((redAlliance) ? controller.getRawAxis(1) : -controller.getRawAxis(1)),
+    //     rotationFunction = () -> -joystickA.getRightX(),
+    //     speedFunction =
+    //         () ->
+    //             leftShoulderTrigger.getAsBoolean()
+    //                 ? 0d
+    //                 : 1d; // slowmode when left shoulder is pressed, otherwise fast
+    
     SwerveJoystickCommand swerveJoystickCommand =
         new SwerveJoystickCommand(
             frontBackFunction,
@@ -163,6 +186,15 @@ public class RobotContainer {
                 speedFunction,
                 driveTrain));
     joystickA.rightBumper().whileTrue(ArmToAngleCmd.toDuck(armSubsystem));
+    joystickA
+        .a()
+        .whileTrue(
+            createRelativePathCommand()
+        );
+    // new Trigger(() -> keyboard.getRawButton(65))
+    //     .onTrue(driveSubsystem.createRelativePathCommand());
+    // new JoystickButton(driverController, Button.kA.value)
+    // .onTrue(createRelativePathCommand());
     // When no Commands are being issued, Peter motors should not be moving
     peterSubsystem.setDefaultCommand(
         new InstantCommand(
@@ -269,6 +301,49 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     return autoChooser.getSelected().andThen(new InstantCommand(() -> driveTrain.stop()));
+  }
+
+  public Command createRelativePathCommand() {
+    Pose2d currentPose = driveTrain.getPose();
+    
+     List<Translation2d> waypoints = new ArrayList<>();
+
+     waypoints.add(new Translation2d(
+        currentPose.getX() + 0.3,
+        currentPose.getY() + 0.3
+     ));
+
+     waypoints.add(new Translation2d(
+        currentPose.getX() + 0.5,
+        currentPose.getY() + 0.5
+     ));
+
+     waypoints.add(new Translation2d(
+        currentPose.getX() + 0.7,
+        currentPose.getY() + 0.7
+     ));
+
+     waypoints.add(new Translation2d(
+        currentPose.getX() + 1,
+        currentPose.getY() + 1
+     ));
+
+    PathConstraints constraints = new PathConstraints(
+        3,
+    3,
+    2 * Math.PI,
+    4 * Math.PI
+    );
+
+    PathPlannerPath path = new PathPlannerPath(
+        waypoints,
+        constraints,
+        new GoalEndState(0.0, currentPose.getRotation())
+    );
+
+    path.preventFlipping = true;
+
+    return driveTrain.followPathCommand(path);
   }
 
   public Command getAutonShoot(Optional<NoteLocation> note, boolean backw) {
