@@ -83,6 +83,11 @@ public class RobotContainer {
   private static boolean redAlliance;
   private SendableChooser<Command> autoChooser;
 
+  private double maxVelocity = 0.4;
+  private double maxAcceleration = 0.4;
+  private double angularMaxVelocity = 2 * Math.PI;
+  private double angularMaxAcceleration = 4 * Math.PI;
+
   private final CommandXboxController controller = new CommandXboxController(0);
 
 
@@ -188,7 +193,7 @@ public class RobotContainer {
     joystickA.rightBumper().whileTrue(ArmToAngleCmd.toDuck(armSubsystem));
     joystickA
         .a()
-        .whileTrue(
+        .onTrue(
             createRelativePathCommand()
         );
     // new Trigger(() -> keyboard.getRawButton(65))
@@ -288,56 +293,81 @@ public class RobotContainer {
     joystickB.povDown().onTrue(new AlterArmValues(0.25));
     joystickB.povUp().onTrue(new AlterArmValues(-0.25));
   }
-
+  
   // Constructs a Pose2d array of the note locations by a specific indexing so they can be accessed
   // by the eventual autonomous chooser
-
+  
   public static void setAlliance() {
     redAlliance =
         (DriverStation.getAlliance().isEmpty())
             ? false
             : (DriverStation.getAlliance().get() == Alliance.Red);
   }
-
+  
   public Command getAutonomousCommand() {
     return autoChooser.getSelected().andThen(new InstantCommand(() -> driveTrain.stop()));
   }
-
+  
   public Command createRelativePathCommand() {
     Pose2d currentPose = driveTrain.getPose();
     
-     List<Translation2d> waypoints = new ArrayList<>();
-
-     waypoints.add(new Translation2d(
+    List<Translation2d> waypoints = new ArrayList<>();
+     
+    final List bezierPoints = PathPlannerPath.bezierFromPoses(
+        currentPose,
+        new Pose2d(currentPose.getX() + 0.3, currentPose.getY() + 0.3, currentPose.getRotation()),
+        new Pose2d(currentPose.getX() + 0.7, currentPose.getY() + 0.7, currentPose.getRotation()),
+        new Pose2d(currentPose.getX() + 1.0, currentPose.getY() + 1.0, currentPose.getRotation())
+    );
+    
+    waypoints.add(new Translation2d(
         currentPose.getX() + 0.3,
         currentPose.getY() + 0.3
-     ));
-
-     waypoints.add(new Translation2d(
+    ));
+    
+    waypoints.add(new Translation2d(
         currentPose.getX() + 0.5,
         currentPose.getY() + 0.5
-     ));
-
-     waypoints.add(new Translation2d(
+    ));
+    
+    waypoints.add(new Translation2d(
         currentPose.getX() + 0.7,
         currentPose.getY() + 0.7
-     ));
-
-     waypoints.add(new Translation2d(
+    ));
+    
+    waypoints.add(new Translation2d(
         currentPose.getX() + 1,
         currentPose.getY() + 1
-     ));
-
+    ));
+     
+    
     PathConstraints constraints = new PathConstraints(
-        3,
-    3,
-    2 * Math.PI,
-    4 * Math.PI
+        0.4,
+        0.4,
+        2 * Math.PI,
+        4 * Math.PI
+    );
+
+    SmartDashboard.putNumber("Max Velocity", maxVelocity);
+    SmartDashboard.putNumber("Max Acceleration", maxAcceleration);
+    SmartDashboard.putNumber("Angular Max Velocity", angularMaxVelocity);
+    SmartDashboard.putNumber("Angular Max Acceleration", angularMaxAcceleration);
+
+    maxVelocity = SmartDashboard.getNumber("Max Velocity", 0);
+    maxAcceleration = SmartDashboard.getNumber("Max Acceleration", 0);
+    angularMaxVelocity = SmartDashboard.getNumber("Angular Max Velocity", 0);
+    angularMaxAcceleration = SmartDashboard.getNumber("Angular Max Acceleration", 0);
+    
+    PathConstraints editableConstraints = new PathConstraints(
+        maxVelocity,
+        maxAcceleration,
+        angularMaxVelocity,
+        angularMaxAcceleration
     );
 
     PathPlannerPath path = new PathPlannerPath(
-        waypoints,
-        constraints,
+        bezierPoints,
+        editableConstraints,
         new GoalEndState(0.0, currentPose.getRotation())
     );
 
@@ -366,48 +396,52 @@ public class RobotContainer {
                                     Units.inchesToMeters(-28d),
                                     note.get().getNoteLocation().getRotation()))),
                         new SmartdashBoardCmd("auton intake status", "intake started")))
-        // .deadlineWith(new Intake(peterSubsystem, armSubsystem, joystickSubsystem)
-        //         .withTimeout(3d))
+        /*
+        .deadlineWith(new Intake(peterSubsystem, armSubsystem, joystickSubsystem)
+                .withTimeout(3d))
 
-        // note.get()
-        //     .getNoteLocation()
-        //     .plus(new Transform2d(-40d,note.get().getNoteLocation().getRotation()))))
-        // .plus(new
-        // Transform2d(Units.inchesToMeters(-40)*Math.sin(note.get().getNoteLocation().getRotation().getRadians()), Units.inchesToMeters(-40)*Math.cos(note.get().getNoteLocation().getRotation().getRadians()), new Rotation2d())))
-        // .alongWith(
-        //     new SmartdashBoardCmd("auton intake status", "intake started"),
-        //     new Intake(peterSubsystem, armSubsystem, joystickSubsystem)
-        //         .withTimeout(3d))
+        note.get()
+            .getNoteLocation()
+            .plus(new Transform2d(-40d,note.get().getNoteLocation().getRotation()))))
+        .plus(new
+        Transform2d(Units.inchesToMeters(-40)*Math.sin(note.get().getNoteLocation().getRotation().getRadians()), Units.inchesToMeters(-40)*Math.cos(note.get().getNoteLocation().getRotation().getRadians()), new Rotation2d())))
+        .alongWith(
+            new SmartdashBoardCmd("auton intake status", "intake started"),
+            new Intake(peterSubsystem, armSubsystem, joystickSubsystem)
+                .withTimeout(3d))
+        */
         .andThen(
             new FireAuton(peterSubsystem, armSubsystem, driveTrain, 1, redside),
             new SmartdashBoardCmd("auton status detail", "shot and ended"));
-    // .andThen(
-    //     new SmartdashBoardCmd("auton status detail", "MTND-DU"),
-    //     MoveToTarget.withMirror(
-    //             driveTrain,
-    //             redside,
-    //             null,
-    //             0,
-    //             note.get().getNoteLocation().getRotation(),
-    //             note.get()
-    //                 .getNoteLocation()
-    //                 .plus(
-    //                     new Transform2d(
-    //                         Units.inchesToMeters(-18), 0, new Rotation2d())))
-    //         .alongWith(
-    //             new SmartdashBoardCmd("auton intake status", "intake started"),
-    //             new Intake(peterSubsystem, armSubsystem, joystickSubsystem)
-    //                 .withTimeout(2.75d)))
-    // // .andThen(
-    // //     MoveToTarget.withMirror(
-    // //         driveTrain,
-    // //         redside,
-    // //         NoteLocation.MIDDLE
-    // //             .getNoteLocation()
-    // //             .plus(new Transform2d(Units.inchesToMeters(-45), 0, new
-    // Rotation2d()))))
-    // .andThen(
-    //     new FireAuton(peterSubsystem, armSubsystem, driveTrain, 1, redside),
-    //     new SmartdashBoardCmd("auton status detail", "shot and ended")));
+    /*
+    .andThen(
+        new SmartdashBoardCmd("auton status detail", "MTND-DU"),
+        MoveToTarget.withMirror(
+                driveTrain,
+                redside,
+                null,
+                0,
+                note.get().getNoteLocation().getRotation(),
+                note.get()
+                    .getNoteLocation()
+                    .plus(
+                        new Transform2d(
+                            Units.inchesToMeters(-18), 0, new Rotation2d())))
+            .alongWith(
+                new SmartdashBoardCmd("auton intake status", "intake started"),
+                new Intake(peterSubsystem, armSubsystem, joystickSubsystem)
+                    .withTimeout(2.75d)))
+    .andThen(
+        MoveToTarget.withMirror(
+            driveTrain,
+            redside,
+            NoteLocation.MIDDLE
+                .getNoteLocation()
+                .plus(new Transform2d(Units.inchesToMeters(-45), 0, new
+    Rotation2d()))))
+    .andThen(
+        new FireAuton(peterSubsystem, armSubsystem, driveTrain, 1, redside),
+        new SmartdashBoardCmd("auton status detail", "shot and ended")));
+    */
   }
 }
