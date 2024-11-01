@@ -1,6 +1,10 @@
 package frc.robot;
 
+import java.util.Optional;
+import java.util.function.Supplier;
+
 import com.pathplanner.lib.commands.PathPlannerAuto;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
@@ -20,9 +24,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commandGroups.AimAtSpeaker;
-import frc.robot.commandGroups.BundtShot;
 import frc.robot.commandGroups.FireAuton;
-import frc.robot.commandGroups.FireTeleop;
 import frc.robot.commandGroups.Intake;
 import frc.robot.commandGroups.IntakeAuton;
 import frc.robot.commands.ArmCommands.AlterArmValues;
@@ -45,10 +47,6 @@ import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.util.MiscUtils;
 import frc.robot.util.NoteLocation;
 import frc.robot.util.OtherXBoxController;
-import java.util.Optional;
-import java.util.function.Supplier;
-
-import org.photonvision.simulation.VisionSystemSim;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -110,46 +108,50 @@ public class RobotContainer {
     // Intake
     joystickA.rightTrigger().whileTrue(new Intake(peterSubsystem, armSubsystem, joystickSubsystem));
     // Aim
-    joystickA
-        .x()
-        .whileTrue(
-            new AimAtSpeaker(
-                peterSubsystem,
-                armSubsystem,
-                driveTrain,
-                frontBackFunction,
-                leftRightFunction,
-                speedFunction,
-                redside));
+    // joystickA
+    //     .x()
+    //     .whileTrue(
+    //         new AimAtSpeaker(
+    //             peterSubsystem,
+    //             armSubsystem,
+    //             driveTrain,
+    //             frontBackFunction,
+    //             leftRightFunction,
+    //             speedFunction,
+    //             redside));
+    // joystickA
+    //     .a()
+    //     .and(joystickB.rightTrigger(0.5).negate())
+    //     .whileTrue(
+    //         new FireTeleop(
+    //             peterSubsystem,
+    //             armSubsystem,
+    //             driveTrain,
+    //             joystickSubsystem,
+    //             frontBackFunction,
+    //             leftRightFunction,
+    //             speedFunction,
+    //             redside));
+    // joystickA
+    //     .a()
+    //     .and(joystickB.rightTrigger(0.5))
+    //     .whileTrue(new BundtShot(peterSubsystem, armSubsystem, joystickSubsystem));
+    
     joystickA
         .a()
-        .and(joystickB.rightTrigger(0.5).negate())
-        .whileTrue(
-            new FireTeleop(
-                peterSubsystem,
-                armSubsystem,
-                driveTrain,
-                joystickSubsystem,
-                frontBackFunction,
-                leftRightFunction,
-                speedFunction,
-                redside));
-    joystickA
-        .a()
-        .and(joystickB.rightTrigger(0.5))
-        .whileTrue(new BundtShot(peterSubsystem, armSubsystem, joystickSubsystem));
-    joystickA
-        .a()
-        .whileTrue(new TurnToNote(driveTrain, cameraSubsystem, frontBackFunction, leftRightFunction));
-    joystickA
-        .y()
-        .whileTrue(
-            new SwerveLockedAngleCmd(
-                frontBackFunction,
-                leftRightFunction,
-                (redAlliance) ? () -> Rotation2d.fromDegrees(180) : () -> Rotation2d.fromDegrees(0),
-                speedFunction,
-                driveTrain));
+        .whileTrue(new ParallelCommandGroup(new Intake(peterSubsystem, armSubsystem, joystickSubsystem), new TurnToNote(driveTrain, cameraSubsystem, frontBackFunction, leftRightFunction, rotationFunction,
+            speedFunction, // slowmode when left shoulder is pressed, otherwise fast
+            () -> joystickA.leftTrigger().getAsBoolean(),
+            driveTrain)));
+    // joystickA
+    //     .y()
+    //     .whileTrue(
+    //         new SwerveLockedAngleCmd(
+    //             frontBackFunction,
+    //             leftRightFunction,
+    //             (redAlliance) ? () -> Rotation2d.fromDegrees(180) : () -> Rotation2d.fromDegrees(0),
+    //             speedFunction,
+    //             driveTrain));
     // amp snap
     joystickA
         .b()
@@ -174,8 +176,8 @@ public class RobotContainer {
     driveTrain.registerTelemetry(logger::telemeterize);
     // joystick B
     // Outtake
-    joystickB
-        .leftTrigger()
+    joystickA
+        .y()
         .whileTrue(
             new ParallelCommandGroup(
                     new RunCommand(
@@ -236,7 +238,7 @@ public class RobotContainer {
                 new ShootNoWarmup(peterSubsystem, false).withTimeout(0.5),
                 ArmToAngleCmd.toNeutral(armSubsystem)));
     // zero-heading
-    joystickB
+    joystickA
         .x()
         .onTrue(
             driveTrain

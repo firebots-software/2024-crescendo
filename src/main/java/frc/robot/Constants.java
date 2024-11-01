@@ -438,8 +438,8 @@ public final class Constants {
             .withCouplingGearRatio(COUPLE_RATIO)
             .withSteerMotorInverted(STEER_MOTOR_REVERSED);
 
-    private static final double moveCOMY = 0.046007;
-    private static final double moveCOMX = 3.36044;
+    private static final double moveCOMY = 0; //0.046007
+    private static final double moveCOMX = 0; // 3.36044
 
     // Front Left
     private static final int FRONT_LEFT_STEER_MOTOR_ID = 3;
