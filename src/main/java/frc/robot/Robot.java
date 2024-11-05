@@ -5,6 +5,9 @@
 package frc.robot;
 
 import com.ctre.phoenix6.SignalLogger;
+
+import dev.doglog.DogLog;
+import dev.doglog.DogLogOptions;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.Matrix;
@@ -58,6 +61,7 @@ public class Robot extends TimedRobot {
     // and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+    DogLog.setOptions(new DogLogOptions().withNtPublish(true).withCaptureDs(true).withLogExtras(true));
     absoluteInit();
     DataLogManager.start();
   }

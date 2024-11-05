@@ -3,6 +3,7 @@ package frc.robot;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.controllers.PathFollowingController;
 import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
@@ -11,8 +12,10 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -57,6 +60,7 @@ import frc.robot.util.OtherXBoxController;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 /**
@@ -311,35 +315,12 @@ public class RobotContainer {
   public Command createRelativePathCommand() {
     Pose2d currentPose = driveTrain.getPose();
     
-    List<Translation2d> waypoints = new ArrayList<>();
-     
     final List bezierPoints = PathPlannerPath.bezierFromPoses(
         currentPose,
         new Pose2d(currentPose.getX() + 0.3, currentPose.getY() + 0.3, currentPose.getRotation()),
         new Pose2d(currentPose.getX() + 0.7, currentPose.getY() + 0.7, currentPose.getRotation()),
         new Pose2d(currentPose.getX() + 1.0, currentPose.getY() + 1.0, currentPose.getRotation())
     );
-    
-    waypoints.add(new Translation2d(
-        currentPose.getX() + 0.3,
-        currentPose.getY() + 0.3
-    ));
-    
-    waypoints.add(new Translation2d(
-        currentPose.getX() + 0.5,
-        currentPose.getY() + 0.5
-    ));
-    
-    waypoints.add(new Translation2d(
-        currentPose.getX() + 0.7,
-        currentPose.getY() + 0.7
-    ));
-    
-    waypoints.add(new Translation2d(
-        currentPose.getX() + 1,
-        currentPose.getY() + 1
-    ));
-     
     
     PathConstraints constraints = new PathConstraints(
         0.4,
@@ -348,26 +329,26 @@ public class RobotContainer {
         4 * Math.PI
     );
 
-    SmartDashboard.putNumber("Max Velocity", maxVelocity);
-    SmartDashboard.putNumber("Max Acceleration", maxAcceleration);
-    SmartDashboard.putNumber("Angular Max Velocity", angularMaxVelocity);
-    SmartDashboard.putNumber("Angular Max Acceleration", angularMaxAcceleration);
+    // SmartDashboard.putNumber("Max Velocity", maxVelocity);
+    // SmartDashboard.putNumber("Max Acceleration", maxAcceleration);
+    // SmartDashboard.putNumber("Angular Max Velocity", angularMaxVelocity);
+    // SmartDashboard.putNumber("Angular Max Acceleration", angularMaxAcceleration);
 
-    maxVelocity = SmartDashboard.getNumber("Max Velocity", 0);
-    maxAcceleration = SmartDashboard.getNumber("Max Acceleration", 0);
-    angularMaxVelocity = SmartDashboard.getNumber("Angular Max Velocity", 0);
-    angularMaxAcceleration = SmartDashboard.getNumber("Angular Max Acceleration", 0);
+    // maxVelocity = SmartDashboard.getNumber("Max Velocity", 0);
+    // maxAcceleration = SmartDashboard.getNumber("Max Acceleration", 0);
+    // angularMaxVelocity = SmartDashboard.getNumber("Angular Max Velocity", 0);
+    // angularMaxAcceleration = SmartDashboard.getNumber("Angular Max Acceleration", 0);
     
-    PathConstraints editableConstraints = new PathConstraints(
-        maxVelocity,
-        maxAcceleration,
-        angularMaxVelocity,
-        angularMaxAcceleration
-    );
+    // PathConstraints editableConstraints = new PathConstraints(
+    //     maxVelocity,
+    //     maxAcceleration,
+    //     angularMaxVelocity,
+    //     angularMaxAcceleration
+    // );
 
     PathPlannerPath path = new PathPlannerPath(
         bezierPoints,
-        editableConstraints,
+        constraints,
         new GoalEndState(0.0, currentPose.getRotation())
     );
 
@@ -375,7 +356,7 @@ public class RobotContainer {
 
     return driveTrain.followPathCommand(path);
   }
-
+  
   public Command getAutonShoot(Optional<NoteLocation> note, boolean backw) {
     return new SmartdashBoardCmd("auton status detail", "BEGIN")
         .andThen(
