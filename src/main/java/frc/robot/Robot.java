@@ -11,7 +11,6 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.ArmSubsystem;
@@ -30,11 +29,13 @@ import org.photonvision.EstimatedRobotPose;
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   PhotonVision frontVision = PhotonVision.getFrontCamera();
+  PhotonVision sideVision = PhotonVision.getSideCamera();
   private final SwerveSubsystem driveTrain = SwerveSubsystem.getInstance();
   private final ArmSubsystem armSubsystem = ArmSubsystem.getInstance();
   private final PeterSubsystem peterSubsystem = PeterSubsystem.getInstance();
   private RobotContainer m_robotContainer;
-  private static Matrix<N3, N1> visionMatrix = new Matrix<N3, N1>(Nat.N3(), Nat.N1());
+  private static Matrix<N3, N1> visionMatrixFront = new Matrix<N3, N1>(Nat.N3(), Nat.N1());
+  private static Matrix<N3, N1> visionMatrixSide = new Matrix<N3, N1>(Nat.N3(), Nat.N1());
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -43,9 +44,13 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     CameraServer.startAutomaticCapture(0);
-    visionMatrix.set(0, 0, 0);
-    visionMatrix.set(1, 0, 0.2d);
-    visionMatrix.set(2, 0, Double.MAX_VALUE);
+    visionMatrixFront.set(0, 0, 0);
+    visionMatrixFront.set(1, 0, 0.2d);
+    visionMatrixFront.set(2, 0, Double.MAX_VALUE);
+    
+    visionMatrixSide.set(0, 0, 0);
+    visionMatrixSide.set(1, 0, 0.2d);
+    visionMatrixSide.set(2, 0, Double.MAX_VALUE);
 
     // Instantiate our RobotContainer. This will perform all our button bindings,
     // and put our
@@ -74,9 +79,20 @@ public class Robot extends TimedRobot {
     m_robotContainer.doTelemetry();
     Optional<EstimatedRobotPose> frontRobotPose =
         frontVision.getMultiTagPose3d(driveTrain.getState().Pose);
+    Optional<EstimatedRobotPose> sideRobotPose = 
+        sideVision.getMultiTagPose3d(driveTrain.getState().Pose);
     if (frontRobotPose.isPresent()) {
       driveTrain.addVisionMeasurement(
-          frontRobotPose.get().estimatedPose.toPose2d(),frontRobotPose.get().timestampSeconds, visionMatrix);
+          frontRobotPose.get().estimatedPose.toPose2d(),
+          frontRobotPose.get().timestampSeconds,
+          visionMatrixFront);
+    }
+
+    if(sideRobotPose.isPresent()){
+      driveTrain.addVisionMeasurement(
+        sideRobotPose.get().estimatedPose.toPose2d(), 
+        sideRobotPose.get().timestampSeconds,
+        visionMatrixSide);
     }
 
     CommandScheduler.getInstance().run();
