@@ -3,7 +3,8 @@
     "types": {
       "/FMSInfo": "FMSInfo",
       "/Pose": "Field2d",
-      "/SmartDashboard/Auto Chooser": "String Chooser"
+      "/SmartDashboard/Auto Chooser": "String Chooser",
+      "/SmartDashboard/Field": "Field2d"
     }
   },
   "NetworkTables": {
