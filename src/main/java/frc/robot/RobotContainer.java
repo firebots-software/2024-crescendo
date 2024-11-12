@@ -47,6 +47,7 @@ import frc.robot.commands.DebugCommands.SmartdashBoardCmd;
 // import frc.robot.commands.ArmCommands.AlterArmValues;
 import frc.robot.commands.PeterCommands.ShootNoWarmup;
 import frc.robot.commands.PeterCommands.SpinUpShooter;
+import frc.robot.commands.SwerveCommands.ManualPathFollowCommand;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.commands.SwerveCommands.SwerveLockedAngleCmd;
 import frc.robot.subsystems.ArmSubsystem;
@@ -196,10 +197,13 @@ public class RobotContainer {
                 driveTrain));
     joystickA.rightBumper().whileTrue(ArmToAngleCmd.toDuck(armSubsystem));
     joystickA
-        .a()
-        .onTrue(
-            createRelativePathCommand()
-        );
+    .a()
+    .whileTrue(
+        ManualPathFollowCommand.createManualPathCommand(
+            driveTrain,
+            () -> -joystickA.getLeftY()
+        )
+    );
     // new Trigger(() -> keyboard.getRawButton(65))
     //     .onTrue(driveSubsystem.createRelativePathCommand());
     // new JoystickButton(driverController, Button.kA.value)
@@ -317,9 +321,9 @@ public class RobotContainer {
     
     final List bezierPoints = PathPlannerPath.bezierFromPoses(
         currentPose,
-        new Pose2d(currentPose.getX() + 0.3, currentPose.getY() + 0.3, currentPose.getRotation()),
-        new Pose2d(currentPose.getX() + 0.7, currentPose.getY() + 0.7, currentPose.getRotation()),
-        new Pose2d(currentPose.getX() + 1.0, currentPose.getY() + 1.0, currentPose.getRotation())
+        // new Pose2d(currentPose.getX() + 0.3, currentPose.getY(), currentPose.getRotation()),
+        // new Pose2d(currentPose.getX() + 0.7, currentPose.getY(), currentPose.getRotation()),
+        new Pose2d(currentPose.getX(), currentPose.getY() + 1.0, currentPose.getRotation())
     );
     
     PathConstraints constraints = new PathConstraints(

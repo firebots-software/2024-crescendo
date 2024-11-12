@@ -24,7 +24,7 @@ public class LoggedTalonFX extends TalonFX{
         init();
         name = deviceName;
     }
-
+    
     public LoggedTalonFX(int deviceId, String canbus) {
         super(deviceId, canbus);
         init();
