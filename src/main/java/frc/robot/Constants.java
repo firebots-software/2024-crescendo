@@ -140,7 +140,7 @@ public final class Constants {
   }
 
   public static final class Arm {
-    public static final double BUNDT_ANGLE=6.5d;
+    public static final double BUNDT_ANGLE=12d;
     public static final double ARM_STATOR_CURRENT_LIMIT_AMPS = 40.0;
     public static final double DEFAULT_ARM_ANGLE = 56.12;
     public static final double INTAKE_ANGLE = 3; // subject to change
@@ -281,7 +281,7 @@ public final class Constants {
     public static final double PHYSICAL_MAX_ANGLUAR_SPEED_RADIANS_PER_SECOND = 2 * 2 * Math.PI;
 
     public static final double TELE_DRIVE_FAST_MODE_SPEED_PERCENT = 1.0;
-    public static final double TELE_DRIVE_SLOW_MODE_SPEED_PERCENT = 0.3;
+    public static final double TELE_DRIVE_SLOW_MODE_SPEED_PERCENT = 0.5;
     public static final double TELE_DRIVE_PERCENT_SPEED_RANGE =
         (TELE_DRIVE_FAST_MODE_SPEED_PERCENT - TELE_DRIVE_SLOW_MODE_SPEED_PERCENT);
     public static final double TELE_DRIVE_MAX_ACCELERATION_UNITS_PER_SECOND = 6.01420;
@@ -367,8 +367,8 @@ public final class Constants {
             .withCouplingGearRatio(COUPLE_RATIO)
             .withSteerMotorInverted(STEER_MOTOR_REVERSED);
 
-    private static final double moveCOMY = 0.046007;
-    private static final double moveCOMX = 3.36044;
+    private static final double moveCOMY = 0;
+    private static final double moveCOMX = 0;
 
     // Front Left
     private static final int FRONT_LEFT_STEER_MOTOR_ID = 3;
