@@ -57,17 +57,26 @@ public class ManualPathFollowCommand extends Command {
         Translation2d targetPos = targetPoint.position;
         Rotation2d heading = targetPos.minus(currentPos).getAngle();
         
-        if (scaledSpeed < 0) {
+        if (scaledSpeed < 0) {  
             heading = heading.plus(new Rotation2d(Math.PI));
         }
         
-        ChassisSpeeds speeds = new ChassisSpeeds(
-            scaledSpeed * heading.getCos(),
-            scaledSpeed * heading.getSin(),
-            targetPoint.rotationTarget.getTarget().minus(swerve.getPose().getRotation()).getRadians() * 2
-        );
-        
-        swerve.setControl(new SwerveRequest.ApplyChassisSpeeds().withSpeeds(speeds));
+        ChassisSpeeds speeds;
+        if (targetPoint.rotationTarget != null) {
+            speeds = new ChassisSpeeds(
+                scaledSpeed * heading.getCos(),
+                scaledSpeed * heading.getSin(),
+                targetPoint.rotationTarget.getTarget().minus(swerve.getPose().getRotation()).getRadians() * 2
+            );
+        } else {
+            speeds = new ChassisSpeeds(
+                scaledSpeed * heading.getCos(),
+                scaledSpeed * heading.getSin(),
+                0
+            );
+        }
+
+swerve.setControl(new SwerveRequest.ApplyChassisSpeeds().withSpeeds(speeds));
     }
     
     @Override
@@ -85,7 +94,7 @@ public class ManualPathFollowCommand extends Command {
         
         List<Translation2d> bezierPoints = PathPlannerPath.bezierFromPoses(
             currentPose,
-            new Pose2d(currentPose.getX(), currentPose.getY() + 1.0, currentPose.getRotation())
+            new Pose2d(currentPose.getX() - 1.0, currentPose.getY(), currentPose.getRotation())
         );
         
         PathConstraints constraints = new PathConstraints(
