@@ -91,12 +91,21 @@ swerve.setControl(new SwerveRequest.ApplyChassisSpeeds().withSpeeds(speeds));
 
     public static Command createManualPathCommand(SwerveSubsystem swerve, DoubleSupplier speedSupplier) {
         Pose2d currentPose = swerve.getPose();
+
+    Pose2d start = new Pose2d(currentPose.getX(),currentPose.getY() , new Rotation2d(0));
+    Pose2d mid = new Pose2d(currentPose.getX() + 1 ,currentPose.getY() + 0.5, new Rotation2d(Math.PI / 2)); // Curve upward to the right
+    Pose2d end = new Pose2d(currentPose.getX() + 2, currentPose.getY(), new Rotation2d(0)); // Return to straight
+
+
         
         List<Translation2d> bezierPoints = PathPlannerPath.bezierFromPoses(
-            currentPose,
-            new Pose2d(currentPose.getX() - 1.0, currentPose.getY(), currentPose.getRotation())
+            start,
+            mid,
+            end
         );
         
+
+
         PathConstraints constraints = new PathConstraints(
             MAX_SPEED,
             MAX_SPEED,

@@ -6,12 +6,13 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import dev.doglog.DogLog;
+import edu.wpi.first.math.geometry.Pose2d;
 
 public class LoggedTalonFX extends TalonFX{
 
     private static ArrayList<LoggedTalonFX> motors = new ArrayList<>();
     private String name;
-    private String temperature,closedLoopError,closedLoopReference,position,velocity,acceleration,supplycurrent,statorcurrent,torquecurrent,motorvoltage,supplyvoltage;
+    private String temperature, rotation, closedLoopError,closedLoopReference,position,velocity,acceleration,supplycurrent,statorcurrent,torquecurrent,motorvoltage,supplyvoltage;
 
     public LoggedTalonFX(String deviceName,int deviceId, String canbus) {
         super(deviceId, canbus);

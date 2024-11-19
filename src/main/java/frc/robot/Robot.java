@@ -26,8 +26,11 @@ import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.PeterSubsystem;
 import frc.robot.subsystems.PhotonVision;
 import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.util.LoggedTalonFX;
+
 import java.util.Optional;
 import org.photonvision.EstimatedRobotPose;
+
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -61,9 +64,16 @@ public class Robot extends TimedRobot {
     // and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-    DogLog.setOptions(new DogLogOptions().withNtPublish(true).withCaptureDs(true).withLogExtras(true));
-    absoluteInit();
+
+
     DataLogManager.start();
+
+    DogLog.setOptions(new DogLogOptions()
+    .withNtPublish(true)
+    .withCaptureDs(true)
+    .withLogExtras(true));
+
+    absoluteInit();
   }
 
   /**
@@ -83,6 +93,8 @@ public class Robot extends TimedRobot {
     // robot's periodic
     // block in order for anything in the Command-based framework to work.
     m_robotContainer.doTelemetry();
+   
+
     // Optional<EstimatedRobotPose> frontRobotPose =
     //     frontVision.getMultiTagPose3d(driveTrain.getState().Pose);
     // if (frontVision.hasTarget(frontVision.getPipeline()) && frontRobotPose.isPresent()) {
@@ -133,6 +145,7 @@ public class Robot extends TimedRobot {
     // }
 
     CommandScheduler.getInstance().run();
+    LoggedTalonFX.peroidic();
     // m_robotContainer.doTelemetry();
     // if (vision.hasTarget(vision.getPipeline())) {
     //   driveTrain.addVisionMeasurement(
