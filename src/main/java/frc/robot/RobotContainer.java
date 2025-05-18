@@ -18,6 +18,9 @@ import frc.robot.subsystems.JoystickSubsystem;
 import frc.robot.subsystems.PeterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.util.OtherXBoxController;
+
+import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 /**
@@ -61,21 +64,38 @@ public class RobotContainer {
     // Speed is determined by
     // Constants.Swerve.TELE_DRIVE_SLOW_MODE_SPEED_PERCENT for when right shoulder is not pressed
     // Constants.Swerve.TELE_DRIVE_FAST_MODE_SPEED_PERCENT for when right shoulder is pressed
-    Trigger rightShoulderTrigger = joystick.rightBumper();
-    Supplier<Double> frontBackFunction = () -> -joystick.getLeftY(),
+    // Trigger rightShoulderTrigger = joystick.rightBumper();
+    // Supplier<Double> frontBackFunction = () -> -joystick.getLeftY(),
+    //     leftRightFunction = () -> -joystick.getLeftX(),
+    //     rotationFunction = () -> -joystick.getRightX(),
+    //     speedFunction = () -> rightShoulderTrigger.getAsBoolean() ? 1d : 0d;
+    // Supplier<Boolean> fieldRelative = () -> false;
+    // SwerveJoystickCommand swerveJoystickCommand =
+    //     new SwerveJoystickCommand(
+    //         frontBackFunction,
+    //         leftRightFunction,
+    //         rotationFunction,
+    //         speedFunction,
+    //         fieldRelative,
+    //         driveTrain);
+    Trigger leftTrigger = joystick.leftTrigger();
+    DoubleSupplier frontBackFunction = () -> -joystick.getLeftY(),
         leftRightFunction = () -> -joystick.getLeftX(),
         rotationFunction = () -> -joystick.getRightX(),
-        speedFunction = () -> rightShoulderTrigger.getAsBoolean() ? 1d : 0d;
-    Supplier<Boolean> fieldRelative = () -> false;
+        speedFunction =
+            () ->
+                leftTrigger.getAsBoolean()
+                    ? 0d
+                    : 1d; // slowmode when left shoulder is pressed, otherwise fast
     SwerveJoystickCommand swerveJoystickCommand =
         new SwerveJoystickCommand(
             frontBackFunction,
             leftRightFunction,
             rotationFunction,
-            speedFunction,
-            fieldRelative,
+            speedFunction, // slowmode when left shoulder is pressed, otherwise fast
+            () -> true, 
             driveTrain);
-
+    
     driveTrain.setDefaultCommand(swerveJoystickCommand);
     driveTrain.registerTelemetry(logger::telemeterize);
 
