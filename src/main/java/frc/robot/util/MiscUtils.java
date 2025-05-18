@@ -10,7 +10,6 @@ public class MiscUtils {
    * @param point The Pose2d that needs to be reflected across the midline
    * @return The reflected Pose2d (Midline is at x = 8.27 field-based)
    */
-
   public static Pose2d plus(Pose2d a, Transform2d b) {
     return new Pose2d(
         a.getX() + b.getX(),

@@ -1,6 +1,5 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
@@ -8,9 +7,7 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
-import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import dev.doglog.DogLog;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
@@ -183,7 +180,7 @@ public class ArmSubsystem extends SubsystemBase {
   private double getAbsolutePosition() {
     // uses the absolute encoder rotations to get the absolute position
 
-    return (revEncoder.get() //revEncoder.getAbsolutePosition()
+    return (revEncoder.get() // revEncoder.getAbsolutePosition()
             - Constants.Arm.ABSOLUTE_ENCODER_HORIZONTAL
             + Constants.Arm.ABSOLUTE_HORIZONTAL_OFFSET
             + 1d)
@@ -238,8 +235,10 @@ public class ArmSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("ARM Abs Enc Raw", revEncoder.get());
     SmartDashboard.putNumber("ARM Abs Enc Func", getAbsolutePosition());
     SmartDashboard.putNumber("ARM Integrated Rotations", getMotorPosRotations());
-    SmartDashboard.putNumber("ARM Integrated Current", master.getSupplyCurrent().getValueAsDouble());
-    SmartDashboard.putNumber("ARM Integrated Error", master.getClosedLoopError().getValueAsDouble());
+    SmartDashboard.putNumber(
+        "ARM Integrated Current", master.getSupplyCurrent().getValueAsDouble());
+    SmartDashboard.putNumber(
+        "ARM Integrated Error", master.getClosedLoopError().getValueAsDouble());
     SmartDashboard.putNumber("ARM Arm Rotations", getArmPosRotations());
     SmartDashboard.putNumber("ARM Arm Degrees", getRawDegrees());
 

@@ -17,7 +17,7 @@ public class Intake extends SequentialCommandGroup {
     addCommands(
         new ResetArm(arm),
         new RunIntakeUntilDetection(peter)
-            .deadlineWith(ArmToAngleCmd.toIntake(arm).withReturnToRest(EndBehavior.RETURN_ALWAYS)),
+            .deadlineFor(ArmToAngleCmd.toIntake(arm).withReturnToRest(EndBehavior.RETURN_ALWAYS)),
         new ParallelCommandGroup(
             ArmToAngleCmd.toNeutral(arm).withTolerance(1),
             new BackupPeter(peter),

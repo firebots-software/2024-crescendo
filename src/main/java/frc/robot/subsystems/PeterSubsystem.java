@@ -3,12 +3,13 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
-import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -27,10 +28,21 @@ public class PeterSubsystem extends SubsystemBase {
   public PeterSubsystem() {
     // Initalize shooter
     // Follower f = new Follower(Constants.Intake.SHOOTER_PORT_LEFT, false );
-    shooter2 = new LoggedTalonFX(Constants.Pooer.SHOOTER.SHOOTER_1.PORT, Constants.Pooer.CANBUS_NAME);
-    shooter1 = new LoggedTalonFX(Constants.Pooer.SHOOTER.SHOOTER_2.PORT, Constants.Pooer.CANBUS_NAME);
-    shooter2.setInverted(Constants.Pooer.SHOOTER.SHOOTER_1.REVERSED);
-    shooter1.setInverted(Constants.Pooer.SHOOTER.SHOOTER_2.REVERSED);
+    shooter2 =
+        new LoggedTalonFX(Constants.Pooer.SHOOTER.SHOOTER_1.PORT, Constants.Pooer.CANBUS_NAME);
+    shooter1 =
+        new LoggedTalonFX(Constants.Pooer.SHOOTER.SHOOTER_2.PORT, Constants.Pooer.CANBUS_NAME);
+    MotorOutputConfigs mocshooter2 = new MotorOutputConfigs();
+    mocshooter2.withInverted(InvertedValue.CounterClockwise_Positive);
+    MotorOutputConfigs mocshooter1 = new MotorOutputConfigs();
+    mocshooter1.withInverted(InvertedValue.CounterClockwise_Positive);
+
+    shooter1.getConfigurator().apply(mocshooter1);
+    shooter2.getConfigurator().apply(mocshooter2);
+
+    // mocshooter2.withInverted(InvertedValue.CounterClockwise_Positive);
+    // shooter2.setInverted(Constants.Pooer.SHOOTER.SHOOTER_1.REVERSED);
+    // shooter1.setInverted(Constants.Pooer.SHOOTER.SHOOTER_2.REVERSED);
 
     // shooterMotorRight.setControl(f);
     Slot0Configs s0c =
@@ -48,7 +60,11 @@ public class PeterSubsystem extends SubsystemBase {
     // Preshooter
     preShooterMotor =
         new LoggedTalonFX(Constants.Pooer.SHOOTER.PRESHOOTER.PORT, Constants.Pooer.CANBUS_NAME);
-    preShooterMotor.setInverted(Constants.Pooer.SHOOTER.PRESHOOTER.REVERSED);
+    // preShooterMotor.setInverted(Constants.Pooer.SHOOTER.PRESHOOTER.REVERSED);
+
+    MotorOutputConfigs mocpreShooterMotor = new MotorOutputConfigs();
+    mocpreShooterMotor.withInverted(InvertedValue.Clockwise_Positive);
+    preShooterMotor.getConfigurator().apply(mocpreShooterMotor);
 
     mmcPreShooter = new MotionMagicConfigs();
     mmcPreShooter.MotionMagicCruiseVelocity = 80;
@@ -69,7 +85,8 @@ public class PeterSubsystem extends SubsystemBase {
     Slot0Configs intakePid =
         new Slot0Configs().withKP(0.1).withKI(0).withKD(0).withKG(0).withKV(0).withKA(0);
 
-    intakeMotor = new LoggedTalonFX(Constants.Pooer.SHOOTER.INTAKE.PORT, Constants.Pooer.CANBUS_NAME);
+    intakeMotor =
+        new LoggedTalonFX(Constants.Pooer.SHOOTER.INTAKE.PORT, Constants.Pooer.CANBUS_NAME);
     intakeMotor.getConfigurator().apply(intakePid);
     intakeMotor
         .getConfigurator()
@@ -77,7 +94,11 @@ public class PeterSubsystem extends SubsystemBase {
             new CurrentLimitsConfigs()
                 .withStatorCurrentLimitEnable(true)
                 .withStatorCurrentLimit(Constants.Pooer.SHOOTER.INTAKE.STATOR_CURRENT_LIMIT_AMPS));
-    intakeMotor.setInverted(Constants.Pooer.SHOOTER.INTAKE.REVERSED);
+    // intakeMotor.setInverted(Constants.Pooer.SHOOTER.INTAKE.REVERSED);
+    MotorOutputConfigs mocintakeMotor = new MotorOutputConfigs();
+    mocintakeMotor.withInverted(InvertedValue.Clockwise_Positive);
+    intakeMotor.getConfigurator().apply(mocintakeMotor);
+
     noteSensor = new DigitalInput(Constants.Pooer.NOTE_DETECTOR_PORT);
   }
 

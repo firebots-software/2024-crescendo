@@ -2,7 +2,6 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -37,8 +36,9 @@ public class RobotContainer {
   private final PeterSubsystem peterSubsystem = PeterSubsystem.getInstance();
   private final JoystickSubsystem joystickSubsystem = new JoystickSubsystem(joystick.getHID());
   // Logging
-  public final Telemetry logger = new Telemetry();
-  
+  private final Telemetry logger =
+      new Telemetry(Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND);
+
   public RobotContainer() {
     configureBindings();
   }
@@ -58,35 +58,37 @@ public class RobotContainer {
     //     * Left joystick = translation
     //     * Right joystick = rotation
     //     * Right shoulder = speed increase
-    // Speed is determined by 
+    // Speed is determined by
     // Constants.Swerve.TELE_DRIVE_SLOW_MODE_SPEED_PERCENT for when right shoulder is not pressed
     // Constants.Swerve.TELE_DRIVE_FAST_MODE_SPEED_PERCENT for when right shoulder is pressed
     Trigger rightShoulderTrigger = joystick.rightBumper();
-    Supplier<Double>
-        frontBackFunction = () -> -joystick.getLeftY(),
+    Supplier<Double> frontBackFunction = () -> -joystick.getLeftY(),
         leftRightFunction = () -> -joystick.getLeftX(),
         rotationFunction = () -> -joystick.getRightX(),
         speedFunction = () -> rightShoulderTrigger.getAsBoolean() ? 1d : 0d;
-    
+    Supplier<Boolean> fieldRelative = () -> false;
     SwerveJoystickCommand swerveJoystickCommand =
         new SwerveJoystickCommand(
             frontBackFunction,
             leftRightFunction,
             rotationFunction,
             speedFunction,
-            () -> false, // we never want robot relative
+            fieldRelative,
             driveTrain);
+
     driveTrain.setDefaultCommand(swerveJoystickCommand);
     driveTrain.registerTelemetry(logger::telemeterize);
 
     // Intake - left trigger
     // Angle controlled by Constants.Arm.INTAKE_ANGLE
     joystick.leftTrigger().whileTrue(new Intake(peterSubsystem, armSubsystem, joystickSubsystem));
-    
+
     // Shoot - right trigger
     // Angle controlled by Constants.Arm.BUNDT_ANGLE
-    joystick.rightTrigger().whileTrue(new BundtShot(peterSubsystem, armSubsystem, joystickSubsystem));
-    
+    joystick
+        .rightTrigger()
+        .whileTrue(new BundtShot(peterSubsystem, armSubsystem, joystickSubsystem));
+
     // When no Commands are being issued, Peter motors should not be moving
     peterSubsystem.setDefaultCommand(
         new InstantCommand(
@@ -97,7 +99,7 @@ public class RobotContainer {
               peterSubsystem.stopPreShooterMotor();
             },
             peterSubsystem));
-    
+
     // Outtake - left shoulder
     joystick
         .leftBumper()
@@ -110,12 +112,14 @@ public class RobotContainer {
                         peterSubsystem),
                     ArmToAngleCmd.toNeutral(armSubsystem).withTolerance(1))
                 .withInterruptBehavior(InterruptionBehavior.kCancelSelf));
-    
-    // zero-heading - x
-    joystick.x().onTrue(
-        driveTrain.runOnce(() ->
-            driveTrain.seedFieldRelative(
-                new Pose2d(new Translation2d(1.34, 5.5),Rotation2d.fromDegrees(0)))));
+
+    joystick
+        .y()
+        .onTrue(
+            driveTrain.runOnce(
+                () ->
+                    driveTrain.resetPose(
+                        new Pose2d(driveTrain.getPose().getTranslation(), new Rotation2d(0)))));
   }
 
   public Command getAutonomousCommand() {
