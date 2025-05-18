@@ -95,7 +95,6 @@ public class ArmSubsystem extends SubsystemBase {
 
     // Initialize absolute encoder
     revEncoder = new DutyCycleEncoder(Constants.Arm.ENCODER_PORT);
-
     // ==== EXPLANATION: ====
     // getAbsolutePosition(): Absolute Encoder's current reading
     // ABSOLUTE_ENCODER_HORIZONTAL: What the Absolute Encoder reads at horizontal
@@ -183,7 +182,8 @@ public class ArmSubsystem extends SubsystemBase {
 
   private double getAbsolutePosition() {
     // uses the absolute encoder rotations to get the absolute position
-    return (revEncoder.getAbsolutePosition()
+
+    return (revEncoder.get() //revEncoder.getAbsolutePosition()
             - Constants.Arm.ABSOLUTE_ENCODER_HORIZONTAL
             + Constants.Arm.ABSOLUTE_HORIZONTAL_OFFSET
             + 1d)
@@ -196,7 +196,7 @@ public class ArmSubsystem extends SubsystemBase {
           "WARNING: Motor Position looked at, but initialization not complete yet. Returning 0");
       return 0;
     }
-    return master.getPosition().getValue();
+    return master.getPosition().getValueAsDouble();
   }
 
   private double getArmPosRotations() {
@@ -235,11 +235,11 @@ public class ArmSubsystem extends SubsystemBase {
     SmartDashboard.putString(
         "ARM Command",
         this.getCurrentCommand() == null ? "none" : this.getCurrentCommand().getName());
-    SmartDashboard.putNumber("ARM Abs Enc Raw", revEncoder.getAbsolutePosition());
+    SmartDashboard.putNumber("ARM Abs Enc Raw", revEncoder.get());
     SmartDashboard.putNumber("ARM Abs Enc Func", getAbsolutePosition());
     SmartDashboard.putNumber("ARM Integrated Rotations", getMotorPosRotations());
-    SmartDashboard.putNumber("ARM Integrated Current", master.getSupplyCurrent().getValue());
-    SmartDashboard.putNumber("ARM Integrated Error", master.getClosedLoopError().getValue());
+    SmartDashboard.putNumber("ARM Integrated Current", master.getSupplyCurrent().getValueAsDouble());
+    SmartDashboard.putNumber("ARM Integrated Error", master.getClosedLoopError().getValueAsDouble());
     SmartDashboard.putNumber("ARM Arm Rotations", getArmPosRotations());
     SmartDashboard.putNumber("ARM Arm Degrees", getRawDegrees());
 
@@ -252,7 +252,7 @@ public class ArmSubsystem extends SubsystemBase {
         "ARM Target Integrated Rots", calculateIntegratedTargetRots(targetDegrees));
     SmartDashboard.putNumber(
         "ARM FeedForward Calculations", armff.calculate((2 * Math.PI * getRawDegrees()) / 360d, 0));
-    SmartDashboard.putNumber("Master Velocity", master.getVelocity().getValue());
+    SmartDashboard.putNumber("Master Velocity", master.getVelocity().getValueAsDouble());
     SmartDashboard.putNumber(
         "ARM Abs enc deg",
         Units.rotationsToDegrees(getAbsolutePosition() - Constants.Arm.ABSOLUTE_HORIZONTAL_OFFSET)
