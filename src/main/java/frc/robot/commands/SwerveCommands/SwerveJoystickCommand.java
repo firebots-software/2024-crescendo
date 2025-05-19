@@ -198,6 +198,8 @@ public class SwerveJoystickCommand extends Command {
     DogLog.log("fieldCentric", fieldRelativeFunction.getAsBoolean());
     // 5. Applying the drive request on the swerve drivetrain
     // Uses SwerveRequestFieldCentric (from java.frc.robot.util to apply module optimization)
+    DogLog.log("fieldRelativeFunction", fieldRelativeFunction.getAsBoolean());
+
     SwerveRequest drive =
         !fieldRelativeFunction.getAsBoolean()
             ? fieldCentricDrive.withVelocityX(x).withVelocityY(y).withRotationalRate(turn)

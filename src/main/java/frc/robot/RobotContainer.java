@@ -93,7 +93,7 @@ public class RobotContainer {
             leftRightFunction,
             rotationFunction,
             speedFunction, // slowmode when left shoulder is pressed, otherwise fast
-            () -> true, 
+            () -> false, 
             driveTrain);
     
     driveTrain.setDefaultCommand(swerveJoystickCommand);
