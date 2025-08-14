@@ -79,9 +79,12 @@ public class RobotContainer {
     //         fieldRelative,
     //         driveTrain);
     Trigger leftTrigger = joystick.leftTrigger();
-    DoubleSupplier frontBackFunction = () -> -joystick.getLeftY(),
-        leftRightFunction = () -> -joystick.getLeftX(),
-        rotationFunction = () -> -joystick.getRightX(),
+    Trigger leftBumper = joystick.leftBumper();
+    Trigger bButton = joystick.b();
+
+    DoubleSupplier frontBackFunction = () -> (leftBumper.getAsBoolean() && bButton.getAsBoolean() ? -joystick.getLeftY() : 0),
+        leftRightFunction = () -> (leftBumper.getAsBoolean() && bButton.getAsBoolean() ? -joystick.getLeftX() : 0),
+        rotationFunction = () -> (leftBumper.getAsBoolean() && bButton.getAsBoolean() ? -joystick.getRightX() : 0),
         speedFunction =
             () ->
                 leftTrigger.getAsBoolean()
@@ -120,9 +123,9 @@ public class RobotContainer {
             },
             peterSubsystem));
 
-    // Outtake - left shoulder
+    // Outtake - right shoulder
     joystick
-        .leftBumper()
+        .rightBumper()
         .whileTrue(
             new ParallelCommandGroup(
                     new RunCommand(
@@ -134,7 +137,7 @@ public class RobotContainer {
                 .withInterruptBehavior(InterruptionBehavior.kCancelSelf));
 
     joystick
-        .y()
+        .a()
         .onTrue(
             driveTrain.runOnce(
                 () ->
