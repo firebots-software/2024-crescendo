@@ -23,6 +23,8 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
+import dev.doglog.DogLog;
+
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -49,6 +51,14 @@ public class RobotContainer {
   // Starts telemetry operations (essentially logging -> look on SmartDashboard, AdvantageScope)
   public void doTelemetry() {
     logger.telemeterize(driveTrain.getState());
+    DogLog.log("drivetrain/heading", driveTrain.getState().RawHeading.getDegrees() * 360);
+    
+    double x = driveTrain.getState().Speeds.vxMetersPerSecond;
+    double y = driveTrain.getState().Speeds.vyMetersPerSecond;
+
+    double speed = Math.sqrt(x*x + y*y);
+
+    DogLog.log("drivetrain/speed(fps)", speed * 3.2808);
   }
 
   private void configureBindings() {

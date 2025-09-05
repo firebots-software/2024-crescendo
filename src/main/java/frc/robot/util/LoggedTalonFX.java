@@ -22,41 +22,41 @@ public class LoggedTalonFX extends TalonFX {
 
   public LoggedTalonFX(String deviceName, int deviceId, String canbus) {
     super(deviceId, canbus);
-    init();
     name = deviceName;
+    init();
   }
 
   public LoggedTalonFX(String deviceName, int deviceId) {
     super(deviceId);
-    init();
     name = deviceName;
+    init();
   }
 
   public LoggedTalonFX(int deviceId, String canbus) {
     super(deviceId, canbus);
-    init();
     name = "motor " + deviceId;
+    init();
   }
 
   public LoggedTalonFX(int deviceId) {
     super(deviceId);
-    init();
     name = "motor " + deviceId;
+    init();
   }
 
   public void init() {
     motors.add(this);
-    this.temperature = name + "/temperature(degC)";
-    this.closedLoopError = name + "/closedLoopError";
-    this.closedLoopReference = name + "/closedLoopReference";
-    this.position = name + "/position(rotations)";
-    this.velocity = name + "/velocity(rps)";
-    this.acceleration = name + "/acceleration(rps2)";
-    this.supplycurrent = name + "/current/supply(A)";
-    this.statorcurrent = name + "/current/stator(A)";
-    this.torquecurrent = name + "/current/torque(A)";
-    this.motorvoltage = name + "/voltage/motor(V)";
-    this.supplyvoltage = name + "/voltage/supply(V)";
+    this.temperature = "motors/" + name + "/temperature(degC)";
+    this.closedLoopError = "motors/" + name + "/closedLoopError";
+    this.closedLoopReference = "motors/" + name + "/closedLoopReference";
+    this.position = "motors/" + name + "/position(rotations)";
+    this.velocity = "motors/" + name + "/velocity(rps)";
+    this.acceleration = "motors/" + name + "/acceleration(rps2)";
+    this.supplycurrent = "motors/" + name + "/current/supply(A)";
+    this.statorcurrent = "motors/" + name + "/current/stator(A)";
+    this.torquecurrent = "motors/" + name + "/current/torque(A)";
+    this.motorvoltage = "motors/" + name + "/voltage/motor(V)";
+    this.supplyvoltage = "motors/" + name + "/voltage/supply(V)";
   }
 
   public static void peroidic() {
