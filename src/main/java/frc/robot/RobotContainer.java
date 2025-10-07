@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commandGroups.BundtShot;
 import frc.robot.commandGroups.Intake;
 import frc.robot.commands.ArmCommands.ArmToAngleCmd;
+import frc.robot.commands.PeterCommands.ShootNoWarmup;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.JoystickSubsystem;
@@ -142,6 +143,11 @@ public class RobotContainer {
                         peterSubsystem),
                     ArmToAngleCmd.toNeutral(armSubsystem).withTolerance(1))
                 .withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+
+    joystick
+        .a()
+        .whileTrue(
+            new ShootNoWarmup(peterSubsystem, false));
 
     joystick
         .y()

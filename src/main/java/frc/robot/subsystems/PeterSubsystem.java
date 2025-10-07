@@ -10,6 +10,8 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.signals.InvertedValue;
+
+import dev.doglog.DogLog;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -324,6 +326,11 @@ public class PeterSubsystem extends SubsystemBase {
     SmartDashboard.putNumber(
         "shooter motor max velo",
         Constants.Pooer.SHOOTER.SHOOTER_1.SPEED_RPS * Constants.Pooer.SHOOTER.SHOOTER_1.GEAR_RATIO);
+
+    // IMPORTANT THINGS LOGGED FOR TUNING PID
+      // PRESS THE 'a' button on Xbox controller in order to test
+    DogLog.log("Application-MD.3/ShooterVelocity(rps)", shooter1.getVelocity().getValueAsDouble());
+    DogLog.log("Application-MD.3/[Target]ShooterVelocity(rps)", (3500d / 60d));
   }
 
   public void periodicSignalLogger() {
