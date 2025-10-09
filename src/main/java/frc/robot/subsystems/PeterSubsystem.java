@@ -45,7 +45,9 @@ public class PeterSubsystem extends SubsystemBase {
     // shooter1.setInverted(Constants.Pooer.SHOOTER.SHOOTER_2.REVERSED);
 
     // shooterMotorRight.setControl(f);
-    Slot0Configs s0c = new Slot0Configs().withKP(0.02).withKI(0).withKD(0).withKG(0).withKV(0.1185).withKA(0);
+
+    // PID VALUES FOR SHOOTER
+    Slot0Configs s0c = new Slot0Configs().withKP(0).withKI(0).withKD(0).withKG(0).withKV(0).withKA(0);
     CurrentLimitsConfigs clc = new CurrentLimitsConfigs()
         .withStatorCurrentLimitEnable(true)
         .withStatorCurrentLimit(Constants.Pooer.SHOOTER.SHOOTER_1.STATOR_CURRENT_LIMIT_AMPS);
@@ -329,7 +331,7 @@ public class PeterSubsystem extends SubsystemBase {
 
     // IMPORTANT THINGS LOGGED FOR TUNING PID
       // PRESS THE 'a' button on Xbox controller in order to test
-    DogLog.log("Application-MD.3/ShooterVelocity(rps)", shooter1.getVelocity().getValueAsDouble());
+    DogLog.log("Application-MD.3/ShooterVelocity(rps)", shooter1.getVelocity().getValueAsDouble()*Constants.Pooer.SHOOTER.SHOOTER_1.GEAR_RATIO);
     DogLog.log("Application-MD.3/[Target]ShooterVelocity(rps)", (3500d / 60d));
   }
 
