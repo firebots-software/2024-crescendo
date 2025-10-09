@@ -138,6 +138,7 @@ public class PeterSubsystem extends SubsystemBase {
         new VelocityVoltage(speed * Constants.Pooer.SHOOTER.SHOOTER_1.GEAR_RATIO);
     SmartDashboard.putNumber("vel", speed * Constants.Pooer.SHOOTER.SHOOTER_1.GEAR_RATIO);
     shooter1.setControl(m_velocityControl);
+    DogLog.log("Robot/Application-MD.3/Speed", speed);
     // shooterMotorUp.getVelocity();
   }
 
@@ -348,7 +349,7 @@ public class PeterSubsystem extends SubsystemBase {
     // PRESS THE 'a' button on Xbox controller in order to test
     DogLog.log(
         "Application-MD.3/ShooterVelocity(rps)",
-        shooter1.getVelocity().getValueAsDouble() * Constants.Pooer.SHOOTER.SHOOTER_1.GEAR_RATIO);
+        shooter1.getVelocity().getValueAsDouble()); //* Constants.Pooer.SHOOTER.SHOOTER_1.GEAR_RATIO)
     DogLog.log("Application-MD.3/[Target]ShooterVelocity(rps)", (3500d / 60d));
   }
 
