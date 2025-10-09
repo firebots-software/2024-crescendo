@@ -51,7 +51,7 @@ public class PeterSubsystem extends SubsystemBase {
 
     // PID VALUES FOR SHOOTER
     Slot0Configs s0c =
-        new Slot0Configs().withKP(0.467).withKI(0).withKD(0).withKG(0).withKV(0).withKA(0);
+        new Slot0Configs().withKP(0.367).withKI(0).withKD(0).withKG(0).withKV(0).withKA(0);
     CurrentLimitsConfigs clc =
         new CurrentLimitsConfigs()
             .withStatorCurrentLimitEnable(true)
