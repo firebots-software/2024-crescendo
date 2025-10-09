@@ -29,14 +29,14 @@ public class ShootNoWarmup extends Command {
   public void execute() {
     peterSubsystem.spinLeftShooter();
     peterSubsystem.spinRightShooter();
-    peterSubsystem.spinUpPreShooterVoltage();
+    // peterSubsystem.spinUpPreShooterVoltage();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     peterSubsystem.stopShooter(auton);
-    peterSubsystem.stopPreShooterMotor();
+    // peterSubsystem.stopPreShooterMotor();
   }
 
   // Returns true when the command should end.
