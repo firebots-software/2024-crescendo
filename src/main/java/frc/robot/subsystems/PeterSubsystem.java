@@ -45,7 +45,7 @@ public class PeterSubsystem extends SubsystemBase {
     // shooter1.setInverted(Constants.Pooer.SHOOTER.SHOOTER_2.REVERSED);
 
     // shooterMotorRight.setControl(f);
-    Slot0Configs s0c = new Slot0Configs().withKP(0.378).withKI(0).withKD(0).withKG(0).withKV(0).withKA(0);
+    Slot0Configs s0c = new Slot0Configs().withKP(1.5).withKI(0).withKD(0).withKG(0).withKV(0).withKA(0);
     CurrentLimitsConfigs clc = new CurrentLimitsConfigs()
         .withStatorCurrentLimitEnable(true)
         .withStatorCurrentLimit(Constants.Pooer.SHOOTER.SHOOTER_1.STATOR_CURRENT_LIMIT_AMPS);
@@ -122,8 +122,8 @@ public class PeterSubsystem extends SubsystemBase {
 
   // SHOOTER FUNCTIONS:
   private void runRightShooterAtRPS(double speed) {
-    VelocityVoltage m_velocityControl = new VelocityVoltage(speed * Constants.Pooer.SHOOTER.SHOOTER_1.GEAR_RATIO);
-    SmartDashboard.putNumber("vel", speed * Constants.Pooer.SHOOTER.SHOOTER_1.GEAR_RATIO);
+    VelocityVoltage m_velocityControl = new VelocityVoltage(speed);
+    SmartDashboard.putNumber("vel", speed);
     shooter1.setControl(m_velocityControl);
     // shooterMotorUp.getVelocity();
   }
