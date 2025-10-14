@@ -348,7 +348,7 @@ public class PeterSubsystem extends SubsystemBase {
     // PRESS THE 'a' button on Xbox controller in order to test
     DogLog.log(
         "Application-MD.3/ShooterVelocity(rps)",
-        shooter1.getVelocity().getValueAsDouble() * Constants.Pooer.SHOOTER.SHOOTER_1.GEAR_RATIO);
+        shooter1.getVelocity().getValueAsDouble());
     DogLog.log("Application-MD.3/[Target]ShooterVelocity(rps)", (3500d / 60d));
   }
 
