@@ -45,7 +45,7 @@ public class PeterSubsystem extends SubsystemBase {
     // shooter1.setInverted(Constants.Pooer.SHOOTER.SHOOTER_2.REVERSED);
 
     // shooterMotorRight.setControl(f);
-    Slot0Configs s0c = new Slot0Configs().withKP(0.367).withKI(0).withKD(0).withKG(0).withKV(0).withKA(0);
+    Slot0Configs s0c = new Slot0Configs().withKP(1.5).withKI(0).withKD(0).withKG(0).withKV(0).withKA(0);
     CurrentLimitsConfigs clc = new CurrentLimitsConfigs()
         .withStatorCurrentLimitEnable(true)
         .withStatorCurrentLimit(Constants.Pooer.SHOOTER.SHOOTER_1.STATOR_CURRENT_LIMIT_AMPS);
