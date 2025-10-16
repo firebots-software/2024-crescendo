@@ -51,7 +51,7 @@ public class PeterSubsystem extends SubsystemBase {
 
     // PID VALUES FOR SHOOTER
     Slot0Configs s0c =
-        new Slot0Configs().withKP(0).withKI(0).withKD(0).withKG(0).withKV(0).withKA(0);
+        new Slot0Configs().withKP(0.37).withKI(0).withKD(0).withKG(0).withKV(0).withKA(0);
     CurrentLimitsConfigs clc =
         new CurrentLimitsConfigs()
             .withStatorCurrentLimitEnable(true)
@@ -346,9 +346,7 @@ public class PeterSubsystem extends SubsystemBase {
 
     // IMPORTANT THINGS LOGGED FOR TUNING PID
     // PRESS THE 'a' button on Xbox controller in order to test
-    DogLog.log(
-        "Application-MD.3/ShooterVelocity(rps)",
-        shooter1.getVelocity().getValueAsDouble());
+    DogLog.log("Application-MD.3/ShooterVelocity(rps)", shooter1.getVelocity().getValueAsDouble());
     DogLog.log("Application-MD.3/[Target]ShooterVelocity(rps)", (3500d / 60d));
   }
 
