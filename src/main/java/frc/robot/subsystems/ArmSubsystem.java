@@ -21,73 +21,98 @@ import frc.robot.util.LoggedTalonFX;
 public class ArmSubsystem extends SubsystemBase {
   private static ArmSubsystem instance;
 
-  private LoggedTalonFX rt, rb, lt, lb;
+  // variables storing the four motors that are controlling the robot arm
+  private LoggedTalonFX rightTopMotor, rightBottomMotor, leftTopMotor, leftBottomMotor;
+
+  // variable that you refer to the "master" motor with
   private LoggedTalonFX master;
+
+  // absolute encoder that tells us how far the arm has travelled 
   private DutyCycleEncoder revEncoder;
   private boolean enableArm;
+
+  // object that you can research on wpilib documentation but controls / computes the arm feedforward 
   private ArmFeedforward armff;
+
+  // Motion Magic Configurations relating to the arm motors
   private MotionMagicConfigs mmc;
 
   private boolean initialized = false;
 
+  // target angle of the arm in degrees
   private double targetDegrees;
-  // private double absEncPretzelClamp = Constants.Arm.ABSOLUTE_ENCODER_HORIZONTAL*8/10d;
+
+  
   private double armHorizontalOffset;
 
   public ArmSubsystem() {
-    // Initialize Current Limit, Slot0Configs, and ArmFeedForward
+    // Current Limits established for the arm
     CurrentLimitsConfigs clc =
         new CurrentLimitsConfigs()
             .withStatorCurrentLimitEnable(true)
             .withStatorCurrentLimit(Constants.Arm.ARM_STATOR_CURRENT_LIMIT_AMPS);
+
+    // Review: Brake mode refers to the fact that when the robot is powered on but the motor output is 0, make the motor
+    // resistant to moving ( this is why when the robot is powered on and you drop the arm it slowly goes down instead of slamming
+    // immediately )
     MotorOutputConfigs moc = new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Brake);
-    Slot0Configs s0c = new Slot0Configs().withKP(Constants.Arm.S0C_KP).withKI(0).withKD(0);
-    armff =
-        new ArmFeedforward(Constants.Arm.ARMFF_KS, Constants.Arm.ARMFF_KG, Constants.Arm.ARMFF_KV);
+
+    // TODO: Configure PID and Feedforward values of the Arm -> refer to the 'TODO' in Constants.java 
+    Slot0Configs s0c = new Slot0Configs().withKP(Constants.Arm.S0C_KP).withKI(0).withKD(0).withKV(0).withKG(0).withKS(0).withKA(0);
 
     // Initialize motors
-    rt = new LoggedTalonFX("ArmRightTop", Constants.Arm.RT_PORT, Constants.Arm.CANBUS_NAME);
-    rb = new LoggedTalonFX("ArmRightBottom", Constants.Arm.RB_PORT, Constants.Arm.CANBUS_NAME);
-    lt = new LoggedTalonFX("ArmLefttop", Constants.Arm.LT_PORT, Constants.Arm.CANBUS_NAME);
-    lb = new LoggedTalonFX("ArmLeftBottom", Constants.Arm.LB_PORT, Constants.Arm.CANBUS_NAME);
+    rightTopMotor = new LoggedTalonFX("ArmRightTop", Constants.Arm.RT_PORT, Constants.Arm.CANBUS_NAME);
+    rightBottomMotor = new LoggedTalonFX("ArmRightBottom", Constants.Arm.RB_PORT, Constants.Arm.CANBUS_NAME);
+    leftTopMotor = new LoggedTalonFX("ArmLefttop", Constants.Arm.LT_PORT, Constants.Arm.CANBUS_NAME);
+    leftBottomMotor = new LoggedTalonFX("ArmLeftBottom", Constants.Arm.LB_PORT, Constants.Arm.CANBUS_NAME);
 
     // Set up motor followers and deal with inverted motors
     Follower follower = new Follower(Constants.Arm.LT_PORT, true);
     Follower invertedFollower = new Follower(Constants.Arm.LT_PORT, false);
-    rt.setControl(follower);
-    rb.setControl(follower);
-    lb.setControl(invertedFollower);
+    rightTopMotor.setControl(follower);
+    rightBottomMotor.setControl(follower);
+    leftBottomMotor.setControl(invertedFollower);
 
-    TalonFXConfigurator rtConfig = rt.getConfigurator();
-    TalonFXConfigurator rbConfig = rb.getConfigurator();
-    TalonFXConfigurator ltConfig = lt.getConfigurator();
-    TalonFXConfigurator lbConfig = lb.getConfigurator();
+    // Getting the General Configurator
+    TalonFXConfigurator rightTopMotorConfig = rightTopMotor.getConfigurator();
+    TalonFXConfigurator rightBottomMotorConfig = rightBottomMotor.getConfigurator();
+    TalonFXConfigurator leftTopMotorConfig = leftTopMotor.getConfigurator();
+    TalonFXConfigurator leftBottomMotorConfig = leftBottomMotor.getConfigurator();
 
-    rtConfig.apply(moc);
-    rbConfig.apply(moc);
-    ltConfig.apply(moc);
-    lbConfig.apply(moc);
+    // Applying the Motor Output Configs to all four motors
+    rightTopMotorConfig.apply(moc);
+    rightBottomMotorConfig.apply(moc);
+    leftTopMotorConfig.apply(moc);
+    leftBottomMotorConfig.apply(moc);
 
-    // TODO: Why do we apply Current Limit Configs to each motor, but then only do s0c on the
+    // Why do we apply Current Limit Configs to each motor, but then only do s0c on the
     // master?
+
+    // TODO -> Answer the question here: 
+
+
+
     // Apply Current Limit to all motors
-    rtConfig.apply(clc);
-    rbConfig.apply(clc);
-    ltConfig.apply(clc);
-    lbConfig.apply(clc);
+    rightTopMotorConfig.apply(clc);
+    rightBottomMotorConfig.apply(clc);
+    leftTopMotorConfig.apply(clc);
+    leftBottomMotorConfig.apply(clc);
 
     // Assign master motor and apply Slot0Configs to master
-    master = lt;
+    master = leftTopMotor;
     TalonFXConfigurator masterConfigurator = master.getConfigurator();
     masterConfigurator.apply(s0c);
 
     // Apply MotionMagicConfigs to master motor
     mmc = new MotionMagicConfigs();
+    // TODO: Set MAX Velocity
     mmc.MotionMagicCruiseVelocity =
         Constants.Arm.MOTIONMAGIC_KV * Constants.Arm.INTEGRATED_ARM_CONVERSION_FACTOR;
+
+    // TODO: Set Max Acceleration / Decceleration
     mmc.MotionMagicAcceleration =
         Constants.Arm.MOTIONMAGIC_KA * Constants.Arm.INTEGRATED_ARM_CONVERSION_FACTOR;
-    // mmc.MotionMagicJerk = 1600;
+   
     masterConfigurator.apply(mmc);
 
     // Initialize absolute encoder
@@ -196,6 +221,7 @@ public class ArmSubsystem extends SubsystemBase {
     return master.getPosition().getValueAsDouble();
   }
 
+  // TODO: LOOK HERE BECAUSE THIS IS HOW MOTOR ROTATIONS ARE CONVERTED INTO DEGREES
   private double getArmPosRotations() {
     // uses motor position to return arm position in rotations by dividing by the conversion factor
     return getMotorPosRotations() / Constants.Arm.INTEGRATED_ARM_CONVERSION_FACTOR;
