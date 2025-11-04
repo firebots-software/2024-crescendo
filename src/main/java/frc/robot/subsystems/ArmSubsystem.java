@@ -284,6 +284,10 @@ public class ArmSubsystem extends SubsystemBase {
             / Constants.Arm.ABSOLUTE_ARM_CONVERSION_FACTOR);
     SmartDashboard.putNumber("ARM updown adjustment", Constants.Arm.ARM_INTERMAP_OFFSET);
 
+
+
+    // TODO: ACTUAL LOGGING STATEMENTS FOR PID+MP ACTIVITY:
+    DogLog.log("MD.6-lab/X Variable", 3.0);
     periodicSignalLogger();
   }
 
