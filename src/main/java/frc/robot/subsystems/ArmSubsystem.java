@@ -31,9 +31,6 @@ public class ArmSubsystem extends SubsystemBase {
   private DutyCycleEncoder revEncoder;
   private boolean enableArm;
 
-  // object that you can research on wpilib documentation but controls / computes the arm feedforward 
-  private ArmFeedforward armff;
-
   // Motion Magic Configurations relating to the arm motors
   private MotionMagicConfigs mmc;
 
@@ -184,8 +181,7 @@ public class ArmSubsystem extends SubsystemBase {
     angleDegrees = MathUtil.clamp(angleDegrees, 3, 110);
     if (initialized && enableArm) {
       master.setControl(
-          new MotionMagicVoltage(calculateIntegratedTargetRots(angleDegrees))
-              .withFeedForward(armff.calculate((2 * Math.PI * getRawDegrees()) / 360d, 0)));
+          new MotionMagicVoltage(calculateIntegratedTargetRots(angleDegrees)));
     }
     // if(master.getVelocity().getValue() == 0){
 
@@ -275,8 +271,6 @@ public class ArmSubsystem extends SubsystemBase {
         (getCurrentCommand() == null) ? "NULL" : getCurrentCommand().getName());
     SmartDashboard.putNumber(
         "ARM Target Integrated Rots", calculateIntegratedTargetRots(targetDegrees));
-    SmartDashboard.putNumber(
-        "ARM FeedForward Calculations", armff.calculate((2 * Math.PI * getRawDegrees()) / 360d, 0));
     SmartDashboard.putNumber("Master Velocity", master.getVelocity().getValueAsDouble());
     SmartDashboard.putNumber(
         "ARM Abs enc deg",
