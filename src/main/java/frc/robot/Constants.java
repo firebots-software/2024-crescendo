@@ -194,10 +194,10 @@ public final class Constants {
     public static final double S0C_KS = 0.0;
     public static final double S0C_KG = 0.0;
     public static final double S0C = 0.0;
-    public static final double MOTIONMAGIC_KV = 0.0; // MotionMagic Cruise Velocity in RPS of the arm
-    public static final double MOTIONMAGIC_KA = 0.0; // MotionMagic Acceleration in RPS^2 of the arm
-
+    public static final double MOTIONMAGIC_KV = 18.18; // MotionMagic Cruise Velocity in RPS of the arm
+    public static final double MOTIONMAGIC_KA = 18.18; // MotionMagic Acceleration in RPS^2 of the arm
     public static final double FEET_TO_METERS_CONVERSION_FACTOR = 0.3048;
+
     public static final double ABSOLUTE_ARM_CONVERSION_FACTOR = 42d / 18d;
     public static final double INTEGRATED_ABSOLUTE_CONVERSION_FACTOR = 55.9867;
     public static final double INTEGRATED_ARM_CONVERSION_FACTOR =

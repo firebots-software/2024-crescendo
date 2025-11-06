@@ -55,7 +55,7 @@ public class ArmSubsystem extends SubsystemBase {
     MotorOutputConfigs moc = new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Brake);
 
     // TODO: Configure PID and Feedforward values of the Arm -> refer to the 'TODO' in Constants.java 
-    Slot0Configs s0c = new Slot0Configs().withKP(Constants.Arm.S0C_KP).withKI(0).withKD(0).withKV(0).withKG(0).withKS(0).withKA(0);
+    Slot0Configs s0c = new Slot0Configs().withKP(Constants.Arm.S0C_KP).withKI(0).withKD(0).withKV(0.12).withKG(0).withKS(0).withKA(0);
 
     // Initialize motors
     rightTopMotor = new LoggedTalonFX("ArmRightTop", Constants.Arm.RT_PORT, Constants.Arm.CANBUS_NAME);
@@ -104,11 +104,11 @@ public class ArmSubsystem extends SubsystemBase {
     mmc = new MotionMagicConfigs();
     // TODO: Set MAX Velocity
     mmc.MotionMagicCruiseVelocity =
-        Constants.Arm.MOTIONMAGIC_KV * Constants.Arm.INTEGRATED_ARM_CONVERSION_FACTOR;
+        Constants.Arm.MOTIONMAGIC_KV;
 
     // TODO: Set Max Acceleration / Decceleration
     mmc.MotionMagicAcceleration =
-        Constants.Arm.MOTIONMAGIC_KA * Constants.Arm.INTEGRATED_ARM_CONVERSION_FACTOR;
+        Constants.Arm.MOTIONMAGIC_KA;
    
     masterConfigurator.apply(mmc);
 
