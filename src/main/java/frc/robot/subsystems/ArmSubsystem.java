@@ -10,7 +10,6 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import dev.doglog.DogLog;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -27,7 +26,7 @@ public class ArmSubsystem extends SubsystemBase {
   // variable that you refer to the "master" motor with
   private LoggedTalonFX master;
 
-  // absolute encoder that tells us how far the arm has travelled 
+  // absolute encoder that tells us how far the arm has travelled
   private DutyCycleEncoder revEncoder;
   private boolean enableArm;
 
@@ -39,7 +38,6 @@ public class ArmSubsystem extends SubsystemBase {
   // target angle of the arm in degrees
   private double targetDegrees;
 
-  
   private double armHorizontalOffset;
 
   public ArmSubsystem() {
@@ -49,19 +47,34 @@ public class ArmSubsystem extends SubsystemBase {
             .withStatorCurrentLimitEnable(true)
             .withStatorCurrentLimit(Constants.Arm.ARM_STATOR_CURRENT_LIMIT_AMPS);
 
-    // Review: Brake mode refers to the fact that when the robot is powered on but the motor output is 0, make the motor
-    // resistant to moving ( this is why when the robot is powered on and you drop the arm it slowly goes down instead of slamming
+    // Review: Brake mode refers to the fact that when the robot is powered on but the motor output
+    // is 0, make the motor
+    // resistant to moving ( this is why when the robot is powered on and you drop the arm it slowly
+    // goes down instead of slamming
     // immediately )
     MotorOutputConfigs moc = new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Brake);
 
-    // TODO: Configure PID and Feedforward values of the Arm -> refer to the 'TODO' in Constants.java 
-    Slot0Configs s0c = new Slot0Configs().withKP(Constants.Arm.S0C_KP).withKI(0).withKD(0).withKV(0.12).withKG(0).withKS(0).withKA(0);
+    // TODO: Configure PID and Feedforward values of the Arm -> refer to the 'TODO' in
+    // Constants.java
+    Slot0Configs s0c =
+        new Slot0Configs()
+            .withKP(Constants.Arm.S0C_KP)
+            .withKI(0)
+            .withKD(0)
+            .withKV(0.12)
+            .withKG(0)
+            .withKS(0)
+            .withKA(0);
 
     // Initialize motors
-    rightTopMotor = new LoggedTalonFX("ArmRightTop", Constants.Arm.RT_PORT, Constants.Arm.CANBUS_NAME);
-    rightBottomMotor = new LoggedTalonFX("ArmRightBottom", Constants.Arm.RB_PORT, Constants.Arm.CANBUS_NAME);
-    leftTopMotor = new LoggedTalonFX("ArmLefttop", Constants.Arm.LT_PORT, Constants.Arm.CANBUS_NAME);
-    leftBottomMotor = new LoggedTalonFX("ArmLeftBottom", Constants.Arm.LB_PORT, Constants.Arm.CANBUS_NAME);
+    rightTopMotor =
+        new LoggedTalonFX("ArmRightTop", Constants.Arm.RT_PORT, Constants.Arm.CANBUS_NAME);
+    rightBottomMotor =
+        new LoggedTalonFX("ArmRightBottom", Constants.Arm.RB_PORT, Constants.Arm.CANBUS_NAME);
+    leftTopMotor =
+        new LoggedTalonFX("ArmLefttop", Constants.Arm.LT_PORT, Constants.Arm.CANBUS_NAME);
+    leftBottomMotor =
+        new LoggedTalonFX("ArmLeftBottom", Constants.Arm.LB_PORT, Constants.Arm.CANBUS_NAME);
 
     // Set up motor followers and deal with inverted motors
     Follower follower = new Follower(Constants.Arm.LT_PORT, true);
@@ -85,9 +98,7 @@ public class ArmSubsystem extends SubsystemBase {
     // Why do we apply Current Limit Configs to each motor, but then only do s0c on the
     // master?
 
-    // TODO -> Answer the question here: 
-
-
+    // TODO -> Answer the question here:
 
     // Apply Current Limit to all motors
     rightTopMotorConfig.apply(clc);
@@ -103,13 +114,11 @@ public class ArmSubsystem extends SubsystemBase {
     // Apply MotionMagicConfigs to master motor
     mmc = new MotionMagicConfigs();
     // TODO: Set MAX Velocity
-    mmc.MotionMagicCruiseVelocity =
-        Constants.Arm.MOTIONMAGIC_KV;
+    mmc.MotionMagicCruiseVelocity = Constants.Arm.MOTIONMAGIC_KV;
 
     // TODO: Set Max Acceleration / Decceleration
-    mmc.MotionMagicAcceleration =
-        Constants.Arm.MOTIONMAGIC_KA;
-   
+    mmc.MotionMagicAcceleration = Constants.Arm.MOTIONMAGIC_KA;
+
     masterConfigurator.apply(mmc);
 
     // Initialize absolute encoder
@@ -180,8 +189,7 @@ public class ArmSubsystem extends SubsystemBase {
     // TODO: Why is the min angle here 4 degrees, but the min angle in `setTargetDegrees` 1 degree?
     angleDegrees = MathUtil.clamp(angleDegrees, 3, 110);
     if (initialized && enableArm) {
-      master.setControl(
-          new MotionMagicVoltage(calculateIntegratedTargetRots(angleDegrees)));
+      master.setControl(new MotionMagicVoltage(calculateIntegratedTargetRots(angleDegrees)));
     }
     // if(master.getVelocity().getValue() == 0){
 
@@ -277,8 +285,6 @@ public class ArmSubsystem extends SubsystemBase {
         Units.rotationsToDegrees(getAbsolutePosition() - Constants.Arm.ABSOLUTE_HORIZONTAL_OFFSET)
             / Constants.Arm.ABSOLUTE_ARM_CONVERSION_FACTOR);
     SmartDashboard.putNumber("ARM updown adjustment", Constants.Arm.ARM_INTERMAP_OFFSET);
-
-
 
     // TODO: ACTUAL LOGGING STATEMENTS FOR PID+MP ACTIVITY:
     DogLog.log("MD.6-lab/X Variable", 3.0);
