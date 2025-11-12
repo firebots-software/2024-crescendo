@@ -279,7 +279,6 @@ public class ArmSubsystem extends SubsystemBase {
 
 
 
-    // TODO: ACTUAL LOGGING STATEMENTS FOR PID+MP ACTIVITY:
     DogLog.log("MD.6-lab/Current_Arm_Angle_Degrees", getCorrectedDegrees());
     SmartDashboard.putNumber("MD.6-lab/Target_Arm_Angle_Degrees", targetDegrees);
     periodicSignalLogger();
