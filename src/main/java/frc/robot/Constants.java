@@ -4,10 +4,7 @@ import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.*;
-import com.ctre.phoenix6.configs.CANcoderConfiguration;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.swerve.*;
-import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.*;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
@@ -16,8 +13,6 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.*;
-import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.Distance;
 import frc.robot.Constants.Pooer.ShooterType;
 
 /**
@@ -188,14 +183,6 @@ public final class Constants {
     public static final int ENCODER_PORT = 0; // subject to change
 
     // TODO: TUNE THESE CONSTANTS
-    public static final double S0C_KP = 0.0;
-    public static final double S0C_KI = 0.0;
-    public static final double S0C_KD = 0.0;
-    public static final double S0C_KS = 0.0;
-    public static final double S0C_KG = 0.0;
-    public static final double S0C = 0.0;
-    public static final double MOTIONMAGIC_KV = 0.0; // MotionMagic Cruise Velocity in RPS of the arm
-    public static final double MOTIONMAGIC_KA = 0.0; // MotionMagic Acceleration in RPS^2 of the arm
 
     public static final double FEET_TO_METERS_CONVERSION_FACTOR = 0.3048;
     public static final double ABSOLUTE_ARM_CONVERSION_FACTOR = 42d / 18d;
@@ -208,6 +195,21 @@ public final class Constants {
     public static double ARM_INTERMAP_OFFSET = 0;
     // public static double ZERO_SPEAKER_OFFSET_METERS = 0.6;
     public static final InterpolatingDoubleTreeMap INTERMAP = new InterpolatingDoubleTreeMap();
+
+    public static final double S0C_KP = 1;
+    public static final double S0C_KI = 0.0;
+    public static final double S0C_KD = 0.0;
+    public static final double S0C_KS = 0.0;
+    public static final double S0C_KG = 0.3;
+    public static final double S0C_KV = 0.12;
+    public static final double S0C_KA = 0.0;
+    public static final double S0C = 0.0;
+    public static final double MOTIONMAGIC_KV =
+        40
+            * 360
+            / INTEGRATED_ARM_CONVERSION_FACTOR; // MotionMagic Cruise Velocity in RPS of the arm
+    public static final double MOTIONMAGIC_KA =
+      50 * 360 / INTEGRATED_ARM_CONVERSION_FACTOR; // MotionMagic Acceleration in RPS^2 of the arm
 
     static {
       UPDATE_INTERMAP();
