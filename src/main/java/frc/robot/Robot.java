@@ -48,7 +48,9 @@ public class Robot extends TimedRobot {
     absoluteInit();
     DataLogManager.start();
 
-    SmartDashboard.putBoolean("ShootSlow", false);
+    SmartDashboard.putBoolean("DriveSlowDefault", true);
+    SmartDashboard.putBoolean("ShootSlow", true);
+    SmartDashboard.putNumber("ShootBundtAngle", Constants.Arm.BUNDT_ANGLE);
 
     DogLog.setOptions(
         new DogLogOptions().withNtPublish(true).withCaptureDs(true).withLogExtras(true));

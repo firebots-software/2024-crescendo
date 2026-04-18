@@ -74,7 +74,7 @@ public class ArmToAngleCmd extends Command {
   }
 
   public static ArmToAngleCmd toBundt(ArmSubsystem arm) {
-    return new ArmToAngleCmd(() -> Constants.Arm.BUNDT_ANGLE, arm);
+    return new ArmToAngleCmd(() -> SmartDashboard.getNumber("ShootBundtAngle", Constants.Arm.BUNDT_ANGLE), arm);
   }
 
   public static ArmToAngleCmd toDuck(ArmSubsystem arm) {

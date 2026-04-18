@@ -2,6 +2,7 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -94,7 +95,7 @@ public class RobotContainer {
         rotationFunction = () -> -joystick.getRightX(),
         speedFunction =
             () ->
-                leftTrigger.getAsBoolean()
+                leftTrigger.getAsBoolean() || SmartDashboard.getBoolean("DriveSlowDefault", true)
                     ? 0d
                     : 1d; // slowmode when left shoulder is pressed, otherwise fast
     SwerveJoystickCommand swerveJoystickCommand =

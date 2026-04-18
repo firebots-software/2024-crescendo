@@ -144,7 +144,7 @@ public class PeterSubsystem extends SubsystemBase {
   }
 
   public void spinRightShooter() {
-    boolean shootSlow = SmartDashboard.getBoolean("ShootSlow", false);
+    boolean shootSlow = SmartDashboard.getBoolean("ShootSlow", true);
     double fullSpeed = Constants.Pooer.SHOOTER.SHOOTER_1.SPEED_RPS;
     double slowSpeed = fullSpeed * 0.4;
 
@@ -152,7 +152,7 @@ public class PeterSubsystem extends SubsystemBase {
   }
 
   public void spinLeftShooter() {
-    boolean shootSlow = SmartDashboard.getBoolean("ShootSlow", false);
+    boolean shootSlow = SmartDashboard.getBoolean("ShootSlow", true);
     double fullSpeed = Constants.Pooer.SHOOTER.SHOOTER_1.SPEED_RPS;
     double slowSpeed = fullSpeed * 0.4;
 
