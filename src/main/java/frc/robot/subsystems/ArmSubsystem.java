@@ -1,6 +1,5 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
@@ -8,18 +7,17 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
-import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import dev.doglog.DogLog;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.util.LoggedTalonFX;
-import frc.robot.util.MiscUtils;
 
 public class ArmSubsystem extends SubsystemBase {
   private static ArmSubsystem instance;
@@ -49,17 +47,17 @@ public class ArmSubsystem extends SubsystemBase {
         new ArmFeedforward(Constants.Arm.ARMFF_KS, Constants.Arm.ARMFF_KG, Constants.Arm.ARMFF_KV);
 
     // Initialize motors
-    rt = new LoggedTalonFX(Constants.Arm.RT_PORT, Constants.Arm.CANBUS_NAME);
-    rb = new LoggedTalonFX(Constants.Arm.RB_PORT, Constants.Arm.CANBUS_NAME);
-    lt = new LoggedTalonFX(Constants.Arm.LT_PORT, Constants.Arm.CANBUS_NAME);
-    lb = new LoggedTalonFX(Constants.Arm.LB_PORT, Constants.Arm.CANBUS_NAME);
+    rt = new LoggedTalonFX("ArmRightTop", Constants.Arm.RT_PORT, Constants.Arm.CANBUS_NAME);
+    rb = new LoggedTalonFX("ArmRightBottom", Constants.Arm.RB_PORT, Constants.Arm.CANBUS_NAME);
+    lt = new LoggedTalonFX("ArmLefttop", Constants.Arm.LT_PORT, Constants.Arm.CANBUS_NAME);
+    lb = new LoggedTalonFX("ArmLeftBottom", Constants.Arm.LB_PORT, Constants.Arm.CANBUS_NAME);
 
     // Set up motor followers and deal with inverted motors
-    Follower follower = new Follower(Constants.Arm.LT_PORT, true);
-    Follower invertedFollower = new Follower(Constants.Arm.LT_PORT, false);
-    rt.setControl(follower);
-    rb.setControl(follower);
-    lb.setControl(invertedFollower);
+    Follower follower = new Follower(Constants.Arm.LT_PORT, MotorAlignmentValue.Aligned);
+    Follower invertedFollower = new Follower(Constants.Arm.LT_PORT, MotorAlignmentValue.Opposed);
+    rt.setControl(invertedFollower);
+    rb.setControl(invertedFollower);
+    lb.setControl(follower);
 
     TalonFXConfigurator rtConfig = rt.getConfigurator();
     TalonFXConfigurator rbConfig = rb.getConfigurator();
@@ -95,7 +93,6 @@ public class ArmSubsystem extends SubsystemBase {
 
     // Initialize absolute encoder
     revEncoder = new DutyCycleEncoder(Constants.Arm.ENCODER_PORT);
-
     // ==== EXPLANATION: ====
     // getAbsolutePosition(): Absolute Encoder's current reading
     // ABSOLUTE_ENCODER_HORIZONTAL: What the Absolute Encoder reads at horizontal
@@ -175,26 +172,6 @@ public class ArmSubsystem extends SubsystemBase {
     targetDegrees = angleDegrees;
   }
 
-  public static double calculateAngleToSpeaker(Translation2d robotPosition, boolean redside) {
-    SmartDashboard.putBoolean("Redside Calculate angle To Speaker", redside);
-    double groundDistFromSpeaker =
-        ((redside)
-                ? MiscUtils.reflectAcrossMidline(Constants.Landmarks.Speaker.POSE)
-                : Constants.Landmarks.Speaker.POSE)
-            .getTranslation()
-            .getDistance(robotPosition);
-    SmartDashboard.putNumber("ground dist from speaker", groundDistFromSpeaker);
-    SmartDashboard.putNumber(
-        "angle from intermap1", Constants.Arm.INTERMAP.get(groundDistFromSpeaker));
-    //     SmartDashboard.putNumber(
-    // "angle from intermap2", Constants.Arm.INTERMAP2.get(groundDistFromSpeaker));
-    // return !IncreaseAngle ? Constants.Arm.INTERMAP1.get(groundDistFromSpeaker) :
-    // Constants.Arm.INTERMAP2.get(groundDistFromSpeaker);
-    return Constants.Arm.INTERMAP.get(groundDistFromSpeaker); // THIS IS USING THE INTERMAP
-    // return Constants.Arm.GET_YAJWINS_EQUATION(Math.abs(groundDistFromSpeaker)); // THIS IS USING
-    // YAJWIN'S EQUATION
-  }
-
   // private get
 
   public void rotateToRestPosition() {
@@ -203,7 +180,8 @@ public class ArmSubsystem extends SubsystemBase {
 
   private double getAbsolutePosition() {
     // uses the absolute encoder rotations to get the absolute position
-    return (revEncoder.getAbsolutePosition()
+
+    return (revEncoder.get() // revEncoder.getAbsolutePosition()
             - Constants.Arm.ABSOLUTE_ENCODER_HORIZONTAL
             + Constants.Arm.ABSOLUTE_HORIZONTAL_OFFSET
             + 1d)
@@ -216,7 +194,7 @@ public class ArmSubsystem extends SubsystemBase {
           "WARNING: Motor Position looked at, but initialization not complete yet. Returning 0");
       return 0;
     }
-    return master.getPosition().getValue();
+    return master.getPosition().getValueAsDouble();
   }
 
   private double getArmPosRotations() {
@@ -255,11 +233,13 @@ public class ArmSubsystem extends SubsystemBase {
     SmartDashboard.putString(
         "ARM Command",
         this.getCurrentCommand() == null ? "none" : this.getCurrentCommand().getName());
-    SmartDashboard.putNumber("ARM Abs Enc Raw", revEncoder.getAbsolutePosition());
+    SmartDashboard.putNumber("ARM Abs Enc Raw", revEncoder.get());
     SmartDashboard.putNumber("ARM Abs Enc Func", getAbsolutePosition());
     SmartDashboard.putNumber("ARM Integrated Rotations", getMotorPosRotations());
-    SmartDashboard.putNumber("ARM Integrated Current", master.getSupplyCurrent().getValue());
-    SmartDashboard.putNumber("ARM Integrated Error", master.getClosedLoopError().getValue());
+    SmartDashboard.putNumber(
+        "ARM Integrated Current", master.getSupplyCurrent().getValueAsDouble());
+    SmartDashboard.putNumber(
+        "ARM Integrated Error", master.getClosedLoopError().getValueAsDouble());
     SmartDashboard.putNumber("ARM Arm Rotations", getArmPosRotations());
     SmartDashboard.putNumber("ARM Arm Degrees", getRawDegrees());
 
@@ -272,7 +252,7 @@ public class ArmSubsystem extends SubsystemBase {
         "ARM Target Integrated Rots", calculateIntegratedTargetRots(targetDegrees));
     SmartDashboard.putNumber(
         "ARM FeedForward Calculations", armff.calculate((2 * Math.PI * getRawDegrees()) / 360d, 0));
-    SmartDashboard.putNumber("Master Velocity", master.getVelocity().getValue());
+    SmartDashboard.putNumber("Master Velocity", master.getVelocity().getValueAsDouble());
     SmartDashboard.putNumber(
         "ARM Abs enc deg",
         Units.rotationsToDegrees(getAbsolutePosition() - Constants.Arm.ABSOLUTE_HORIZONTAL_OFFSET)
@@ -283,11 +263,17 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void periodicSignalLogger() {
-    SignalLogger.writeDouble("ARM Abs Enc Func: ", getAbsolutePosition());
-    SignalLogger.writeDouble("ARM Integrated Current: ", master.getSupplyCurrent().getValue());
-    SignalLogger.writeDouble("ARM Integrated Error: ", master.getClosedLoopError().getValue());
-    SignalLogger.writeDouble("Arm Corrected Degrees", getCorrectedDegrees());
-    SignalLogger.writeDouble("Target Arm Degrees", targetDegrees);
-    SignalLogger.writeDouble("Master Velocity", master.getVelocity().getValue());
+    DogLog.log("arm/abs_encoder_raw", getAbsolutePosition());
+    DogLog.log("arm/integrated_current", master.getSupplyCurrent().getValueAsDouble());
+    DogLog.log("arm/closed_loop_error", master.getClosedLoopError().getValueAsDouble());
+    DogLog.log("arm/corrected_angle", getCorrectedDegrees());
+    DogLog.log("arm/target_angle_deg", targetDegrees);
+    DogLog.log("arm/current_velocity_rps", master.getVelocity().getValueAsDouble());
+    // SignalLogger.writeDouble("ARM Abs Enc Func: ", getAbsolutePosition());
+    // SignalLogger.writeDouble("ARM Integrated Current: ", master.getSupplyCurrent().getValue());
+    // SignalLogger.writeDouble("ARM Integrated Error: ", master.getClosedLoopError().getValue());
+    // SignalLogger.writeDouble("Arm Corrected Degrees", getCorrectedDegrees());
+    // SignalLogger.writeDouble("Target Arm Degrees", targetDegrees);
+    // SignalLogger.writeDouble("Master Velocity", master.getVelocity().getValue());
   }
 }

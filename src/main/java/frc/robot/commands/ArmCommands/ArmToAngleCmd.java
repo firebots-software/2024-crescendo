@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.ArmSubsystem;
-import frc.robot.subsystems.SwerveSubsystem;
 import java.util.function.Supplier;
 
 public class ArmToAngleCmd extends Command {
@@ -66,15 +65,6 @@ public class ArmToAngleCmd extends Command {
     return new ArmToAngleCmd(() -> Constants.Arm.AMP_ANGLE, arm);
   }
 
-  public static ArmToAngleCmd aimAtSpeaker(
-      ArmSubsystem arm, SwerveSubsystem swerveSubsystem, Supplier<Boolean> redside) {
-    return new ArmToAngleCmd(
-        () ->
-            ArmSubsystem.calculateAngleToSpeaker(
-                swerveSubsystem.getState().Pose.getTranslation(), redside.get()),
-        arm);
-  }
-
   public static ArmToAngleCmd toNeutral(ArmSubsystem arm) {
     return new ArmToAngleCmd(() -> Constants.Arm.DEFAULT_ARM_ANGLE, arm);
   }
@@ -84,7 +74,7 @@ public class ArmToAngleCmd extends Command {
   }
 
   public static ArmToAngleCmd toBundt(ArmSubsystem arm) {
-    return new ArmToAngleCmd(() -> 8.5d, arm);
+    return new ArmToAngleCmd(() -> Constants.Arm.BUNDT_ANGLE, arm);
   }
 
   public static ArmToAngleCmd toDuck(ArmSubsystem arm) {
