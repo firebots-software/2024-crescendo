@@ -7,6 +7,7 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import dev.doglog.DogLog;
 import edu.wpi.first.math.MathUtil;
@@ -52,11 +53,11 @@ public class ArmSubsystem extends SubsystemBase {
     lb = new LoggedTalonFX("ArmLeftBottom", Constants.Arm.LB_PORT, Constants.Arm.CANBUS_NAME);
 
     // Set up motor followers and deal with inverted motors
-    Follower follower = new Follower(Constants.Arm.LT_PORT, true);
-    Follower invertedFollower = new Follower(Constants.Arm.LT_PORT, false);
-    rt.setControl(follower);
-    rb.setControl(follower);
-    lb.setControl(invertedFollower);
+    Follower follower = new Follower(Constants.Arm.LT_PORT, MotorAlignmentValue.Aligned);
+    Follower invertedFollower = new Follower(Constants.Arm.LT_PORT, MotorAlignmentValue.Opposed);
+    rt.setControl(invertedFollower);
+    rb.setControl(invertedFollower);
+    lb.setControl(follower);
 
     TalonFXConfigurator rtConfig = rt.getConfigurator();
     TalonFXConfigurator rbConfig = rb.getConfigurator();

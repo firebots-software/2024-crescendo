@@ -1,5 +1,6 @@
 package frc.robot;
 
+import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -18,12 +19,7 @@ import frc.robot.subsystems.JoystickSubsystem;
 import frc.robot.subsystems.PeterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.util.OtherXBoxController;
-
-import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
-import java.util.function.Supplier;
-
-import dev.doglog.DogLog;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -52,11 +48,11 @@ public class RobotContainer {
   public void doTelemetry() {
     logger.telemeterize(driveTrain.getState());
     DogLog.log("drivetrain/heading", driveTrain.getState().RawHeading.getDegrees() * 360);
-    
+
     double x = driveTrain.getState().Speeds.vxMetersPerSecond;
     double y = driveTrain.getState().Speeds.vyMetersPerSecond;
 
-    double speed = Math.sqrt(x*x + y*y);
+    double speed = Math.sqrt(x * x + y * y);
 
     DogLog.log("drivetrain/speed(fps)", speed * 3.2808);
   }
@@ -103,9 +99,9 @@ public class RobotContainer {
             leftRightFunction,
             rotationFunction,
             speedFunction, // slowmode when left shoulder is pressed, otherwise fast
-            () -> false, 
+            () -> false,
             driveTrain);
-    
+
     driveTrain.setDefaultCommand(swerveJoystickCommand);
     driveTrain.registerTelemetry(logger::telemeterize);
 
