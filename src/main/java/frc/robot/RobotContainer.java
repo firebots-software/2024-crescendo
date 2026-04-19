@@ -89,6 +89,9 @@ public class RobotContainer {
     //         speedFunction,
     //         fieldRelative,
     //         driveTrain);
+
+    joystick.a().onTrue(new InstantCommand(() -> SmartDashboard.putBoolean("ShootSlow", !SmartDashboard.getBoolean("ShootSlow", true))));
+
     Trigger leftTrigger = joystick.leftTrigger();
     DoubleSupplier frontBackFunction = () -> -joystick.getLeftY(),
         leftRightFunction = () -> -joystick.getLeftX(),
@@ -97,7 +100,7 @@ public class RobotContainer {
             () ->
                 leftTrigger.getAsBoolean() || SmartDashboard.getBoolean("DriveSlowDefault", true)
                     ? 0d
-                    : 1d; // slowmode when left shoulder is pressed, otherwise fast
+                    : 1.5d; // slowmode when left shoulder is pressed, otherwise fast
     SwerveJoystickCommand swerveJoystickCommand =
         new SwerveJoystickCommand(
             frontBackFunction,
